@@ -49,8 +49,8 @@ Fantastic, thanks for your effort!
 The following are a few guidelines on how we suggest you start.
  
 1. Fork the repository to your repositories (see [Fork a repo](https://help.github.com/en/articles/fork-a-repo) for help). 
-2. Use an IDE which supports bash coding and shellcheck
-   e.g. [visual studio code](https://code.visualstudio.com) with the [shelcheck](https://marketplace.visualstudio.com/items?itemName=timonwong.shellcheck) plugin.
+2. Use an IDE which supports bash coding and shellcheck (min. v0.8.0)
+   e.g. [visual studio code](https://code.visualstudio.com) with the [shellcheck](https://marketplace.visualstudio.com/items?itemName=timonwong.shellcheck) plugin.
 3. Read up the [Coding Conventions](#coding-conventions) (there are only 5 points).
 
 Perfect, you are setup and ready to go. 
