@@ -12,13 +12,7 @@ set -e
 declare current_dir
 current_dir="$( cd -- "$( dirname -- "${BASH_SOURCE[0]:-$0}"; )" &> /dev/null && pwd 2> /dev/null; )";
 
-source "$current_dir/utility/update-bash-docu.sh"
-find . -name "*.sh" \
-  -not -name "*.doc.sh" \
-  -not -path "**.history/*" \
-  -not -name "update-docu.sh" \
-  -print0 | while read -r -d $'\0' script
-    do
-      declare id="${script:2:-3}"
-      replaceSnippetForScript "$current_dir/$script" "${id////-}" . README.md
-    done
+"$current_dir/run-shellcheck.sh"
+"$current_dir/check-in-bug-template.sh"
+"$current_dir/update-docu.sh"
+
