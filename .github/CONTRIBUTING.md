@@ -106,6 +106,7 @@ However, here a few hints in order that your pull request is merged quickly.
 Please make sure you can check every item on the following list before you create a pull request:  
 - [ ] your pull request is rebased on the [latest commit on main](https://github.com/tegonal/scripts/commits/main)
 - [ ] Your pull request addresses only “one thing”. It cannot be meaningfully split up into multiple pull requests.
+- [ ] There is no error if you run ./scripts/before-pr.sh
      
 Once you have created and submitted your pull request, make sure:
 - [ ] your pull request passes Continuous Integration

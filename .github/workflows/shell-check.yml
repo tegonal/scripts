@@ -3,11 +3,17 @@ on: [push, pull_request]
 
 jobs:
   shellcheck:
-    name: Shellcheck
+    name: Code Quality
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v3
       - name: Run ShellCheck
         uses: ludeeus/action-shellcheck@1.1.0
         env:
-          SHELLCHECK_OPTS: -x -P ./utility
+          SHELLCHECK_OPTS: -x -P ./src/utility
+
+      - name: check all scripts in bug template
+        run: ./scripts/check-in-bug-template.sh
+
+      - name: check all scripts have documentation
+        run: ./scripts/update-docu.sh

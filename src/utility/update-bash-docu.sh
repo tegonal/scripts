@@ -21,7 +21,7 @@
 #    current_dir="$( cd -- "$( dirname -- "${BASH_SOURCE[0]:-$0}"; )" &> /dev/null && pwd 2> /dev/null; )";
 #
 #    # Assuming /update-bash-docu.sh is in the same directory as your script
-#    source "$current_dir/utility/update-bash-docu.sh"
+#    source "$current_dir/update-bash-docu.sh"
 #    find . -name "*.sh" \
 #      -not -name "*.doc.sh" \
 #      -not -path "**.history/*" \
@@ -36,7 +36,7 @@
 
 set -e
 
-function replaceSnippetForScript(){
+function updateBashDocumentation(){
   declare script id dir pattern
   # args is required for parse-fn-args.sh thus:
   # shellcheck disable=SC2034
