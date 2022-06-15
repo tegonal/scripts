@@ -51,7 +51,7 @@ Following how an example how parse-args.sh is used:
 
 <utility-parse-args>
 
-<!-- auto-generated, do not modify here but in /home/tegonal/projects/ght/scripts/./src/utility/parse-args.sh -->
+<!-- auto-generated, do not modify here but in src/utility/parse-args.sh -->
 ```bash
 #!/usr/bin/env bash
 
@@ -104,7 +104,7 @@ Following an example how parse-fn-args.sh can be used:
 
 <utility-parse-fn-args>
 
-<!-- auto-generated, do not modify here but in /home/tegonal/projects/ght/scripts/./src/utility/parse-fn-args.sh -->
+<!-- auto-generated, do not modify here but in src/utility/parse-fn-args.sh -->
 ```bash
 #!/usr/bin/env bash
 
@@ -151,7 +151,7 @@ Following an example
 
 <utility-replace-snippet>
 
-<!-- auto-generated, do not modify here but in /home/tegonal/projects/ght/scripts/./src/utility/replace-snippet.sh -->
+<!-- auto-generated, do not modify here but in src/utility/replace-snippet.sh -->
 ```bash
 #!/usr/bin/env bash
 

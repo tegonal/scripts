@@ -58,6 +58,6 @@ function replaceSnippet() {
   find "$dir" -name "$pattern" \
     -exec echo "updating $id in {} " \; \
     -exec perl -0777 -i \
-      -pe "s@<${id}>[\S\s]+</${id}>@<${id}>\n\n<!-- auto-generated, do not modify here but in $file -->\n$quotedSnippet\n\n</${id}>@g;" \
+      -pe "s@<${id}>[\S\s]+</${id}>@<${id}>\n\n<!-- auto-generated, do not modify here but in $(realpath --relative-to "$PWD" "$file") -->\n$quotedSnippet\n\n</${id}>@g;" \
       {} \;  2>/dev/null || true
 }
