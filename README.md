@@ -28,7 +28,7 @@ For instance, the [README of v0.1.0](https://github.com/tegonal/scripts/tree/v0.
 
 The scripts are ordered by topic:
 
-- [script utilities](#script-utilities)
+- [Script Utilities](#script-utilities)
   - [Parse arguments](#parse-arguments)
   - [Replace Snippets](#replace-snippets)
   - [Update Documentation](#update-bash-documentation)
