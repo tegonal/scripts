@@ -23,6 +23,7 @@ body:
         - utility/parse-fn-args.sh
         - utility/replace-snippet.sh
         - utility/update-bash-docu.sh
+        - utility/update-script-version.sh
     validations:
       required: true
   - type: textarea
