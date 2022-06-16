@@ -13,4 +13,4 @@ declare current_dir
 current_dir="$( cd -- "$( dirname -- "${BASH_SOURCE[0]:-$0}"; )" &> /dev/null && pwd 2> /dev/null; )";
 
 
-find "$current_dir/.." -name '*.sh' -not -path "**.history/*" -exec shellcheck -x -P "$current_dir/../src/utility/" {} \;
+find "$current_dir/../src" -name '*.sh' -exec shellcheck -x -P "$current_dir/../src/utility/" {} \;
