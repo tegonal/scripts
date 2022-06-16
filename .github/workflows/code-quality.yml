@@ -2,7 +2,7 @@ name: "Code Quality"
 on: [push, pull_request]
 
 jobs:
-  shellcheck:
+  CodeQuality:
     name: Code Quality
     runs-on: ubuntu-latest
     steps:

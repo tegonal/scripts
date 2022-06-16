@@ -13,11 +13,12 @@ declare projectDir
 projectDir="$(realpath "$( cd -- "$( dirname -- "${BASH_SOURCE[0]:-$0}"; )" &> /dev/null && pwd 2> /dev/null; )/../")";
 
 source "$projectDir/src/utility/update-bash-docu.sh"
-find ./src -name "*.sh" \
+find "$projectDir/src" -name "*.sh" \
   -not -name "*.doc.sh" \
-  -not -path "**.history/*" \
   -print0 | while read -r -d $'\0' script
     do
-      declare id="${script:6:-3}"
-      updateBashDocumentation "$projectDir/$script" "${id////-}" . README.md
+      declare relative
+      relative="$(realpath --relative-to="$projectDir" "$script")"
+      declare id="${relative:4:-3}"
+      updateBashDocumentation "$script" "${id////-}" . README.md
     done
