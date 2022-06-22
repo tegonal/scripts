@@ -27,6 +27,7 @@ find "$projectDir/src" -name "*.sh" \
 
 declare executableScripts=(
   releasing/sneak-peek-banner
+  releasing/toggle-sections
   releasing/update-version-README
   releasing/update-version-scripts
 )
