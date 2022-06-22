@@ -24,8 +24,8 @@
 #    file=$(mktemp)
 #    echo "<my-script-help></my-script-help>" > "$file"
 #
-#    # replaceSnippet file id dir pattern snippet
-#    replaceSnippet my-script.sh my-script-help "$(dirname "$file")" "$(basename "$file")"
+#    # replaceHelpSnippet script id dir pattern
+#    replaceHelpSnippet my-script.sh my-script-help "$(dirname "$file")" "$(basename "$file")"
 #
 #    echo "content"
 #    cat "$file"
