@@ -24,7 +24,7 @@ current_dir="$(cd -- "$(dirname -- "${BASH_SOURCE[0]:-$0}")" &>/dev/null && pwd 
 "$current_dir/update-docu.sh"
 
 "$current_dir/../src/releasing/sneak-peek-banner.sh" -c hide
-"$current_dir/../src/releasing/toggle-sections" -v release
+"$current_dir/../src/releasing/toggle-sections.sh" -c release
 "$current_dir/../src/releasing/update-version-README.sh" -v "$version"
 "$current_dir/../src/releasing/update-version-scripts.sh" -v "$version"
 
