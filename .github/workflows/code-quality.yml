@@ -20,5 +20,5 @@ jobs:
 
       - name: check for TODOs
         uses: tegonal/workflow-helper@v0.3.0
-          with:
-            commands: todo-checker
+        with:
+          commands: todo-checker
