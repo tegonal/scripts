@@ -19,14 +19,17 @@ As they might be usable for you as well, we are publishing them here.
 Feel free to use it and report bugs if you should find one.
 
 ---
-
 ❗ You are taking a _sneak peek_ at the next version.
 Please have a look at the README of the git tag in case you are looking for the documentation of the corresponding version.
 For instance, the [README of v0.1.0](https://github.com/tegonal/scripts/tree/v0.1.0/README.md).
-
 ---
 
 The scripts are ordered by topic:
+
+- [Releasing](#releasing)
+  - [Update Version in README](#update-version-in-readme)
+  - [Update Version in bash scripts](#)
+  - [Hide/Show sneak-peek banner](#hideshow-sneak-peek-banner)
 
 - [Script Utilities](#script-utilities)
   - [Parse arguments](#parse-arguments)
@@ -36,6 +39,83 @@ The scripts are ordered by topic:
 See also:
 - [Contributors and contribute](#contributors-and-contribute)
 - [License](#license)
+
+# Releasing
+
+The scripts under this topic perform some steps of your release process.
+
+## Update Version in README
+
+Updates the version used in download badges and in the sneak peek banner.
+Requires that you follow one of the following schemas for the download badges:
+```
+[![Download](https://img.shields.io/badge/Download-<YOUR_VERSION>-%23<YOUR_COLOR>)](<ANY_URL>/v0.2.0)
+[![Download](https://img.shields.io/badge/Download-<YOUR_VERSION>-%23<YOUR_COLOR>)](<ANY_URL>=v0.2.0)
+```
+
+And it searches for the following text for the sneak peek banner:
+```
+For instance, the [README of <YOUR_VERSION>](<ANY_URL>/tree/<YOUR_VERSION>/...) 
+```
+
+Usage:
+
+<releasing-update-version-README>
+
+<!-- auto-generated, do not modify here but in src/releasing/update-version-README.sh -->
+```bash
+#!/usr/bin/env bash
+set -e
+declare current_dir
+current_dir="$( cd -- "$( dirname -- "${BASH_SOURCE[0]:-$0}"; )" &> /dev/null && pwd 2> /dev/null; )";
+# Assuming update-version-README.sh is in the same directory as your script
+"$current_dir/update-version-README.sh" -v 0.1.0
+```
+
+</releasing-update-version-README>
+
+Help:
+
+<releasing-update-version-README-help>
+</releasing-update-version-README-help>
+
+## Update Version in bash scripts
+
+Sets the version placed before the `Description` section accordingly.
+
+Usage:
+
+<releasing-update-version-scripts>
+
+<!-- auto-generated, do not modify here but in src/releasing/update-version-scripts.sh -->
+```bash
+#!/usr/bin/env bash
+set -e
+declare current_dir
+current_dir="$( cd -- "$( dirname -- "${BASH_SOURCE[0]:-$0}"; )" &> /dev/null && pwd 2> /dev/null; )";
+# Assuming update-version-scripts.sh is in the same directory as your script
+"$current_dir/update-version-scripts.sh" -v 0.1.0
+```
+
+</releasing-update-version-scripts>
+
+## Hide/Show sneak peek banner
+In case you use a sneak peek banner as we do in this repo, then this script can be used to hide it (before tagging)
+and show it again in the new dev cycle.
+
+<releasing-sneak-peek-banner>
+
+<!-- auto-generated, do not modify here but in src/releasing/sneak-peek-banner.sh -->
+```bash
+#!/usr/bin/env bash
+set -e
+declare current_dir
+current_dir="$( cd -- "$( dirname -- "${BASH_SOURCE[0]:-$0}"; )" &> /dev/null && pwd 2> /dev/null; )";
+# Assuming sneak-peek-banner.sh is in the same directory as your script
+"$current_dir/sneak-peek-banner.sh" -c hide
+```
+
+</releasing-sneak-peek-banner>
 
 # Script Utilities
 
