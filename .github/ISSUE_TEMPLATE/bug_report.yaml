@@ -25,6 +25,7 @@ body:
         - utility/parse-args.sh
         - utility/parse-fn-args.sh
         - utility/replace-snippet.sh
+        - utility/replace-help-snippet.sh
         - utility/update-bash-docu.sh
     validations:
       required: true

@@ -22,7 +22,7 @@ function myFunctionWithVarargs() {
 
   declare command dir varargs
   # shellcheck disable=SC2034
-  declare args=(command dir varargs)
+  declare args=(command dir)
 
   # Assuming parse-fn-args.sh is in the same directory as your script
   current_dir="$(cd -- "$(dirname -- "${BASH_SOURCE[0]:-$0}")" &>/dev/null && pwd 2>/dev/null)"

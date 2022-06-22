@@ -10,15 +10,27 @@
 set -e
 
 declare projectDir
-projectDir="$(realpath "$( cd -- "$( dirname -- "${BASH_SOURCE[0]:-$0}"; )" &> /dev/null && pwd 2> /dev/null; )/../")";
+projectDir="$(realpath "$(cd -- "$(dirname -- "${BASH_SOURCE[0]:-$0}")" &>/dev/null && pwd 2>/dev/null)/../")"
 
 source "$projectDir/src/utility/update-bash-docu.sh"
+source "$projectDir/src/utility/replace-help-snippet.sh"
+
 find "$projectDir/src" -name "*.sh" \
   -not -name "*.doc.sh" \
-  -print0 | while read -r -d $'\0' script
-    do
-      declare relative
-      relative="$(realpath --relative-to="$projectDir" "$script")"
-      declare id="${relative:4:-3}"
-      updateBashDocumentation "$script" "${id////-}" . README.md
-    done
+  -print0 | while read -r -d $'\0' script; do
+    declare relative
+    relative="$(realpath --relative-to="$projectDir" "$script")"
+    declare id="${relative:4:-3}"
+
+    updateBashDocumentation "$script" "${id////-}" . README.md
+  done
+
+declare executableScripts=(
+  releasing/sneak-peek-banner
+  releasing/update-version-README
+  releasing/update-version-scripts
+)
+
+for script in "${executableScripts[@]}"; do
+  replaceHelpSnippet "$projectDir/src/$script.sh" "${script////-}-help" . README.md
+done

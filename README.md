@@ -22,6 +22,7 @@ Feel free to use it and report bugs if you should find one.
 ❗ You are taking a _sneak peek_ at the next version.
 Please have a look at the README of the git tag in case you are looking for the documentation of the corresponding version.
 For instance, the [README of v0.1.0](https://github.com/tegonal/scripts/tree/v0.1.0/README.md).
+
 ---
 
 The scripts are ordered by topic:
@@ -58,7 +59,27 @@ And it searches for the following text for the sneak peek banner:
 For instance, the [README of <YOUR_VERSION>](<ANY_URL>/tree/<YOUR_VERSION>/...) 
 ```
 
-Usage:
+Help:
+
+<releasing-update-version-README-help>
+
+<!-- auto-generated, do not modify here but in src/releasing/update-version-README.sh -->
+```text
+Parameters:
+-f|--file            (optional) the file where search & replace shall be done -- default: ./README.md
+-v|--version         the version which shall be used
+
+Examples:
+# update version for ./README.md
+update-version-README.sh -v v0.1.0
+
+# update version for ./docs/index.md
+update-version-README.sh -v v0.1.0 -f ./docs/index.md
+```
+
+</releasing-update-version-README-help>
+
+Full usage example:
 
 <releasing-update-version-README>
 
@@ -74,16 +95,32 @@ current_dir="$( cd -- "$( dirname -- "${BASH_SOURCE[0]:-$0}"; )" &> /dev/null &&
 
 </releasing-update-version-README>
 
-Help:
-
-<releasing-update-version-README-help>
-</releasing-update-version-README-help>
 
 ## Update Version in bash scripts
 
 Sets the version placed before the `Description` section accordingly.
 
-Usage:
+Help:
+
+<releasing-update-version-scripts-help>
+
+<!-- auto-generated, do not modify here but in src/releasing/update-version-scripts.sh -->
+```text
+Parameters:
+-d|--directory       (optional) the working directory -- default: ./src
+-v|--version         the version which shall be used
+
+Examples:
+# update version to v0.1.0 for all *.sh in ./src and subdirectories
+update-version-scripts.sh -v v0.1.0
+
+# update version to v0.1.0 for all *.sh in ./scripts and subdirectories
+update-version-scripts.sh -v v0.1.0 -d ./scripts
+```
+
+</releasing-update-version-scripts-help>
+
+Full usage example:
 
 <releasing-update-version-scripts>
 
@@ -102,6 +139,28 @@ current_dir="$( cd -- "$( dirname -- "${BASH_SOURCE[0]:-$0}"; )" &> /dev/null &&
 ## Hide/Show sneak peek banner
 In case you use a sneak peek banner as we do in this repo, then this script can be used to hide it (before tagging)
 and show it again in the new dev cycle.
+
+Help:
+
+<releasing-sneak-peek-banner-help>
+
+<!-- auto-generated, do not modify here but in src/releasing/sneak-peek-banner.sh -->
+```text
+Parameters:
+-f|--file            (optional) the file where search & replace shall be done -- default: ./README.md
+-c|--command         either 'show' or 'hide'
+
+Examples:
+# hide the sneak peek banner in ./README.md
+sneak-peek-banner.sh -c hide
+
+# show the sneak peek banner in ./docs/index.md
+sneak-peek-banner.sh -c show -f ./docs/index.md
+```
+
+</releasing-sneak-peek-banner-help>
+
+Full usage example:
 
 <releasing-sneak-peek-banner>
 
@@ -127,7 +186,9 @@ We have two scripts helping in parsing arguments:
 - parse-args.sh which expects named arguments
 - parse-fn-args which is supposed to be sourced into a function
 
-Following how an example how parse-args.sh is used:
+### parse-args.sh
+
+Full usage example:
 
 <utility-parse-args>
 
@@ -180,7 +241,9 @@ echo "d: $directory, p: $pattern"
 
 </utility-parse-args>
 
-Following an example how parse-fn-args.sh can be used:
+### parse-fn-args.sh
+
+Full usage example:
 
 <utility-parse-fn-args>
 
@@ -210,7 +273,7 @@ function myFunctionWithVarargs() {
 
   declare command dir varargs
   # shellcheck disable=SC2034
-  declare args=(command dir varargs)
+  declare args=(command dir)
 
   # Assuming parse-fn-args.sh is in the same directory as your script
   current_dir="$(cd -- "$(dirname -- "${BASH_SOURCE[0]:-$0}")" &>/dev/null && pwd 2>/dev/null)"
@@ -227,7 +290,8 @@ function myFunctionWithVarargs() {
 ## Replace Snippets
 
 If you want to include some code in markdown files (or any other HTML-like file) then replace-snippet.sh could come in handy.
-Following an example
+
+Full usage example:
 
 <utility-replace-snippet>
 
@@ -265,6 +329,33 @@ cat "$file"
 
 Updates the `Usage` section of a bash file based on a sibling doc which is named *.doc.sh (e.g foo.sh and foo.doc.sh).
 Moreover, it uses [Replace Snippets](#replace-snippets) to update a corresponding snippet in the specified files.
+
+Full usage example:
+
+<utility-update-bash-docu>
+
+<!-- auto-generated, do not modify here but in src/utility/update-bash-docu.sh -->
+```bash
+#!/usr/bin/env bash
+set -e
+declare current_dir
+current_dir="$( cd -- "$( dirname -- "${BASH_SOURCE[0]:-$0}"; )" &> /dev/null && pwd 2> /dev/null; )";
+
+# Assuming update-bash-docu.sh is in the same directory as your script
+source "$current_dir/update-bash-docu.sh"
+find . -name "*.sh" \
+  -not -name "*.doc.sh" \
+  -not -path "**.history/*" \
+  -not -name "update-docu.sh" \
+  -print0 | while read -r -d $'\0' script
+    do
+      declare script="${script:2}"
+      replaceSnippetForScript "$current_dir/$script" "${script////-}" . README.md
+    done
+```
+
+</utility-update-bash-docu>
+
 
 # Contributors and contribute
 

@@ -37,7 +37,7 @@
 #
 #      declare command dir varargs
 #      # shellcheck disable=SC2034
-#      declare args=(command dir varargs)
+#      declare args=(command dir)
 #
 #      # Assuming parse-fn-args.sh is in the same directory as your script
 #      current_dir="$(cd -- "$(dirname -- "${BASH_SOURCE[0]:-$0}")" &>/dev/null && pwd 2>/dev/null)"
@@ -54,8 +54,6 @@
 #
 ###################################
 
-set -e
-
 if ! [[ -v args[@] ]]; then
   echo >&2 "parse-fn-args.sh requires you to define an array named 'args', for instance as follows"
   echo >&2 "declare args=(variableStoringArg1 variableStoringArg2)"
@@ -63,9 +61,13 @@ if ! [[ -v args[@] ]]; then
 fi
 
 declare withVarArgs
-withVarArgs=$(declare -p "varargs" >/dev/null 2>&1)
+if declare -p varargs >/dev/null 2>&1; then
+  withVarArgs=true
+else
+  withVarArgs=false
+fi
 
-if [ "${#args[@]}" -lt "$#"  ]; then
+if [ "$#" -lt "${#args[@]}" ]; then
   printf >&2 "Not enough arguments supplied to \033[0m\033[0;36m%s\033[0m: expected %s, given %s\nFollowing a listing of the arguments (red means missing):\n" "${FUNCNAME[1]}" "${#args[@]}" "$#"
 
   declare -i i=1
