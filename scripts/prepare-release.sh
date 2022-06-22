@@ -28,3 +28,4 @@ current_dir="$(cd -- "$(dirname -- "${BASH_SOURCE[0]:-$0}")" &>/dev/null && pwd 
 "$current_dir/../src/releasing/update-version-README.sh" -v "$version"
 "$current_dir/../src/releasing/update-version-scripts.sh" -v "$version"
 
+git commit -a -m "$version"
