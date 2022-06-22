@@ -17,3 +17,8 @@ jobs:
 
       - name: check all scripts have documentation
         run: ./scripts/update-docu.sh
+
+      - name: check for TODOs
+        uses: tegonal/workflow-helper@v0.3.0
+          with:
+            commands: todo-checker
