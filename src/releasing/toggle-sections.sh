@@ -9,7 +9,11 @@
 #
 #######  Description  #############
 #
-#  Shows or hides the sneak peek banner
+#  Searches for <!-- for main --> ... <!-- for main end --> as well as for
+#  <!-- for a specific release --> ... <!-- for a specific release end -->
+#  and kind of toggles section in the sense of  if the passed command is 'main', then
+# the content of <!-- for a specific release --> sections is commented and the content in <!-- for main --> is
+# uncommented. Same same but different if someone passes the command 'release'
 #
 #######  Usage  ###################
 #
@@ -29,7 +33,7 @@ declare -A help
 declare command file
 
 params[command]='-c|--command'
-help[command]="either 'show' or 'hide'"
+help[command]="either 'main' or 'release'"
 
 # shellcheck disable=SC2034
 params[file]='-f|--file'
@@ -39,11 +43,11 @@ help[file]='(optional) the file where search & replace shall be done -- default:
 declare examples
 # shellcheck disable=SC2034
 examples=$(cat << EOM
-# hide the sneak peek banner in ./README.md
-sneak-peek-banner.sh -c hide
+# comment the release sections in ./README.md and uncomment the main sections
+toggle-sections.sh -c main
 
-# show the sneak peek banner in ./docs/index.md
-sneak-peek-banner.sh -c show -f ./docs/index.md
+# comment the main sections in ./docs/index.md and uncomment the release sections
+toggle-sections.sh -c release -f ./docs/index.md
 
 EOM
 )
@@ -58,14 +62,24 @@ parseArguments params "$@"
 if ! [ -v file ]; then file="./README.md"; fi
 checkAllArgumentsSet params
 
-if [ "$command" == "show" ]; then
-  echo "show sneak peek banner in $file"
-  perl -0777 -i -pe 's/<!(---\n❗ You are taking[\S\s]+?---)>/$1/;' "$file"
-elif [  "$command" == "hide" ]; then
-  echo "hide sneak peek banner in $file"
-  perl -0777 -i -pe 's/((?<!<!)---\n❗ You are taking[\S\s]+?---)/<!$1>/;' "$file"
+function toggleSection() {
+  local file=$1
+  local comment=$2
+  local uncomment=$3
+  perl -0777 -i \
+      -pe "s/(<!-- for $comment -->\n)\n([\S\s]*?)(\n<!-- for $comment end -->\n)/\${1}<!--\n\${2}-->\${3}/g;" \
+      -pe "s/(<!-- for $uncomment -->\n)<!--\n([\S\s]*?)-->(\n<!-- for $uncomment end -->)/\${1}\n\${2}\${3}/g" \
+      "$file"
+}
+
+if [ "$command" == "main" ]; then
+  echo "comment release sections and uncomment main sections"
+  toggleSection "$file" "release" "main"
+elif [  "$command" == "release" ]; then
+  echo "comment main sections and uncomment release sections"
+  toggleSection "$file" "main" "release"
 else
-  echo >&2 "only 'show' and 'hide' are supported as command. Following the output of calling --help"
+  echo >&2 "only 'main' and 'release' are supported as command. Following the output of calling --help"
   printHelp params
 fi
 

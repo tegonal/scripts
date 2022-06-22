@@ -5,12 +5,14 @@
 [![Code Quality](https://github.com/tegonal/scripts/workflows/Code%20Quality/badge.svg?event=push&branch=main)](https://github.com/tegonal/scripts/actions/workflows/code-quality.yml?query=branch%3Amain)
 [![Newcomers Welcome](https://img.shields.io/badge/%F0%9F%91%8B-Newcomers%20Welcome-blueviolet)](https://github.com/tegonal/scripts/issues?q=is%3Aissue+is%3Aopen+label%3A%22good+first+issue%22 "Ask in discussions for help")
 
-<!-- for a specific release -->
+<!-- for main end -->
+<!-- for release -->
 <!--
 [![Download](https://img.shields.io/badge/Download-v0.1.0-%23007ec6)](https://github.com/tegonal/scripts/releases/tag/v0.1.0)
 [![Apache 2.0](https://img.shields.io/badge/%E2%9A%96-Apache%202.0-%230b45a6)](http://opensource.org/licenses/Apache2.0 "License")
 [![Newcomers Welcome](https://img.shields.io/badge/%F0%9F%91%8B-Newcomers%20Welcome-blueviolet)](https://github.com/tegonal/scripts/issues?q=is%3Aissue+is%3Aopen+label%3A%22good+first+issue%22 "Ask in discussions for help")
 -->
+<!-- for release end -->
 
 # Scripts of Tegonal
 
@@ -29,7 +31,8 @@ The scripts are ordered by topic:
 
 - [Releasing](#releasing)
   - [Update Version in README](#update-version-in-readme)
-  - [Update Version in bash scripts](#)
+  - [Update Version in bash scripts](#update-version-in-bash-scripts)
+  - [Toggle main/release sections](#toggle-mainrelease-sections)
   - [Hide/Show sneak-peek banner](#hideshow-sneak-peek-banner)
 
 - [Script Utilities](#script-utilities)
@@ -135,6 +138,60 @@ current_dir="$( cd -- "$( dirname -- "${BASH_SOURCE[0]:-$0}"; )" &> /dev/null &&
 ```
 
 </releasing-update-version-scripts>
+
+## Toggle main/release sections
+Utility to comment/uncomment sections defined via 
+```
+<!-- for main -->
+...
+<!-- for main end -->
+```
+and
+```
+<!-- for release -->
+...
+<!-- for release end -->
+```
+
+depending on the passed command:
+- Passing `main` will uncomment main sections and comment release sections.
+- Passing `release` will uncomment release sections and comment main sections.
+
+Help:
+
+<releasing-toggle-sections-help>
+
+<!-- auto-generated, do not modify here but in src/releasing/toggle-sections.sh -->
+```text
+Parameters:
+-f|--file            (optional) the file where search & replace shall be done -- default: ./README.md
+-c|--command         either 'main' or 'release'
+
+Examples:
+# comment the release sections in ./README.md and uncomment the main sections
+toggle-sections.sh -c main
+
+# comment the main sections in ./docs/index.md and uncomment the release sections
+toggle-sections.sh -c release -f ./docs/index.md
+```
+
+</releasing-toggle-sections-help>
+
+Full usage example:
+
+<releasing-toggle-sections>
+
+<!-- auto-generated, do not modify here but in src/releasing/toggle-sections.sh -->
+```bash
+#!/usr/bin/env bash
+set -e
+declare current_dir
+current_dir="$( cd -- "$( dirname -- "${BASH_SOURCE[0]:-$0}"; )" &> /dev/null && pwd 2> /dev/null; )";
+# Assuming sneak-peek-banner.sh is in the same directory as your script
+"$current_dir/sneak-peek-banner.sh" -c hide
+```
+
+</releasing-toggle-sections>
 
 ## Hide/Show sneak peek banner
 In case you use a sneak peek banner as we do in this repo, then this script can be used to hide it (before tagging)
