@@ -24,45 +24,37 @@
 
 set -e
 
-declare -A params
-declare -A help
-
 declare version directory
-
-params[version]='-v|--version'
-help[version]='the version which shall be used'
-
 # shellcheck disable=SC2034
-params[directory]='-d|--directory'
-# shellcheck disable=SC2034
-help[directory]='(optional) the working directory -- default: ./src'
+declare params=(
+  version '-v|--version' 'the version which shall be used'
+  directory '-d|--directory' '(optional) the working directory -- default: ./src'
+)
 
 declare examples
-# shellcheck disable=SC2034
-examples=$(cat << EOM
+examples=$(
+  cat <<EOM
 # update version to v0.1.0 for all *.sh in ./src and subdirectories
 update-version-scripts.sh -v v0.1.0
 
 # update version to v0.1.0 for all *.sh in ./scripts and subdirectories
 update-version-scripts.sh -v v0.1.0 -d ./scripts
-
 EOM
 )
 
 declare current_dir
-current_dir="$( cd -- "$( dirname -- "${BASH_SOURCE[0]:-$0}"; )" &> /dev/null && pwd 2> /dev/null; )";
+current_dir="$(cd -- "$(dirname -- "${BASH_SOURCE[0]:-$0}")" &>/dev/null && pwd 2>/dev/null)"
 # Assuming parse-args.sh is in the same directory as your script
 source "$current_dir/../utility/parse-args.sh"
 
-parseArguments params "$@"
+parseArguments params "$examples" "$@"
 # in case there are optional parameters, then fill them in here before calling checkAllArgumentsSet
 if ! [ -v directory ]; then directory="./src"; fi
-checkAllArgumentsSet params
+checkAllArgumentsSet params "$examples"
 
 find "$directory" -name "*.sh" \
-  -print0 | while read -r -d $'\0' script
-    do
-      perl -0777 -i \
-         -pe "s/Version:.+(\n[\S\s]+?###+\s+Description)/Version: $version\$1/g;" \
-         "$script"
-    done
+  -print0 | while read -r -d $'\0' script; do
+  perl -0777 -i \
+    -pe "s/Version:.+(\n[\S\s]+?###+\s+Description)/Version: $version\$1/g;" \
+    "$script"
+done

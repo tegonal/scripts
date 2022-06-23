@@ -27,60 +27,50 @@
 ###################################
 set -e
 
-declare -A params
-declare -A help
-
 declare command file
-
-params[command]='-c|--command'
-help[command]="either 'main' or 'release'"
-
 # shellcheck disable=SC2034
-params[file]='-f|--file'
-# shellcheck disable=SC2034
-help[file]='(optional) the file where search & replace shall be done -- default: ./README.md'
-
+declare params=(
+  command '-c|--command' "either 'main' or 'release'"
+  file '-f|--file' '(optional) the file where search & replace shall be done -- default: ./README.md'
+)
 declare examples
-# shellcheck disable=SC2034
-examples=$(cat << EOM
+examples=$(
+  cat <<EOM
 # comment the release sections in ./README.md and uncomment the main sections
 toggle-sections.sh -c main
 
 # comment the main sections in ./docs/index.md and uncomment the release sections
 toggle-sections.sh -c release -f ./docs/index.md
-
 EOM
 )
 
 declare current_dir
-current_dir="$( cd -- "$( dirname -- "${BASH_SOURCE[0]:-$0}"; )" &> /dev/null && pwd 2> /dev/null; )";
+current_dir="$(cd -- "$(dirname -- "${BASH_SOURCE[0]:-$0}")" &>/dev/null && pwd 2>/dev/null)"
 # Assuming parse-args.sh is in the same directory as your script
 source "$current_dir/../utility/parse-args.sh"
 
-parseArguments params "$@"
+parseArguments params "$examples" "$@"
 # in case there are optional parameters, then fill them in here before calling checkAllArgumentsSet
 if ! [ -v file ]; then file="./README.md"; fi
-checkAllArgumentsSet params
+checkAllArgumentsSet params "$examples"
 
 function toggleSection() {
   local file=$1
   local comment=$2
   local uncomment=$3
   perl -0777 -i \
-      -pe "s/(<!-- for $comment -->\n)\n([\S\s]*?)(\n<!-- for $comment end -->\n)/\${1}<!--\n\${2}-->\${3}/g;" \
-      -pe "s/(<!-- for $uncomment -->\n)<!--\n([\S\s]*?)-->(\n<!-- for $uncomment end -->)/\${1}\n\${2}\${3}/g" \
-      "$file"
+    -pe "s/(<!-- for $comment -->\n)\n([\S\s]*?)(\n<!-- for $comment end -->\n)/\${1}<!--\n\${2}-->\${3}/g;" \
+    -pe "s/(<!-- for $uncomment -->\n)<!--\n([\S\s]*?)-->(\n<!-- for $uncomment end -->)/\${1}\n\${2}\${3}/g" \
+    "$file"
 }
 
 if [ "$command" == "main" ]; then
   echo "comment release sections and uncomment main sections"
   toggleSection "$file" "release" "main"
-elif [  "$command" == "release" ]; then
+elif [ "$command" == "release" ]; then
   echo "comment main sections and uncomment release sections"
   toggleSection "$file" "main" "release"
 else
   echo >&2 "only 'main' and 'release' are supported as command. Following the output of calling --help"
   printHelp params
 fi
-
-
