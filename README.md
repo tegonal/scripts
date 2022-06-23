@@ -69,8 +69,8 @@ Help:
 <!-- auto-generated, do not modify here but in src/releasing/update-version-README.sh -->
 ```text
 Parameters:
--f|--file            (optional) the file where search & replace shall be done -- default: ./README.md
--v|--version         the version which shall be used
+-v|--version    the version which shall be used
+-f|--file       (optional) the file where search & replace shall be done -- default: ./README.md
 
 Examples:
 # update version for ./README.md
@@ -110,8 +110,8 @@ Help:
 <!-- auto-generated, do not modify here but in src/releasing/update-version-scripts.sh -->
 ```text
 Parameters:
--d|--directory       (optional) the working directory -- default: ./src
--v|--version         the version which shall be used
+-v|--version    the version which shall be used
+-d|--directory  (optional) the working directory -- default: ./src
 
 Examples:
 # update version to v0.1.0 for all *.sh in ./src and subdirectories
@@ -164,8 +164,8 @@ Help:
 <!-- auto-generated, do not modify here but in src/releasing/toggle-sections.sh -->
 ```text
 Parameters:
--f|--file            (optional) the file where search & replace shall be done -- default: ./README.md
--c|--command         either 'main' or 'release'
+-c|--command    either 'main' or 'release'
+-f|--file       (optional) the file where search & replace shall be done -- default: ./README.md
 
 Examples:
 # comment the release sections in ./README.md and uncomment the main sections
@@ -204,8 +204,8 @@ Help:
 <!-- auto-generated, do not modify here but in src/releasing/sneak-peek-banner.sh -->
 ```text
 Parameters:
--f|--file            (optional) the file where search & replace shall be done -- default: ./README.md
--c|--command         either 'show' or 'hide'
+-c|--command    either 'show' or 'hide'
+-f|--file       (optional) the file where search & replace shall be done -- default: ./README.md
 
 Examples:
 # hide the sneak peek banner in ./README.md
@@ -253,47 +253,42 @@ Full usage example:
 ```bash
 #!/usr/bin/env bash
 
-declare -A params
-declare -A help
-
 # declare the variables where the arguments shall be stored (used as identifier afterwards)
-declare directory pattern
+declare directory pattern version
 
-# define the regex which is used to identify the argument `directory`
-params[directory]='-d|--directory'
-# optional: define an explanation for the argument `directory` which will show up in `--help`
-help[directory]='(optional) the working directory -- default: .'
-
+# parameter definitions where each parameter definition consists of three values (separated via space)
+# VARIABLE_NAME PATTERN HELP_TEXT
+# where the HELP_TEXT is optional in the sense of that you can use an empty string
 # in case you use shellcheck then you need to suppress the warning for the last variable definition of params
-# as shellcheck doesn't get that we are passing `params` to parseArguments ¯\_(ツ)_/¯
+# as shellcheck doesn't get that we are passing `params` to parseArguments ¯\_(ツ)_/¯ (an open issue of shellcheck)
 # shellcheck disable=SC2034
-params[pattern]='-p|--pattern'
-# `help` is used implicitly in parse-args, here shellcheck cannot know it and you need to disable the rule
-# shellcheck disable=SC2034
-help[pattern]='pattern used during analysis'
-
-# optional: you can define examples which are included in the help text
+declare params=(
+  directory '-d|--directory' '(optional) the working directory -- default: .'
+  pattern '-p|--pattern' 'pattern used during analysis'
+  version '-v|--version' ''
+)
+# optional: you can define examples which are included in the help text -- use an empty string for no example
 declare examples
 # `examples` is used implicitly in parse-args, here shellcheck cannot know it and you need to disable the rule
-# shellcheck disable=SC2034
-examples=$(cat << EOM
+examples=$(
+  cat <<EOM
 # analyse in the current directory using the specified pattern
-analysis.sh -p "%{21}"
+analysis.sh -p "%{21}" -v v0.1.0
 EOM
 )
 
 declare current_dir
-current_dir="$( cd -- "$( dirname -- "${BASH_SOURCE[0]:-$0}"; )" &> /dev/null && pwd 2> /dev/null; )";
+current_dir="$(cd -- "$(dirname -- "${BASH_SOURCE[0]:-$0}")" &>/dev/null && pwd 2>/dev/null)"
 # Assuming parse-args.sh is in the same directory as your script
 source "$current_dir/parse-args.sh"
 
-parseArguments params "$@"
+parseArguments params "$examples" "$@"
 # in case there are optional parameters, then fill them in here before calling checkAllArgumentsSet
 if ! [ -v directory ]; then directory="."; fi
-checkAllArgumentsSet params
+checkAllArgumentsSet params "$examples"
 
 # pass your variables storing the arguments to other scripts
-echo "d: $directory, p: $pattern"
+echo "d: $directory, p: $pattern, v: $version"
 ```
 
 </utility-parse-args>

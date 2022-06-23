@@ -23,40 +23,33 @@
 ###################################
 set -e
 
-declare -A params
-declare -A help
-
 declare version file
-
-params[version]='-v|--version'
-help[version]='the version which shall be used'
-
 # shellcheck disable=SC2034
-params[file]='-f|--file'
-# shellcheck disable=SC2034
-help[file]='(optional) the file where search & replace shall be done -- default: ./README.md'
+declare params=(
+  version '-v|--version' 'the version which shall be used'
+  file '-f|--file' '(optional) the file where search & replace shall be done -- default: ./README.md'
+)
 
 declare examples
-# shellcheck disable=SC2034
-examples=$(cat << EOM
+examples=$(
+  cat <<EOM
 # update version for ./README.md
 update-version-README.sh -v v0.1.0
 
 # update version for ./docs/index.md
 update-version-README.sh -v v0.1.0 -f ./docs/index.md
-
 EOM
 )
 
 declare current_dir
-current_dir="$( cd -- "$( dirname -- "${BASH_SOURCE[0]:-$0}"; )" &> /dev/null && pwd 2> /dev/null; )";
+current_dir="$(cd -- "$(dirname -- "${BASH_SOURCE[0]:-$0}")" &>/dev/null && pwd 2>/dev/null)"
 # Assuming parse-args.sh is in the same directory as your script
 source "$current_dir/../utility/parse-args.sh"
 
-parseArguments params "$@"
+parseArguments params "$examples" "$@"
 # in case there are optional parameters, then fill them in here before calling checkAllArgumentsSet
 if ! [ -v file ]; then file="./README.md"; fi
-checkAllArgumentsSet params
+checkAllArgumentsSet params "$examples"
 
 echo "set version $version for Download badges and sneak peek banner in $file"
 
