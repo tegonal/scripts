@@ -5,7 +5,7 @@
 #  / __/ -_) _ `/ _ \/ _ \/ _ `/ /        It is licensed under Apache 2.0
 #  \__/\__/\_, /\___/_//_/\_,_/_/         Please report bugs and contribute back your improvements
 #         /___/
-#                                         Version: v0.3.0-SNAPSHOT-SNAPSHOT
+#                                         Version: v0.3.0-SNAPSHOT
 #
 #######  Description  #############
 #
@@ -57,6 +57,8 @@
 #
 #  1. Does not support repeating arguments (last wins and overrides previous definitions)
 #  2. Supports named arguments only (e.g. not possible to pass positional arguments after the named arguments)
+#
+#  => take a look at https://github.com/ko1nksm/getoptions if you need something more powerful
 #
 ###################################
 
@@ -110,8 +112,8 @@ function parseArguments {
       regex="^($pattern)$"
       if [[ "$argName" =~ $regex ]]; then
         # that's where the black magic happens, we are assigning to global variables here
-        if [ -n "$2" ]; then
-          printf >&2 "\033[1;31mERROR\033[0m: no value defined for parameter \033[1;34m%s\033[0m\n" "$pattern"
+        if [ -z "$2" ]; then
+          printf >&2 "\033[1;31mERROR\033[0m: no value defined for parameter \033[1;34m%s\033[0m in %s\n" "$pattern" "${BASH_SOURCE[1]}"
           echo >&2 "following the help documentation:"
           printHelp paramArr1 "$examples"
           exit 2
