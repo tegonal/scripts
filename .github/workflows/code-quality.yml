@@ -22,3 +22,11 @@ jobs:
         uses: tegonal/workflow-helper@v0.3.0
         with:
           commands: todo-checker
+
+      - name: Install shellspec
+        run: |
+          echo "${HOME}/.local/bin" >> "$GITHUB_PATH"
+          curl -fsSL https://git.io/shellspec | sh -s 0.28.1 -y
+
+      - name: Run shellspec
+        run: shellspec

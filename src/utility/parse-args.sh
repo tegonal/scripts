@@ -65,6 +65,12 @@
 set -e
 
 function checkParameterDefinitionIsTriple() {
+  if ! [[ $# -eq 1 ]]; then
+    echo >&2 "One parameter needs to be passed to checkParameterDefinitionIsTriple (given $#):"
+    echo >&2 '1. params     the parameter definitions'
+    exit 1
+  fi
+
   local -n paramArr2=$1
   local arrLength=${#paramArr2[@]}
 
@@ -78,9 +84,9 @@ function checkParameterDefinitionIsTriple() {
         printf >&2 '"%s" "%s" "%s"\n' "${paramArr2[$i]}" "${paramArr2[$i + 1]}" "${paramArr2[$i + 2]}"
       else
         printf >&2 "\033[1;33mleftovers:\033[0m\n"
-        printf '"%s"' "${paramArr2[$i]}"
+        printf >&2 '"%s"' "${paramArr2[$i]}"
         if ((i + 1 < arrLength)); then
-          printf ' "%s"' "${paramArr2[$i + 1]}"
+          printf >&2 ' "%s"' "${paramArr2[$i + 1]}"
         fi
       fi
     done
@@ -89,6 +95,14 @@ function checkParameterDefinitionIsTriple() {
 }
 
 function parseArguments {
+  if [[ $# -lt 3 ]]; then
+    echo >&2 "At least three arguments need to be passed to parseArguments (given $#):"
+    echo >&2 '1. params     the parameter definitions'
+    echo >&2 '2. examples   a string containing examples (or an empty string)'
+    echo >&2 '3... args...  the arguments as such, typically "$@"'
+    exit 1
+  fi
+
   local -n paramArr1=$1
   local examples=$2
   shift
@@ -134,6 +148,12 @@ function parseArguments {
 }
 
 function printHelp {
+  if ! [[ $# -eq 2 ]]; then
+    echo >&2 "Two arguments need to be passed to printHelp (given $#):"
+    echo >&2 '1. params     the parameter definitions'
+    echo >&2 '2. examples   a string containing examples (or an empty string)'
+    exit 1
+  fi
   local -n paramArr3=$1
   local examples=$2
   checkParameterDefinitionIsTriple paramArr3
@@ -167,6 +187,12 @@ function printHelp {
 }
 
 function checkAllArgumentsSet {
+   if ! [[ $# -eq 2 ]]; then
+      echo >&2 "Two arguments need to be passed to checkAllArgumentsSet (given $#):"
+      echo >&2 '1. params     the parameter definitions'
+      echo >&2 '2. examples    a string containing examples (or an empty string)'
+      exit 1
+    fi
   local -n paramArr4=$1
   local examples=$2
   checkParameterDefinitionIsTriple paramArr4
