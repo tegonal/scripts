@@ -76,26 +76,35 @@ Dealing with Git for the first time? Here are some recommendations for how to se
   This will add all new changes in this repository into your branch and place your
   local unpushed changes at the top of the branch.
 
-You can read more on Git [here](https://git-scm.com/book/).
-
+You can read more on Git [here](https://git-scm.com/book/).  
 Contact us via a [new discussion](https://github.com/tegonal/scripts/discussions/new?category=contributor-q-a)
 whenever you need help to get up and running or have questions.
+
+<a name="testing"></a>
+*Testing*
+
+If you want to run the specs, then you need to install [shellspec](https://github.com/shellspec/shellspec#installation)
+to run the specs, call `shellspec` in the root of the project to run them.
+
+*Create a Draft*
 
 We recommend you create a pull request (see [About pull requests](https://help.github.com/en/articles/about-pull-requests) for help)
 in case you are not sure how you should do something. 
 This way we can give you fast feedback regarding multiple things (style, does it go in the right direction etc.) before you spend time for nothing.
 Prepend the title with `[WIP]` (work in progress) or mark it as draft in this case and leave a comment with your questions.
 
+*Push your changes and create a PR*
+
 Finally, when you think your PR (short for pull request) is ready, then please:
 
 1. read the [Pull Request Checklist](#pull-request-checklist) 
 2. Create your first pull-request
-3. 👏👏👏 you have submitted your first code contribution to workflow-helper :blush:
+3. 👏👏👏 you have submitted your first code contribution to tegonal/scripts 😊
 
 ## Coding Conventions
 So far we do not try to enforce too much. We will review your pull requests and comment if necessary.
 However, here a few hints in order that your pull request is merged quickly.
-1. Make sure the compiler does not generate warnings.
+1. Make sure the shellcheck does not generate warnings.
 2. Try to write code in a similar style as the existing 
    (We suggest you copy something existing and modify it).
 3. Write readable code and express comments with code rather than comments.
