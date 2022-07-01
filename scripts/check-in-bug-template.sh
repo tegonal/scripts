@@ -20,3 +20,5 @@ find "$current_dir/../src" -name "*.sh" \
       declare path=${script:(${#current_dir} + 8)}
       grep "$path" "$current_dir/../.github/ISSUE_TEMPLATE/bug_report.yaml" > /dev/null || (echo "you forgot to add $path to .github/ISSUE_TEMPLATE/bug_report.yaml" && false)
     done
+
+echo "Success: all scripts are listed in the bug template"

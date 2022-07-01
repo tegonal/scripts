@@ -17,7 +17,8 @@ source "$projectDir/src/utility/replace-help-snippet.sh"
 
 find "$projectDir/src" -name "*.sh" \
   -not -name "*.doc.sh" \
-  -print0 | while read -r -d $'\0' script; do
+  -print0 |
+  while read -r -d $'\0' script; do
     declare relative
     relative="$(realpath --relative-to="$projectDir" "$script")"
     declare id="${relative:4:-3}"

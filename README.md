@@ -110,8 +110,8 @@ Help:
 <!-- auto-generated, do not modify here but in src/releasing/update-version-scripts.sh -->
 ```text
 Parameters:
--v|--version    the version which shall be used
--d|--directory  (optional) the working directory -- default: ./src
+-v|--version     the version which shall be used
+-d|--directory   (optional) the working directory -- default: ./src
 
 Examples:
 # update version to v0.1.0 for all *.sh in ./src and subdirectories
