@@ -66,7 +66,7 @@ set -e
 
 function checkParameterDefinitionIsTriple() {
   if ! [[ $# -eq 1 ]]; then
-    echo >&2 "One parameter needs to be passed to checkParameterDefinitionIsTriple (given $#):"
+    printf >&2 "\033[1;31mERROR\033[0m: One parameter needs to be passed to checkParameterDefinitionIsTriple\nGiven \033[0;36m%s\033[0m in \033[0;36m%s\033[0m\nFollowing a description of the parameters:\n" "$#" "${BASH_SOURCE[1]}"
     echo >&2 '1. params     the parameter definitions'
     exit 1
   fi
@@ -95,8 +95,8 @@ function checkParameterDefinitionIsTriple() {
 }
 
 function parseArguments {
-  if [[ $# -lt 3 ]]; then
-    echo >&2 "At least three arguments need to be passed to parseArguments (given $#):"
+  if [[ $# -lt 2 ]]; then
+    printf >&2 "\033[1;31mERROR\033[0m: At least two arguments need to be passed to parseArguments.\nGiven \033[0;36m%s\033[0m in \033[0;36m%s\033[0m\nFollowing a description of the parameters:\n" "$#" "${BASH_SOURCE[1]}"
     echo >&2 '1. params     the parameter definitions'
     echo >&2 '2. examples   a string containing examples (or an empty string)'
     echo >&2 '3... args...  the arguments as such, typically "$@"'
@@ -149,7 +149,7 @@ function parseArguments {
 
 function printHelp {
   if ! [[ $# -eq 2 ]]; then
-    echo >&2 "Two arguments need to be passed to printHelp (given $#):"
+    printf >&2 "\033[1;31mERROR\033[0m: Two arguments need to be passed to printHelp.\nGiven \033[0;36m%s\033[0m in \033[0;36m%s\033[0m\nFollowing a description of the parameters:\n" "$#" "${BASH_SOURCE[1]}"
     echo >&2 '1. params     the parameter definitions'
     echo >&2 '2. examples   a string containing examples (or an empty string)'
     exit 1
@@ -162,8 +162,8 @@ function printHelp {
 
   local maxLength=15
   for ((i = 0; i < arrLength; i += 3)); do
-    local paramName="${paramArr3[i]}"
-    local length=$((${#paramArr3[i]} + 5))
+    local pattern="${paramArr3[i + 1]}"
+    local length=$((${#pattern} + 2))
     if ((length > maxLength)); then
       maxLength="$length"
     fi
@@ -187,12 +187,12 @@ function printHelp {
 }
 
 function checkAllArgumentsSet {
-   if ! [[ $# -eq 2 ]]; then
-      echo >&2 "Two arguments need to be passed to checkAllArgumentsSet (given $#):"
-      echo >&2 '1. params     the parameter definitions'
-      echo >&2 '2. examples    a string containing examples (or an empty string)'
-      exit 1
-    fi
+  if ! [[ $# -eq 2 ]]; then
+    printf >&2 "\033[1;31mERROR\033[0m: Two arguments need to be passed to checkAllArgumentsSet.\nGiven \033[0;36m%s\033[0m in \033[0;36m%s\033[0m\nFollowing a description of the parameters:\n" "$#" "${BASH_SOURCE[1]}"
+    echo >&2 '1. params     the parameter definitions'
+    echo >&2 '2. examples    a string containing examples (or an empty string)'
+    exit 1
+  fi
   local -n paramArr4=$1
   local examples=$2
   checkParameterDefinitionIsTriple paramArr4

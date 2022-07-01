@@ -46,7 +46,7 @@ Describe 'parse_arg.sh'
         declare params=(version -v '')
         When run parseArguments params
         The status should be failure
-        The stderr should include 'At least three arguments need to be passed to parseArguments'
+        The stderr should include 'At least two arguments need to be passed to parseArguments'
       End
       Describe 'wrong number in params'
         It 'one leftover'
