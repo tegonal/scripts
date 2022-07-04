@@ -81,7 +81,7 @@ if ! [ "$prepareOnly" == "true" ]; then
   git push
   git tag "$version"
 
-  "$current_dir/prepare-next-dev-cycle" "$nextVersion"
+  "$current_dir/." "$nextVersion"
 
   git push origin "$version"
 else
