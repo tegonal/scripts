@@ -190,7 +190,7 @@ function checkAllArgumentsSet {
   if ! [[ $# -eq 2 ]]; then
     printf >&2 "\033[1;31mERROR\033[0m: Two arguments need to be passed to checkAllArgumentsSet.\nGiven \033[0;36m%s\033[0m in \033[0;36m%s\033[0m\nFollowing a description of the parameters:\n" "$#" "${BASH_SOURCE[1]}"
     echo >&2 '1. params     the parameter definitions'
-    echo >&2 '2. examples    a string containing examples (or an empty string)'
+    echo >&2 '2. examples   a string containing examples (or an empty string)'
     exit 1
   fi
   local -n paramArr4=$1
