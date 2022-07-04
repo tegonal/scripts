@@ -9,6 +9,11 @@
 #
 set -e
 
+if ! [ -x "$(command -v "shellspec")" ]; then
+  echo >&2 "\033[1;31mERROR\033[0m: You need to have shellspec installed if you want to create a release"
+  exit 2
+fi
+
 declare version key nextVersion prepareOnly
 # shellcheck disable=SC2034
 declare params=(
@@ -42,10 +47,8 @@ if git tag | grep "$version" > /dev/null; then
   exit 1
 fi
 
-if ! [ -x "$(command -v "shellspec")" ]; then
-  echo >&2 "\033[1;31mERROR\033[0m: You need to have shellspec installed if you want to create a release"
-  exit 2
-fi
+git checkout main
+git pull
 
 # make sure everything is up-to-date and works as it should
 "$current_dir/before-pr.sh"
@@ -73,7 +76,8 @@ find "$current_dir/../src" -name "*.sh" \
 
 
 if ! [ "$prepareOnly" == "true" ]; then
-  git commit -a -m "$version"
+  git add .
+  git commit -m "$version"
   git push
   git tag "$version"
 
