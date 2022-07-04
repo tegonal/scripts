@@ -42,21 +42,21 @@
 set -e
 
 function replaceSnippet() {
-  declare file id dir pattern snippet
-  # args is required for parse-fn-args.sh thus:
-  # shellcheck disable=SC2034
-  declare args=(file id dir pattern snippet)
+	declare file id dir pattern snippet
+	# args is required for parse-fn-args.sh thus:
+	# shellcheck disable=SC2034
+	declare args=(file id dir pattern snippet)
 
-  declare current_dir
-  current_dir="$( cd -- "$( dirname -- "${BASH_SOURCE[0]:-$0}"; )" &> /dev/null && pwd 2> /dev/null; )";
-  source "$current_dir/parse-fn-args.sh" || exit 1
+	declare current_dir
+	current_dir="$( cd -- "$( dirname -- "${BASH_SOURCE[0]:-$0}"; )" &> /dev/null && pwd 2> /dev/null; )";
+	source "$current_dir/parse-fn-args.sh" || exit 1
 
-  declare quotedSnippet
-  quotedSnippet=$(echo "$snippet" | perl -0777 -pe 's/(@|\$|\\)/\\$1/g;' -pe 's/\\n/\n/g')
+	declare quotedSnippet
+	quotedSnippet=$(echo "$snippet" | perl -0777 -pe 's/(@|\$|\\)/\\$1/g;' -pe 's/\\n/\n/g')
 
-  find "$dir" -name "$pattern" \
-    -exec echo "updating $id in {} " \; \
-    -exec perl -0777 -i \
-      -pe "s@<${id}>[\S\s]+</${id}>@<${id}>\n\n<!-- auto-generated, do not modify here but in $(realpath --relative-to "$PWD" "$file") -->\n$quotedSnippet\n\n</${id}>@g;" \
-      {} \;  2>/dev/null || true
+	find "$dir" -name "$pattern" \
+		-exec echo "updating $id in {} " \; \
+		-exec perl -0777 -i \
+			-pe "s@<${id}>[\S\s]+</${id}>@<${id}>\n\n<!-- auto-generated, do not modify here but in $(realpath --relative-to "$PWD" "$file") -->\n$quotedSnippet\n\n</${id}>@g;" \
+			{} \;	2>/dev/null || true
 }

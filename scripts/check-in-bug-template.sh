@@ -10,15 +10,15 @@
 set -e
 
 declare current_dir
-current_dir="$( cd -- "$( dirname -- "${BASH_SOURCE[0]:-$0}"; )" &> /dev/null && pwd 2> /dev/null; )";
+current_dir="$(cd -- "$(dirname -- "${BASH_SOURCE[0]:-$0}")" &>/dev/null && pwd 2>/dev/null)"
 
 find "$current_dir/../src" -name "*.sh" \
-  -not -name "*.doc.sh" \
-  -not -path "**.history/*" \
-  -print0 | while read -r -d $'\0' script
-    do
-      declare path=${script:(${#current_dir} + 8)}
-      grep "$path" "$current_dir/../.github/ISSUE_TEMPLATE/bug_report.yaml" > /dev/null || (echo "you forgot to add $path to .github/ISSUE_TEMPLATE/bug_report.yaml" && false)
-    done
+	-not -name "*.doc.sh" \
+	-not -path "**.history/*" \
+	-print0 |
+	while read -r -d $'\0' script; do
+		declare path=${script:(${#current_dir} + 8)}
+		grep "$path" "$current_dir/../.github/ISSUE_TEMPLATE/bug_report.yaml" >/dev/null || (echo "you forgot to add $path to .github/ISSUE_TEMPLATE/bug_report.yaml" && false)
+	done
 
 echo "Success: all scripts are listed in the bug template"

@@ -16,23 +16,23 @@ source "$projectDir/src/utility/update-bash-docu.sh"
 source "$projectDir/src/utility/replace-help-snippet.sh"
 
 find "$projectDir/src" -name "*.sh" \
-  -not -name "*.doc.sh" \
-  -print0 |
-  while read -r -d $'\0' script; do
-    declare relative
-    relative="$(realpath --relative-to="$projectDir" "$script")"
-    declare id="${relative:4:-3}"
+	-not -name "*.doc.sh" \
+	-print0 |
+	while read -r -d $'\0' script; do
+		declare relative
+		relative="$(realpath --relative-to="$projectDir" "$script")"
+		declare id="${relative:4:-3}"
 
-    updateBashDocumentation "$script" "${id////-}" . README.md
-  done
+		updateBashDocumentation "$script" "${id////-}" . README.md
+	done
 
 declare executableScripts=(
-  releasing/sneak-peek-banner
-  releasing/toggle-sections
-  releasing/update-version-README
-  releasing/update-version-scripts
+	releasing/sneak-peek-banner
+	releasing/toggle-sections
+	releasing/update-version-README
+	releasing/update-version-scripts
 )
 
 for script in "${executableScripts[@]}"; do
-  replaceHelpSnippet "$projectDir/src/$script.sh" "${script////-}-help" . README.md
+	replaceHelpSnippet "$projectDir/src/$script.sh" "${script////-}-help" . README.md
 done
