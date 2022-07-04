@@ -53,15 +53,27 @@ Describe 'parse_arg.sh'
           declare params=(version -v '' leftOver1)
           When run parseArguments params '' --help
           The status should be failure
+          The stderr should include 'array with parameter definitions is broken'
+          The stderr should include 'The array needs to contain parameter definitions'
+          The stderr should not include 'the first argument needs to be a non-associative array'
           The stderr should include 'leftOver1'
         End
         It 'two leftovers'
           declare params=(version -v '' leftOver1 leftOver2)
           When run parseArguments params '' --help
           The status should be failure
+          The stderr should include 'array with parameter definitions is broken'
           The stderr should include 'leftOver1'
           The stderr should include 'leftOver2'
         End
+      End
+      It 'associative array passed'
+        # shellcheck disable=SC2034
+        declare -A associativeParams=([version]=-v)
+        When run parseArguments associativeParams '' --help
+        The status should be failure
+        The stderr should include 'array with parameter definitions is broken'
+        The stderr should include 'the first argument needs to be a non-associative array'
       End
     End
   End
