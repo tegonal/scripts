@@ -10,15 +10,15 @@ declare directory pattern version
 # as shellcheck doesn't get that we are passing `params` to parseArguments ¯\_(ツ)_/¯ (an open issue of shellcheck)
 # shellcheck disable=SC2034
 declare params=(
-  directory '-d|--directory' '(optional) the working directory -- default: .'
-  pattern '-p|--pattern' 'pattern used during analysis'
-  version '-v|--version' ''
+	directory '-d|--directory' '(optional) the working directory -- default: .'
+	pattern '-p|--pattern' 'pattern used during analysis'
+	version '-v|--version' ''
 )
 # optional: you can define examples which are included in the help text -- use an empty string for no example
 declare examples
 # `examples` is used implicitly in parse-args, here shellcheck cannot know it and you need to disable the rule
 examples=$(
-  cat <<EOM
+	cat <<EOM
 # analyse in the current directory using the specified pattern
 analysis.sh -p "%{21}" -v v0.1.0
 EOM

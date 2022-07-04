@@ -91,7 +91,7 @@ Full usage example:
 #!/usr/bin/env bash
 set -e
 declare current_dir
-current_dir="$( cd -- "$( dirname -- "${BASH_SOURCE[0]:-$0}"; )" &> /dev/null && pwd 2> /dev/null; )";
+current_dir="$(cd -- "$(dirname -- "${BASH_SOURCE[0]:-$0}")" &>/dev/null && pwd 2>/dev/null)"
 # Assuming update-version-README.sh is in the same directory as your script
 "$current_dir/update-version-README.sh" -v 0.1.0
 ```
@@ -132,7 +132,7 @@ Full usage example:
 #!/usr/bin/env bash
 set -e
 declare current_dir
-current_dir="$( cd -- "$( dirname -- "${BASH_SOURCE[0]:-$0}"; )" &> /dev/null && pwd 2> /dev/null; )";
+current_dir="$(cd -- "$(dirname -- "${BASH_SOURCE[0]:-$0}")" &>/dev/null && pwd 2>/dev/null)"
 # Assuming update-version-scripts.sh is in the same directory as your script
 "$current_dir/update-version-scripts.sh" -v 0.1.0
 ```
@@ -186,7 +186,7 @@ Full usage example:
 #!/usr/bin/env bash
 set -e
 declare current_dir
-current_dir="$( cd -- "$( dirname -- "${BASH_SOURCE[0]:-$0}"; )" &> /dev/null && pwd 2> /dev/null; )";
+current_dir="$(cd -- "$(dirname -- "${BASH_SOURCE[0]:-$0}")" &>/dev/null && pwd 2>/dev/null)"
 # Assuming sneak-peek-banner.sh is in the same directory as your script
 "$current_dir/sneak-peek-banner.sh" -c hide
 ```
@@ -226,7 +226,7 @@ Full usage example:
 #!/usr/bin/env bash
 set -e
 declare current_dir
-current_dir="$( cd -- "$( dirname -- "${BASH_SOURCE[0]:-$0}"; )" &> /dev/null && pwd 2> /dev/null; )";
+current_dir="$(cd -- "$(dirname -- "${BASH_SOURCE[0]:-$0}")" &>/dev/null && pwd 2>/dev/null)"
 # Assuming sneak-peek-banner.sh is in the same directory as your script
 "$current_dir/sneak-peek-banner.sh" -c hide
 ```
@@ -263,15 +263,15 @@ declare directory pattern version
 # as shellcheck doesn't get that we are passing `params` to parseArguments ¯\_(ツ)_/¯ (an open issue of shellcheck)
 # shellcheck disable=SC2034
 declare params=(
-  directory '-d|--directory' '(optional) the working directory -- default: .'
-  pattern '-p|--pattern' 'pattern used during analysis'
-  version '-v|--version' ''
+	directory '-d|--directory' '(optional) the working directory -- default: .'
+	pattern '-p|--pattern' 'pattern used during analysis'
+	version '-v|--version' ''
 )
 # optional: you can define examples which are included in the help text -- use an empty string for no example
 declare examples
 # `examples` is used implicitly in parse-args, here shellcheck cannot know it and you need to disable the rule
 examples=$(
-  cat <<EOM
+	cat <<EOM
 # analyse in the current directory using the specified pattern
 analysis.sh -p "%{21}" -v v0.1.0
 EOM
@@ -304,35 +304,35 @@ Full usage example:
 #!/usr/bin/env bash
 
 function myFunction() {
-  # declare the variable you want to use and repeat in `declare args`
-  declare command dir
+	# declare the variable you want to use and repeat in `declare args`
+	declare command dir
 
-  # args is used in parse-fn-args.sh thus:
-  # shellcheck disable=SC2034
-  declare args=(command dir)
+	# args is used in parse-fn-args.sh thus:
+	# shellcheck disable=SC2034
+	declare args=(command dir)
 
-  # Assuming parse-fn-args.sh is in the same directory as your script
-  current_dir="$(cd -- "$(dirname -- "${BASH_SOURCE[0]:-$0}")" &>/dev/null && pwd 2>/dev/null)"
-  . "$current_dir/parse-fn-args.sh"
+	# Assuming parse-fn-args.sh is in the same directory as your script
+	current_dir="$(cd -- "$(dirname -- "${BASH_SOURCE[0]:-$0}")" &>/dev/null && pwd 2>/dev/null)"
+	. "$current_dir/parse-fn-args.sh"
 
-  # pass your variables storing the arguments to other scripts
-  echo "command: $command, dir: $dir"
+	# pass your variables storing the arguments to other scripts
+	echo "command: $command, dir: $dir"
 }
 
 function myFunctionWithVarargs() {
 
-  # in case you want to use a vararg parameter as last parameter then name your last parameter for `args` varargs:
+	# in case you want to use a vararg parameter as last parameter then name your last parameter for `args` varargs:
 
-  declare command dir varargs
-  # shellcheck disable=SC2034
-  declare args=(command dir)
+	declare command dir varargs
+	# shellcheck disable=SC2034
+	declare args=(command dir)
 
-  # Assuming parse-fn-args.sh is in the same directory as your script
-  current_dir="$(cd -- "$(dirname -- "${BASH_SOURCE[0]:-$0}")" &>/dev/null && pwd 2>/dev/null)"
-  . "$current_dir/parse-fn-args.sh"
+	# Assuming parse-fn-args.sh is in the same directory as your script
+	current_dir="$(cd -- "$(dirname -- "${BASH_SOURCE[0]:-$0}")" &>/dev/null && pwd 2>/dev/null)"
+	. "$current_dir/parse-fn-args.sh"
 
-  # use varargs in another script
-  echo "${varargs[0]}"
+	# use varargs in another script
+	echo "${varargs[0]}"
 
 }
 ```
@@ -396,14 +396,14 @@ current_dir="$( cd -- "$( dirname -- "${BASH_SOURCE[0]:-$0}"; )" &> /dev/null &&
 # Assuming update-bash-docu.sh is in the same directory as your script
 source "$current_dir/update-bash-docu.sh"
 find . -name "*.sh" \
-  -not -name "*.doc.sh" \
-  -not -path "**.history/*" \
-  -not -name "update-docu.sh" \
-  -print0 | while read -r -d $'\0' script
-    do
-      declare script="${script:2}"
-      replaceSnippetForScript "$current_dir/$script" "${script////-}" . README.md
-    done
+	-not -name "*.doc.sh" \
+	-not -path "**.history/*" \
+	-not -name "update-docu.sh" \
+	-print0 | while read -r -d $'\0' script
+		do
+			declare script="${script:2}"
+			replaceSnippetForScript "$current_dir/$script" "${script////-}" . README.md
+		done
 ```
 
 </utility-update-bash-docu>

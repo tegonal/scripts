@@ -16,7 +16,7 @@
 #    #!/usr/bin/env bash
 #    set -e
 #    declare current_dir
-#    current_dir="$( cd -- "$( dirname -- "${BASH_SOURCE[0]:-$0}"; )" &> /dev/null && pwd 2> /dev/null; )";
+#    current_dir="$(cd -- "$(dirname -- "${BASH_SOURCE[0]:-$0}")" &>/dev/null && pwd 2>/dev/null)"
 #    # Assuming update-version-README.sh is in the same directory as your script
 #    "$current_dir/update-version-README.sh" -v 0.1.0
 #
@@ -26,19 +26,19 @@ set -e
 declare version file
 # shellcheck disable=SC2034
 declare params=(
-  version '-v|--version' 'the version which shall be used'
-  file '-f|--file' '(optional) the file where search & replace shall be done -- default: ./README.md'
+	version '-v|--version' 'the version which shall be used'
+	file '-f|--file' '(optional) the file where search & replace shall be done -- default: ./README.md'
 )
 
 declare examples
 examples=$(
-  cat <<EOM
-# update version for ./README.md
-update-version-README.sh -v v0.1.0
+	cat <<-EOM
+		# update version for ./README.md
+		update-version-README.sh -v v0.1.0
 
-# update version for ./docs/index.md
-update-version-README.sh -v v0.1.0 -f ./docs/index.md
-EOM
+		# update version for ./docs/index.md
+		update-version-README.sh -v v0.1.0 -f ./docs/index.md
+	EOM
 )
 
 declare current_dir
@@ -52,6 +52,6 @@ checkAllArgumentsSet params "$examples"
 echo "set version $version for Download badges and sneak peek banner in $file"
 
 perl -0777 -i \
-  -pe "s@(\[!\[Download\]\(https://img.shields.io/badge/Download-).*(-%23[0-9a-f]+\)\]\([^\)]+(?:=|/))[^\)]+\)@\${1}$version\${2}$version\)@g;" \
-  -pe "s@(For instance, the \[README of )[^\]]+(\].*/tree/)[^/]+/@\${1}$version\${2}$version/@;" \
-  "$file"
+	-pe "s@(\[!\[Download\]\(https://img.shields.io/badge/Download-).*(-%23[0-9a-f]+\)\]\([^\)]+(?:=|/))[^\)]+\)@\${1}$version\${2}$version\)@g;" \
+	-pe "s@(For instance, the \[README of )[^\]]+(\].*/tree/)[^/]+/@\${1}$version\${2}$version/@;" \
+	"$file"

@@ -10,7 +10,6 @@
 set -e
 
 declare current_dir
-current_dir="$( cd -- "$( dirname -- "${BASH_SOURCE[0]:-$0}"; )" &> /dev/null && pwd 2> /dev/null; )";
-
+current_dir="$(cd -- "$(dirname -- "${BASH_SOURCE[0]:-$0}")" &>/dev/null && pwd 2>/dev/null)"
 
 find "$current_dir/../src" "$current_dir/../scripts" "$current_dir/../spec" -name '*.sh' -exec shellcheck -x -P "$current_dir/../src/utility/" {} \;
