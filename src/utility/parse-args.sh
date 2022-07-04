@@ -64,20 +64,60 @@
 
 set -e
 
+function describeParameterTriple() {
+  echo >&2 "The array needs to contain parameter definitions where a parameter definition consist of 3 values:"
+  echo >&2 ""
+  echo >&2 "variableName pattern documentation"
+  echo >&2 ""
+  echo >&2 "...where documentation can also be an empty string (i.e. is kind of optional). Following an example of such an array:"
+  echo >&2 ""
+  cat >&2 <<-EOM
+		declare params=(
+		  file '-f|--file' 'the file to use'
+		  isLatest '--is-Latest' ''
+		)
+	EOM
+}
+
 function checkParameterDefinitionIsTriple() {
   if ! [[ $# -eq 1 ]]; then
     printf >&2 "\033[1;31mERROR\033[0m: One parameter needs to be passed to checkParameterDefinitionIsTriple\nGiven \033[0;36m%s\033[0m in \033[0;36m%s\033[0m\nFollowing a description of the parameters:\n" "$#" "${BASH_SOURCE[1]}"
-    echo >&2 '1. params     the parameter definitions'
-    exit 1
+    echo >&2 '1. params     an array with the parameter definitions'
+    exit 9
   fi
 
   local -n paramArr2=$1
   local arrLength=${#paramArr2[@]}
 
+  local arrayDefinition
+  arrayDefinition=$(declare -p paramArr2)
+  local reg='^declare -n [^=]+=\"([^\"]+)\"$'
+  while [[ $arrayDefinition =~ $reg ]]; do
+    arrayDefinition=$(declare -p "${BASH_REMATCH[1]}")
+  done
+  reg='declare -a.*'
+  if ! [[ "$arrayDefinition" =~ $reg ]]; then
+    printf >&2 "\033[1;31mERROR: array with parameter definitions is broken\033[0m for \033[1;34m%s\033[0m in %s\n" "${!paramArr2}" "${BASH_SOURCE[2]}"
+    echo >&2 "the first argument needs to be a non-associative array, given:"
+    echo >&2 "$arrayDefinition"
+    echo >&2 ""
+    describeParameterTriple
+    exit 9
+  fi
+
+  if ((arrLength == 0)); then
+    printf >&2 "\033[1;31mERROR:array with parameter definitions is broken, length was 0\033[0m in %s\n" "${BASH_SOURCE[2]}"
+    describeParameterTriple
+  fi
+
   if ! ((arrLength % 3 == 0)); then
-    printf >&2 "\033[1;31mERROR: parameter definition is broken\033[0m for \033[1;34m%s\033[0m in %s\n" "${!paramArr2}" "${BASH_SOURCE[2]}"
-    echo >&2 "each parameter definition should consist of 3 values."
-    echo >&2 "following how we split the definitions:"
+    printf >&2 "\033[1;31mERROR: array with parameter definitions is broken\033[0m for \033[1;34m%s\033[0m in %s\n" "${!paramArr2}" "${BASH_SOURCE[2]}"
+    describeParameterTriple
+    echo >&2 ""
+    echo >&2 "given:"
+    echo >&2 "$arrayDefinition"
+    echo >&2 ""
+    echo >&2 "following how we split this:"
 
     for ((i = 0; i < arrLength; i += 3)); do
       if ((i + 2 < arrLength)); then
@@ -90,17 +130,17 @@ function checkParameterDefinitionIsTriple() {
         fi
       fi
     done
-    exit 1
+    exit 9
   fi
 }
 
 function parseArguments {
   if [[ $# -lt 2 ]]; then
     printf >&2 "\033[1;31mERROR\033[0m: At least two arguments need to be passed to parseArguments.\nGiven \033[0;36m%s\033[0m in \033[0;36m%s\033[0m\nFollowing a description of the parameters:\n" "$#" "${BASH_SOURCE[1]}"
-    echo >&2 '1. params     the parameter definitions'
+    echo >&2 '1. params     an array with the parameter definitions'
     echo >&2 '2. examples   a string containing examples (or an empty string)'
     echo >&2 '3... args...  the arguments as such, typically "$@"'
-    exit 1
+    exit 9
   fi
 
   local -n paramArr1=$1
@@ -130,7 +170,7 @@ function parseArguments {
           printf >&2 "\033[1;31mERROR\033[0m: no value defined for parameter \033[1;34m%s\033[0m in %s\n" "$pattern" "${BASH_SOURCE[1]}"
           echo >&2 "following the help documentation:"
           printHelp paramArr1 "$examples"
-          exit 2
+          exit 1
         fi
         printf -v "${paramName}" "%s" "$2"
         expectedName=1
@@ -150,9 +190,9 @@ function parseArguments {
 function printHelp {
   if ! [[ $# -eq 2 ]]; then
     printf >&2 "\033[1;31mERROR\033[0m: Two arguments need to be passed to printHelp.\nGiven \033[0;36m%s\033[0m in \033[0;36m%s\033[0m\nFollowing a description of the parameters:\n" "$#" "${BASH_SOURCE[1]}"
-    echo >&2 '1. params     the parameter definitions'
+    echo >&2 '1. params     an array with the parameter definitions'
     echo >&2 '2. examples   a string containing examples (or an empty string)'
-    exit 1
+    exit 9
   fi
   local -n paramArr3=$1
   local examples=$2
@@ -189,9 +229,9 @@ function printHelp {
 function checkAllArgumentsSet {
   if ! [[ $# -eq 2 ]]; then
     printf >&2 "\033[1;31mERROR\033[0m: Two arguments need to be passed to checkAllArgumentsSet.\nGiven \033[0;36m%s\033[0m in \033[0;36m%s\033[0m\nFollowing a description of the parameters:\n" "$#" "${BASH_SOURCE[1]}"
-    echo >&2 '1. params     the parameter definitions'
+    echo >&2 '1. params     an array with the parameter definitions'
     echo >&2 '2. examples   a string containing examples (or an empty string)'
-    exit 1
+    exit 9
   fi
   local -n paramArr4=$1
   local examples=$2
@@ -212,6 +252,6 @@ function checkAllArgumentsSet {
     printHelp >&2 paramArr4 "$examples"
     echo >&2 ""
     echo >&2 "use --help to see this list"
-    exit 3
+    exit 1
   fi
 }
