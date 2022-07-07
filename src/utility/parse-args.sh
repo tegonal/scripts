@@ -180,10 +180,10 @@ function parseArguments {
 
 		if ((expectedName == 0)); then
 			if [[ "$argName" =~ ^- ]]; then
-				printf "\033[1;33mignored argument %s (and its value %s)\033[0m\n" "$argName" "$2"
+				printf "\033[1;33mWARNING: ignored argument %s (and its value %s)\033[0m\n" "$argName" "$2"
 				shift
 			else
-				printf "\033[1;33mignored argument %s\033[0m\n" "$argName"
+				printf "\033[1;33mWARNING: ignored argument %s\033[0m\n" "$argName"
 			fi
 		fi
 		shift
