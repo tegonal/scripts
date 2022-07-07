@@ -169,7 +169,7 @@ function parseArguments {
 				if [ -z "$2" ]; then
 					printf >&2 "\033[1;31mERROR\033[0m: no value defined for parameter \033[1;34m%s\033[0m in %s\n" "$pattern" "${BASH_SOURCE[1]}"
 					echo >&2 "following the help documentation:"
-					printHelp paramArr1 "$examples"
+					printHelp >&2 paramArr1 "$examples"
 					exit 1
 				fi
 				printf -v "${paramName}" "%s" "$2"
