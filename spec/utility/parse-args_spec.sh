@@ -18,8 +18,8 @@ Describe 'parse_arg.sh'
 					version -v 'The version'
 					withoutHelp -wv ''
 				)
-				When run parseArguments params '' --help
-				The status should be success
+				When call parseArguments params '' --help
+				The status should equal 99
 				The output should include 'Parameters'
 				The output should include '-v'
 				The output should include '-wv'
@@ -28,8 +28,8 @@ Describe 'parse_arg.sh'
 			End
 			It 'with examples'
 				declare params=(version -v 'The version')
-				When run parseArguments params "example code\non multiple lines" --help
-				The status should be success
+				When call parseArguments params "example code\non multiple lines" --help
+				The status should equal 99
 				The output should include 'Parameters'
 				The output should include '-v'
 				The output should include 'The version'
@@ -52,14 +52,14 @@ Describe 'parse_arg.sh'
 		Describe 'errors'
 			It 'not enough arguments passed'
 				declare params=(version -v '')
-				When run parseArguments params
+				When call parseArguments params
 				The status should be failure
 				The stderr should include 'At least two arguments need to be passed to parseArguments'
 			End
 			Describe 'wrong number in params'
 				It 'one leftover'
 					declare params=(version -v '' leftOver1)
-					When run parseArguments params '' --help
+					When call parseArguments params '' --help
 					The status should be failure
 					The stderr should include 'array with parameter definitions is broken'
 					The stderr should include 'The array needs to contain parameter definitions'
@@ -68,7 +68,7 @@ Describe 'parse_arg.sh'
 				End
 				It 'two leftovers'
 					declare params=(version -v '' leftOver1 leftOver2)
-					When run parseArguments params '' --help
+					When call parseArguments params '' --help
 					The status should be failure
 					The stderr should include 'array with parameter definitions is broken'
 					The stderr should include 'leftOver1'
@@ -78,7 +78,7 @@ Describe 'parse_arg.sh'
 			It 'associative array passed'
 				# shellcheck disable=SC2034
 				declare -A associativeParams=([version]=-v)
-				When run parseArguments associativeParams '' --help
+				When call parseArguments associativeParams '' --help
 				The status should be failure
 				The stderr should include 'array with parameter definitions is broken'
 				The stderr should include 'the first argument needs to be a non-associative array'
@@ -90,7 +90,7 @@ Describe 'parse_arg.sh'
 			Describe 'happy cases'
 				It 'complains if not all variables are set'
 					declare params=(version -v '')
-					When run checkAllArgumentsSet params ''
+					When call checkAllArgumentsSet params ''
 					The status should be failure
 					The stderr should include 'version not set'
 					The stderr should include 'Parameters:'
@@ -100,21 +100,21 @@ Describe 'parse_arg.sh'
 			Describe 'errors'
 				It 'not enough arguments passed'
 					declare params=(version -v '')
-					When run checkAllArgumentsSet params
+					When call checkAllArgumentsSet params
 					The status should be failure
 					The stderr should include 'Two arguments need to be passed to checkAllArgumentsSet'
 				End
 				Describe 'wrong number in params'
 					It 'one leftover'
 						declare params=(version -v '' leftOver1)
-						When run checkAllArgumentsSet params ''
+						When call checkAllArgumentsSet params ''
 						The status should be failure
 						The stderr should include 'leftOver1'
 					End
 					It 'two leftovers'
 						# shellcheck disable=SC2034
 						declare params=(version -v '' leftOver1 leftOver2)
-						When run checkAllArgumentsSet params ''
+						When call checkAllArgumentsSet params ''
 						The status should be failure
 						The stderr should include 'leftOver1'
 						The stderr should include 'leftOver2'

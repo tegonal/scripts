@@ -49,7 +49,7 @@ function replaceSnippet() {
 
 	declare scriptDir
 	scriptDir="$( cd -- "$( dirname -- "${BASH_SOURCE[0]:-$0}"; )" &> /dev/null && pwd 2> /dev/null; )";
-	source "$scriptDir/parse-fn-args.sh" || exit 1
+	source "$scriptDir/parse-fn-args.sh" || return 1
 
 	declare quotedSnippet
 	quotedSnippet=$(echo "$snippet" | perl -0777 -pe 's/(@|\$|\\)/\\$1/g;' -pe 's/\\n/\n/g')

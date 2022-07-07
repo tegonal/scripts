@@ -50,7 +50,7 @@ function replaceHelpSnippet() {
 
 	declare scriptDir
 	scriptDir="$(cd -- "$(dirname -- "${BASH_SOURCE[0]:-$0}")" &>/dev/null && pwd 2>/dev/null)"
-	source "$scriptDir/parse-fn-args.sh" || exit 1
+	source "$scriptDir/parse-fn-args.sh" || return 1
 	source "$scriptDir/replace-snippet.sh"
 
 	if ((${#varargs[@]} == 0)); then
@@ -61,12 +61,14 @@ function replaceHelpSnippet() {
 	# shellcheck disable=SC2145
 	echo "capturing output of calling: $script ${varargs[@]}"
 	# we actually want that the array is passed as multiple arguments
+	set +e
 	# shellcheck disable=SC2068
 	snippet=$("$script" ${varargs[@]})
+	set -e
 
 	declare quotedSnippet
 	# remove ansi colour codes form snippet
 	quotedSnippet=$(echo "$snippet" | perl -0777 -pe "s/\033\[(1;\d{2}|0)m//g")
 
-	replaceSnippet "$script" "$id" "$dir" "$pattern" "\`\`\`text$quotedSnippet\n\`\`\`"
+	replaceSnippet "$script" "$id" "$dir" "$pattern" "\`\`\`text\n$quotedSnippet\n\`\`\`"
 }
