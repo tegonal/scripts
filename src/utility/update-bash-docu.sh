@@ -45,7 +45,7 @@ function updateBashDocumentation(){
 
 	declare scriptDir
 	scriptDir="$( cd -- "$( dirname -- "${BASH_SOURCE[0]:-$0}"; )" &> /dev/null && pwd 2> /dev/null; )";
-	source "$scriptDir/parse-fn-args.sh" || exit 1
+	source "$scriptDir/parse-fn-args.sh" || return 1
 	source "$scriptDir/replace-snippet.sh"
 
 	declare snippet

@@ -57,7 +57,7 @@
 if ! [[ -v args[@] ]]; then
 	echo >&2 "\033[1;31mERROR\033[0m: parse-fn-args.sh requires you to define an array named 'args', for instance as follows"
 	echo >&2 "declare args=(variableStoringArg1 variableStoringArg2)"
-	exit 2
+	return 2
 fi
 
 declare withVarArgs
@@ -82,13 +82,13 @@ if (($# < ${#args[@]})); then
 		((i = i + 1))
 	done
 	printf "\033[0m"
-	exit 1
+	return 1
 fi
 
 if ! [ "$withVarArgs" ] && ! (($# == ${#args[@]})); then
 	printf >&2 "\033[1;31mERROR\033[0m: more arguments supplied than expected to \033[0m\033[0;36m%s\033[0m: expected %s, given %s\n" "${FUNCNAME[1]}" "${#args[@]}" "$#"
 	echo >&2 "in case you wanted your last parameter to be a vararg parameter, then use 'vararg' as last variable name in 'args'"
-	exit 1
+	return 1
 fi
 
 # assign arguments to specified variables

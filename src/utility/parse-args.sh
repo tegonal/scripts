@@ -83,7 +83,7 @@ function checkParameterDefinitionIsTriple() {
 	if ! (($# == 1)); then
 		printf >&2 "\033[1;31mERROR\033[0m: One parameter needs to be passed to checkParameterDefinitionIsTriple\nGiven \033[0;36m%s\033[0m in \033[0;36m%s\033[0m\nFollowing a description of the parameters:\n" "$#" "${BASH_SOURCE[1]}"
 		echo >&2 '1. params		 an array with the parameter definitions'
-		exit 9
+		return 9
 	fi
 
 	local -n paramArr2=$1
@@ -102,7 +102,7 @@ function checkParameterDefinitionIsTriple() {
 		echo >&2 "$arrayDefinition"
 		echo >&2 ""
 		describeParameterTriple
-		exit 9
+		return 9
 	fi
 
 	if ((arrLength == 0)); then
@@ -130,7 +130,7 @@ function checkParameterDefinitionIsTriple() {
 				fi
 			fi
 		done
-		exit 9
+		return 9
 	fi
 }
 
@@ -140,15 +140,14 @@ function parseArguments {
 		echo >&2 '1. params		 an array with the parameter definitions'
 		echo >&2 '2. examples	 a string containing examples (or an empty string)'
 		echo >&2 '3... args...	the arguments as such, typically "$@"'
-		exit 9
+		return 9
 	fi
 
 	local -n paramArr1=$1
 	local examples=$2
-	shift
-	shift
+	shift 2
 
-	checkParameterDefinitionIsTriple paramArr1
+	checkParameterDefinitionIsTriple paramArr1 || return $?
 
 	local arrLength="${#paramArr1[@]}"
 
@@ -156,7 +155,7 @@ function parseArguments {
 		argName="$1"
 		if [[ "$argName" == "--help" ]]; then
 			printHelp paramArr1 "$examples"
-			exit 0
+			return 99
 		fi
 
 		expectedName=0
@@ -169,8 +168,9 @@ function parseArguments {
 				if [ -z "$2" ]; then
 					printf >&2 "\033[1;31mERROR\033[0m: no value defined for parameter \033[1;34m%s\033[0m in %s\n" "$pattern" "${BASH_SOURCE[1]}"
 					echo >&2 "following the help documentation:"
+					echo >&2 ""
 					printHelp >&2 paramArr1 "$examples"
-					exit 1
+					return 1
 				fi
 				printf -v "${paramName}" "%s" "$2"
 				expectedName=1
@@ -195,11 +195,11 @@ function printHelp {
 		printf >&2 "\033[1;31mERROR\033[0m: Two arguments need to be passed to printHelp.\nGiven \033[0;36m%s\033[0m in \033[0;36m%s\033[0m\nFollowing a description of the parameters:\n" "$#" "${BASH_SOURCE[1]}"
 		echo >&2 '1. params		 an array with the parameter definitions'
 		echo >&2 '2. examples	 a string containing examples (or an empty string)'
-		exit 9
+		return 9
 	fi
 	local -n paramArr3=$1
 	local examples=$2
-	checkParameterDefinitionIsTriple paramArr3
+	checkParameterDefinitionIsTriple paramArr3 || return $?
 
 	local arrLength="${#paramArr3[@]}"
 
@@ -212,7 +212,7 @@ function printHelp {
 		fi
 	done
 
-	printf "\n\033[1;33mParameters:\033[0m\n"
+	printf "\033[1;33mParameters:\033[0m\n"
 	for ((i = 0; i < arrLength; i += 3)); do
 		local pattern="${paramArr3[i + 1]}"
 		local help="${paramArr3[i + 2]}"
@@ -234,11 +234,11 @@ function checkAllArgumentsSet {
 		printf >&2 "\033[1;31mERROR\033[0m: Two arguments need to be passed to checkAllArgumentsSet.\nGiven \033[0;36m%s\033[0m in \033[0;36m%s\033[0m\nFollowing a description of the parameters:\n" "$#" "${BASH_SOURCE[1]}"
 		echo >&2 '1. params		 an array with the parameter definitions'
 		echo >&2 '2. examples	 a string containing examples (or an empty string)'
-		exit 9
+		return 9
 	fi
 	local -n paramArr4=$1
 	local examples=$2
-	checkParameterDefinitionIsTriple paramArr4
+	checkParameterDefinitionIsTriple paramArr4 || return $?
 
 	local arrLength="${#paramArr4[@]}"
 	local good=1
@@ -255,6 +255,6 @@ function checkAllArgumentsSet {
 		printHelp >&2 paramArr4 "$examples"
 		echo >&2 ""
 		echo >&2 "use --help to see this list"
-		exit 1
+		return 1
 	fi
 }
