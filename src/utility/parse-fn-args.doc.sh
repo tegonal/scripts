@@ -9,8 +9,8 @@ function myFunction() {
 	declare args=(command dir)
 
 	# Assuming parse-fn-args.sh is in the same directory as your script
-	current_dir="$(cd -- "$(dirname -- "${BASH_SOURCE[0]:-$0}")" &>/dev/null && pwd 2>/dev/null)"
-	. "$current_dir/parse-fn-args.sh"
+	scriptDir="$(cd -- "$(dirname -- "${BASH_SOURCE[0]:-$0}")" &>/dev/null && pwd 2>/dev/null)"
+	. "$scriptDir/parse-fn-args.sh"
 
 	# pass your variables storing the arguments to other scripts
 	echo "command: $command, dir: $dir"
@@ -25,8 +25,8 @@ function myFunctionWithVarargs() {
 	declare args=(command dir)
 
 	# Assuming parse-fn-args.sh is in the same directory as your script
-	current_dir="$(cd -- "$(dirname -- "${BASH_SOURCE[0]:-$0}")" &>/dev/null && pwd 2>/dev/null)"
-	. "$current_dir/parse-fn-args.sh"
+	scriptDir="$(cd -- "$(dirname -- "${BASH_SOURCE[0]:-$0}")" &>/dev/null && pwd 2>/dev/null)"
+	. "$scriptDir/parse-fn-args.sh"
 
 	# use varargs in another script
 	echo "${varargs[0]}"

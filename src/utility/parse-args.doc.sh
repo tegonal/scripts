@@ -24,10 +24,10 @@ analysis.sh -p "%{21}" -v v0.1.0
 EOM
 )
 
-declare current_dir
-current_dir="$(cd -- "$(dirname -- "${BASH_SOURCE[0]:-$0}")" &>/dev/null && pwd 2>/dev/null)"
+declare scriptDir
+scriptDir="$(cd -- "$(dirname -- "${BASH_SOURCE[0]:-$0}")" &>/dev/null && pwd 2>/dev/null)"
 # Assuming parse-args.sh is in the same directory as your script
-source "$current_dir/parse-args.sh"
+source "$scriptDir/parse-args.sh"
 
 parseArguments params "$examples" "$@"
 # in case there are optional parameters, then fill them in here before calling checkAllArgumentsSet

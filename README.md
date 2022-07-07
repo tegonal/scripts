@@ -90,10 +90,10 @@ Full usage example:
 ```bash
 #!/usr/bin/env bash
 set -e
-declare current_dir
-current_dir="$(cd -- "$(dirname -- "${BASH_SOURCE[0]:-$0}")" &>/dev/null && pwd 2>/dev/null)"
+declare scriptDir
+scriptDir="$(cd -- "$(dirname -- "${BASH_SOURCE[0]:-$0}")" &>/dev/null && pwd 2>/dev/null)"
 # Assuming update-version-README.sh is in the same directory as your script
-"$current_dir/update-version-README.sh" -v 0.1.0
+"$scriptDir/update-version-README.sh" -v 0.1.0
 ```
 
 </releasing-update-version-README>
@@ -131,10 +131,10 @@ Full usage example:
 ```bash
 #!/usr/bin/env bash
 set -e
-declare current_dir
-current_dir="$(cd -- "$(dirname -- "${BASH_SOURCE[0]:-$0}")" &>/dev/null && pwd 2>/dev/null)"
+declare scriptDir
+scriptDir="$(cd -- "$(dirname -- "${BASH_SOURCE[0]:-$0}")" &>/dev/null && pwd 2>/dev/null)"
 # Assuming update-version-scripts.sh is in the same directory as your script
-"$current_dir/update-version-scripts.sh" -v 0.1.0
+"$scriptDir/update-version-scripts.sh" -v 0.1.0
 ```
 
 </releasing-update-version-scripts>
@@ -185,10 +185,10 @@ Full usage example:
 ```bash
 #!/usr/bin/env bash
 set -e
-declare current_dir
-current_dir="$(cd -- "$(dirname -- "${BASH_SOURCE[0]:-$0}")" &>/dev/null && pwd 2>/dev/null)"
+declare scriptDir
+scriptDir="$(cd -- "$(dirname -- "${BASH_SOURCE[0]:-$0}")" &>/dev/null && pwd 2>/dev/null)"
 # Assuming sneak-peek-banner.sh is in the same directory as your script
-"$current_dir/sneak-peek-banner.sh" -c hide
+"$scriptDir/sneak-peek-banner.sh" -c hide
 ```
 
 </releasing-toggle-sections>
@@ -225,10 +225,10 @@ Full usage example:
 ```bash
 #!/usr/bin/env bash
 set -e
-declare current_dir
-current_dir="$(cd -- "$(dirname -- "${BASH_SOURCE[0]:-$0}")" &>/dev/null && pwd 2>/dev/null)"
+declare scriptDir
+scriptDir="$(cd -- "$(dirname -- "${BASH_SOURCE[0]:-$0}")" &>/dev/null && pwd 2>/dev/null)"
 # Assuming sneak-peek-banner.sh is in the same directory as your script
-"$current_dir/sneak-peek-banner.sh" -c hide
+"$scriptDir/sneak-peek-banner.sh" -c hide
 ```
 
 </releasing-sneak-peek-banner>
@@ -277,10 +277,10 @@ analysis.sh -p "%{21}" -v v0.1.0
 EOM
 )
 
-declare current_dir
-current_dir="$(cd -- "$(dirname -- "${BASH_SOURCE[0]:-$0}")" &>/dev/null && pwd 2>/dev/null)"
+declare scriptDir
+scriptDir="$(cd -- "$(dirname -- "${BASH_SOURCE[0]:-$0}")" &>/dev/null && pwd 2>/dev/null)"
 # Assuming parse-args.sh is in the same directory as your script
-source "$current_dir/parse-args.sh"
+source "$scriptDir/parse-args.sh"
 
 parseArguments params "$examples" "$@"
 # in case there are optional parameters, then fill them in here before calling checkAllArgumentsSet
@@ -312,8 +312,8 @@ function myFunction() {
 	declare args=(command dir)
 
 	# Assuming parse-fn-args.sh is in the same directory as your script
-	current_dir="$(cd -- "$(dirname -- "${BASH_SOURCE[0]:-$0}")" &>/dev/null && pwd 2>/dev/null)"
-	. "$current_dir/parse-fn-args.sh"
+	scriptDir="$(cd -- "$(dirname -- "${BASH_SOURCE[0]:-$0}")" &>/dev/null && pwd 2>/dev/null)"
+	. "$scriptDir/parse-fn-args.sh"
 
 	# pass your variables storing the arguments to other scripts
 	echo "command: $command, dir: $dir"
@@ -328,8 +328,8 @@ function myFunctionWithVarargs() {
 	declare args=(command dir)
 
 	# Assuming parse-fn-args.sh is in the same directory as your script
-	current_dir="$(cd -- "$(dirname -- "${BASH_SOURCE[0]:-$0}")" &>/dev/null && pwd 2>/dev/null)"
-	. "$current_dir/parse-fn-args.sh"
+	scriptDir="$(cd -- "$(dirname -- "${BASH_SOURCE[0]:-$0}")" &>/dev/null && pwd 2>/dev/null)"
+	. "$scriptDir/parse-fn-args.sh"
 
 	# use varargs in another script
 	echo "${varargs[0]}"
@@ -352,8 +352,8 @@ Full usage example:
 #!/usr/bin/env bash
 
 # Assuming replace-snippet.sh is in the same directory as your script
-current_dir="$( cd -- "$( dirname -- "${BASH_SOURCE[0]:-$0}"; )" &> /dev/null && pwd 2> /dev/null; )"
-source "$current_dir/replace-snippet.sh"
+scriptDir="$( cd -- "$( dirname -- "${BASH_SOURCE[0]:-$0}"; )" &> /dev/null && pwd 2> /dev/null; )"
+source "$scriptDir/replace-snippet.sh"
 
 declare file
 file=$(mktemp)
@@ -390,11 +390,11 @@ Full usage example:
 ```bash
 #!/usr/bin/env bash
 set -e
-declare current_dir
-current_dir="$( cd -- "$( dirname -- "${BASH_SOURCE[0]:-$0}"; )" &> /dev/null && pwd 2> /dev/null; )";
+declare scriptDir
+scriptDir="$( cd -- "$( dirname -- "${BASH_SOURCE[0]:-$0}"; )" &> /dev/null && pwd 2> /dev/null; )";
 
 # Assuming update-bash-docu.sh is in the same directory as your script
-source "$current_dir/update-bash-docu.sh"
+source "$scriptDir/update-bash-docu.sh"
 find . -name "*.sh" \
 	-not -name "*.doc.sh" \
 	-not -path "**.history/*" \
@@ -402,7 +402,7 @@ find . -name "*.sh" \
 	-print0 | while read -r -d $'\0' script
 		do
 			declare script="${script:2}"
-			replaceSnippetForScript "$current_dir/$script" "${script////-}" . README.md
+			replaceSnippetForScript "$scriptDir/$script" "${script////-}" . README.md
 		done
 ```
 

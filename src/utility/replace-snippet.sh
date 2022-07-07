@@ -16,8 +16,8 @@
 #    #!/usr/bin/env bash
 #
 #    # Assuming replace-snippet.sh is in the same directory as your script
-#    current_dir="$( cd -- "$( dirname -- "${BASH_SOURCE[0]:-$0}"; )" &> /dev/null && pwd 2> /dev/null; )"
-#    source "$current_dir/replace-snippet.sh"
+#    scriptDir="$( cd -- "$( dirname -- "${BASH_SOURCE[0]:-$0}"; )" &> /dev/null && pwd 2> /dev/null; )"
+#    source "$scriptDir/replace-snippet.sh"
 #
 #    declare file
 #    file=$(mktemp)
@@ -47,9 +47,9 @@ function replaceSnippet() {
 	# shellcheck disable=SC2034
 	declare args=(file id dir pattern snippet)
 
-	declare current_dir
-	current_dir="$( cd -- "$( dirname -- "${BASH_SOURCE[0]:-$0}"; )" &> /dev/null && pwd 2> /dev/null; )";
-	source "$current_dir/parse-fn-args.sh" || exit 1
+	declare scriptDir
+	scriptDir="$( cd -- "$( dirname -- "${BASH_SOURCE[0]:-$0}"; )" &> /dev/null && pwd 2> /dev/null; )";
+	source "$scriptDir/parse-fn-args.sh" || exit 1
 
 	declare quotedSnippet
 	quotedSnippet=$(echo "$snippet" | perl -0777 -pe 's/(@|\$|\\)/\\$1/g;' -pe 's/\\n/\n/g')

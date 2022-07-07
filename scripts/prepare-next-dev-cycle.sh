@@ -22,10 +22,10 @@ fi
 
 echo "prepare next dev cycle for version $version"
 
-current_dir="$(cd -- "$(dirname -- "${BASH_SOURCE[0]:-$0}")" &>/dev/null && pwd 2>/dev/null)"
+scriptDir="$(cd -- "$(dirname -- "${BASH_SOURCE[0]:-$0}")" &>/dev/null && pwd 2>/dev/null)"
 
-"$current_dir/../src/releasing/sneak-peek-banner.sh" -c show
-"$current_dir/../src/releasing/toggle-sections.sh" -c main
-"$current_dir/../src/releasing/update-version-scripts.sh" -v "$version-SNAPSHOT"
+"$scriptDir/../src/releasing/sneak-peek-banner.sh" -c show
+"$scriptDir/../src/releasing/toggle-sections.sh" -c main
+"$scriptDir/../src/releasing/update-version-scripts.sh" -v "$version-SNAPSHOT"
 
 git commit -a -m "prepare next dev cycle for $version"
