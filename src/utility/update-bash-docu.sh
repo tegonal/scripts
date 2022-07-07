@@ -18,11 +18,11 @@
 #
 #    #!/usr/bin/env bash
 #    set -e
-#    declare current_dir
-#    current_dir="$( cd -- "$( dirname -- "${BASH_SOURCE[0]:-$0}"; )" &> /dev/null && pwd 2> /dev/null; )";
+#    declare scriptDir
+#    scriptDir="$( cd -- "$( dirname -- "${BASH_SOURCE[0]:-$0}"; )" &> /dev/null && pwd 2> /dev/null; )";
 #
 #    # Assuming update-bash-docu.sh is in the same directory as your script
-#    source "$current_dir/update-bash-docu.sh"
+#    source "$scriptDir/update-bash-docu.sh"
 #    find . -name "*.sh" \
 #    	-not -name "*.doc.sh" \
 #    	-not -path "**.history/*" \
@@ -30,7 +30,7 @@
 #    	-print0 | while read -r -d $'\0' script
 #    		do
 #    			declare script="${script:2}"
-#    			replaceSnippetForScript "$current_dir/$script" "${script////-}" . README.md
+#    			replaceSnippetForScript "$scriptDir/$script" "${script////-}" . README.md
 #    		done
 #
 ###################################
@@ -43,10 +43,10 @@ function updateBashDocumentation(){
 	# shellcheck disable=SC2034
 	declare args=(script id dir pattern)
 
-	declare current_dir
-	current_dir="$( cd -- "$( dirname -- "${BASH_SOURCE[0]:-$0}"; )" &> /dev/null && pwd 2> /dev/null; )";
-	source "$current_dir/parse-fn-args.sh" || exit 1
-	source "$current_dir/replace-snippet.sh"
+	declare scriptDir
+	scriptDir="$( cd -- "$( dirname -- "${BASH_SOURCE[0]:-$0}"; )" &> /dev/null && pwd 2> /dev/null; )";
+	source "$scriptDir/parse-fn-args.sh" || exit 1
+	source "$scriptDir/replace-snippet.sh"
 
 	declare snippet
 	snippet=$(cat "${script::-3}.doc.sh")

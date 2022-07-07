@@ -1,8 +1,8 @@
 #!/usr/bin/env bash
 
 # Assuming replace-snippet.sh is in the same directory as your script
-current_dir="$( cd -- "$( dirname -- "${BASH_SOURCE[0]:-$0}"; )" &> /dev/null && pwd 2> /dev/null; )"
-source "$current_dir/replace-snippet.sh"
+scriptDir="$( cd -- "$( dirname -- "${BASH_SOURCE[0]:-$0}"; )" &> /dev/null && pwd 2> /dev/null; )"
+source "$scriptDir/replace-snippet.sh"
 
 declare file
 file=$(mktemp)

@@ -17,8 +17,8 @@
 #    #!/usr/bin/env bash
 #
 #    # Assuming replace-help-snippet.sh is in the same directory as your script
-#    current_dir="$( cd -- "$( dirname -- "${BASH_SOURCE[0]:-$0}"; )" &> /dev/null && pwd 2> /dev/null; )"
-#    source "$current_dir/replace-help-snippet.sh"
+#    scriptDir="$( cd -- "$( dirname -- "${BASH_SOURCE[0]:-$0}"; )" &> /dev/null && pwd 2> /dev/null; )"
+#    source "$scriptDir/replace-help-snippet.sh"
 #
 #    declare file
 #    file=$(mktemp)
@@ -48,10 +48,10 @@ function replaceHelpSnippet() {
 	# shellcheck disable=SC2034
 	declare args=(script id dir pattern)
 
-	declare current_dir
-	current_dir="$(cd -- "$(dirname -- "${BASH_SOURCE[0]:-$0}")" &>/dev/null && pwd 2>/dev/null)"
-	source "$current_dir/parse-fn-args.sh" || exit 1
-	source "$current_dir/replace-snippet.sh"
+	declare scriptDir
+	scriptDir="$(cd -- "$(dirname -- "${BASH_SOURCE[0]:-$0}")" &>/dev/null && pwd 2>/dev/null)"
+	source "$scriptDir/parse-fn-args.sh" || exit 1
+	source "$scriptDir/replace-snippet.sh"
 
 	if ((${#varargs[@]} == 0)); then
 		varargs=("--help")

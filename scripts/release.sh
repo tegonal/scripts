@@ -23,10 +23,10 @@ declare params=(
 	prepareOnly '--prepare-only' '(optional) defines whether the release shall only be prepared (i.e. no push, no tag, no prepare-next-dev-cycle) -- default: false'
 )
 
-declare current_dir
-current_dir="$(cd -- "$(dirname -- "${BASH_SOURCE[0]:-$0}")" &>/dev/null && pwd 2>/dev/null)"
+declare scriptDir
+scriptDir="$(cd -- "$(dirname -- "${BASH_SOURCE[0]:-$0}")" &>/dev/null && pwd 2>/dev/null)"
 # shellcheck disable=SC1091
-source "$current_dir/../src/utility/parse-args.sh"
+source "$scriptDir/../src/utility/parse-args.sh"
 parseArguments params "" "$@"
 
 declare versionRegex="^(v[0-9]+)\.([0-9]+)\.[0-9]+(-RC[0-9]+)?$"
@@ -51,27 +51,27 @@ git checkout main
 git pull
 
 # make sure everything is up-to-date and works as it should
-"$current_dir/before-pr.sh"
+"$scriptDir/before-pr.sh"
 
-"$current_dir/../src/releasing/sneak-peek-banner.sh" -c hide
-"$current_dir/../src/releasing/toggle-sections.sh" -c release
-"$current_dir/../src/releasing/update-version-README.sh" -v "$version"
-"$current_dir/../src/releasing/update-version-scripts.sh" -v "$version"
+"$scriptDir/../src/releasing/sneak-peek-banner.sh" -c hide
+"$scriptDir/../src/releasing/toggle-sections.sh" -c release
+"$scriptDir/../src/releasing/update-version-README.sh" -v "$version"
+"$scriptDir/../src/releasing/update-version-scripts.sh" -v "$version"
 
-rm -rf "$current_dir/../.gget/gpg"
-mkdir "$current_dir/../.gget/gpg"
-chmod 700 "$current_dir/../.gget/gpg"
+rm -rf "$scriptDir/../.gget/gpg"
+mkdir "$scriptDir/../.gget/gpg"
+chmod 700 "$scriptDir/../.gget/gpg"
 
-gpg --homedir "$current_dir/../.gget/gpg" --import "$current_dir/../.gget/signing-key.public.asc"
-echo -e "5\ny\n" | gpg --homedir "$current_dir/../.gget/gpg" --command-fd 0 --edit-key info@tegonal.com trust
+gpg --homedir "$scriptDir/../.gget/gpg" --import "$scriptDir/../.gget/signing-key.public.asc"
+echo -e "5\ny\n" | gpg --homedir "$scriptDir/../.gget/gpg" --command-fd 0 --edit-key info@tegonal.com trust
 
-find "$current_dir/../src" -name "*.sh" \
+find "$scriptDir/../src" -name "*.sh" \
 	-not -name "*.doc.sh" \
 	-print0 |
 	while read -r -d $'\0' script; do
 		echo "signing $script"
 		gpg --detach-sign --batch --yes -u "$key" -o "${script}.sig" "$script"
-		gpg --homedir "$current_dir/../.gget/gpg" --batch --verify "${script}.sig" "$script"
+		gpg --homedir "$scriptDir/../.gget/gpg" --batch --verify "${script}.sig" "$script"
 	done
 
 if ! [ "$prepareOnly" == "true" ]; then
@@ -80,7 +80,7 @@ if ! [ "$prepareOnly" == "true" ]; then
 	git push
 	git tag "$version"
 
-	"$current_dir/prepare-next-dev-cycle.sh" "$nextVersion"
+	"$scriptDir/prepare-next-dev-cycle.sh" "$nextVersion"
 
 	git push origin "$version"
 else
