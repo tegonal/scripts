@@ -53,7 +53,7 @@ function replaceHelpSnippet() {
 	source "$current_dir/parse-fn-args.sh" || exit 1
 	source "$current_dir/replace-snippet.sh"
 
-	if [ "${#varargs[@]}" -eq 0 ]; then
+	if ((${#varargs[@]} == 0)); then
 		varargs=("--help")
 	fi
 

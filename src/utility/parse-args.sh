@@ -80,7 +80,7 @@ function describeParameterTriple() {
 }
 
 function checkParameterDefinitionIsTriple() {
-	if ! [[ $# -eq 1 ]]; then
+	if ! (($# == 1)); then
 		printf >&2 "\033[1;31mERROR\033[0m: One parameter needs to be passed to checkParameterDefinitionIsTriple\nGiven \033[0;36m%s\033[0m in \033[0;36m%s\033[0m\nFollowing a description of the parameters:\n" "$#" "${BASH_SOURCE[1]}"
 		echo >&2 '1. params		 an array with the parameter definitions'
 		exit 9
@@ -135,7 +135,7 @@ function checkParameterDefinitionIsTriple() {
 }
 
 function parseArguments {
-	if [[ $# -lt 2 ]]; then
+	if (($# < 2)); then
 		printf >&2 "\033[1;31mERROR\033[0m: At least two arguments need to be passed to parseArguments.\nGiven \033[0;36m%s\033[0m in \033[0;36m%s\033[0m\nFollowing a description of the parameters:\n" "$#" "${BASH_SOURCE[1]}"
 		echo >&2 '1. params		 an array with the parameter definitions'
 		echo >&2 '2. examples	 a string containing examples (or an empty string)'
@@ -152,7 +152,7 @@ function parseArguments {
 
 	local arrLength="${#paramArr1[@]}"
 
-	while [[ $# -gt 0 ]]; do
+	while (($# > 0)); do
 		argName="$1"
 		if [[ "$argName" == "--help" ]]; then
 			printHelp paramArr1 "$examples"
@@ -178,9 +178,12 @@ function parseArguments {
 			fi
 		done
 
-		if [ "$expectedName" -eq 0 ]; then
+		if ((expectedName == 0)); then
 			if [[ "$argName" =~ ^- ]]; then
 				printf "\033[1;33mignored argument %s (and its value %s)\033[0m\n" "$argName" "$2"
+				shift
+			else
+				printf "\033[1;33mignored argument %s\033[0m\n" "$argName"
 			fi
 		fi
 		shift
@@ -188,7 +191,7 @@ function parseArguments {
 }
 
 function printHelp {
-	if ! [[ $# -eq 2 ]]; then
+	if ! (($# == 2)); then
 		printf >&2 "\033[1;31mERROR\033[0m: Two arguments need to be passed to printHelp.\nGiven \033[0;36m%s\033[0m in \033[0;36m%s\033[0m\nFollowing a description of the parameters:\n" "$#" "${BASH_SOURCE[1]}"
 		echo >&2 '1. params		 an array with the parameter definitions'
 		echo >&2 '2. examples	 a string containing examples (or an empty string)'
@@ -227,7 +230,7 @@ function printHelp {
 }
 
 function checkAllArgumentsSet {
-	if ! [[ $# -eq 2 ]]; then
+	if ! (($# == 2)); then
 		printf >&2 "\033[1;31mERROR\033[0m: Two arguments need to be passed to checkAllArgumentsSet.\nGiven \033[0;36m%s\033[0m in \033[0;36m%s\033[0m\nFollowing a description of the parameters:\n" "$#" "${BASH_SOURCE[1]}"
 		echo >&2 '1. params		 an array with the parameter definitions'
 		echo >&2 '2. examples	 a string containing examples (or an empty string)'
@@ -246,7 +249,7 @@ function checkAllArgumentsSet {
 			good=0
 		fi
 	done
-	if [ "$good" -eq 0 ]; then
+	if ((good == 0)); then
 		echo >&2 ""
 		echo >&2 "following the help documentation:"
 		printHelp >&2 paramArr4 "$examples"
