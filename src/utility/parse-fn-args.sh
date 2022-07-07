@@ -67,7 +67,7 @@ else
 	withVarArgs=false
 fi
 
-if [ "$#" -lt "${#args[@]}" ]; then
+if (($# < ${#args[@]})); then
 	printf >&2 "\033[1;31mERROR: Not enough arguments supplied to \033[0m\033[0;36m%s\033[0m: expected %s, given %s\nFollowing a listing of the arguments (red means missing):\n" "${FUNCNAME[1]}" "${#args[@]}" "$#"
 
 	declare -i i=1
@@ -85,7 +85,7 @@ if [ "$#" -lt "${#args[@]}" ]; then
 	exit 1
 fi
 
-if ! [ "$withVarArgs" ] && ! [ "$#" -eq "${#args[@]}" ]; then
+if ! [ "$withVarArgs" ] && ! (($# == ${#args[@]})); then
 	printf >&2 "\033[1;31mERROR\033[0m: more arguments supplied than expected to \033[0m\033[0;36m%s\033[0m: expected %s, given %s\n" "${FUNCNAME[1]}" "${#args[@]}" "$#"
 	echo >&2 "in case you wanted your last parameter to be a vararg parameter, then use 'vararg' as last variable name in 'args'"
 	exit 1
@@ -101,5 +101,5 @@ done
 if $withVarArgs; then
 	# is used afterwards
 	# shellcheck disable=SC2034
-	varargs=( "$@" )
+	varargs=("$@")
 fi
