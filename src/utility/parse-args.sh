@@ -244,8 +244,9 @@ function checkAllArgumentsSet {
 	local good=1
 	for ((i = 0; i < arrLength; i += 3)); do
 		local paramName="${paramArr4[i]}"
+		local pattern="${paramArr4[i+1]}"
 		if ! [ -v "$paramName" ]; then
-			printf >&2 "\033[1;31mERROR\033[0m: %s not set\n" "$paramName"
+			printf >&2 "\033[1;31mERROR\033[0m: %s not set via %s\n" "$paramName" "$pattern"
 			good=0
 		fi
 	done
