@@ -83,6 +83,7 @@ if ! [ "$prepareOnly" == "true" ]; then
 	"$scriptDir/prepare-next-dev-cycle.sh" "$nextVersion"
 
 	git push origin "$version"
+	git push
 else
 	printf "\033[1;33mskipping commit, creating tag and prepare-next-dev-cylce due to --prepare-only\033[0m\n"
 fi
