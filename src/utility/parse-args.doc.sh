@@ -1,4 +1,5 @@
 #!/usr/bin/env bash
+set -eu
 
 # declare the variables where the arguments shall be stored (used as identifier afterwards)
 declare directory pattern version

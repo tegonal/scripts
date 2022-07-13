@@ -7,7 +7,7 @@
 #         /___/
 #
 #
-set -e
+set -eu
 
 if [[ -z "$1" ]]; then
 	echo >&2 "no version provided"

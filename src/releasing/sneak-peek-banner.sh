@@ -14,14 +14,14 @@
 #######  Usage  ###################
 #
 #    #!/usr/bin/env bash
-#    set -e
+#    set -eu
 #    declare scriptDir
 #    scriptDir="$(cd -- "$(dirname -- "${BASH_SOURCE[0]:-$0}")" &>/dev/null && pwd 2>/dev/null)"
 #    # Assuming sneak-peek-banner.sh is in the same directory as your script
 #    "$scriptDir/sneak-peek-banner.sh" -c hide
 #
 ###################################
-set -e
+set -eu
 
 declare command file
 # shellcheck disable=SC2034

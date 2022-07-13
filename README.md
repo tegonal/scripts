@@ -39,6 +39,7 @@ The scripts are ordered by topic:
   - [Parse arguments](#parse-arguments)
   - [Replace Snippets](#replace-snippets)
   - [Update Documentation](#update-bash-documentation)
+  - [log](#log)
 
 See also:
 - [Contributors and contribute](#contributors-and-contribute)
@@ -67,8 +68,7 @@ Help:
 <releasing-update-version-README-help>
 
 <!-- auto-generated, do not modify here but in src/releasing/update-version-README.sh -->
-```text
-Parameters:
+```text\nParameters:
 -v|--version    the version which shall be used
 -f|--file       (optional) the file where search & replace shall be done -- default: ./README.md
 
@@ -77,8 +77,7 @@ Examples:
 update-version-README.sh -v v0.1.0
 
 # update version for ./docs/index.md
-update-version-README.sh -v v0.1.0 -f ./docs/index.md
-```
+update-version-README.sh -v v0.1.0 -f ./docs/index.md\n```
 
 </releasing-update-version-README-help>
 
@@ -89,7 +88,7 @@ Full usage example:
 <!-- auto-generated, do not modify here but in src/releasing/update-version-README.sh -->
 ```bash
 #!/usr/bin/env bash
-set -e
+set -eu
 declare scriptDir
 scriptDir="$(cd -- "$(dirname -- "${BASH_SOURCE[0]:-$0}")" &>/dev/null && pwd 2>/dev/null)"
 # Assuming update-version-README.sh is in the same directory as your script
@@ -108,8 +107,7 @@ Help:
 <releasing-update-version-scripts-help>
 
 <!-- auto-generated, do not modify here but in src/releasing/update-version-scripts.sh -->
-```text
-Parameters:
+```text\nParameters:
 -v|--version     the version which shall be used
 -d|--directory   (optional) the working directory -- default: ./src
 
@@ -118,8 +116,7 @@ Examples:
 update-version-scripts.sh -v v0.1.0
 
 # update version to v0.1.0 for all *.sh in ./scripts and subdirectories
-update-version-scripts.sh -v v0.1.0 -d ./scripts
-```
+update-version-scripts.sh -v v0.1.0 -d ./scripts\n```
 
 </releasing-update-version-scripts-help>
 
@@ -130,7 +127,7 @@ Full usage example:
 <!-- auto-generated, do not modify here but in src/releasing/update-version-scripts.sh -->
 ```bash
 #!/usr/bin/env bash
-set -e
+set -eu
 declare scriptDir
 scriptDir="$(cd -- "$(dirname -- "${BASH_SOURCE[0]:-$0}")" &>/dev/null && pwd 2>/dev/null)"
 # Assuming update-version-scripts.sh is in the same directory as your script
@@ -162,8 +159,7 @@ Help:
 <releasing-toggle-sections-help>
 
 <!-- auto-generated, do not modify here but in src/releasing/toggle-sections.sh -->
-```text
-Parameters:
+```text\nParameters:
 -c|--command    either 'main' or 'release'
 -f|--file       (optional) the file where search & replace shall be done -- default: ./README.md
 
@@ -172,8 +168,7 @@ Examples:
 toggle-sections.sh -c main
 
 # comment the main sections in ./docs/index.md and uncomment the release sections
-toggle-sections.sh -c release -f ./docs/index.md
-```
+toggle-sections.sh -c release -f ./docs/index.md\n```
 
 </releasing-toggle-sections-help>
 
@@ -184,7 +179,7 @@ Full usage example:
 <!-- auto-generated, do not modify here but in src/releasing/toggle-sections.sh -->
 ```bash
 #!/usr/bin/env bash
-set -e
+set -eu
 declare scriptDir
 scriptDir="$(cd -- "$(dirname -- "${BASH_SOURCE[0]:-$0}")" &>/dev/null && pwd 2>/dev/null)"
 # Assuming sneak-peek-banner.sh is in the same directory as your script
@@ -202,8 +197,7 @@ Help:
 <releasing-sneak-peek-banner-help>
 
 <!-- auto-generated, do not modify here but in src/releasing/sneak-peek-banner.sh -->
-```text
-Parameters:
+```text\nParameters:
 -c|--command    either 'show' or 'hide'
 -f|--file       (optional) the file where search & replace shall be done -- default: ./README.md
 
@@ -212,8 +206,7 @@ Examples:
 sneak-peek-banner.sh -c hide
 
 # show the sneak peek banner in ./docs/index.md
-sneak-peek-banner.sh -c show -f ./docs/index.md
-```
+sneak-peek-banner.sh -c show -f ./docs/index.md\n```
 
 </releasing-sneak-peek-banner-help>
 
@@ -224,7 +217,7 @@ Full usage example:
 <!-- auto-generated, do not modify here but in src/releasing/sneak-peek-banner.sh -->
 ```bash
 #!/usr/bin/env bash
-set -e
+set -eu
 declare scriptDir
 scriptDir="$(cd -- "$(dirname -- "${BASH_SOURCE[0]:-$0}")" &>/dev/null && pwd 2>/dev/null)"
 # Assuming sneak-peek-banner.sh is in the same directory as your script
@@ -252,6 +245,7 @@ Full usage example:
 <!-- auto-generated, do not modify here but in src/utility/parse-args.sh -->
 ```bash
 #!/usr/bin/env bash
+set -eu
 
 # declare the variables where the arguments shall be stored (used as identifier afterwards)
 declare directory pattern version
@@ -302,6 +296,7 @@ Full usage example:
 <!-- auto-generated, do not modify here but in src/utility/parse-fn-args.sh -->
 ```bash
 #!/usr/bin/env bash
+set -eu
 
 function myFunction() {
 	# declare the variable you want to use and repeat in `declare args`
@@ -350,6 +345,7 @@ Full usage example:
 <!-- auto-generated, do not modify here but in src/utility/replace-snippet.sh -->
 ```bash
 #!/usr/bin/env bash
+set -eu
 
 # Assuming replace-snippet.sh is in the same directory as your script
 scriptDir="$( cd -- "$( dirname -- "${BASH_SOURCE[0]:-$0}"; )" &> /dev/null && pwd 2> /dev/null; )"
@@ -389,7 +385,8 @@ Full usage example:
 <!-- auto-generated, do not modify here but in src/utility/update-bash-docu.sh -->
 ```bash
 #!/usr/bin/env bash
-set -e
+set -eu
+
 declare scriptDir
 scriptDir="$( cd -- "$( dirname -- "${BASH_SOURCE[0]:-$0}"; )" &> /dev/null && pwd 2> /dev/null; )";
 
@@ -408,6 +405,37 @@ find . -name "*.sh" \
 
 </utility-update-bash-docu>
 
+## Log
+
+Utility functions to log messages including a severity level where logError writes to stderr
+
+<utility-log>
+
+<!-- auto-generated, do not modify here but in src/utility/log.sh -->
+```bash
+#!/usr/bin/env bash
+set -eu
+declare scriptDir
+scriptDir="$(cd -- "$(dirname -- "${BASH_SOURCE[0]:-$0}")" &>/dev/null && pwd 2>/dev/null)"
+# Assuming log.sh is in the same directory as your script
+source "$scriptDir/log.sh"
+
+logInfo "hello %s\n" "world"
+# INFO: hello world
+
+logInfo "line %\n" 1 2 3
+# INFO: line 1
+# INFO: line 2
+# INFO: line 3
+
+logWarning "oho...\n"
+# WARNING: oho...
+
+logError "illegal state...\n"
+# ERROR: illegal state...
+```
+
+</utility-log>
 
 # Contributors and contribute
 

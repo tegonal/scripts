@@ -23,6 +23,7 @@ body:
         - releasing/toggle-sections.sh
         - releasing/update-version-README.sh
         - releasing/update-version-scripts.sh
+        - utility/log.sh
         - utility/parse-args.sh
         - utility/parse-fn-args.sh
         - utility/replace-snippet.sh

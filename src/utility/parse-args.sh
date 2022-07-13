@@ -15,6 +15,7 @@
 #######  Usage  ###################
 #
 #    #!/usr/bin/env bash
+#    set -eu
 #
 #    # declare the variables where the arguments shall be stored (used as identifier afterwards)
 #    declare directory pattern version
@@ -61,8 +62,7 @@
 #	=> take a look at https://github.com/ko1nksm/getoptions if you need something more powerful
 #
 ###################################
-
-set -e
+set -eu
 
 function describeParameterTriple() {
 	echo >&2 "The array needs to contain parameter definitions where a parameter definition consist of 3 values:"

@@ -1,5 +1,6 @@
 #!/usr/bin/env bash
-set -e
+set -eu
+
 declare scriptDir
 scriptDir="$( cd -- "$( dirname -- "${BASH_SOURCE[0]:-$0}"; )" &> /dev/null && pwd 2> /dev/null; )";
 

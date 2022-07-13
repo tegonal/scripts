@@ -7,7 +7,7 @@
 #         /___/
 #
 #
-set -e
+set -eu
 
 if ! [ -x "$(command -v "shellspec")" ]; then
 	echo >&2 "\033[1;31mERROR\033[0m: You need to have shellspec installed if you want to create a release"

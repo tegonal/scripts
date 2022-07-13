@@ -14,6 +14,7 @@
 #######  Usage  ###################
 #
 #    #!/usr/bin/env bash
+#    set -eu
 #
 #    # Assuming replace-snippet.sh is in the same directory as your script
 #    scriptDir="$( cd -- "$( dirname -- "${BASH_SOURCE[0]:-$0}"; )" &> /dev/null && pwd 2> /dev/null; )"
@@ -39,7 +40,7 @@
 #    # </my-script-help>
 #
 ###################################
-set -e
+set -eu
 
 function replaceSnippet() {
 	declare file id dir pattern snippet
@@ -52,7 +53,7 @@ function replaceSnippet() {
 	source "$scriptDir/parse-fn-args.sh" || return 1
 
 	declare quotedSnippet
-	quotedSnippet=$(echo "$snippet" | perl -0777 -pe 's/(@|\$|\\)/\\$1/g;' -pe 's/\\n/\n/g')
+	quotedSnippet=$(echo "$snippet" | perl -0777 -pe 's/(@|\$|\\)/\\$1/g;')
 
 	find "$dir" -name "$pattern" \
 		-exec echo "updating $id in {} " \; \

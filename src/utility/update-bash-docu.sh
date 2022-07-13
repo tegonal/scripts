@@ -17,7 +17,8 @@
 #######  Usage  ###################
 #
 #    #!/usr/bin/env bash
-#    set -e
+#    set -eu
+#
 #    declare scriptDir
 #    scriptDir="$( cd -- "$( dirname -- "${BASH_SOURCE[0]:-$0}"; )" &> /dev/null && pwd 2> /dev/null; )";
 #
@@ -34,8 +35,7 @@
 #    		done
 #
 ###################################
-
-set -e
+set -eu
 
 function updateBashDocumentation(){
 	declare script id dir pattern
@@ -58,5 +58,5 @@ function updateBashDocumentation(){
 		-pe "s/(###+\s+Usage\s+###+\n#\n)[\S\s]+?(\n#\n###+)/\$1${quotedSnippet}\$2/g;" \
 		"$script"
 
-	replaceSnippet "$script" "$id" "$dir" "$pattern" "\`\`\`bash\n$snippet\n\`\`\`"
+	replaceSnippet "$script" "$id" "$dir" "$pattern" "$(printf "\`\`\`bash\n%s\n\`\`\`" "$snippet")"
 }

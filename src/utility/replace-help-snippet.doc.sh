@@ -1,4 +1,5 @@
 #!/usr/bin/env bash
+set -eu
 
 # Assuming replace-help-snippet.sh is in the same directory as your script
 scriptDir="$( cd -- "$( dirname -- "${BASH_SOURCE[0]:-$0}"; )" &> /dev/null && pwd 2> /dev/null; )"

@@ -14,14 +14,14 @@
 #######  Usage  ###################
 #
 #    #!/usr/bin/env bash
-#    set -e
+#    set -eu
 #    declare scriptDir
 #    scriptDir="$(cd -- "$(dirname -- "${BASH_SOURCE[0]:-$0}")" &>/dev/null && pwd 2>/dev/null)"
 #    # Assuming update-version-README.sh is in the same directory as your script
 #    "$scriptDir/update-version-README.sh" -v 0.1.0
 #
 ###################################
-set -e
+set -eu
 
 declare version file
 # shellcheck disable=SC2034

@@ -14,6 +14,7 @@
 #######  Usage  ###################
 #
 #    #!/usr/bin/env bash
+#    set -eu
 #
 #    function myFunction() {
 #    	# declare the variable you want to use and repeat in `declare args`
