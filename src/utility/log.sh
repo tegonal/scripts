@@ -40,6 +40,10 @@
 #    logSuccess "import finished in %s seconds" "$seconds"
 #    # SUCCESS: import finished in 54 seconds
 #
+#    die "fatal error, shutting down"
+#    # ERROR: fatal error, shutting down
+#    # exit 1
+#
 #    # in case you don't want a newline at the end of the message, then use one of
 #    logInfoWithoutNewline "hello"
 #    # INFO: hello%
@@ -92,4 +96,9 @@ function logSuccessWithoutNewline() {
 	local msg=$1
 	shift
 	printf "\033[0;32mSUCCESS\033[0m: $msg" "$@"
+}
+
+function die() {
+	logError "$@"
+	exit 1
 }

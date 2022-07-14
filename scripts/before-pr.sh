@@ -20,6 +20,7 @@ if ! [ -v dir_of_tegonal_scripts ]; then
 	dir_of_tegonal_scripts="$(realpath "$scriptDir/../src")"
 	declare -r dir_of_tegonal_scripts
 fi
+
 source "$dir_of_tegonal_scripts/utility/log.sh"
 
 if [ -x "$(command -v "shellspec")" ]; then
