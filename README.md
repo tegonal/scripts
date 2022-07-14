@@ -68,7 +68,8 @@ Help:
 <releasing-update-version-README-help>
 
 <!-- auto-generated, do not modify here but in src/releasing/update-version-README.sh -->
-```text\nParameters:
+```text
+Parameters:
 -v|--version    the version which shall be used
 -f|--file       (optional) the file where search & replace shall be done -- default: ./README.md
 
@@ -77,7 +78,8 @@ Examples:
 update-version-README.sh -v v0.1.0
 
 # update version for ./docs/index.md
-update-version-README.sh -v v0.1.0 -f ./docs/index.md\n```
+update-version-README.sh -v v0.1.0 -f ./docs/index.md
+```
 
 </releasing-update-version-README-help>
 
@@ -107,7 +109,8 @@ Help:
 <releasing-update-version-scripts-help>
 
 <!-- auto-generated, do not modify here but in src/releasing/update-version-scripts.sh -->
-```text\nParameters:
+```text
+Parameters:
 -v|--version     the version which shall be used
 -d|--directory   (optional) the working directory -- default: ./src
 
@@ -116,7 +119,8 @@ Examples:
 update-version-scripts.sh -v v0.1.0
 
 # update version to v0.1.0 for all *.sh in ./scripts and subdirectories
-update-version-scripts.sh -v v0.1.0 -d ./scripts\n```
+update-version-scripts.sh -v v0.1.0 -d ./scripts
+```
 
 </releasing-update-version-scripts-help>
 
@@ -159,7 +163,8 @@ Help:
 <releasing-toggle-sections-help>
 
 <!-- auto-generated, do not modify here but in src/releasing/toggle-sections.sh -->
-```text\nParameters:
+```text
+Parameters:
 -c|--command    either 'main' or 'release'
 -f|--file       (optional) the file where search & replace shall be done -- default: ./README.md
 
@@ -168,7 +173,8 @@ Examples:
 toggle-sections.sh -c main
 
 # comment the main sections in ./docs/index.md and uncomment the release sections
-toggle-sections.sh -c release -f ./docs/index.md\n```
+toggle-sections.sh -c release -f ./docs/index.md
+```
 
 </releasing-toggle-sections-help>
 
@@ -197,7 +203,8 @@ Help:
 <releasing-sneak-peek-banner-help>
 
 <!-- auto-generated, do not modify here but in src/releasing/sneak-peek-banner.sh -->
-```text\nParameters:
+```text
+Parameters:
 -c|--command    either 'show' or 'hide'
 -f|--file       (optional) the file where search & replace shall be done -- default: ./README.md
 
@@ -206,7 +213,8 @@ Examples:
 sneak-peek-banner.sh -c hide
 
 # show the sneak peek banner in ./docs/index.md
-sneak-peek-banner.sh -c show -f ./docs/index.md\n```
+sneak-peek-banner.sh -c show -f ./docs/index.md
+```
 
 </releasing-sneak-peek-banner-help>
 
@@ -399,11 +407,11 @@ find . -name "*.sh" \
 	-not -name "*.doc.sh" \
 	-not -path "**.history/*" \
 	-not -name "update-docu.sh" \
-	-print0 | while read -r -d $'\0' script
-		do
-			declare script="${script:2}"
-			replaceSnippetForScript "$dir_of_tegonal_scripts/$script" "${script////-}" . README.md
-		done
+	-print0 |
+	while read -r -d $'\0' script; do
+		declare script="${script:2}"
+		replaceSnippetForScript "$dir_of_tegonal_scripts/$script" "${script////-}" . README.md
+	done
 ```
 
 </utility-update-bash-docu>

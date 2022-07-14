@@ -76,5 +76,5 @@ function replaceHelpSnippet() {
 	# remove ansi colour codes form snippet
 	quotedSnippet=$(echo "$snippet" | perl -0777 -pe "s/\033\[(1;\d{2}|0)m//g")
 
-	replaceSnippet "$script" "$id" "$dir" "$pattern" "\`\`\`text\n$quotedSnippet\n\`\`\`"
+	replaceSnippet "$script" "$id" "$dir" "$pattern" "$(printf "\`\`\`text\n%s\n\`\`\`" "$quotedSnippet")"
 }
