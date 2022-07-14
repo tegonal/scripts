@@ -14,48 +14,53 @@
 #######  Usage  ###################
 #
 #    #!/usr/bin/env bash
-#    set -e
-#    declare scriptDir
-#    scriptDir="$(cd -- "$(dirname -- "${BASH_SOURCE[0]:-$0}")" &>/dev/null && pwd 2>/dev/null)"
-#    # Assuming sneak-peek-banner.sh is in the same directory as your script
-#    "$scriptDir/sneak-peek-banner.sh" -c hide
+#    set -eu
+#    declare dir_of_tegonal_scripts
+#    # Assuming tegonal's scripts are in the same directory as your script
+#    dir_of_tegonal_scripts="$(cd -- "$(dirname -- "${BASH_SOURCE[0]:-$0}")" &>/dev/null && pwd 2>/dev/null)"
+#    "$dir_of_tegonal_scripts/releasing/sneak-peek-banner.sh" -c hide
 #
 ###################################
-set -e
+set -eu
 
-declare command file
-# shellcheck disable=SC2034
-declare params=(
-	command '-c|--command' "either 'show' or 'hide'"
-	file '-f|--file' '(optional) the file where search & replace shall be done -- default: ./README.md'
-)
-
-declare examples
-examples=$(
-	cat <<-EOM
-		# hide the sneak peek banner in ./README.md
-		sneak-peek-banner.sh -c hide
-
-		# show the sneak peek banner in ./docs/index.md
-		sneak-peek-banner.sh -c show -f ./docs/index.md
-	EOM
-)
-
-declare scriptDir
-scriptDir="$(cd -- "$(dirname -- "${BASH_SOURCE[0]:-$0}")" &>/dev/null && pwd 2>/dev/null)"
-source "$scriptDir/../utility/parse-args.sh"
-
-parseArguments params "$examples" "$@"
-if ! [ -v file ]; then file="./README.md"; fi
-checkAllArgumentsSet params "$examples"
-
-if [ "$command" == "show" ]; then
-	echo "show sneak peek banner in $file"
-	perl -0777 -i -pe 's/<!(---\n❗ You are taking[\S\s]+?---)>/$1/;' "$file"
-elif [ "$command" == "hide" ]; then
-	echo "hide sneak peek banner in $file"
-	perl -0777 -i -pe 's/((?<!<!)---\n❗ You are taking[\S\s]+?---)/<!$1>/;' "$file"
-else
-	echo >&2 "only 'show' and 'hide' are supported as command. Following the output of calling --help"
-	printHelp params help "$examples"
+if ! [ -v dir_of_tegonal_scripts ]; then
+	declare dir_of_tegonal_scripts
+	dir_of_tegonal_scripts="$(realpath "$(cd -- "$(dirname -- "${BASH_SOURCE[0]:-$0}")" &>/dev/null && pwd 2>/dev/null)/..")"
+	declare -r dir_of_tegonal_scripts
 fi
+
+function sneakPeekBanner() {
+	source "$dir_of_tegonal_scripts/utility/parse-args.sh"
+
+	local command file
+	# shellcheck disable=SC2034
+	local -ra params=(
+		command '-c|--command' "either 'show' or 'hide'"
+		file '-f|--file' '(optional) the file where search & replace shall be done -- default: ./README.md'
+	)
+	local -r examples=$(
+		cat <<-EOM
+			# hide the sneak peek banner in ./README.md
+			sneak-peek-banner.sh -c hide
+
+			# show the sneak peek banner in ./docs/index.md
+			sneak-peek-banner.sh -c show -f ./docs/index.md
+		EOM
+	)
+
+	parseArguments params "$examples" "$@"
+	if ! [ -v file ]; then file="./README.md"; fi
+	checkAllArgumentsSet params "$examples"
+
+	if [ "$command" == "show" ]; then
+		echo "show sneak peek banner in $file"
+		perl -0777 -i -pe 's/<!(---\n❗ You are taking[\S\s]+?---)>/$1/;' "$file"
+	elif [ "$command" == "hide" ]; then
+		echo "hide sneak peek banner in $file"
+		perl -0777 -i -pe 's/((?<!<!)---\n❗ You are taking[\S\s]+?---)/<!$1>/;' "$file"
+	else
+		echo >&2 "only 'show' and 'hide' are supported as command. Following the output of calling --help"
+		printHelp params help "$examples"
+	fi
+}
+sneakPeekBanner "$@"

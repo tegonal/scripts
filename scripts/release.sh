@@ -7,11 +7,17 @@
 #         /___/
 #
 #
-set -e
+set -eu
 
 if ! [ -x "$(command -v "shellspec")" ]; then
 	echo >&2 "\033[1;31mERROR\033[0m: You need to have shellspec installed if you want to create a release"
 	exit 2
+fi
+
+if ! [ -v dir_of_tegonal_scripts ]; then
+	declare dir_of_tegonal_scripts
+	dir_of_tegonal_scripts="$(realpath "$(cd -- "$(dirname -- "${BASH_SOURCE[0]:-$0}")" &>/dev/null && pwd 2>/dev/null)/../src")"
+	declare -r dir_of_tegonal_scripts
 fi
 
 declare version key nextVersion prepareOnly
@@ -23,10 +29,7 @@ declare params=(
 	prepareOnly '--prepare-only' '(optional) defines whether the release shall only be prepared (i.e. no push, no tag, no prepare-next-dev-cycle) -- default: false'
 )
 
-declare scriptDir
-scriptDir="$(cd -- "$(dirname -- "${BASH_SOURCE[0]:-$0}")" &>/dev/null && pwd 2>/dev/null)"
-# shellcheck disable=SC1091
-source "$scriptDir/../src/utility/parse-args.sh"
+source "$dir_of_tegonal_scripts/utility/parse-args.sh"
 parseArguments params "" "$@"
 
 declare versionRegex="^(v[0-9]+)\.([0-9]+)\.[0-9]+(-RC[0-9]+)?$"
@@ -50,13 +53,18 @@ fi
 git checkout main
 git pull
 
+if ! [ -v scriptDir ]; then
+	declare scriptDir
+	scriptDir="$(cd -- "$(dirname -- "${BASH_SOURCE[0]:-$0}")" &>/dev/null && pwd 2>/dev/null)"
+	declare -r scriptDir
+fi
 # make sure everything is up-to-date and works as it should
 "$scriptDir/before-pr.sh"
 
-"$scriptDir/../src/releasing/sneak-peek-banner.sh" -c hide
-"$scriptDir/../src/releasing/toggle-sections.sh" -c release
-"$scriptDir/../src/releasing/update-version-README.sh" -v "$version"
-"$scriptDir/../src/releasing/update-version-scripts.sh" -v "$version"
+"$dir_of_tegonal_scripts/releasing/sneak-peek-banner.sh" -c hide
+"$dir_of_tegonal_scripts/releasing/toggle-sections.sh" -c release
+"$dir_of_tegonal_scripts/releasing/update-version-README.sh" -v "$version"
+"$dir_of_tegonal_scripts/releasing/update-version-scripts.sh" -v "$version"
 
 rm -rf "$scriptDir/../.gget/gpg"
 mkdir "$scriptDir/../.gget/gpg"

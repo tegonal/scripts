@@ -17,46 +17,50 @@
 #######  Usage  ###################
 #
 #    #!/usr/bin/env bash
-#    set -e
-#    declare scriptDir
-#    scriptDir="$( cd -- "$( dirname -- "${BASH_SOURCE[0]:-$0}"; )" &> /dev/null && pwd 2> /dev/null; )";
+#    set -eu
 #
-#    # Assuming update-bash-docu.sh is in the same directory as your script
-#    source "$scriptDir/update-bash-docu.sh"
+#    declare dir_of_tegonal_scripts
+#    # Assuming tegonal's scripts are in the same directory as your script
+#    dir_of_tegonal_scripts="$(cd -- "$(dirname -- "${BASH_SOURCE[0]:-$0}")" &>/dev/null && pwd 2>/dev/null)"
+#    source "$dir_of_tegonal_scripts/utility/update-bash-docu.sh"
+#
 #    find . -name "*.sh" \
 #    	-not -name "*.doc.sh" \
 #    	-not -path "**.history/*" \
 #    	-not -name "update-docu.sh" \
-#    	-print0 | while read -r -d $'\0' script
-#    		do
-#    			declare script="${script:2}"
-#    			replaceSnippetForScript "$scriptDir/$script" "${script////-}" . README.md
-#    		done
+#    	-print0 |
+#    	while read -r -d $'\0' script; do
+#    		declare script="${script:2}"
+#    		replaceSnippetForScript "$dir_of_tegonal_scripts/$script" "${script////-}" . README.md
+#    	done
 #
 ###################################
+set -eu
 
-set -e
+if ! [ -v dir_of_tegonal_scripts ]; then
+	declare dir_of_tegonal_scripts
+	dir_of_tegonal_scripts="$(realpath "$(cd -- "$(dirname -- "${BASH_SOURCE[0]:-$0}")" &>/dev/null && pwd 2>/dev/null)/..")"
+	declare -r dir_of_tegonal_scripts
+fi
 
-function updateBashDocumentation(){
-	declare script id dir pattern
-	# args is required for parse-fn-args.sh thus:
+function updateBashDocumentation() {
+	source "$dir_of_tegonal_scripts/utility/parse-fn-args.sh"
+ 	source "$dir_of_tegonal_scripts/utility/replace-snippet.sh"
+
+	local script id dir pattern
 	# shellcheck disable=SC2034
-	declare args=(script id dir pattern)
+	local -ra params=(script id dir pattern)
+	parseFnArgs params "$@"
 
-	declare scriptDir
-	scriptDir="$( cd -- "$( dirname -- "${BASH_SOURCE[0]:-$0}"; )" &> /dev/null && pwd 2> /dev/null; )";
-	source "$scriptDir/parse-fn-args.sh" || return 1
-	source "$scriptDir/replace-snippet.sh"
-
-	declare snippet
+	local snippet
 	snippet=$(cat "${script::-3}.doc.sh")
 
-	declare quotedSnippet
+	local quotedSnippet
 	quotedSnippet=$(echo "$snippet" | perl -0777 -pe 's/(\/|\$|\\)/\\$1/g;' | sed 's/^/#    /' | sed 's/^#    $/#/')
 
 	perl -0777 -i \
 		-pe "s/(###+\s+Usage\s+###+\n#\n)[\S\s]+?(\n#\n###+)/\$1${quotedSnippet}\$2/g;" \
 		"$script"
 
-	replaceSnippet "$script" "$id" "$dir" "$pattern" "\`\`\`bash\n$snippet\n\`\`\`"
+	replaceSnippet "$script" "$id" "$dir" "$pattern" "$(printf "\`\`\`bash\n%s\n\`\`\`" "$snippet")"
 }

@@ -15,6 +15,7 @@
 #######  Usage  ###################
 #
 #    #!/usr/bin/env bash
+#    set -eu
 #
 #    # declare the variables where the arguments shall be stored (used as identifier afterwards)
 #    declare directory pattern version
@@ -40,10 +41,10 @@
 #    EOM
 #    )
 #
-#    declare scriptDir
-#    scriptDir="$(cd -- "$(dirname -- "${BASH_SOURCE[0]:-$0}")" &>/dev/null && pwd 2>/dev/null)"
-#    # Assuming parse-args.sh is in the same directory as your script
-#    source "$scriptDir/parse-args.sh"
+#    declare dir_of_tegonal_scripts
+#    # Assuming tegonal's scripts are in the same directory as your script
+#    dir_of_tegonal_scripts="$(cd -- "$(dirname -- "${BASH_SOURCE[0]:-$0}")" &>/dev/null && pwd 2>/dev/null)"
+#    source "$dir_of_tegonal_scripts/utility/parse-args.sh"
 #
 #    parseArguments params "$examples" "$@"
 #    # in case there are optional parameters, then fill them in here before calling checkAllArgumentsSet
@@ -61,8 +62,13 @@
 #	=> take a look at https://github.com/ko1nksm/getoptions if you need something more powerful
 #
 ###################################
+set -eu
 
-set -e
+if ! [ -v dir_of_tegonal_scripts ]; then
+	declare dir_of_tegonal_scripts
+	dir_of_tegonal_scripts="$(realpath "$(cd -- "$(dirname -- "${BASH_SOURCE[0]:-$0}")" &>/dev/null && pwd 2>/dev/null)/..")"
+	declare -r dir_of_tegonal_scripts
+fi
 
 function describeParameterTriple() {
 	echo >&2 "The array needs to contain parameter definitions where a parameter definition consist of 3 values:"
@@ -80,8 +86,10 @@ function describeParameterTriple() {
 }
 
 function checkParameterDefinitionIsTriple() {
+	source "$dir_of_tegonal_scripts/utility/log.sh"
+
 	if ! (($# == 1)); then
-		printf >&2 "\033[1;31mERROR\033[0m: One parameter needs to be passed to checkParameterDefinitionIsTriple\nGiven \033[0;36m%s\033[0m in \033[0;36m%s\033[0m\nFollowing a description of the parameters:\n" "$#" "${BASH_SOURCE[1]}"
+		logError "One parameter needs to be passed to checkParameterDefinitionIsTriple\nGiven \033[0;36m%s\033[0m in \033[0;36m%s\033[0m\nFollowing a description of the parameters:" "$#" "${BASH_SOURCE[1]}"
 		echo >&2 '1. params		 an array with the parameter definitions'
 		return 9
 	fi
@@ -97,7 +105,7 @@ function checkParameterDefinitionIsTriple() {
 	done
 	reg='declare -a.*'
 	if ! [[ "$arrayDefinition" =~ $reg ]]; then
-		printf >&2 "\033[1;31mERROR: array with parameter definitions is broken\033[0m for \033[1;34m%s\033[0m in %s\n" "${!paramArr2}" "${BASH_SOURCE[2]}"
+		logError "array with parameter definitions is broken\033[0m for \033[1;34m%s\033[0m in %s" "${!paramArr2}" "${BASH_SOURCE[2]}"
 		echo >&2 "the first argument needs to be a non-associative array, given:"
 		echo >&2 "$arrayDefinition"
 		echo >&2 ""
@@ -106,12 +114,12 @@ function checkParameterDefinitionIsTriple() {
 	fi
 
 	if ((arrLength == 0)); then
-		printf >&2 "\033[1;31mERROR:array with parameter definitions is broken, length was 0\033[0m in %s\n" "${BASH_SOURCE[2]}"
+		logError "array with parameter definitions is broken, length was 0\033[0m in %s" "${BASH_SOURCE[2]}"
 		describeParameterTriple
 	fi
 
 	if ! ((arrLength % 3 == 0)); then
-		printf >&2 "\033[1;31mERROR: array with parameter definitions is broken\033[0m for \033[1;34m%s\033[0m in %s\n" "${!paramArr2}" "${BASH_SOURCE[2]}"
+		logError "array with parameter definitions is broken\033[0m for \033[1;34m%s\033[0m in %s" "${!paramArr2}" "${BASH_SOURCE[2]}"
 		describeParameterTriple
 		echo >&2 ""
 		echo >&2 "given:"
@@ -135,8 +143,10 @@ function checkParameterDefinitionIsTriple() {
 }
 
 function parseArguments {
+	source "$dir_of_tegonal_scripts/utility/log.sh"
+
 	if (($# < 2)); then
-		printf >&2 "\033[1;31mERROR\033[0m: At least two arguments need to be passed to parseArguments.\nGiven \033[0;36m%s\033[0m in \033[0;36m%s\033[0m\nFollowing a description of the parameters:\n" "$#" "${BASH_SOURCE[1]}"
+		logError "At least two arguments need to be passed to parseArguments.\nGiven \033[0;36m%s\033[0m in \033[0;36m%s\033[0m\nFollowing a description of the parameters:" "$#" "${BASH_SOURCE[1]}"
 		echo >&2 '1. params		 an array with the parameter definitions'
 		echo >&2 '2. examples	 a string containing examples (or an empty string)'
 		echo >&2 '3... args...	the arguments as such, typically "$@"'
@@ -166,7 +176,7 @@ function parseArguments {
 			if [[ "$argName" =~ $regex ]]; then
 				# that's where the black magic happens, we are assigning to global variables here
 				if [ -z "$2" ]; then
-					printf >&2 "\033[1;31mERROR\033[0m: no value defined for parameter \033[1;34m%s\033[0m in %s\n" "$pattern" "${BASH_SOURCE[1]}"
+					logError "no value defined for parameter \033[1;36m%s\033[0m in %s" "$pattern" "${BASH_SOURCE[1]}"
 					echo >&2 "following the help documentation:"
 					echo >&2 ""
 					printHelp >&2 paramArr1 "$examples"
@@ -180,10 +190,10 @@ function parseArguments {
 
 		if ((expectedName == 0)); then
 			if [[ "$argName" =~ ^- ]]; then
-				printf "\033[1;33mWARNING: ignored argument %s (and its value %s)\033[0m\n" "$argName" "$2"
+				logWarning "ignored argument \033[1;36m%s\033[0m (and its value %s)" "$argName" "$2"
 				shift
 			else
-				printf "\033[1;33mWARNING: ignored argument %s\033[0m\n" "$argName"
+				logWarning "ignored argument \033[1;36m%s\033[0m" "$argName"
 			fi
 		fi
 		shift
@@ -191,8 +201,10 @@ function parseArguments {
 }
 
 function printHelp {
+	source "$dir_of_tegonal_scripts/utility/log.sh"
+
 	if ! (($# == 2)); then
-		printf >&2 "\033[1;31mERROR\033[0m: Two arguments need to be passed to printHelp.\nGiven \033[0;36m%s\033[0m in \033[0;36m%s\033[0m\nFollowing a description of the parameters:\n" "$#" "${BASH_SOURCE[1]}"
+		logError "Two arguments need to be passed to printHelp.\nGiven \033[0;36m%s\033[0m in \033[0;36m%s\033[0m\nFollowing a description of the parameters:" "$#" "${BASH_SOURCE[1]}"
 		echo >&2 '1. params		 an array with the parameter definitions'
 		echo >&2 '2. examples	 a string containing examples (or an empty string)'
 		return 9
@@ -230,8 +242,10 @@ function printHelp {
 }
 
 function checkAllArgumentsSet {
+	source "$dir_of_tegonal_scripts/utility/log.sh"
+
 	if ! (($# == 2)); then
-		printf >&2 "\033[1;31mERROR\033[0m: Two arguments need to be passed to checkAllArgumentsSet.\nGiven \033[0;36m%s\033[0m in \033[0;36m%s\033[0m\nFollowing a description of the parameters:\n" "$#" "${BASH_SOURCE[1]}"
+		logError "Two arguments need to be passed to checkAllArgumentsSet.\nGiven \033[0;36m%s\033[0m in \033[0;36m%s\033[0m\nFollowing a description of the parameters:" "$#" "${BASH_SOURCE[1]}"
 		echo >&2 '1. params		 an array with the parameter definitions'
 		echo >&2 '2. examples	 a string containing examples (or an empty string)'
 		return 9
@@ -244,9 +258,9 @@ function checkAllArgumentsSet {
 	local good=1
 	for ((i = 0; i < arrLength; i += 3)); do
 		local paramName="${paramArr4[i]}"
-		local pattern="${paramArr4[i+1]}"
+		local pattern="${paramArr4[i + 1]}"
 		if ! [ -v "$paramName" ]; then
-			printf >&2 "\033[1;31mERROR\033[0m: %s not set via %s\n" "$paramName" "$pattern"
+			logError "%s not set via %s" "$paramName" "$pattern"
 			good=0
 		fi
 	done

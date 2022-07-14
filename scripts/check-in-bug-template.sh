@@ -7,18 +7,27 @@
 #         /___/
 #
 #
-set -e
+set -eu
 
-declare scriptDir
-scriptDir="$(cd -- "$(dirname -- "${BASH_SOURCE[0]:-$0}")" &>/dev/null && pwd 2>/dev/null)"
+if ! [ -v scriptDir ]; then
+	declare scriptDir
+	scriptDir="$(cd -- "$(dirname -- "${BASH_SOURCE[0]:-$0}")" &>/dev/null && pwd 2>/dev/null)"
+	declare -r scriptDir
+fi
 
-find "$scriptDir/../src" -name "*.sh" \
+if ! [ -v dir_of_tegonal_scripts ]; then
+	declare dir_of_tegonal_scripts
+	dir_of_tegonal_scripts="$(realpath "$scriptDir/../src")"
+	declare -r dir_of_tegonal_scripts
+fi
+source "$dir_of_tegonal_scripts/utility/log.sh"
+
+find "$dir_of_tegonal_scripts" -name "*.sh" \
 	-not -name "*.doc.sh" \
-	-not -path "**.history/*" \
 	-print0 |
 	while read -r -d $'\0' script; do
-		declare path=${script:(${#scriptDir} + 8)}
-		grep "$path" "$scriptDir/../.github/ISSUE_TEMPLATE/bug_report.yaml" >/dev/null || (echo "you forgot to add $path to .github/ISSUE_TEMPLATE/bug_report.yaml" && false)
+		declare path=${script:(${#dir_of_tegonal_scripts}+1)}
+		grep "$path" "$scriptDir/../.github/ISSUE_TEMPLATE/bug_report.yaml" >/dev/null || (logError "you forgot to add \033[0;36m%s\033[0m to .github/ISSUE_TEMPLATE/bug_report.yaml" "$path" && exit 1)
 	done
 
-echo "Success: all scripts are listed in the bug template"
+logSuccess "all scripts are listed in the bug template"

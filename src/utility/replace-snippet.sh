@@ -14,10 +14,12 @@
 #######  Usage  ###################
 #
 #    #!/usr/bin/env bash
+#    set -eu
 #
-#    # Assuming replace-snippet.sh is in the same directory as your script
-#    scriptDir="$( cd -- "$( dirname -- "${BASH_SOURCE[0]:-$0}"; )" &> /dev/null && pwd 2> /dev/null; )"
-#    source "$scriptDir/replace-snippet.sh"
+#    declare dir_of_tegonal_scripts
+#    # Assuming tegonal's scripts are in the same directory as your script
+#    dir_of_tegonal_scripts="$(cd -- "$(dirname -- "${BASH_SOURCE[0]:-$0}")" &>/dev/null && pwd 2>/dev/null)"
+#    source "$dir_of_tegonal_scripts/utility/replace-snippet.sh"
 #
 #    declare file
 #    file=$(mktemp)
@@ -39,24 +41,28 @@
 #    # </my-script-help>
 #
 ###################################
-set -e
+set -eu
+
+if ! [ -v dir_of_tegonal_scripts ]; then
+	declare dir_of_tegonal_scripts
+	dir_of_tegonal_scripts="$(realpath "$(cd -- "$(dirname -- "${BASH_SOURCE[0]:-$0}")" &>/dev/null && pwd 2>/dev/null)/..")"
+	declare -r dir_of_tegonal_scripts
+fi
 
 function replaceSnippet() {
-	declare file id dir pattern snippet
-	# args is required for parse-fn-args.sh thus:
+	source "$dir_of_tegonal_scripts/utility/parse-fn-args.sh"
+
+	local file id dir pattern snippet
 	# shellcheck disable=SC2034
-	declare args=(file id dir pattern snippet)
+	local -ra params=(file id dir pattern snippet)
+	parseFnArgs params "$@"
 
-	declare scriptDir
-	scriptDir="$( cd -- "$( dirname -- "${BASH_SOURCE[0]:-$0}"; )" &> /dev/null && pwd 2> /dev/null; )";
-	source "$scriptDir/parse-fn-args.sh" || return 1
-
-	declare quotedSnippet
-	quotedSnippet=$(echo "$snippet" | perl -0777 -pe 's/(@|\$|\\)/\\$1/g;' -pe 's/\\n/\n/g')
+	local quotedSnippet
+	quotedSnippet=$(echo "$snippet" | perl -0777 -pe 's/(@|\$|\\)/\\$1/g;')
 
 	find "$dir" -name "$pattern" \
 		-exec echo "updating $id in {} " \; \
 		-exec perl -0777 -i \
-			-pe "s@<${id}>[\S\s]+</${id}>@<${id}>\n\n<!-- auto-generated, do not modify here but in $(realpath --relative-to "$PWD" "$file") -->\n$quotedSnippet\n\n</${id}>@g;" \
-			{} \;	2>/dev/null || true
+		-pe "s@<${id}>[\S\s]+</${id}>@<${id}>\n\n<!-- auto-generated, do not modify here but in $(realpath --relative-to "$PWD" "$file") -->\n$quotedSnippet\n\n</${id}>@g;" \
+		{} \; 2>/dev/null || true
 }

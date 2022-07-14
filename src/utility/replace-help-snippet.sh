@@ -15,10 +15,12 @@
 #######  Usage  ###################
 #
 #    #!/usr/bin/env bash
+#    set -eu
 #
-#    # Assuming replace-help-snippet.sh is in the same directory as your script
-#    scriptDir="$( cd -- "$( dirname -- "${BASH_SOURCE[0]:-$0}"; )" &> /dev/null && pwd 2> /dev/null; )"
-#    source "$scriptDir/replace-help-snippet.sh"
+#    declare dir_of_tegonal_scripts
+#    # Assuming tegonal's scripts are in the same directory as your script
+#    dir_of_tegonal_scripts="$(cd -- "$(dirname -- "${BASH_SOURCE[0]:-$0}")" &>/dev/null && pwd 2>/dev/null)"
+#    source "$dir_of_tegonal_scripts/utility/replace-help-snippet.sh"
 #
 #    declare file
 #    file=$(mktemp)
@@ -40,24 +42,28 @@
 #    # </my-script-help>
 #
 ###################################
-set -e
+set -eu
+
+if ! [ -v dir_of_tegonal_scripts ]; then
+	declare dir_of_tegonal_scripts
+	dir_of_tegonal_scripts="$(realpath "$(cd -- "$(dirname -- "${BASH_SOURCE[0]:-$0}")" &>/dev/null && pwd 2>/dev/null)/..")"
+	declare -r dir_of_tegonal_scripts
+fi
 
 function replaceHelpSnippet() {
-	declare script id dir pattern varargs
-	# args is required for parse-fn-args.sh thus:
-	# shellcheck disable=SC2034
-	declare args=(script id dir pattern)
+	source "$dir_of_tegonal_scripts/utility/parse-fn-args.sh"
+	source "$dir_of_tegonal_scripts/utility/replace-snippet.sh"
 
-	declare scriptDir
-	scriptDir="$(cd -- "$(dirname -- "${BASH_SOURCE[0]:-$0}")" &>/dev/null && pwd 2>/dev/null)"
-	source "$scriptDir/parse-fn-args.sh" || return 1
-	source "$scriptDir/replace-snippet.sh"
+	local script id dir pattern varargs
+	# shellcheck disable=SC2034
+	local -ra params=(script id dir pattern)
+	parseFnArgs params "$@"
 
 	if ((${#varargs[@]} == 0)); then
 		varargs=("--help")
 	fi
 
-	declare snippet
+	local snippet
 	# shellcheck disable=SC2145
 	echo "capturing output of calling: $script ${varargs[@]}"
 	# we actually want that the array is passed as multiple arguments
@@ -66,9 +72,9 @@ function replaceHelpSnippet() {
 	snippet=$("$script" ${varargs[@]})
 	set -e
 
-	declare quotedSnippet
+	local quotedSnippet
 	# remove ansi colour codes form snippet
 	quotedSnippet=$(echo "$snippet" | perl -0777 -pe "s/\033\[(1;\d{2}|0)m//g")
 
-	replaceSnippet "$script" "$id" "$dir" "$pattern" "\`\`\`text\n$quotedSnippet\n\`\`\`"
+	replaceSnippet "$script" "$id" "$dir" "$pattern" "$(printf "\`\`\`text\n%s\n\`\`\`" "$quotedSnippet")"
 }

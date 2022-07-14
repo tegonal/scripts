@@ -7,15 +7,22 @@
 #         /___/
 #
 #
-set -e
+set -eu
+
+if ! [ -v dir_of_tegonal_scripts ]; then
+	declare dir_of_tegonal_scripts
+	dir_of_tegonal_scripts="$(realpath "$(cd -- "$(dirname -- "${BASH_SOURCE[0]:-$0}")" &>/dev/null && pwd 2>/dev/null)/../src")"
+	declare -r dir_of_tegonal_scripts
+fi
+
+source "$dir_of_tegonal_scripts/utility/log.sh"
+source "$dir_of_tegonal_scripts/utility/replace-help-snippet.sh"
+source "$dir_of_tegonal_scripts/utility/update-bash-docu.sh"
 
 declare projectDir
-projectDir="$(realpath "$(cd -- "$(dirname -- "${BASH_SOURCE[0]:-$0}")" &>/dev/null && pwd 2>/dev/null)/../")"
+projectDir="$(realpath "$dir_of_tegonal_scripts/../")"
 
-source "$projectDir/src/utility/update-bash-docu.sh"
-source "$projectDir/src/utility/replace-help-snippet.sh"
-
-find "$projectDir/src" -name "*.sh" \
+find "$dir_of_tegonal_scripts" -name "*.sh" \
 	-not -name "*.doc.sh" \
 	-print0 |
 	while read -r -d $'\0' script; do
@@ -34,5 +41,7 @@ declare executableScripts=(
 )
 
 for script in "${executableScripts[@]}"; do
-	replaceHelpSnippet "$projectDir/src/$script.sh" "${script////-}-help" . README.md
+	replaceHelpSnippet "$dir_of_tegonal_scripts/$script.sh" "${script////-}-help" . README.md
 done
+
+logSuccess "Updating bash docu and README completed"

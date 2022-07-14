@@ -1,8 +1,10 @@
 #!/usr/bin/env bash
+set -eu
 
-# Assuming replace-help-snippet.sh is in the same directory as your script
-scriptDir="$( cd -- "$( dirname -- "${BASH_SOURCE[0]:-$0}"; )" &> /dev/null && pwd 2> /dev/null; )"
-source "$scriptDir/replace-help-snippet.sh"
+declare dir_of_tegonal_scripts
+# Assuming tegonal's scripts are in the same directory as your script
+dir_of_tegonal_scripts="$(cd -- "$(dirname -- "${BASH_SOURCE[0]:-$0}")" &>/dev/null && pwd 2>/dev/null)"
+source "$dir_of_tegonal_scripts/utility/replace-help-snippet.sh"
 
 declare file
 file=$(mktemp)

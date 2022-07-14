@@ -7,9 +7,12 @@
 #         /___/
 #
 #
-set -e
+set -eu
 
-declare scriptDir
-scriptDir="$(cd -- "$(dirname -- "${BASH_SOURCE[0]:-$0}")" &>/dev/null && pwd 2>/dev/null)"
+if ! [ -v scriptDir ]; then
+	declare scriptDir
+	scriptDir="$(cd -- "$(dirname -- "${BASH_SOURCE[0]:-$0}")" &>/dev/null && pwd 2>/dev/null)"
+	declare -r scriptDir
+fi
 
-find "$scriptDir/../src" "$scriptDir/../scripts" "$scriptDir/../spec" -name '*.sh' -exec shellcheck -x -P "$scriptDir/../src/utility/" {} \;
+find "$scriptDir/../src" "$scriptDir/../scripts" "$scriptDir/../spec" -name '*.sh' -exec shellcheck -x -P "$scriptDir/../src/" {} \;

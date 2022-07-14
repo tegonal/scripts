@@ -7,7 +7,7 @@
 #         /___/
 #
 #
-set -e
+set -eu
 
 if [[ -z "$1" ]]; then
 	echo >&2 "no version provided"
@@ -22,10 +22,14 @@ fi
 
 echo "prepare next dev cycle for version $version"
 
-scriptDir="$(cd -- "$(dirname -- "${BASH_SOURCE[0]:-$0}")" &>/dev/null && pwd 2>/dev/null)"
+if ! [ -v dir_of_tegonal_scripts ]; then
+	declare dir_of_tegonal_scripts
+	dir_of_tegonal_scripts="$(realpath "$(cd -- "$(dirname -- "${BASH_SOURCE[0]:-$0}")" &>/dev/null && pwd 2>/dev/null)/../src")"
+	declare -r dir_of_tegonal_scripts
+fi
 
-"$scriptDir/../src/releasing/sneak-peek-banner.sh" -c show
-"$scriptDir/../src/releasing/toggle-sections.sh" -c main
-"$scriptDir/../src/releasing/update-version-scripts.sh" -v "$version-SNAPSHOT"
+"$dir_of_tegonal_scripts/releasing/sneak-peek-banner.sh" -c show
+"$dir_of_tegonal_scripts/releasing/toggle-sections.sh" -c main
+"$dir_of_tegonal_scripts/releasing/update-version-scripts.sh" -v "$version-SNAPSHOT"
 
 git commit -a -m "prepare next dev cycle for $version"
