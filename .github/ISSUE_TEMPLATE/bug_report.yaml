@@ -19,6 +19,7 @@ body:
     attributes:
       label: Script
       options:
+        - qa/checks.sh
         - qa/run-shellcheck.sh
         - releasing/sneak-peek-banner.sh
         - releasing/toggle-sections.sh
@@ -32,7 +33,7 @@ body:
         - utility/replace-help-snippet.sh
         - utility/update-bash-docu.sh
     validations:
-      required: true
+      required: false
   - type: textarea
     id: reproduce
     attributes:

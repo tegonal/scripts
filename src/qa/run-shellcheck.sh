@@ -40,6 +40,7 @@ if ! [[ -v dir_of_tegonal_scripts ]]; then
 fi
 
 function runShellcheck() {
+	source "$dir_of_tegonal_scripts/qa/checks.sh"
 	source "$dir_of_tegonal_scripts/utility/log.sh"
 	source "$dir_of_tegonal_scripts/utility/recursive-declare-p.sh"
 
@@ -52,15 +53,7 @@ function runShellcheck() {
 	local -n directories=$1
 	local sourcePath=$2
 
-	reg='declare -a.*'
-	local arrayDefinition
-	arrayDefinition="$(set -e && recursiveDeclareP directories)"
-	if ! [[ "$arrayDefinition" =~ $reg ]]; then
-		logError "the passed array \033[1;34m%s\033[0m defined in %s is broken." "${!directories}" "${BASH_SOURCE[1]}"
-		printf >&2 "the first argument to %s needs to be a non-associative array, given:\n" "${FUNCNAME[0]}"
-		echo >&2 "$arrayDefinition"
-		return 9
-	fi
+	checkArgIsArray directories 1
 
 	local -i fileWithIssuesCounter=0
 	local -i fileCounter=0
