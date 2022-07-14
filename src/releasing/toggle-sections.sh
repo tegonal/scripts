@@ -27,7 +27,7 @@
 ###################################
 set -eu
 
-if ! [ -v dir_of_tegonal_scripts ]; then
+if ! [[ -v dir_of_tegonal_scripts ]]; then
 	declare dir_of_tegonal_scripts
 	dir_of_tegonal_scripts="$(realpath "$(cd -- "$(dirname -- "${BASH_SOURCE[0]:-$0}")" &>/dev/null && pwd 2>/dev/null)/..")"
 	declare -r dir_of_tegonal_scripts
@@ -53,7 +53,7 @@ function toggleSections() {
 	)
 
 	parseArguments params "$examples" "$@"
-	if ! [ -v file ]; then file="./README.md"; fi
+	if ! [[ -v file ]]; then file="./README.md"; fi
 	checkAllArgumentsSet params "$examples"
 
 	function toggleSection() {
@@ -66,10 +66,10 @@ function toggleSections() {
 			"$file"
 	}
 
-	if [ "$command" == "main" ]; then
+	if [[ $command == main ]]; then
 		echo "comment release sections and uncomment main sections"
 		toggleSection "$file" "release" "main"
-	elif [ "$command" == "release" ]; then
+	elif [[ $command == release ]]; then
 		echo "comment main sections and uncomment release sections"
 		toggleSection "$file" "main" "release"
 	else

@@ -9,7 +9,7 @@
 #
 set -eu
 
-if ! [ -v dir_of_tegonal_scripts ]; then
+if ! [[ -v dir_of_tegonal_scripts ]]; then
 	declare dir_of_tegonal_scripts
 	dir_of_tegonal_scripts="$(realpath "$(cd -- "$(dirname -- "${BASH_SOURCE[0]:-$0}")" &>/dev/null && pwd 2>/dev/null)/../src")"
 	declare -r dir_of_tegonal_scripts
@@ -17,7 +17,7 @@ fi
 
 source "$dir_of_tegonal_scripts/utility/log.sh"
 
-if ! [ -x "$(command -v "shellspec")" ]; then
+if ! [[ -x "$(command -v "shellspec")" ]]; then
 	die "You need to have shellspec installed if you want to create a release"
 fi
 
@@ -52,7 +52,7 @@ fi
 git checkout main
 git pull
 
-if ! [ -v scriptDir ]; then
+if ! [[ -v scriptDir ]]; then
 	declare scriptDir
 	scriptDir="$(cd -- "$(dirname -- "${BASH_SOURCE[0]:-$0}")" &>/dev/null && pwd 2>/dev/null)"
 	declare -r scriptDir
@@ -81,7 +81,7 @@ find "$scriptDir/../src" -name "*.sh" \
 		gpg --homedir "$scriptDir/../.gget/gpg" --batch --verify "${script}.sig" "$script"
 	done
 
-if ! [ "$prepareOnly" == "true" ]; then
+if ! [[ $prepareOnly == true ]]; then
 	git add .
 	git commit -m "$version"
 	git push

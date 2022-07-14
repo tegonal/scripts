@@ -324,7 +324,7 @@ source "$dir_of_tegonal_scripts/utility/parse-args.sh"
 
 parseArguments params "$examples" "$@"
 # in case there are optional parameters, then fill them in here before calling checkAllArgumentsSet
-if ! [ -v directory ]; then directory="."; fi
+if ! [[ -v directory ]]; then directory="."; fi
 checkAllArgumentsSet params "$examples"
 
 # pass your variables storing the arguments to other scripts
@@ -344,7 +344,7 @@ Full usage example:
 #!/usr/bin/env bash
 set -eu
 
-if [ -v dir_of_tegonal_scripts ]; then
+if ! [[ -v dir_of_tegonal_scripts ]]; then
 	declare dir_of_tegonal_scripts
 	# Assuming tegonal's scripts are in the same directory as your script
 	dir_of_tegonal_scripts="$(cd -- "$(dirname -- "${BASH_SOURCE[0]:-$0}")" &>/dev/null && pwd 2>/dev/null)"

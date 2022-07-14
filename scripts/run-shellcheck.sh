@@ -9,7 +9,7 @@
 #
 set -eu
 
-if ! [ -v dir_of_tegonal_scripts ]; then
+if ! [[ -v dir_of_tegonal_scripts ]]; then
 	declare dir_of_tegonal_scripts
 	dir_of_tegonal_scripts="$(realpath "$(cd -- "$(dirname -- "${BASH_SOURCE[0]:-$0}")" &>/dev/null && pwd 2>/dev/null)/../src")"
 	declare -r dir_of_tegonal_scripts

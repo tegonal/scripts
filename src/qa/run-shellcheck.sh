@@ -33,7 +33,7 @@
 ###################################
 set -eu
 
-if ! [ -v dir_of_tegonal_scripts ]; then
+if ! [[ -v dir_of_tegonal_scripts ]]; then
 	declare dir_of_tegonal_scripts
 	dir_of_tegonal_scripts="$(realpath "$(cd -- "$(dirname -- "${BASH_SOURCE[0]:-$0}")" &>/dev/null && pwd 2>/dev/null)/..")"
 	declare -r dir_of_tegonal_scripts
@@ -67,13 +67,17 @@ function runShellcheck() {
 	while read -r -d $'\0' script; do
 		((fileCounter += 1))
 		declare output
-		output=$(shellcheck -C -S info -x -o all -e SC2312 -P "$sourcePath" "$script" || true)
-		if ! [ "$output" == "" ]; then
+		# SC2312 Consider invoking this command separately to avoid masking its return value (or use '|| true' to ignore).
+		# ==> too many false positives
+		# SC2250 Prefer putting braces around variable references even when not strictly required.
+		# ==> IMO without braces reads nicer
+		output=$(shellcheck -C -x -o all -e SC2312 -e SC2250 -P "$sourcePath" "$script" || true)
+		if ! [[ $output == "" ]]; then
 			printf "%s\n" "$output"
 			((fileWithIssuesCounter += 1))
 		fi
 		if ((fileWithIssuesCounter >= 5)); then
-			logInfo "Already found issues in 5 files, going to stop the analysis now in order to keep the output small"
+			logInfoWithoutNewline "Already found issues in %s files, going to stop the analysis now in order to keep the output small" "$fileWithIssuesCounter"
 			break
 		fi
 		printf "."
@@ -81,7 +85,7 @@ function runShellcheck() {
 	printf "\n"
 
 	if ((fileWithIssuesCounter > 0)); then
-		die "found shellcheck issues, aborting"
+		die "found shellcheck issues in %s files" "$fileWithIssuesCounter"
 	else
 		logSuccess "no shellcheck issues found, analysed %s files" "$fileCounter"
 	fi

@@ -16,7 +16,7 @@
 #    #!/usr/bin/env bash
 #    set -eu
 #
-#    if [ -v dir_of_tegonal_scripts ]; then
+#    if ! [[ -v dir_of_tegonal_scripts ]]; then
 #    	declare dir_of_tegonal_scripts
 #    	# Assuming tegonal's scripts are in the same directory as your script
 #    	dir_of_tegonal_scripts="$(cd -- "$(dirname -- "${BASH_SOURCE[0]:-$0}")" &>/dev/null && pwd 2>/dev/null)"
@@ -59,7 +59,7 @@
 ###################################
 set -eu
 
-if ! [ -v dir_of_tegonal_scripts ]; then
+if ! [[ -v dir_of_tegonal_scripts ]]; then
 	declare dir_of_tegonal_scripts
 	dir_of_tegonal_scripts="$(realpath "$(cd -- "$(dirname -- "${BASH_SOURCE[0]:-$0}")" &>/dev/null && pwd 2>/dev/null)/..")"
 	declare -r dir_of_tegonal_scripts
@@ -103,7 +103,7 @@ function parseFnArgs() {
 		return 9
 	fi
 
-	if ! [ "$withVarArgs" ] && ! (($# == ${#paramArr1[@]})); then
+	if ! [[ $withVarArgs == false ]] && ! (($# == ${#paramArr1[@]})); then
 		logError "more arguments supplied than expected to \033[0m\033[0;36m%s\033[0m: expected %s, given %s" "${FUNCNAME[1]}" "${#paramArr1[@]}" "$#"
 		echo >&2 "in case you wanted your last parameter to be a vararg parameter, then use 'vararg' as last variable name your array containing the parameter names"
 		return 9
