@@ -23,39 +23,42 @@
 ###################################
 set -eu
 
-declare command file
-# shellcheck disable=SC2034
-declare params=(
-	command '-c|--command' "either 'show' or 'hide'"
-	file '-f|--file' '(optional) the file where search & replace shall be done -- default: ./README.md'
-)
+function sneakPeekBanner() {
+	local command file
+	# shellcheck disable=SC2034
+	local -ra params=(
+		command '-c|--command' "either 'show' or 'hide'"
+		file '-f|--file' '(optional) the file where search & replace shall be done -- default: ./README.md'
+	)
 
-declare examples
-examples=$(
-	cat <<-EOM
-		# hide the sneak peek banner in ./README.md
-		sneak-peek-banner.sh -c hide
+	local -r examples=$(
+		cat <<-EOM
+			# hide the sneak peek banner in ./README.md
+			sneak-peek-banner.sh -c hide
 
-		# show the sneak peek banner in ./docs/index.md
-		sneak-peek-banner.sh -c show -f ./docs/index.md
-	EOM
-)
+			# show the sneak peek banner in ./docs/index.md
+			sneak-peek-banner.sh -c show -f ./docs/index.md
+		EOM
+	)
 
-declare scriptDir
-scriptDir="$(cd -- "$(dirname -- "${BASH_SOURCE[0]:-$0}")" &>/dev/null && pwd 2>/dev/null)"
-source "$scriptDir/../utility/parse-args.sh"
+	local scriptDir
+	scriptDir="$(cd -- "$(dirname -- "${BASH_SOURCE[0]:-$0}")" &>/dev/null && pwd 2>/dev/null)"
+	local -r scriptDir
+	source "$scriptDir/../utility/parse-args.sh"
 
-parseArguments params "$examples" "$@"
-if ! [ -v file ]; then file="./README.md"; fi
-checkAllArgumentsSet params "$examples"
+	parseArguments params "$examples" "$@"
+	if ! [ -v file ]; then file="./README.md"; fi
+	checkAllArgumentsSet params "$examples"
 
-if [ "$command" == "show" ]; then
-	echo "show sneak peek banner in $file"
-	perl -0777 -i -pe 's/<!(---\n❗ You are taking[\S\s]+?---)>/$1/;' "$file"
-elif [ "$command" == "hide" ]; then
-	echo "hide sneak peek banner in $file"
-	perl -0777 -i -pe 's/((?<!<!)---\n❗ You are taking[\S\s]+?---)/<!$1>/;' "$file"
-else
-	echo >&2 "only 'show' and 'hide' are supported as command. Following the output of calling --help"
-	printHelp params help "$examples"
-fi
+	if [ "$command" == "show" ]; then
+		echo "show sneak peek banner in $file"
+		perl -0777 -i -pe 's/<!(---\n❗ You are taking[\S\s]+?---)>/$1/;' "$file"
+	elif [ "$command" == "hide" ]; then
+		echo "hide sneak peek banner in $file"
+		perl -0777 -i -pe 's/((?<!<!)---\n❗ You are taking[\S\s]+?---)/<!$1>/;' "$file"
+	else
+		echo >&2 "only 'show' and 'hide' are supported as command. Following the output of calling --help"
+		printHelp params help "$examples"
+	fi
+}
+sneakPeekBanner "$@"

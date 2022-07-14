@@ -23,35 +23,38 @@
 ###################################
 set -eu
 
-declare version directory
-# shellcheck disable=SC2034
-declare params=(
-	version '-v|--version' 'the version which shall be used'
-	directory '-d|--directory' '(optional) the working directory -- default: ./src'
-)
+function updateVersionScripts() {
+	local version directory
+	# shellcheck disable=SC2034
+	local -ra params=(
+		version '-v|--version' 'the version which shall be used'
+		directory '-d|--directory' '(optional) the working directory -- default: ./src'
+	)
 
-declare examples
-examples=$(
-	cat <<-EOM
-		# update version to v0.1.0 for all *.sh in ./src and subdirectories
-		update-version-scripts.sh -v v0.1.0
+	local -r examples=$(
+		cat <<-EOM
+			# update version to v0.1.0 for all *.sh in ./src and subdirectories
+			update-version-scripts.sh -v v0.1.0
 
-		# update version to v0.1.0 for all *.sh in ./scripts and subdirectories
-		update-version-scripts.sh -v v0.1.0 -d ./scripts
-	EOM
-)
+			# update version to v0.1.0 for all *.sh in ./scripts and subdirectories
+			update-version-scripts.sh -v v0.1.0 -d ./scripts
+		EOM
+	)
 
-declare scriptDir
-scriptDir="$(cd -- "$(dirname -- "${BASH_SOURCE[0]:-$0}")" &>/dev/null && pwd 2>/dev/null)"
-source "$scriptDir/../utility/parse-args.sh"
+	local scriptDir
+	scriptDir="$(cd -- "$(dirname -- "${BASH_SOURCE[0]:-$0}")" &>/dev/null && pwd 2>/dev/null)"
+	local -r scriptDir
+	source "$scriptDir/../utility/parse-args.sh"
 
-parseArguments params "$examples" "$@"
-if ! [ -v directory ]; then directory="./src"; fi
-checkAllArgumentsSet params "$examples"
+	parseArguments params "$examples" "$@"
+	if ! [ -v directory ]; then directory="./src"; fi
+	checkAllArgumentsSet params "$examples"
 
-find "$directory" -name "*.sh" \
-	-print0 | while read -r -d $'\0' script; do
-	perl -0777 -i \
-		-pe "s/Version:.+(\n[\S\s]+?###+\s+Description)/Version: $version\$1/g;" \
-		"$script"
-done
+	find "$directory" -name "*.sh" \
+		-print0 | while read -r -d $'\0' script; do
+		perl -0777 -i \
+			-pe "s/Version:.+(\n[\S\s]+?###+\s+Description)/Version: $version\$1/g;" \
+			"$script"
+	done
+}
+updateVersionScripts "$@"

@@ -23,35 +23,38 @@
 ###################################
 set -eu
 
-declare version file
-# shellcheck disable=SC2034
-declare params=(
-	version '-v|--version' 'the version which shall be used'
-	file '-f|--file' '(optional) the file where search & replace shall be done -- default: ./README.md'
-)
+function updateVersionReadme() {
+	local version file
+	# shellcheck disable=SC2034
+	local -ra params=(
+		version '-v|--version' 'the version which shall be used'
+		file '-f|--file' '(optional) the file where search & replace shall be done -- default: ./README.md'
+	)
 
-declare examples
-examples=$(
-	cat <<-EOM
-		# update version for ./README.md
-		update-version-README.sh -v v0.1.0
+	local -r examples=$(
+		cat <<-EOM
+			# update version for ./README.md
+			update-version-README.sh -v v0.1.0
 
-		# update version for ./docs/index.md
-		update-version-README.sh -v v0.1.0 -f ./docs/index.md
-	EOM
-)
+			# update version for ./docs/index.md
+			update-version-README.sh -v v0.1.0 -f ./docs/index.md
+		EOM
+	)
 
-declare scriptDir
-scriptDir="$(cd -- "$(dirname -- "${BASH_SOURCE[0]:-$0}")" &>/dev/null && pwd 2>/dev/null)"
-source "$scriptDir/../utility/parse-args.sh"
+	local scriptDir
+	scriptDir="$(cd -- "$(dirname -- "${BASH_SOURCE[0]:-$0}")" &>/dev/null && pwd 2>/dev/null)"
+	local -r scriptDir
+	source "$scriptDir/../utility/parse-args.sh"
 
-parseArguments params "$examples" "$@"
-if ! [ -v file ]; then file="./README.md"; fi
-checkAllArgumentsSet params "$examples"
+	parseArguments params "$examples" "$@"
+	if ! [ -v file ]; then file="./README.md"; fi
+	checkAllArgumentsSet params "$examples"
 
-echo "set version $version for Download badges and sneak peek banner in $file"
+	echo "set version $version for Download badges and sneak peek banner in $file"
 
-perl -0777 -i \
-	-pe "s@(\[!\[Download\]\(https://img.shields.io/badge/Download-).*(-%23[0-9a-f]+\)\]\([^\)]+(?:=|/))[^\)]+\)@\${1}$version\${2}$version\)@g;" \
-	-pe "s@(For instance, the \[README of )[^\]]+(\].*/tree/)[^/]+/@\${1}$version\${2}$version/@;" \
-	"$file"
+	perl -0777 -i \
+		-pe "s@(\[!\[Download\]\(https://img.shields.io/badge/Download-).*(-%23[0-9a-f]+\)\]\([^\)]+(?:=|/))[^\)]+\)@\${1}$version\${2}$version\)@g;" \
+		-pe "s@(For instance, the \[README of )[^\]]+(\].*/tree/)[^/]+/@\${1}$version\${2}$version/@;" \
+		"$file"
+}
+updateVersionReadme "$@"

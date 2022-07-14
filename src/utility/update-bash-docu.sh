@@ -38,20 +38,21 @@
 set -eu
 
 function updateBashDocumentation(){
-	declare script id dir pattern
+	local script id dir pattern
 	# args is required for parse-fn-args.sh thus:
 	# shellcheck disable=SC2034
-	declare args=(script id dir pattern)
+	local -ra args=(script id dir pattern)
 
-	declare scriptDir
+	local scriptDir
 	scriptDir="$( cd -- "$( dirname -- "${BASH_SOURCE[0]:-$0}"; )" &> /dev/null && pwd 2> /dev/null; )";
+	local -r scriptDir
 	source "$scriptDir/parse-fn-args.sh" || return 1
 	source "$scriptDir/replace-snippet.sh"
 
-	declare snippet
+	local snippet
 	snippet=$(cat "${script::-3}.doc.sh")
 
-	declare quotedSnippet
+	local quotedSnippet
 	quotedSnippet=$(echo "$snippet" | perl -0777 -pe 's/(\/|\$|\\)/\\$1/g;' | sed 's/^/#    /' | sed 's/^#    $/#/')
 
 	perl -0777 -i \

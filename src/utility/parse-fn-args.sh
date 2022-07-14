@@ -55,52 +55,60 @@
 #
 ###################################
 
-if ! [[ -v args[@] ]]; then
-	echo >&2 "\033[1;31mERROR\033[0m: parse-fn-args.sh requires you to define an array named 'args', for instance as follows"
-	echo >&2 "declare args=(variableStoringArg1 variableStoringArg2)"
-	return 2
-fi
+function parseFnArgs() {
+	local scriptDir
+	scriptDir="$(cd -- "$(dirname -- "${BASH_SOURCE[0]:-$0}")" &>/dev/null && pwd 2>/dev/null)"
+	local -r scriptDir
+	source "$scriptDir/log.sh"
 
-declare withVarArgs
-if declare -p varargs >/dev/null 2>&1; then
-	withVarArgs=true
-else
-	withVarArgs=false
-fi
+	if ! [[ -v args[@] ]]; then
+		logError "parse-fn-args.sh requires you to define an array named 'args', for instance as follows"
+		echo >&2 "declare args=(variableStoringArg1 variableStoringArg2)"
+		return 2
+	fi
 
-if (($# < ${#args[@]})); then
-	printf >&2 "\033[1;31mERROR: Not enough arguments supplied to \033[0m\033[0;36m%s\033[0m: expected %s, given %s\nFollowing a listing of the arguments (red means missing):\n" "${FUNCNAME[1]}" "${#args[@]}" "$#"
+	local withVarArgs
+	if declare -p varargs >/dev/null 2>&1; then
+		withVarArgs=true
+	else
+		withVarArgs=false
+	fi
 
-	declare -i i=1
-	for name in "${args[@]}"; do
+	if (($# < ${#args[@]})); then
+		logError "Not enough arguments supplied to \033[0m\033[0;36m%s\033[0m: expected %s, given %s\nFollowing a listing of the arguments (red means missing):\n" "${FUNCNAME[2]:-${FUNCNAME[1]}}" "${#args[@]}" "$#"
+
+		local -i i=1
+		for name in "${args[@]}"; do
+			printf "\033[0m"
+			if ((i - 1 < $#)); then
+				printf "\033[0;32m"
+			else
+				printf "\033[0;31m"
+			fi
+			printf >&2 "%2s: %s\n" "$i" "$name"
+			((i = i + 1))
+		done
 		printf "\033[0m"
-		if ((i - 1 < $#)); then
-			printf "\033[0;32m"
-		else
-			printf "\033[0;31m"
-		fi
-		printf >&2 "%2s: %s\n" "$i" "$name"
-		((i = i + 1))
+		return 1
+	fi
+
+	if ! [ "$withVarArgs" ] && ! (($# == ${#args[@]})); then
+		logError "more arguments supplied than expected to \033[0m\033[0;36m%s\033[0m: expected %s, given %s\n" "${FUNCNAME[1]}" "${#args[@]}" "$#"
+		echo >&2 "in case you wanted your last parameter to be a vararg parameter, then use 'vararg' as last variable name in 'args'"
+		return 1
+	fi
+
+	# assign arguments to specified variables
+	for name in "${args[@]}"; do
+		printf -v "${name}" "%s" "$1"
+		shift
 	done
-	printf "\033[0m"
-	return 1
-fi
 
-if ! [ "$withVarArgs" ] && ! (($# == ${#args[@]})); then
-	printf >&2 "\033[1;31mERROR\033[0m: more arguments supplied than expected to \033[0m\033[0;36m%s\033[0m: expected %s, given %s\n" "${FUNCNAME[1]}" "${#args[@]}" "$#"
-	echo >&2 "in case you wanted your last parameter to be a vararg parameter, then use 'vararg' as last variable name in 'args'"
-	return 1
-fi
-
-# assign arguments to specified variables
-for name in "${args[@]}"; do
-	declare "$name"="$1"
-	shift
-done
-
-# assign rest to varags if declared
-if $withVarArgs; then
-	# is used afterwards
-	# shellcheck disable=SC2034
-	varargs=("$@")
-fi
+	# assign rest to varags if declared
+	if $withVarArgs; then
+		# is used afterwards
+		# shellcheck disable=SC2034
+		varargs=("$@")
+	fi
+}
+parseFnArgs "$@"

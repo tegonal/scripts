@@ -25,7 +25,7 @@
 #    logInfo "hello %s\n" "world"
 #    # INFO: hello world
 #
-#    logInfo "line %\n" 1 2 3
+#    logInfo "line %s\n" 1 2 3
 #    # INFO: line 1
 #    # INFO: line 2
 #    # INFO: line 3
@@ -44,11 +44,13 @@ function logInfo() {
 	shift
 	printf "\033[0;34mINFO\033[0m: $msg" "$@"
 }
+
 function logWarning() {
 	local msg=$1
 	shift
 	printf "\033[0;93mWARNING\033[0m: $msg" "$@"
 }
+
 function logError() {
 	local msg=$1
 	shift

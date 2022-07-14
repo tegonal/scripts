@@ -44,13 +44,14 @@
 set -eu
 
 function replaceHelpSnippet() {
-	declare script id dir pattern varargs
+	local script id dir pattern varargs
 	# args is required for parse-fn-args.sh thus:
 	# shellcheck disable=SC2034
-	declare args=(script id dir pattern)
+	local -ra args=(script id dir pattern)
 
-	declare scriptDir
+	local scriptDir
 	scriptDir="$(cd -- "$(dirname -- "${BASH_SOURCE[0]:-$0}")" &>/dev/null && pwd 2>/dev/null)"
+	local -r scriptDir
 	source "$scriptDir/parse-fn-args.sh" || return 1
 	source "$scriptDir/replace-snippet.sh"
 
@@ -58,7 +59,7 @@ function replaceHelpSnippet() {
 		varargs=("--help")
 	fi
 
-	declare snippet
+	local snippet
 	# shellcheck disable=SC2145
 	echo "capturing output of calling: $script ${varargs[@]}"
 	# we actually want that the array is passed as multiple arguments
@@ -67,7 +68,7 @@ function replaceHelpSnippet() {
 	snippet=$("$script" ${varargs[@]})
 	set -e
 
-	declare quotedSnippet
+	local quotedSnippet
 	# remove ansi colour codes form snippet
 	quotedSnippet=$(echo "$snippet" | perl -0777 -pe "s/\033\[(1;\d{2}|0)m//g")
 

@@ -8,7 +8,7 @@ source "$scriptDir/log.sh"
 logInfo "hello %s\n" "world"
 # INFO: hello world
 
-logInfo "line %\n" 1 2 3
+logInfo "line %s\n" 1 2 3
 # INFO: line 1
 # INFO: line 2
 # INFO: line 3
