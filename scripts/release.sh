@@ -34,10 +34,10 @@ parseArguments params "" "$@"
 
 declare versionRegex="^(v[0-9]+)\.([0-9]+)\.[0-9]+(-RC[0-9]+)?$"
 
-if [[ -z "$nextVersion" ]] && [[ "$version" =~ $versionRegex ]]; then
+if ! [[ -v nextVersion ]] && [[ -v version ]] && [[ "$version" =~ $versionRegex ]]; then
 	nextVersion="${BASH_REMATCH[1]}.$((BASH_REMATCH[2] + 1)).0"
 fi
-if [[ -z "$prepareOnly" ]] || ! [[ "$prepareOnly" == "true" ]]; then prepareOnly=false; fi
+if ! [[ -v prepareOnly ]] || ! [[ "$prepareOnly" == "true" ]]; then prepareOnly=false; fi
 checkAllArgumentsSet params ""
 
 if ! [[ "$version" =~ $versionRegex ]]; then
