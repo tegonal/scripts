@@ -9,15 +9,16 @@
 #
 set -eu
 
-if ! [ -x "$(command -v "shellspec")" ]; then
-	echo >&2 "\033[1;31mERROR\033[0m: You need to have shellspec installed if you want to create a release"
-	exit 2
-fi
-
 if ! [ -v dir_of_tegonal_scripts ]; then
 	declare dir_of_tegonal_scripts
 	dir_of_tegonal_scripts="$(realpath "$(cd -- "$(dirname -- "${BASH_SOURCE[0]:-$0}")" &>/dev/null && pwd 2>/dev/null)/../src")"
 	declare -r dir_of_tegonal_scripts
+fi
+
+source "$dir_of_tegonal_scripts/utility/log.sh"
+
+if ! [ -x "$(command -v "shellspec")" ]; then
+	die "You need to have shellspec installed if you want to create a release"
 fi
 
 declare version key nextVersion prepareOnly
@@ -41,13 +42,11 @@ if ! [[ -v prepareOnly ]] || ! [[ "$prepareOnly" == "true" ]]; then prepareOnly=
 checkAllArgumentsSet params ""
 
 if ! [[ "$version" =~ $versionRegex ]]; then
-	printf >&2 "\033[1;31mERROR\033[0m: --version should match vX.Y.Z(-RC...), was %s\n" "$version"
-	exit 1
+	die "--version should match vX.Y.Z(-RC...), was %s" "$version"
 fi
 
 if git tag | grep "$version" >/dev/null; then
-	printf >&2 "\033[1;31mERROR\033[0m: tag %s already exists, delete with git tag -d %s\n" "$version" "$version"
-	exit 1
+	die "tag %s already exists, delete with git tag -d %s" "$version" "$version"
 fi
 
 git checkout main
