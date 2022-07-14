@@ -314,13 +314,14 @@ fi
 
 function myFunction() {
 	# declare the variable you want to use and repeat in `declare args`
-	declare command dir
+	local command dir
 
-	# args is used in parse-fn-args.sh thus:
+	# as shellcheck doesn't get that we are passing `params` to parseFnArgs ¯\_(ツ)_/¯ (an open issue of shellcheck)
 	# shellcheck disable=SC2034
-	declare args=(command dir)
+	local -ra params=(command dir)
 
 	source "$dir_of_tegonal_scripts/utility/parse-fn-args.sh"
+	parseFnArgs params "$@"
 
 	# pass your variables storing the arguments to other scripts
 	echo "command: $command, dir: $dir"
@@ -328,13 +329,13 @@ function myFunction() {
 
 function myFunctionWithVarargs() {
 
-	# in case you want to use a vararg parameter as last parameter then name your last parameter for `args` varargs:
-
-	declare command dir varargs
+	# in case you want to use a vararg parameter as last parameter then name your last parameter for `params` varargs:
+	local command dir varargs
 	# shellcheck disable=SC2034
-	declare args=(command dir)
+	local -ra params=(command dir)
 
 	source "$dir_of_tegonal_scripts/utility/parse-fn-args.sh"
+	parseFnArgs params "$@"
 
 	# use varargs in another script
 	echo "${varargs[0]}"

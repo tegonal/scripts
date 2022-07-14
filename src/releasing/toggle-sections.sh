@@ -34,6 +34,7 @@ if ! [ -v dir_of_tegonal_scripts ]; then
 fi
 
 function toggleSections() {
+	source "$dir_of_tegonal_scripts/utility/parse-args.sh"
 
 	local command file
 	# shellcheck disable=SC2034
@@ -50,7 +51,6 @@ function toggleSections() {
 			toggle-sections.sh -c release -f ./docs/index.md
 		EOM
 	)
-	source "$dir_of_tegonal_scripts/utility/parse-args.sh"
 
 	parseArguments params "$examples" "$@"
 	if ! [ -v file ]; then file="./README.md"; fi

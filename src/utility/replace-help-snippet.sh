@@ -51,13 +51,13 @@ if ! [ -v dir_of_tegonal_scripts ]; then
 fi
 
 function replaceHelpSnippet() {
-	local script id dir pattern varargs
-	# args is required for parse-fn-args.sh thus:
-	# shellcheck disable=SC2034
-	local -ra args=(script id dir pattern)
-
-	source "$dir_of_tegonal_scripts/utility/parse-fn-args.sh" || return 1
+	source "$dir_of_tegonal_scripts/utility/parse-fn-args.sh"
 	source "$dir_of_tegonal_scripts/utility/replace-snippet.sh"
+
+	local script id dir pattern varargs
+	# shellcheck disable=SC2034
+	local -ra params=(script id dir pattern)
+	parseFnArgs params "$@"
 
 	if ((${#varargs[@]} == 0)); then
 		varargs=("--help")

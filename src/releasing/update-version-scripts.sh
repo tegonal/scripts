@@ -30,13 +30,14 @@ if ! [ -v dir_of_tegonal_scripts ]; then
 fi
 
 function updateVersionScripts() {
+	source "$dir_of_tegonal_scripts/utility/parse-args.sh"
+
 	local version directory
 	# shellcheck disable=SC2034
 	local -ra params=(
 		version '-v|--version' 'the version which shall be used'
 		directory '-d|--directory' '(optional) the working directory -- default: ./src'
 	)
-
 	local -r examples=$(
 		cat <<-EOM
 			# update version to v0.1.0 for all *.sh in ./src and subdirectories
@@ -46,8 +47,6 @@ function updateVersionScripts() {
 			update-version-scripts.sh -v v0.1.0 -d ./scripts
 		EOM
 	)
-
-	source "$dir_of_tegonal_scripts/utility/parse-args.sh"
 
 	parseArguments params "$examples" "$@"
 	if ! [ -v directory ]; then directory="./src"; fi

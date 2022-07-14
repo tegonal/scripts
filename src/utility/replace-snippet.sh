@@ -50,12 +50,12 @@ if ! [ -v dir_of_tegonal_scripts ]; then
 fi
 
 function replaceSnippet() {
-	local file id dir pattern snippet
-	# args is required for parse-fn-args.sh thus:
-	# shellcheck disable=SC2034
-	local -ra args=(file id dir pattern snippet)
+	source "$dir_of_tegonal_scripts/utility/parse-fn-args.sh"
 
-	source "$dir_of_tegonal_scripts/utility/parse-fn-args.sh" || return 1
+	local file id dir pattern snippet
+	# shellcheck disable=SC2034
+	local -ra params=(file id dir pattern snippet)
+	parseFnArgs params "$@"
 
 	local quotedSnippet
 	quotedSnippet=$(echo "$snippet" | perl -0777 -pe 's/(@|\$|\\)/\\$1/g;')

@@ -24,13 +24,14 @@
 #
 #    function myFunction() {
 #    	# declare the variable you want to use and repeat in `declare args`
-#    	declare command dir
+#    	local command dir
 #
-#    	# args is used in parse-fn-args.sh thus:
+#    	# as shellcheck doesn't get that we are passing `params` to parseFnArgs ¯\_(ツ)_/¯ (an open issue of shellcheck)
 #    	# shellcheck disable=SC2034
-#    	declare args=(command dir)
+#    	local -ra params=(command dir)
 #
 #    	source "$dir_of_tegonal_scripts/utility/parse-fn-args.sh"
+#    	parseFnArgs params "$@"
 #
 #    	# pass your variables storing the arguments to other scripts
 #    	echo "command: $command, dir: $dir"
@@ -38,13 +39,13 @@
 #
 #    function myFunctionWithVarargs() {
 #
-#    	# in case you want to use a vararg parameter as last parameter then name your last parameter for `args` varargs:
-#
-#    	declare command dir varargs
+#    	# in case you want to use a vararg parameter as last parameter then name your last parameter for `params` varargs:
+#    	local command dir varargs
 #    	# shellcheck disable=SC2034
-#    	declare args=(command dir)
+#    	local -ra params=(command dir)
 #
 #    	source "$dir_of_tegonal_scripts/utility/parse-fn-args.sh"
+#    	parseFnArgs params "$@"
 #
 #    	# use varargs in another script
 #    	echo "${varargs[0]}"
@@ -65,14 +66,17 @@ if ! [ -v dir_of_tegonal_scripts ]; then
 fi
 
 function parseFnArgs() {
-
 	source "$dir_of_tegonal_scripts/utility/log.sh"
 
-	if ! [[ -v args[@] ]]; then
-		logError "parse-fn-args.sh requires you to define an array named 'args', for instance as follows"
-		echo >&2 "declare args=(variableStoringArg1 variableStoringArg2)"
+	if (($# < 2)); then
+		logError "At least two arguments need to be passed to parseFnArgs.\nGiven \033[0;36m%s\033[0m in \033[0;36m%s\033[0m\nFollowing a description of the parameters:\n" "$#" "${BASH_SOURCE[1]}"
+		echo >&2 '1. params		 an array with the parameter names'
+		echo >&2 '2... args...	the arguments as such, typically "$@"'
 		return 9
 	fi
+
+	local -n paramArr1=$1
+	shift
 
 	local withVarArgs
 	if declare -p varargs >/dev/null 2>&1; then
@@ -81,11 +85,11 @@ function parseFnArgs() {
 		withVarArgs=false
 	fi
 
-	if (($# < ${#args[@]})); then
-		logError "Not enough arguments supplied to \033[0m\033[0;36m%s\033[0m: expected %s, given %s\nFollowing a listing of the arguments (red means missing):\n" "${FUNCNAME[2]:-${FUNCNAME[1]}}" "${#args[@]}" "$#"
+	if (($# < ${#paramArr1[@]})); then
+		logError "Not enough arguments supplied to \033[0m\033[0;36m%s\033[0m: expected %s, given %s\nFollowing a listing of the arguments (red means missing):\n" "${FUNCNAME[2]:-${FUNCNAME[1]}}" "${#paramArr1[@]}" "$#"
 
 		local -i i=1
-		for name in "${args[@]}"; do
+		for name in "${paramArr1[@]}"; do
 			printf "\033[0m"
 			if ((i - 1 < $#)); then
 				printf "\033[0;32m"
@@ -99,14 +103,14 @@ function parseFnArgs() {
 		return 9
 	fi
 
-	if ! [ "$withVarArgs" ] && ! (($# == ${#args[@]})); then
-		logError "more arguments supplied than expected to \033[0m\033[0;36m%s\033[0m: expected %s, given %s\n" "${FUNCNAME[1]}" "${#args[@]}" "$#"
-		echo >&2 "in case you wanted your last parameter to be a vararg parameter, then use 'vararg' as last variable name in 'args'"
+	if ! [ "$withVarArgs" ] && ! (($# == ${#paramArr1[@]})); then
+		logError "more arguments supplied than expected to \033[0m\033[0;36m%s\033[0m: expected %s, given %s\n" "${FUNCNAME[1]}" "${#paramArr1[@]}" "$#"
+		echo >&2 "in case you wanted your last parameter to be a vararg parameter, then use 'vararg' as last variable name your array containing the parameter names"
 		return 9
 	fi
 
 	# assign arguments to specified variables
-	for name in "${args[@]}"; do
+	for name in "${paramArr1[@]}"; do
 		printf -v "${name}" "%s" "$1"
 		shift
 	done
@@ -118,4 +122,3 @@ function parseFnArgs() {
 		varargs=("$@")
 	fi
 }
-parseFnArgs "$@"

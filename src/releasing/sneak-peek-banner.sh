@@ -30,13 +30,14 @@ if ! [ -v dir_of_tegonal_scripts ]; then
 fi
 
 function sneakPeekBanner() {
+	source "$dir_of_tegonal_scripts/utility/parse-args.sh"
+
 	local command file
 	# shellcheck disable=SC2034
 	local -ra params=(
 		command '-c|--command' "either 'show' or 'hide'"
 		file '-f|--file' '(optional) the file where search & replace shall be done -- default: ./README.md'
 	)
-
 	local -r examples=$(
 		cat <<-EOM
 			# hide the sneak peek banner in ./README.md
@@ -46,8 +47,6 @@ function sneakPeekBanner() {
 			sneak-peek-banner.sh -c show -f ./docs/index.md
 		EOM
 	)
-
-	source "$dir_of_tegonal_scripts/utility/parse-args.sh"
 
 	parseArguments params "$examples" "$@"
 	if ! [ -v file ]; then file="./README.md"; fi

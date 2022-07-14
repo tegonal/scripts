@@ -30,13 +30,14 @@ if ! [ -v dir_of_tegonal_scripts ]; then
 fi
 
 function updateVersionReadme() {
+	source "$dir_of_tegonal_scripts/utility/parse-args.sh"
+
 	local version file
 	# shellcheck disable=SC2034
 	local -ra params=(
 		version '-v|--version' 'the version which shall be used'
 		file '-f|--file' '(optional) the file where search & replace shall be done -- default: ./README.md'
 	)
-
 	local -r examples=$(
 		cat <<-EOM
 			# update version for ./README.md
@@ -46,8 +47,6 @@ function updateVersionReadme() {
 			update-version-README.sh -v v0.1.0 -f ./docs/index.md
 		EOM
 	)
-
-	source "$dir_of_tegonal_scripts/utility/parse-args.sh"
 
 	parseArguments params "$examples" "$@"
 	if ! [ -v file ]; then file="./README.md"; fi
