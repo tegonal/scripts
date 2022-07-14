@@ -66,17 +66,20 @@ if ! [[ -v dir_of_tegonal_scripts ]]; then
 fi
 
 function parseFnArgs() {
+	source "$dir_of_tegonal_scripts/qa/checks.sh"
 	source "$dir_of_tegonal_scripts/utility/log.sh"
 
 	if (($# < 2)); then
 		logError "At least two arguments need to be passed to parseFnArgs.\nGiven \033[0;36m%s\033[0m in \033[0;36m%s\033[0m\nFollowing a description of the parameters:" "$#" "${BASH_SOURCE[1]}"
-		echo >&2 '1. params		 an array with the parameter names'
+		echo >&2 '1. params		  an array with the parameter names'
 		echo >&2 '2... args...	the arguments as such, typically "$@"'
 		return 9
 	fi
 
 	local -n paramArr1=$1
 	shift
+
+	checkArgIsArray paramArr1 1
 
 	local withVarArgs
 	if declare -p varargs >/dev/null 2>&1; then

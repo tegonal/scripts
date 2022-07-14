@@ -40,6 +40,7 @@ if ! [[ -v dir_of_tegonal_scripts ]]; then
 fi
 
 function runShellcheck() {
+	source "$dir_of_tegonal_scripts/qa/checks.sh"
 	source "$dir_of_tegonal_scripts/utility/log.sh"
 	source "$dir_of_tegonal_scripts/utility/recursive-declare-p.sh"
 
@@ -52,26 +53,15 @@ function runShellcheck() {
 	local -n directories=$1
 	local sourcePath=$2
 
-	reg='declare -a.*'
-	local arrayDefinition
-	arrayDefinition="$(set -e && recursiveDeclareP directories)"
-	if ! [[ "$arrayDefinition" =~ $reg ]]; then
-		logError "the passed array \033[1;34m%s\033[0m defined in %s is broken." "${!directories}" "${BASH_SOURCE[1]}"
-		printf >&2 "the first argument to %s needs to be a non-associative array, given:\n" "${FUNCNAME[0]}"
-		echo >&2 "$arrayDefinition"
-		return 9
-	fi
+	checkArgIsArray directories 1
 
 	local -i fileWithIssuesCounter=0
 	local -i fileCounter=0
 	while read -r -d $'\0' script; do
 		((fileCounter += 1))
 		declare output
-		# SC2312 Consider invoking this command separately to avoid masking its return value (or use '|| true' to ignore).
-		# ==> too many false positives
-		# SC2250 Prefer putting braces around variable references even when not strictly required.
-		# ==> IMO without braces reads nicer
-		output=$(shellcheck -C -x -o all -e SC2312 -e SC2250 -P "$sourcePath" "$script" || true)
+
+		output=$(shellcheck -C -x -o all -P "$sourcePath" "$script" || true)
 		if ! [[ $output == "" ]]; then
 			printf "%s\n" "$output"
 			((fileWithIssuesCounter += 1))
