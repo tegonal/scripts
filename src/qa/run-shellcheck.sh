@@ -60,11 +60,8 @@ function runShellcheck() {
 	while read -r -d $'\0' script; do
 		((fileCounter += 1))
 		declare output
-		# SC2312 Consider invoking this command separately to avoid masking its return value (or use '|| true' to ignore).
-		# ==> too many false positives
-		# SC2250 Prefer putting braces around variable references even when not strictly required.
-		# ==> IMO without braces reads nicer
-		output=$(shellcheck -C -x -o all -e SC2312 -e SC2250 -P "$sourcePath" "$script" || true)
+
+		output=$(shellcheck -C -x -o all -P "$sourcePath" "$script" || true)
 		if ! [[ $output == "" ]]; then
 			printf "%s\n" "$output"
 			((fileWithIssuesCounter += 1))
