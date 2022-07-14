@@ -87,6 +87,7 @@ function describeParameterTriple() {
 
 function checkParameterDefinitionIsTriple() {
 	source "$dir_of_tegonal_scripts/utility/log.sh"
+	source "$dir_of_tegonal_scripts/utility/recursive-declare-p.sh"
 
 	if ! (($# == 1)); then
 		logError "One parameter needs to be passed to checkParameterDefinitionIsTriple\nGiven \033[0;36m%s\033[0m in \033[0;36m%s\033[0m\nFollowing a description of the parameters:" "$#" "${BASH_SOURCE[1]}"
@@ -97,15 +98,12 @@ function checkParameterDefinitionIsTriple() {
 	local -n paramArr2=$1
 	local arrLength=${#paramArr2[@]}
 
+
 	local arrayDefinition
-	arrayDefinition=$(declare -p paramArr2)
-	local reg='^declare -n [^=]+=\"([^\"]+)\"$'
-	while [[ $arrayDefinition =~ $reg ]]; do
-		arrayDefinition=$(declare -p "${BASH_REMATCH[1]}")
-	done
+	arrayDefinition="$(set -e; recursiveDeclareP paramArr2)"
 	reg='declare -a.*'
 	if ! [[ "$arrayDefinition" =~ $reg ]]; then
-		logError "array with parameter definitions is broken\033[0m for \033[1;34m%s\033[0m in %s" "${!paramArr2}" "${BASH_SOURCE[2]}"
+		logError "array with parameter definitions is broken for \033[1;34m%s\033[0m in %s" "${!paramArr2}" "${BASH_SOURCE[2]}"
 		echo >&2 "the first argument needs to be a non-associative array, given:"
 		echo >&2 "$arrayDefinition"
 		echo >&2 ""
@@ -119,7 +117,7 @@ function checkParameterDefinitionIsTriple() {
 	fi
 
 	if ! ((arrLength % 3 == 0)); then
-		logError "array with parameter definitions is broken\033[0m for \033[1;34m%s\033[0m in %s" "${!paramArr2}" "${BASH_SOURCE[2]}"
+		logError "array with parameter definitions is broken for \033[1;34m%s\033[0m in %s" "${!paramArr2}" "${BASH_SOURCE[2]}"
 		describeParameterTriple
 		echo >&2 ""
 		echo >&2 "given:"
