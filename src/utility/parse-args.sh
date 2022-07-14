@@ -157,6 +157,8 @@ function parseArguments {
 	local examples=$2
 	shift 2
 
+	# we want to be sure that we return at this point even if someone has `set +e` thus the or clause
+	# shellcheck disable=SC2310
 	checkParameterDefinitionIsTriple paramArr1 || return $?
 
 	local arrLength="${#paramArr1[@]}"
@@ -211,6 +213,9 @@ function printHelp {
 	fi
 	local -n paramArr3=$1
 	local examples=$2
+
+	# we want to be sure that we return at this point even if someone has `set +e` thus the or clause
+	# shellcheck disable=SC2310
 	checkParameterDefinitionIsTriple paramArr3 || return $?
 
 	local arrLength="${#paramArr3[@]}"
@@ -252,6 +257,9 @@ function checkAllArgumentsSet {
 	fi
 	local -n paramArr4=$1
 	local examples=$2
+
+	# we want to be sure that we return at this point even if someone has `set +e` thus the or clause
+	# shellcheck disable=SC2310
 	checkParameterDefinitionIsTriple paramArr4 || return $?
 
 	local arrLength="${#paramArr4[@]}"
