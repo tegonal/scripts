@@ -89,10 +89,10 @@ Full usage example:
 ```bash
 #!/usr/bin/env bash
 set -eu
-declare scriptDir
-scriptDir="$(cd -- "$(dirname -- "${BASH_SOURCE[0]:-$0}")" &>/dev/null && pwd 2>/dev/null)"
-# Assuming update-version-README.sh is in the same directory as your script
-"$scriptDir/update-version-README.sh" -v 0.1.0
+declare dir_of_tegonal_scripts
+# Assuming tegonal's scripts are in the same directory as your script
+dir_of_tegonal_scripts="$(cd -- "$(dirname -- "${BASH_SOURCE[0]:-$0}")" &>/dev/null && pwd 2>/dev/null)"
+"$dir_of_tegonal_scripts/releasing/update-version-README.sh" -v 0.1.0
 ```
 
 </releasing-update-version-README>
@@ -128,10 +128,10 @@ Full usage example:
 ```bash
 #!/usr/bin/env bash
 set -eu
-declare scriptDir
-scriptDir="$(cd -- "$(dirname -- "${BASH_SOURCE[0]:-$0}")" &>/dev/null && pwd 2>/dev/null)"
-# Assuming update-version-scripts.sh is in the same directory as your script
-"$scriptDir/update-version-scripts.sh" -v 0.1.0
+declare dir_of_tegonal_scripts
+# Assuming tegonal's scripts are in the same directory as your script
+dir_of_tegonal_scripts="$(cd -- "$(dirname -- "${BASH_SOURCE[0]:-$0}")" &>/dev/null && pwd 2>/dev/null)"
+"$dir_of_tegonal_scripts/releasing/update-version-scripts.sh" -v 0.1.0
 ```
 
 </releasing-update-version-scripts>
@@ -180,10 +180,10 @@ Full usage example:
 ```bash
 #!/usr/bin/env bash
 set -eu
-declare scriptDir
-scriptDir="$(cd -- "$(dirname -- "${BASH_SOURCE[0]:-$0}")" &>/dev/null && pwd 2>/dev/null)"
-# Assuming sneak-peek-banner.sh is in the same directory as your script
-"$scriptDir/sneak-peek-banner.sh" -c hide
+declare dir_of_tegonal_scripts
+# Assuming tegonal's scripts are in the same directory as your script
+dir_of_tegonal_scripts="$(cd -- "$(dirname -- "${BASH_SOURCE[0]:-$0}")" &>/dev/null && pwd 2>/dev/null)"
+"$dir_of_tegonal_scripts/releasing/sneak-peek-banner.sh" -c hide
 ```
 
 </releasing-toggle-sections>
@@ -218,10 +218,10 @@ Full usage example:
 ```bash
 #!/usr/bin/env bash
 set -eu
-declare scriptDir
-scriptDir="$(cd -- "$(dirname -- "${BASH_SOURCE[0]:-$0}")" &>/dev/null && pwd 2>/dev/null)"
-# Assuming sneak-peek-banner.sh is in the same directory as your script
-"$scriptDir/sneak-peek-banner.sh" -c hide
+declare dir_of_tegonal_scripts
+# Assuming tegonal's scripts are in the same directory as your script
+dir_of_tegonal_scripts="$(cd -- "$(dirname -- "${BASH_SOURCE[0]:-$0}")" &>/dev/null && pwd 2>/dev/null)"
+"$dir_of_tegonal_scripts/releasing/sneak-peek-banner.sh" -c hide
 ```
 
 </releasing-sneak-peek-banner>
@@ -271,10 +271,10 @@ analysis.sh -p "%{21}" -v v0.1.0
 EOM
 )
 
-declare scriptDir
-scriptDir="$(cd -- "$(dirname -- "${BASH_SOURCE[0]:-$0}")" &>/dev/null && pwd 2>/dev/null)"
-# Assuming parse-args.sh is in the same directory as your script
-source "$scriptDir/parse-args.sh"
+declare dir_of_tegonal_scripts
+# Assuming tegonal's scripts are in the same directory as your script
+dir_of_tegonal_scripts="$(cd -- "$(dirname -- "${BASH_SOURCE[0]:-$0}")" &>/dev/null && pwd 2>/dev/null)"
+source "$dir_of_tegonal_scripts/utility/parse-args.sh"
 
 parseArguments params "$examples" "$@"
 # in case there are optional parameters, then fill them in here before calling checkAllArgumentsSet
@@ -298,6 +298,12 @@ Full usage example:
 #!/usr/bin/env bash
 set -eu
 
+if [ -v dir_of_tegonal_scripts ]; then
+	declare dir_of_tegonal_scripts
+	# Assuming tegonal's scripts are in the same directory as your script
+	dir_of_tegonal_scripts="$(cd -- "$(dirname -- "${BASH_SOURCE[0]:-$0}")" &>/dev/null && pwd 2>/dev/null)"
+fi
+
 function myFunction() {
 	# declare the variable you want to use and repeat in `declare args`
 	declare command dir
@@ -306,9 +312,7 @@ function myFunction() {
 	# shellcheck disable=SC2034
 	declare args=(command dir)
 
-	# Assuming parse-fn-args.sh is in the same directory as your script
-	scriptDir="$(cd -- "$(dirname -- "${BASH_SOURCE[0]:-$0}")" &>/dev/null && pwd 2>/dev/null)"
-	. "$scriptDir/parse-fn-args.sh"
+	source "$dir_of_tegonal_scripts/utility/parse-fn-args.sh"
 
 	# pass your variables storing the arguments to other scripts
 	echo "command: $command, dir: $dir"
@@ -322,9 +326,7 @@ function myFunctionWithVarargs() {
 	# shellcheck disable=SC2034
 	declare args=(command dir)
 
-	# Assuming parse-fn-args.sh is in the same directory as your script
-	scriptDir="$(cd -- "$(dirname -- "${BASH_SOURCE[0]:-$0}")" &>/dev/null && pwd 2>/dev/null)"
-	. "$scriptDir/parse-fn-args.sh"
+	source "$dir_of_tegonal_scripts/utility/parse-fn-args.sh"
 
 	# use varargs in another script
 	echo "${varargs[0]}"
@@ -347,9 +349,10 @@ Full usage example:
 #!/usr/bin/env bash
 set -eu
 
-# Assuming replace-snippet.sh is in the same directory as your script
-scriptDir="$( cd -- "$( dirname -- "${BASH_SOURCE[0]:-$0}"; )" &> /dev/null && pwd 2> /dev/null; )"
-source "$scriptDir/replace-snippet.sh"
+declare dir_of_tegonal_scripts
+# Assuming tegonal's scripts are in the same directory as your script
+dir_of_tegonal_scripts="$(cd -- "$(dirname -- "${BASH_SOURCE[0]:-$0}")" &>/dev/null && pwd 2>/dev/null)"
+source "$dir_of_tegonal_scripts/utility/replace-snippet.sh"
 
 declare file
 file=$(mktemp)
@@ -387,11 +390,11 @@ Full usage example:
 #!/usr/bin/env bash
 set -eu
 
-declare scriptDir
-scriptDir="$( cd -- "$( dirname -- "${BASH_SOURCE[0]:-$0}"; )" &> /dev/null && pwd 2> /dev/null; )";
+declare dir_of_tegonal_scripts
+# Assuming tegonal's scripts are in the same directory as your script
+dir_of_tegonal_scripts="$(cd -- "$(dirname -- "${BASH_SOURCE[0]:-$0}")" &>/dev/null && pwd 2>/dev/null)"
+source "$dir_of_tegonal_scripts/utility/update-bash-docu.sh"
 
-# Assuming update-bash-docu.sh is in the same directory as your script
-source "$scriptDir/update-bash-docu.sh"
 find . -name "*.sh" \
 	-not -name "*.doc.sh" \
 	-not -path "**.history/*" \
@@ -399,7 +402,7 @@ find . -name "*.sh" \
 	-print0 | while read -r -d $'\0' script
 		do
 			declare script="${script:2}"
-			replaceSnippetForScript "$scriptDir/$script" "${script////-}" . README.md
+			replaceSnippetForScript "$dir_of_tegonal_scripts/$script" "${script////-}" . README.md
 		done
 ```
 
@@ -415,10 +418,10 @@ Utility functions to log messages including a severity level where logError writ
 ```bash
 #!/usr/bin/env bash
 set -eu
-declare scriptDir
-scriptDir="$(cd -- "$(dirname -- "${BASH_SOURCE[0]:-$0}")" &>/dev/null && pwd 2>/dev/null)"
-# Assuming log.sh is in the same directory as your script
-source "$scriptDir/log.sh"
+declare dir_of_tegonal_scripts
+# Assuming tegonal's scripts are in the same directory as your script
+dir_of_tegonal_scripts="$(cd -- "$(dirname -- "${BASH_SOURCE[0]:-$0}")" &>/dev/null && pwd 2>/dev/null)"
+source "$dir_of_tegonal_scripts/utility/log.sh"
 
 logInfo "hello %s\n" "world"
 # INFO: hello world
@@ -433,6 +436,10 @@ logWarning "oho...\n"
 
 logError "illegal state...\n"
 # ERROR: illegal state...
+
+seconds=54
+logSuccess "import finished in %s seconds\n" "$seconds"
+# SUCCESS: import finished in 54 seconds
 ```
 
 </utility-log>

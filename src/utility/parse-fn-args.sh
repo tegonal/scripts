@@ -9,12 +9,18 @@
 #
 #######  Description  #############
 #
-# script which is supposed to be sourced and checks that enough arguments are provided and assigns to defined variables
+# Intended to parse positional function parameters including assignment and check if there are enough arguments
 #
 #######  Usage  ###################
 #
 #    #!/usr/bin/env bash
 #    set -eu
+#
+#    if [ -v dir_of_tegonal_scripts ]; then
+#    	declare dir_of_tegonal_scripts
+#    	# Assuming tegonal's scripts are in the same directory as your script
+#    	dir_of_tegonal_scripts="$(cd -- "$(dirname -- "${BASH_SOURCE[0]:-$0}")" &>/dev/null && pwd 2>/dev/null)"
+#    fi
 #
 #    function myFunction() {
 #    	# declare the variable you want to use and repeat in `declare args`
@@ -24,10 +30,7 @@
 #    	# shellcheck disable=SC2034
 #    	declare args=(command dir)
 #
-#    	# Assuming parse-fn-args.sh is in the same directory as your script
-#    	local scriptDir
-#    	scriptDir="$(cd -- "$(dirname -- "${BASH_SOURCE[0]:-$0}")" &>/dev/null && pwd 2>/dev/null)"
-#    	. "$scriptDir/parse-fn-args.sh"
+#    	source "$dir_of_tegonal_scripts/utility/parse-fn-args.sh"
 #
 #    	# pass your variables storing the arguments to other scripts
 #    	echo "command: $command, dir: $dir"
@@ -41,10 +44,7 @@
 #    	# shellcheck disable=SC2034
 #    	declare args=(command dir)
 #
-#    	# Assuming parse-fn-args.sh is in the same directory as your script
-#    	local scriptDir
-#    	scriptDir="$(cd -- "$(dirname -- "${BASH_SOURCE[0]:-$0}")" &>/dev/null && pwd 2>/dev/null)"
-#    	. "$scriptDir/parse-fn-args.sh"
+#    	source "$dir_of_tegonal_scripts/utility/parse-fn-args.sh"
 #
 #    	# use varargs in another script
 #    	echo "${varargs[0]}"
@@ -56,19 +56,22 @@
 #	1. Does not support named arguments (see parse-args.sh if you want named arguments for your function)
 #
 ###################################
+set -eu
 
-declare scriptDir_of_parseFnArgs
-scriptDir_of_parseFnArgs="$(cd -- "$(dirname -- "${BASH_SOURCE[0]:-$0}")" &>/dev/null && pwd 2>/dev/null)"
-declare -r scriptDir_of_parseFnArgs
+if ! [ -v dir_of_tegonal_scripts ]; then
+	declare dir_of_tegonal_scripts
+	dir_of_tegonal_scripts="$(realpath "$(cd -- "$(dirname -- "${BASH_SOURCE[0]:-$0}")" &>/dev/null && pwd 2>/dev/null)/..")"
+	declare -r dir_of_tegonal_scripts
+fi
 
 function parseFnArgs() {
 
-	source "$scriptDir_of_parseFnArgs/log.sh"
+	source "$dir_of_tegonal_scripts/utility/log.sh"
 
 	if ! [[ -v args[@] ]]; then
 		logError "parse-fn-args.sh requires you to define an array named 'args', for instance as follows"
 		echo >&2 "declare args=(variableStoringArg1 variableStoringArg2)"
-		return 2
+		return 9
 	fi
 
 	local withVarArgs
@@ -93,13 +96,13 @@ function parseFnArgs() {
 			((i = i + 1))
 		done
 		printf "\033[0m"
-		return 1
+		return 9
 	fi
 
 	if ! [ "$withVarArgs" ] && ! (($# == ${#args[@]})); then
 		logError "more arguments supplied than expected to \033[0m\033[0;36m%s\033[0m: expected %s, given %s\n" "${FUNCNAME[1]}" "${#args[@]}" "$#"
 		echo >&2 "in case you wanted your last parameter to be a vararg parameter, then use 'vararg' as last variable name in 'args'"
-		return 1
+		return 9
 	fi
 
 	# assign arguments to specified variables

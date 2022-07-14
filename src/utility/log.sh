@@ -17,10 +17,10 @@
 #
 #    #!/usr/bin/env bash
 #    set -eu
-#    declare scriptDir
-#    scriptDir="$(cd -- "$(dirname -- "${BASH_SOURCE[0]:-$0}")" &>/dev/null && pwd 2>/dev/null)"
-#    # Assuming log.sh is in the same directory as your script
-#    source "$scriptDir/log.sh"
+#    declare dir_of_tegonal_scripts
+#    # Assuming tegonal's scripts are in the same directory as your script
+#    dir_of_tegonal_scripts="$(cd -- "$(dirname -- "${BASH_SOURCE[0]:-$0}")" &>/dev/null && pwd 2>/dev/null)"
+#    source "$dir_of_tegonal_scripts/utility/log.sh"
 #
 #    logInfo "hello %s\n" "world"
 #    # INFO: hello world
@@ -35,6 +35,10 @@
 #
 #    logError "illegal state...\n"
 #    # ERROR: illegal state...
+#
+#    seconds=54
+#    logSuccess "import finished in %s seconds\n" "$seconds"
+#    # SUCCESS: import finished in 54 seconds
 #
 ###################################
 set -eu
@@ -55,4 +59,11 @@ function logError() {
 	local msg=$1
 	shift
 	printf >&2 "\033[0;31mERROR\033[0m: $msg" "$@"
+}
+
+
+function logSuccess() {
+	local msg=$1
+	shift
+	printf "\033[0;32mSUCCESS\033[0m: $msg" "$@"
 }

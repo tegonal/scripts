@@ -41,10 +41,10 @@
 #    EOM
 #    )
 #
-#    declare scriptDir
-#    scriptDir="$(cd -- "$(dirname -- "${BASH_SOURCE[0]:-$0}")" &>/dev/null && pwd 2>/dev/null)"
-#    # Assuming parse-args.sh is in the same directory as your script
-#    source "$scriptDir/parse-args.sh"
+#    declare dir_of_tegonal_scripts
+#    # Assuming tegonal's scripts are in the same directory as your script
+#    dir_of_tegonal_scripts="$(cd -- "$(dirname -- "${BASH_SOURCE[0]:-$0}")" &>/dev/null && pwd 2>/dev/null)"
+#    source "$dir_of_tegonal_scripts/utility/parse-args.sh"
 #
 #    parseArguments params "$examples" "$@"
 #    # in case there are optional parameters, then fill them in here before calling checkAllArgumentsSet
@@ -64,9 +64,11 @@
 ###################################
 set -eu
 
-declare dir_of_parseArgs
-dir_of_parseArgs="$(cd -- "$(dirname -- "${BASH_SOURCE[0]:-$0}")" &>/dev/null && pwd 2>/dev/null)"
-declare -r dir_of_parseArgs
+if ! [ -v dir_of_tegonal_scripts ]; then
+	declare dir_of_tegonal_scripts
+	dir_of_tegonal_scripts="$(realpath "$(cd -- "$(dirname -- "${BASH_SOURCE[0]:-$0}")" &>/dev/null && pwd 2>/dev/null)/..")"
+	declare -r dir_of_tegonal_scripts
+fi
 
 function describeParameterTriple() {
 	echo >&2 "The array needs to contain parameter definitions where a parameter definition consist of 3 values:"
@@ -84,7 +86,7 @@ function describeParameterTriple() {
 }
 
 function checkParameterDefinitionIsTriple() {
-	source "$dir_of_parseArgs/log.sh"
+	source "$dir_of_tegonal_scripts/utility/log.sh"
 
 	if ! (($# == 1)); then
 		logError "One parameter needs to be passed to checkParameterDefinitionIsTriple\nGiven \033[0;36m%s\033[0m in \033[0;36m%s\033[0m\nFollowing a description of the parameters:\n" "$#" "${BASH_SOURCE[1]}"
@@ -141,7 +143,7 @@ function checkParameterDefinitionIsTriple() {
 }
 
 function parseArguments {
-	source "$dir_of_parseArgs/log.sh"
+	source "$dir_of_tegonal_scripts/utility/log.sh"
 
 	if (($# < 2)); then
 		logError "At least two arguments need to be passed to parseArguments.\nGiven \033[0;36m%s\033[0m in \033[0;36m%s\033[0m\nFollowing a description of the parameters:\n" "$#" "${BASH_SOURCE[1]}"
@@ -199,7 +201,7 @@ function parseArguments {
 }
 
 function printHelp {
-	source "$dir_of_parseArgs/log.sh"
+	source "$dir_of_tegonal_scripts/utility/log.sh"
 
 	if ! (($# == 2)); then
 		logError "Two arguments need to be passed to printHelp.\nGiven \033[0;36m%s\033[0m in \033[0;36m%s\033[0m\nFollowing a description of the parameters:\n" "$#" "${BASH_SOURCE[1]}"
@@ -240,7 +242,7 @@ function printHelp {
 }
 
 function checkAllArgumentsSet {
-	source "$dir_of_parseArgs/log.sh"
+	source "$dir_of_tegonal_scripts/utility/log.sh"
 
 	if ! (($# == 2)); then
 		logError "Two arguments need to be passed to checkAllArgumentsSet.\nGiven \033[0;36m%s\033[0m in \033[0;36m%s\033[0m\nFollowing a description of the parameters:\n" "$#" "${BASH_SOURCE[1]}"

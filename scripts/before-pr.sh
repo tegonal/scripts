@@ -9,13 +9,23 @@
 #
 set -eu
 
-declare scriptDir
-scriptDir="$(cd -- "$(dirname -- "${BASH_SOURCE[0]:-$0}")" &>/dev/null && pwd 2>/dev/null)"
+if ! [ -v scriptDir ]; then
+	declare scriptDir
+	scriptDir="$(cd -- "$(dirname -- "${BASH_SOURCE[0]:-$0}")" &>/dev/null && pwd 2>/dev/null)"
+	declare -r scriptDir
+fi
+
+if ! [ -v dir_of_tegonal_scripts ]; then
+	declare dir_of_tegonal_scripts
+	dir_of_tegonal_scripts="$(realpath "$scriptDir/../src")"
+	declare -r dir_of_tegonal_scripts
+fi
+source "$dir_of_tegonal_scripts/utility/log.sh"
 
 if [ -x "$(command -v "shellspec")" ]; then
 	shellspec
 else
-	printf "\033[1;33mWarning\033[0m: shellspec is not installed, skipping tests\n"
+	logWarning "shellspec is not installed, skipping running specs\n"
 fi
 
 "$scriptDir/run-shellcheck.sh"

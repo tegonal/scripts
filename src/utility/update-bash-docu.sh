@@ -19,11 +19,11 @@
 #    #!/usr/bin/env bash
 #    set -eu
 #
-#    declare scriptDir
-#    scriptDir="$( cd -- "$( dirname -- "${BASH_SOURCE[0]:-$0}"; )" &> /dev/null && pwd 2> /dev/null; )";
+#    declare dir_of_tegonal_scripts
+#    # Assuming tegonal's scripts are in the same directory as your script
+#    dir_of_tegonal_scripts="$(cd -- "$(dirname -- "${BASH_SOURCE[0]:-$0}")" &>/dev/null && pwd 2>/dev/null)"
+#    source "$dir_of_tegonal_scripts/utility/update-bash-docu.sh"
 #
-#    # Assuming update-bash-docu.sh is in the same directory as your script
-#    source "$scriptDir/update-bash-docu.sh"
 #    find . -name "*.sh" \
 #    	-not -name "*.doc.sh" \
 #    	-not -path "**.history/*" \
@@ -31,15 +31,17 @@
 #    	-print0 | while read -r -d $'\0' script
 #    		do
 #    			declare script="${script:2}"
-#    			replaceSnippetForScript "$scriptDir/$script" "${script////-}" . README.md
+#    			replaceSnippetForScript "$dir_of_tegonal_scripts/$script" "${script////-}" . README.md
 #    		done
 #
 ###################################
 set -eu
 
-declare dir_of_updateBashDocumentation
-dir_of_updateBashDocumentation="$(cd -- "$(dirname -- "${BASH_SOURCE[0]:-$0}")" &>/dev/null && pwd 2>/dev/null)"
-declare -r dir_of_updateBashDocumentation
+if ! [ -v dir_of_tegonal_scripts ]; then
+	declare dir_of_tegonal_scripts
+	dir_of_tegonal_scripts="$(realpath "$(cd -- "$(dirname -- "${BASH_SOURCE[0]:-$0}")" &>/dev/null && pwd 2>/dev/null)/..")"
+	declare -r dir_of_tegonal_scripts
+fi
 
 function updateBashDocumentation() {
 	local script id dir pattern
@@ -47,8 +49,8 @@ function updateBashDocumentation() {
 	# shellcheck disable=SC2034
 	local -ra args=(script id dir pattern)
 
-	source "$dir_of_updateBashDocumentation/parse-fn-args.sh" || return 1
-	source "$dir_of_updateBashDocumentation/replace-snippet.sh"
+	source "$dir_of_tegonal_scripts/utility/parse-fn-args.sh" || return 1
+	source "$dir_of_tegonal_scripts/utility/replace-snippet.sh"
 
 	local snippet
 	snippet=$(cat "${script::-3}.doc.sh")

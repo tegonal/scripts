@@ -25,10 +25,10 @@ analysis.sh -p "%{21}" -v v0.1.0
 EOM
 )
 
-declare scriptDir
-scriptDir="$(cd -- "$(dirname -- "${BASH_SOURCE[0]:-$0}")" &>/dev/null && pwd 2>/dev/null)"
-# Assuming parse-args.sh is in the same directory as your script
-source "$scriptDir/parse-args.sh"
+declare dir_of_tegonal_scripts
+# Assuming tegonal's scripts are in the same directory as your script
+dir_of_tegonal_scripts="$(cd -- "$(dirname -- "${BASH_SOURCE[0]:-$0}")" &>/dev/null && pwd 2>/dev/null)"
+source "$dir_of_tegonal_scripts/utility/parse-args.sh"
 
 parseArguments params "$examples" "$@"
 # in case there are optional parameters, then fill them in here before calling checkAllArgumentsSet

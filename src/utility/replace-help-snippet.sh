@@ -17,9 +17,10 @@
 #    #!/usr/bin/env bash
 #    set -eu
 #
-#    # Assuming replace-help-snippet.sh is in the same directory as your script
-#    scriptDir="$( cd -- "$( dirname -- "${BASH_SOURCE[0]:-$0}"; )" &> /dev/null && pwd 2> /dev/null; )"
-#    source "$scriptDir/replace-help-snippet.sh"
+#    declare dir_of_tegonal_scripts
+#    # Assuming tegonal's scripts are in the same directory as your script
+#    dir_of_tegonal_scripts="$(cd -- "$(dirname -- "${BASH_SOURCE[0]:-$0}")" &>/dev/null && pwd 2>/dev/null)"
+#    source "$dir_of_tegonal_scripts/utility/replace-help-snippet.sh"
 #
 #    declare file
 #    file=$(mktemp)
@@ -42,9 +43,12 @@
 #
 ###################################
 set -eu
-declare dir_of_replaceHelpSnippet
-dir_of_replaceHelpSnippet="$(cd -- "$(dirname -- "${BASH_SOURCE[0]:-$0}")" &>/dev/null && pwd 2>/dev/null)"
-declare -r dir_of_replaceHelpSnippet
+
+if ! [ -v dir_of_tegonal_scripts ]; then
+	declare dir_of_tegonal_scripts
+	dir_of_tegonal_scripts="$(realpath "$(cd -- "$(dirname -- "${BASH_SOURCE[0]:-$0}")" &>/dev/null && pwd 2>/dev/null)/..")"
+	declare -r dir_of_tegonal_scripts
+fi
 
 function replaceHelpSnippet() {
 	local script id dir pattern varargs
@@ -52,8 +56,8 @@ function replaceHelpSnippet() {
 	# shellcheck disable=SC2034
 	local -ra args=(script id dir pattern)
 
-	source "$dir_of_replaceHelpSnippet/parse-fn-args.sh" || return 1
-	source "$dir_of_replaceHelpSnippet/replace-snippet.sh"
+	source "$dir_of_tegonal_scripts/utility/parse-fn-args.sh" || return 1
+	source "$dir_of_tegonal_scripts/utility/replace-snippet.sh"
 
 	if ((${#varargs[@]} == 0)); then
 		varargs=("--help")

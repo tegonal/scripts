@@ -15,17 +15,19 @@
 #
 #    #!/usr/bin/env bash
 #    set -eu
-#    declare scriptDir
-#    scriptDir="$(cd -- "$(dirname -- "${BASH_SOURCE[0]:-$0}")" &>/dev/null && pwd 2>/dev/null)"
-#    # Assuming update-version-scripts.sh is in the same directory as your script
-#    "$scriptDir/update-version-scripts.sh" -v 0.1.0
+#    declare dir_of_tegonal_scripts
+#    # Assuming tegonal's scripts are in the same directory as your script
+#    dir_of_tegonal_scripts="$(cd -- "$(dirname -- "${BASH_SOURCE[0]:-$0}")" &>/dev/null && pwd 2>/dev/null)"
+#    "$dir_of_tegonal_scripts/releasing/update-version-scripts.sh" -v 0.1.0
 #
 ###################################
 set -eu
 
-declare dir_of_updateVersionScripts
-dir_of_updateVersionScripts="$(cd -- "$(dirname -- "${BASH_SOURCE[0]:-$0}")" &>/dev/null && pwd 2>/dev/null)"
-declare -r dir_of_updateVersionScripts
+if ! [ -v dir_of_tegonal_scripts ]; then
+	declare dir_of_tegonal_scripts
+	dir_of_tegonal_scripts="$(realpath "$(cd -- "$(dirname -- "${BASH_SOURCE[0]:-$0}")" &>/dev/null && pwd 2>/dev/null)/..")"
+	declare -r dir_of_tegonal_scripts
+fi
 
 function updateVersionScripts() {
 	local version directory
@@ -45,7 +47,7 @@ function updateVersionScripts() {
 		EOM
 	)
 
-	source "$dir_of_updateVersionScripts/../utility/parse-args.sh"
+	source "$dir_of_tegonal_scripts/utility/parse-args.sh"
 
 	parseArguments params "$examples" "$@"
 	if ! [ -v directory ]; then directory="./src"; fi

@@ -1,6 +1,12 @@
 #!/usr/bin/env bash
 set -eu
 
+if [ -v dir_of_tegonal_scripts ]; then
+	declare dir_of_tegonal_scripts
+	# Assuming tegonal's scripts are in the same directory as your script
+	dir_of_tegonal_scripts="$(cd -- "$(dirname -- "${BASH_SOURCE[0]:-$0}")" &>/dev/null && pwd 2>/dev/null)"
+fi
+
 function myFunction() {
 	# declare the variable you want to use and repeat in `declare args`
 	declare command dir
@@ -9,10 +15,7 @@ function myFunction() {
 	# shellcheck disable=SC2034
 	declare args=(command dir)
 
-	# Assuming parse-fn-args.sh is in the same directory as your script
-	local scriptDir
-	scriptDir="$(cd -- "$(dirname -- "${BASH_SOURCE[0]:-$0}")" &>/dev/null && pwd 2>/dev/null)"
-	. "$scriptDir/parse-fn-args.sh"
+	source "$dir_of_tegonal_scripts/utility/parse-fn-args.sh"
 
 	# pass your variables storing the arguments to other scripts
 	echo "command: $command, dir: $dir"
@@ -26,10 +29,7 @@ function myFunctionWithVarargs() {
 	# shellcheck disable=SC2034
 	declare args=(command dir)
 
-	# Assuming parse-fn-args.sh is in the same directory as your script
-	local scriptDir
-	scriptDir="$(cd -- "$(dirname -- "${BASH_SOURCE[0]:-$0}")" &>/dev/null && pwd 2>/dev/null)"
-	. "$scriptDir/parse-fn-args.sh"
+	source "$dir_of_tegonal_scripts/utility/parse-fn-args.sh"
 
 	# use varargs in another script
 	echo "${varargs[0]}"

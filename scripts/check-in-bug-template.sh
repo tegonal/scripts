@@ -9,8 +9,11 @@
 #
 set -eu
 
-declare scriptDir
-scriptDir="$(cd -- "$(dirname -- "${BASH_SOURCE[0]:-$0}")" &>/dev/null && pwd 2>/dev/null)"
+if ! [ -v scriptDir ]; then
+	declare scriptDir
+	scriptDir="$(cd -- "$(dirname -- "${BASH_SOURCE[0]:-$0}")" &>/dev/null && pwd 2>/dev/null)"
+	declare -r scriptDir
+fi
 
 find "$scriptDir/../src" -name "*.sh" \
 	-not -name "*.doc.sh" \

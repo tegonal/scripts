@@ -15,17 +15,19 @@
 #
 #    #!/usr/bin/env bash
 #    set -eu
-#    declare scriptDir
-#    scriptDir="$(cd -- "$(dirname -- "${BASH_SOURCE[0]:-$0}")" &>/dev/null && pwd 2>/dev/null)"
-#    # Assuming update-version-README.sh is in the same directory as your script
-#    "$scriptDir/update-version-README.sh" -v 0.1.0
+#    declare dir_of_tegonal_scripts
+#    # Assuming tegonal's scripts are in the same directory as your script
+#    dir_of_tegonal_scripts="$(cd -- "$(dirname -- "${BASH_SOURCE[0]:-$0}")" &>/dev/null && pwd 2>/dev/null)"
+#    "$dir_of_tegonal_scripts/releasing/update-version-README.sh" -v 0.1.0
 #
 ###################################
 set -eu
 
-declare dir_of_updateVersionReadme
-dir_of_updateVersionReadme="$(cd -- "$(dirname -- "${BASH_SOURCE[0]:-$0}")" &>/dev/null && pwd 2>/dev/null)"
-declare -r dir_of_updateVersionReadme
+if ! [ -v dir_of_tegonal_scripts ]; then
+	declare dir_of_tegonal_scripts
+	dir_of_tegonal_scripts="$(realpath "$(cd -- "$(dirname -- "${BASH_SOURCE[0]:-$0}")" &>/dev/null && pwd 2>/dev/null)/..")"
+	declare -r dir_of_tegonal_scripts
+fi
 
 function updateVersionReadme() {
 	local version file
@@ -45,7 +47,7 @@ function updateVersionReadme() {
 		EOM
 	)
 
-	source "$dir_of_updateVersionReadme/../utility/parse-args.sh"
+	source "$dir_of_tegonal_scripts/utility/parse-args.sh"
 
 	parseArguments params "$examples" "$@"
 	if ! [ -v file ]; then file="./README.md"; fi

@@ -16,9 +16,10 @@
 #    #!/usr/bin/env bash
 #    set -eu
 #
-#    # Assuming replace-snippet.sh is in the same directory as your script
-#    scriptDir="$( cd -- "$( dirname -- "${BASH_SOURCE[0]:-$0}"; )" &> /dev/null && pwd 2> /dev/null; )"
-#    source "$scriptDir/replace-snippet.sh"
+#    declare dir_of_tegonal_scripts
+#    # Assuming tegonal's scripts are in the same directory as your script
+#    dir_of_tegonal_scripts="$(cd -- "$(dirname -- "${BASH_SOURCE[0]:-$0}")" &>/dev/null && pwd 2>/dev/null)"
+#    source "$dir_of_tegonal_scripts/utility/replace-snippet.sh"
 #
 #    declare file
 #    file=$(mktemp)
@@ -42,9 +43,11 @@
 ###################################
 set -eu
 
-declare dir_of_replaceSnippet
-dir_of_replaceSnippet="$(cd -- "$(dirname -- "${BASH_SOURCE[0]:-$0}")" &>/dev/null && pwd 2>/dev/null)"
-declare -r dir_of_replaceSnippet
+if ! [ -v dir_of_tegonal_scripts ]; then
+	declare dir_of_tegonal_scripts
+	dir_of_tegonal_scripts="$(realpath "$(cd -- "$(dirname -- "${BASH_SOURCE[0]:-$0}")" &>/dev/null && pwd 2>/dev/null)/..")"
+	declare -r dir_of_tegonal_scripts
+fi
 
 function replaceSnippet() {
 	local file id dir pattern snippet
@@ -52,7 +55,7 @@ function replaceSnippet() {
 	# shellcheck disable=SC2034
 	local -ra args=(file id dir pattern snippet)
 
-	source "$dir_of_replaceSnippet/parse-fn-args.sh" || return 1
+	source "$dir_of_tegonal_scripts/utility/parse-fn-args.sh" || return 1
 
 	local quotedSnippet
 	quotedSnippet=$(echo "$snippet" | perl -0777 -pe 's/(@|\$|\\)/\\$1/g;')

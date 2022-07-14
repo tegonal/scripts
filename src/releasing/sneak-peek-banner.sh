@@ -15,17 +15,19 @@
 #
 #    #!/usr/bin/env bash
 #    set -eu
-#    declare scriptDir
-#    scriptDir="$(cd -- "$(dirname -- "${BASH_SOURCE[0]:-$0}")" &>/dev/null && pwd 2>/dev/null)"
-#    # Assuming sneak-peek-banner.sh is in the same directory as your script
-#    "$scriptDir/sneak-peek-banner.sh" -c hide
+#    declare dir_of_tegonal_scripts
+#    # Assuming tegonal's scripts are in the same directory as your script
+#    dir_of_tegonal_scripts="$(cd -- "$(dirname -- "${BASH_SOURCE[0]:-$0}")" &>/dev/null && pwd 2>/dev/null)"
+#    "$dir_of_tegonal_scripts/releasing/sneak-peek-banner.sh" -c hide
 #
 ###################################
 set -eu
 
-declare dir_of_sneakPeekBanner
-dir_of_sneakPeekBanner="$(cd -- "$(dirname -- "${BASH_SOURCE[0]:-$0}")" &>/dev/null && pwd 2>/dev/null)"
-declare -r dir_of_sneakPeekBanner
+if ! [ -v dir_of_tegonal_scripts ]; then
+	declare dir_of_tegonal_scripts
+	dir_of_tegonal_scripts="$(realpath "$(cd -- "$(dirname -- "${BASH_SOURCE[0]:-$0}")" &>/dev/null && pwd 2>/dev/null)/..")"
+	declare -r dir_of_tegonal_scripts
+fi
 
 function sneakPeekBanner() {
 	local command file
@@ -45,7 +47,7 @@ function sneakPeekBanner() {
 		EOM
 	)
 
-	source "$dir_of_sneakPeekBanner/../utility/parse-args.sh"
+	source "$dir_of_tegonal_scripts/utility/parse-args.sh"
 
 	parseArguments params "$examples" "$@"
 	if ! [ -v file ]; then file="./README.md"; fi

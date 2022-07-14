@@ -1,6 +1,6 @@
 #!/usr/bin/env bash
 set -eu
-declare scriptDir
-scriptDir="$(cd -- "$(dirname -- "${BASH_SOURCE[0]:-$0}")" &>/dev/null && pwd 2>/dev/null)"
-# Assuming update-version-scripts.sh is in the same directory as your script
-"$scriptDir/update-version-scripts.sh" -v 0.1.0
+declare dir_of_tegonal_scripts
+# Assuming tegonal's scripts are in the same directory as your script
+dir_of_tegonal_scripts="$(cd -- "$(dirname -- "${BASH_SOURCE[0]:-$0}")" &>/dev/null && pwd 2>/dev/null)"
+"$dir_of_tegonal_scripts/releasing/update-version-scripts.sh" -v 0.1.0
