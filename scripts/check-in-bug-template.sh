@@ -27,7 +27,7 @@ find "$dir_of_tegonal_scripts" -name "*.sh" \
 	-print0 |
 	while read -r -d $'\0' script; do
 		declare path=${script:(${#dir_of_tegonal_scripts}+1)}
-		grep "$path" "$scriptDir/../.github/ISSUE_TEMPLATE/bug_report.yaml" >/dev/null || (logError "you forgot to add \033[0;36m%s\033[0m to .github/ISSUE_TEMPLATE/bug_report.yaml\n" "$path" && false)
+		grep "$path" "$scriptDir/../.github/ISSUE_TEMPLATE/bug_report.yaml" >/dev/null || (logError "you forgot to add \033[0;36m%s\033[0m to .github/ISSUE_TEMPLATE/bug_report.yaml" "$path" && exit 1)
 	done
 
-logSuccess "all scripts are listed in the bug template\n"
+logSuccess "all scripts are listed in the bug template"

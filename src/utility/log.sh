@@ -22,28 +22,40 @@
 #    dir_of_tegonal_scripts="$(cd -- "$(dirname -- "${BASH_SOURCE[0]:-$0}")" &>/dev/null && pwd 2>/dev/null)"
 #    source "$dir_of_tegonal_scripts/utility/log.sh"
 #
-#    logInfo "hello %s\n" "world"
+#    logInfo "hello %s" "world"
 #    # INFO: hello world
 #
-#    logInfo "line %s\n" 1 2 3
+#    logInfo "line %s" 1 2 3
 #    # INFO: line 1
 #    # INFO: line 2
 #    # INFO: line 3
 #
-#    logWarning "oho...\n"
+#    logWarning "oho..."
 #    # WARNING: oho...
 #
-#    logError "illegal state...\n"
+#    logError "illegal state..."
 #    # ERROR: illegal state...
 #
 #    seconds=54
-#    logSuccess "import finished in %s seconds\n" "$seconds"
+#    logSuccess "import finished in %s seconds" "$seconds"
 #    # SUCCESS: import finished in 54 seconds
+#
+#    # in case you don't want a newline at the end of the message, then use one of
+#    logInfoWithoutNewline "hello"
+#    # INFO: hello%
+#    logWarningWithoutNewline "be careful"
+#    logErrorWithoutNewline "oho"
+#    logSuccessWithoutNewline "yay"
 #
 ###################################
 set -eu
 
 function logInfo() {
+	local msg=$1
+	shift
+	logInfoWithoutNewline "$msg\n" "$@"
+}
+function logInfoWithoutNewline() {
 	local msg=$1
 	shift
 	printf "\033[0;34mINFO\033[0m: $msg" "$@"
@@ -52,17 +64,31 @@ function logInfo() {
 function logWarning() {
 	local msg=$1
 	shift
+	logWarningWithoutNewline "$msg\n" "$@"
+}
+function logWarningWithoutNewline() {
+	local msg=$1
+	shift
 	printf "\033[0;93mWARNING\033[0m: $msg" "$@"
 }
 
 function logError() {
 	local msg=$1
 	shift
+	logErrorWithoutNewline "$msg\n" "$@"
+}
+function logErrorWithoutNewline() {
+	local msg=$1
+	shift
 	printf >&2 "\033[0;31mERROR\033[0m: $msg" "$@"
 }
 
-
 function logSuccess() {
+	local msg=$1
+	shift
+	logSuccessWithoutNewline "$msg\n" "$@"
+}
+function logSuccessWithoutNewline() {
 	local msg=$1
 	shift
 	printf "\033[0;32mSUCCESS\033[0m: $msg" "$@"

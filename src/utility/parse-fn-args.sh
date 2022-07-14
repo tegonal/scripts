@@ -69,7 +69,7 @@ function parseFnArgs() {
 	source "$dir_of_tegonal_scripts/utility/log.sh"
 
 	if (($# < 2)); then
-		logError "At least two arguments need to be passed to parseFnArgs.\nGiven \033[0;36m%s\033[0m in \033[0;36m%s\033[0m\nFollowing a description of the parameters:\n" "$#" "${BASH_SOURCE[1]}"
+		logError "At least two arguments need to be passed to parseFnArgs.\nGiven \033[0;36m%s\033[0m in \033[0;36m%s\033[0m\nFollowing a description of the parameters:" "$#" "${BASH_SOURCE[1]}"
 		echo >&2 '1. params		 an array with the parameter names'
 		echo >&2 '2... args...	the arguments as such, typically "$@"'
 		return 9
@@ -86,7 +86,7 @@ function parseFnArgs() {
 	fi
 
 	if (($# < ${#paramArr1[@]})); then
-		logError "Not enough arguments supplied to \033[0m\033[0;36m%s\033[0m: expected %s, given %s\nFollowing a listing of the arguments (red means missing):\n" "${FUNCNAME[2]:-${FUNCNAME[1]}}" "${#paramArr1[@]}" "$#"
+		logError "Not enough arguments supplied to \033[0m\033[0;36m%s\033[0m: expected %s, given %s\nFollowing a listing of the arguments (red means missing):" "${FUNCNAME[2]:-${FUNCNAME[1]}}" "${#paramArr1[@]}" "$#"
 
 		local -i i=1
 		for name in "${paramArr1[@]}"; do
@@ -104,7 +104,7 @@ function parseFnArgs() {
 	fi
 
 	if ! [ "$withVarArgs" ] && ! (($# == ${#paramArr1[@]})); then
-		logError "more arguments supplied than expected to \033[0m\033[0;36m%s\033[0m: expected %s, given %s\n" "${FUNCNAME[1]}" "${#paramArr1[@]}" "$#"
+		logError "more arguments supplied than expected to \033[0m\033[0;36m%s\033[0m: expected %s, given %s" "${FUNCNAME[1]}" "${#paramArr1[@]}" "$#"
 		echo >&2 "in case you wanted your last parameter to be a vararg parameter, then use 'vararg' as last variable name your array containing the parameter names"
 		return 9
 	fi

@@ -25,7 +25,7 @@ source "$dir_of_tegonal_scripts/utility/log.sh"
 if [ -x "$(command -v "shellspec")" ]; then
 	shellspec
 else
-	logWarning "shellspec is not installed, skipping running specs\n"
+	logWarning "shellspec is not installed, skipping running specs"
 fi
 
 "$scriptDir/run-shellcheck.sh"

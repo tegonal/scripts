@@ -89,7 +89,7 @@ function checkParameterDefinitionIsTriple() {
 	source "$dir_of_tegonal_scripts/utility/log.sh"
 
 	if ! (($# == 1)); then
-		logError "One parameter needs to be passed to checkParameterDefinitionIsTriple\nGiven \033[0;36m%s\033[0m in \033[0;36m%s\033[0m\nFollowing a description of the parameters:\n" "$#" "${BASH_SOURCE[1]}"
+		logError "One parameter needs to be passed to checkParameterDefinitionIsTriple\nGiven \033[0;36m%s\033[0m in \033[0;36m%s\033[0m\nFollowing a description of the parameters:" "$#" "${BASH_SOURCE[1]}"
 		echo >&2 '1. params		 an array with the parameter definitions'
 		return 9
 	fi
@@ -105,7 +105,7 @@ function checkParameterDefinitionIsTriple() {
 	done
 	reg='declare -a.*'
 	if ! [[ "$arrayDefinition" =~ $reg ]]; then
-		logError "array with parameter definitions is broken\033[0m for \033[1;34m%s\033[0m in %s\n" "${!paramArr2}" "${BASH_SOURCE[2]}"
+		logError "array with parameter definitions is broken\033[0m for \033[1;34m%s\033[0m in %s" "${!paramArr2}" "${BASH_SOURCE[2]}"
 		echo >&2 "the first argument needs to be a non-associative array, given:"
 		echo >&2 "$arrayDefinition"
 		echo >&2 ""
@@ -114,12 +114,12 @@ function checkParameterDefinitionIsTriple() {
 	fi
 
 	if ((arrLength == 0)); then
-		logError "array with parameter definitions is broken, length was 0\033[0m in %s\n" "${BASH_SOURCE[2]}"
+		logError "array with parameter definitions is broken, length was 0\033[0m in %s" "${BASH_SOURCE[2]}"
 		describeParameterTriple
 	fi
 
 	if ! ((arrLength % 3 == 0)); then
-		logError "array with parameter definitions is broken\033[0m for \033[1;34m%s\033[0m in %s\n" "${!paramArr2}" "${BASH_SOURCE[2]}"
+		logError "array with parameter definitions is broken\033[0m for \033[1;34m%s\033[0m in %s" "${!paramArr2}" "${BASH_SOURCE[2]}"
 		describeParameterTriple
 		echo >&2 ""
 		echo >&2 "given:"
@@ -146,7 +146,7 @@ function parseArguments {
 	source "$dir_of_tegonal_scripts/utility/log.sh"
 
 	if (($# < 2)); then
-		logError "At least two arguments need to be passed to parseArguments.\nGiven \033[0;36m%s\033[0m in \033[0;36m%s\033[0m\nFollowing a description of the parameters:\n" "$#" "${BASH_SOURCE[1]}"
+		logError "At least two arguments need to be passed to parseArguments.\nGiven \033[0;36m%s\033[0m in \033[0;36m%s\033[0m\nFollowing a description of the parameters:" "$#" "${BASH_SOURCE[1]}"
 		echo >&2 '1. params		 an array with the parameter definitions'
 		echo >&2 '2. examples	 a string containing examples (or an empty string)'
 		echo >&2 '3... args...	the arguments as such, typically "$@"'
@@ -176,7 +176,7 @@ function parseArguments {
 			if [[ "$argName" =~ $regex ]]; then
 				# that's where the black magic happens, we are assigning to global variables here
 				if [ -z "$2" ]; then
-					logError "no value defined for parameter \033[1;34m%s\033[0m in %s\n" "$pattern" "${BASH_SOURCE[1]}"
+					logError "no value defined for parameter \033[1;36m%s\033[0m in %s" "$pattern" "${BASH_SOURCE[1]}"
 					echo >&2 "following the help documentation:"
 					echo >&2 ""
 					printHelp >&2 paramArr1 "$examples"
@@ -190,10 +190,10 @@ function parseArguments {
 
 		if ((expectedName == 0)); then
 			if [[ "$argName" =~ ^- ]]; then
-				logWarning "ignored argument %s (and its value %s)\033[0m\n" "$argName" "$2"
+				logWarning "ignored argument \033[1;36m%s\033[0m (and its value %s)" "$argName" "$2"
 				shift
 			else
-				logWarning "ignored argument %s\033[0m\n" "$argName"
+				logWarning "ignored argument \033[1;36m%s\033[0m" "$argName"
 			fi
 		fi
 		shift
@@ -204,7 +204,7 @@ function printHelp {
 	source "$dir_of_tegonal_scripts/utility/log.sh"
 
 	if ! (($# == 2)); then
-		logError "Two arguments need to be passed to printHelp.\nGiven \033[0;36m%s\033[0m in \033[0;36m%s\033[0m\nFollowing a description of the parameters:\n" "$#" "${BASH_SOURCE[1]}"
+		logError "Two arguments need to be passed to printHelp.\nGiven \033[0;36m%s\033[0m in \033[0;36m%s\033[0m\nFollowing a description of the parameters:" "$#" "${BASH_SOURCE[1]}"
 		echo >&2 '1. params		 an array with the parameter definitions'
 		echo >&2 '2. examples	 a string containing examples (or an empty string)'
 		return 9
@@ -245,7 +245,7 @@ function checkAllArgumentsSet {
 	source "$dir_of_tegonal_scripts/utility/log.sh"
 
 	if ! (($# == 2)); then
-		logError "Two arguments need to be passed to checkAllArgumentsSet.\nGiven \033[0;36m%s\033[0m in \033[0;36m%s\033[0m\nFollowing a description of the parameters:\n" "$#" "${BASH_SOURCE[1]}"
+		logError "Two arguments need to be passed to checkAllArgumentsSet.\nGiven \033[0;36m%s\033[0m in \033[0;36m%s\033[0m\nFollowing a description of the parameters:" "$#" "${BASH_SOURCE[1]}"
 		echo >&2 '1. params		 an array with the parameter definitions'
 		echo >&2 '2. examples	 a string containing examples (or an empty string)'
 		return 9
@@ -260,7 +260,7 @@ function checkAllArgumentsSet {
 		local paramName="${paramArr4[i]}"
 		local pattern="${paramArr4[i + 1]}"
 		if ! [ -v "$paramName" ]; then
-			logError "%s not set via %s\n" "$paramName" "$pattern"
+			logError "%s not set via %s" "$paramName" "$pattern"
 			good=0
 		fi
 	done
