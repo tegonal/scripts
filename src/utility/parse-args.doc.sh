@@ -32,7 +32,7 @@ source "$dir_of_tegonal_scripts/utility/parse-args.sh"
 
 parseArguments params "$examples" "$@"
 # in case there are optional parameters, then fill them in here before calling checkAllArgumentsSet
-if ! [ -v directory ]; then directory="."; fi
+if ! [[ -v directory ]]; then directory="."; fi
 checkAllArgumentsSet params "$examples"
 
 # pass your variables storing the arguments to other scripts

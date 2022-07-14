@@ -9,30 +9,19 @@
 #
 set -eu
 
-if ! [ -v scriptDir ]; then
-	declare scriptDir
-	scriptDir="$(cd -- "$(dirname -- "${BASH_SOURCE[0]:-$0}")" &>/dev/null && pwd 2>/dev/null)"
-	declare -r scriptDir
-fi
-
-if ! [ -v dir_of_tegonal_scripts ]; then
+if ! [[ -v dir_of_tegonal_scripts ]]; then
 	declare dir_of_tegonal_scripts
-	dir_of_tegonal_scripts="$(realpath "$scriptDir/../src")"
+	dir_of_tegonal_scripts="$(realpath "$(cd -- "$(dirname -- "${BASH_SOURCE[0]:-$0}")" &>/dev/null && pwd 2>/dev/null)/../src")"
 	declare -r dir_of_tegonal_scripts
 fi
 
-source "$dir_of_tegonal_scripts/utility/log.sh"
+source "$dir_of_tegonal_scripts/qa/run-shellcheck.sh"
 
-declare foundIssues=false
-while read -r -d $'\0' script; do
-	declare output=
-	output=$(shellcheck -C -s bash -S info -x -o all -e SC2312 -P "$scriptDir/../src/" "$script" || true)
-	if ! [ "$output" == "" ]; then
-		printf "%s\n" "$output"
-		foundIssues=true
-	fi
-done < <(find "$scriptDir/../src" "$scriptDir/../scripts" "$scriptDir/../spec" -name '*.sh' -print0)
-
-if [ "$foundIssues" == true ]; then
-	die "found shellcheck issues, aborting"
-fi
+# shellcheck disable=SC2034
+declare -a dirs=(
+	"$dir_of_tegonal_scripts"
+	"$dir_of_tegonal_scripts/../scripts"
+	"$dir_of_tegonal_scripts/../spec"
+)
+declare sourcePath="$dir_of_tegonal_scripts"
+runShellcheck dirs "$sourcePath"

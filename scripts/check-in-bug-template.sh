@@ -9,13 +9,13 @@
 #
 set -eu
 
-if ! [ -v scriptDir ]; then
+if ! [[ -v scriptDir ]]; then
 	declare scriptDir
 	scriptDir="$(cd -- "$(dirname -- "${BASH_SOURCE[0]:-$0}")" &>/dev/null && pwd 2>/dev/null)"
 	declare -r scriptDir
 fi
 
-if ! [ -v dir_of_tegonal_scripts ]; then
+if ! [[ -v dir_of_tegonal_scripts ]]; then
 	declare dir_of_tegonal_scripts
 	dir_of_tegonal_scripts="$(realpath "$scriptDir/../src")"
 	declare -r dir_of_tegonal_scripts

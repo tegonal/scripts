@@ -48,7 +48,7 @@
 #
 #    parseArguments params "$examples" "$@"
 #    # in case there are optional parameters, then fill them in here before calling checkAllArgumentsSet
-#    if ! [ -v directory ]; then directory="."; fi
+#    if ! [[ -v directory ]]; then directory="."; fi
 #    checkAllArgumentsSet params "$examples"
 #
 #    # pass your variables storing the arguments to other scripts
@@ -64,7 +64,7 @@
 ###################################
 set -eu
 
-if ! [ -v dir_of_tegonal_scripts ]; then
+if ! [[ -v dir_of_tegonal_scripts ]]; then
 	declare dir_of_tegonal_scripts
 	dir_of_tegonal_scripts="$(realpath "$(cd -- "$(dirname -- "${BASH_SOURCE[0]:-$0}")" &>/dev/null && pwd 2>/dev/null)/..")"
 	declare -r dir_of_tegonal_scripts
@@ -175,7 +175,7 @@ function parseArguments {
 			regex="^($pattern)$"
 			if [[ "$argName" =~ $regex ]]; then
 				# that's where the black magic happens, we are assigning to global variables here
-				if [ -z "$2" ]; then
+				if [[ -z $2 ]]; then
 					logError "no value defined for parameter \033[1;36m%s\033[0m in %s" "$pattern" "${BASH_SOURCE[1]}"
 					echo >&2 "following the help documentation:"
 					echo >&2 ""
@@ -238,7 +238,7 @@ function printHelp {
 			echo "$pattern"
 		fi
 	done
-	if [ -n "$examples" ]; then
+	if [[ -n $examples ]]; then
 		printf "\n\033[1;33mExamples:\033[0m\n"
 		echo "$examples"
 	fi
@@ -265,7 +265,7 @@ function checkAllArgumentsSet {
 	for ((i = 0; i < arrLength; i += 3)); do
 		local paramName="${paramArr4[i]}"
 		local pattern="${paramArr4[i + 1]}"
-		if ! [ -v "$paramName" ]; then
+		if ! [[ -v "$paramName" ]]; then
 			logError "%s not set via %s" "$paramName" "$pattern"
 			good=0
 		fi
