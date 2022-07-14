@@ -19,6 +19,7 @@ body:
     attributes:
       label: Script
       options:
+        - qa/run-shellcheck.sh
         - releasing/sneak-peek-banner.sh
         - releasing/toggle-sections.sh
         - releasing/update-version-README.sh

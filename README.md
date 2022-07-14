@@ -29,6 +29,8 @@ For instance, the [README of v0.5.0](https://github.com/tegonal/scripts/tree/v0.
 
 The scripts are ordered by topic:
 
+- [Quality Assurance](#quality-assurance)
+  - [runShellcheck](#runshellcheck)
 - [Releasing](#releasing)
   - [Update Version in README](#update-version-in-readme)
   - [Update Version in bash scripts](#update-version-in-bash-scripts)
@@ -46,6 +48,40 @@ The scripts are ordered by topic:
 See also:
 - [Contributors and contribute](#contributors-and-contribute)
 - [License](#license)
+
+# Quality Assurance
+
+The scripts under this topic perform checks or execute qa tools.
+
+## runShellcheck
+
+A function which expects the name of an array of dirs as first argument and a source path as second argument (which is 
+passed to shellcheck via -P parameter). It then executes shellcheck for each *.sh in these directories with predefined
+settings for shellcheck.
+
+<qa-run-shellcheck>
+
+<!-- auto-generated, do not modify here but in src/qa/run-shellcheck.sh -->
+```bash
+#!/usr/bin/env bash
+set -eu
+declare dir_of_tegonal_scripts
+# Assuming tegonal's scripts are in the same directory as your script
+dir_of_tegonal_scripts="$(cd -- "$(dirname -- "${BASH_SOURCE[0]:-$0}")" &>/dev/null && pwd 2>/dev/null)"
+source "$dir_of_tegonal_scripts/qa/run-shellcheck.sh"
+
+# shellcheck disable=SC2034
+declare -a dirs=(
+	"$dir_of_tegonal_scripts"
+	"$dir_of_tegonal_scripts/../scripts"
+	"$dir_of_tegonal_scripts/../spec"
+)
+declare sourcePath="$dir_of_tegonal_scripts"
+runShellcheck dirs "$sourcePath"
+```
+
+</qa-run-shellcheck>
+
 
 # Releasing
 
