@@ -42,16 +42,17 @@
 ###################################
 set -eu
 
+declare dir_of_replaceSnippet
+dir_of_replaceSnippet="$(cd -- "$(dirname -- "${BASH_SOURCE[0]:-$0}")" &>/dev/null && pwd 2>/dev/null)"
+declare -r dir_of_replaceSnippet
+
 function replaceSnippet() {
 	local file id dir pattern snippet
 	# args is required for parse-fn-args.sh thus:
 	# shellcheck disable=SC2034
 	local -ra args=(file id dir pattern snippet)
 
-	local scriptDir
-	scriptDir="$( cd -- "$( dirname -- "${BASH_SOURCE[0]:-$0}"; )" &> /dev/null && pwd 2> /dev/null; )";
-	local -r scriptDir
-	source "$scriptDir/parse-fn-args.sh" || return 1
+	source "$dir_of_replaceSnippet/parse-fn-args.sh" || return 1
 
 	local quotedSnippet
 	quotedSnippet=$(echo "$snippet" | perl -0777 -pe 's/(@|\$|\\)/\\$1/g;')
@@ -59,6 +60,6 @@ function replaceSnippet() {
 	find "$dir" -name "$pattern" \
 		-exec echo "updating $id in {} " \; \
 		-exec perl -0777 -i \
-			-pe "s@<${id}>[\S\s]+</${id}>@<${id}>\n\n<!-- auto-generated, do not modify here but in $(realpath --relative-to "$PWD" "$file") -->\n$quotedSnippet\n\n</${id}>@g;" \
-			{} \;	2>/dev/null || true
+		-pe "s@<${id}>[\S\s]+</${id}>@<${id}>\n\n<!-- auto-generated, do not modify here but in $(realpath --relative-to "$PWD" "$file") -->\n$quotedSnippet\n\n</${id}>@g;" \
+		{} \; 2>/dev/null || true
 }

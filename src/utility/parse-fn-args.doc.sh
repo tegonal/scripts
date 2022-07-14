@@ -10,6 +10,7 @@ function myFunction() {
 	declare args=(command dir)
 
 	# Assuming parse-fn-args.sh is in the same directory as your script
+	local scriptDir
 	scriptDir="$(cd -- "$(dirname -- "${BASH_SOURCE[0]:-$0}")" &>/dev/null && pwd 2>/dev/null)"
 	. "$scriptDir/parse-fn-args.sh"
 
@@ -26,6 +27,7 @@ function myFunctionWithVarargs() {
 	declare args=(command dir)
 
 	# Assuming parse-fn-args.sh is in the same directory as your script
+	local scriptDir
 	scriptDir="$(cd -- "$(dirname -- "${BASH_SOURCE[0]:-$0}")" &>/dev/null && pwd 2>/dev/null)"
 	. "$scriptDir/parse-fn-args.sh"
 

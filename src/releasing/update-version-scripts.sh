@@ -23,6 +23,10 @@
 ###################################
 set -eu
 
+declare dir_of_updateVersionScripts
+dir_of_updateVersionScripts="$(cd -- "$(dirname -- "${BASH_SOURCE[0]:-$0}")" &>/dev/null && pwd 2>/dev/null)"
+declare -r dir_of_updateVersionScripts
+
 function updateVersionScripts() {
 	local version directory
 	# shellcheck disable=SC2034
@@ -41,10 +45,7 @@ function updateVersionScripts() {
 		EOM
 	)
 
-	local scriptDir
-	scriptDir="$(cd -- "$(dirname -- "${BASH_SOURCE[0]:-$0}")" &>/dev/null && pwd 2>/dev/null)"
-	local -r scriptDir
-	source "$scriptDir/../utility/parse-args.sh"
+	source "$dir_of_updateVersionScripts/../utility/parse-args.sh"
 
 	parseArguments params "$examples" "$@"
 	if ! [ -v directory ]; then directory="./src"; fi

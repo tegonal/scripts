@@ -25,6 +25,7 @@
 #    	declare args=(command dir)
 #
 #    	# Assuming parse-fn-args.sh is in the same directory as your script
+#    	local scriptDir
 #    	scriptDir="$(cd -- "$(dirname -- "${BASH_SOURCE[0]:-$0}")" &>/dev/null && pwd 2>/dev/null)"
 #    	. "$scriptDir/parse-fn-args.sh"
 #
@@ -41,6 +42,7 @@
 #    	declare args=(command dir)
 #
 #    	# Assuming parse-fn-args.sh is in the same directory as your script
+#    	local scriptDir
 #    	scriptDir="$(cd -- "$(dirname -- "${BASH_SOURCE[0]:-$0}")" &>/dev/null && pwd 2>/dev/null)"
 #    	. "$scriptDir/parse-fn-args.sh"
 #
@@ -55,11 +57,13 @@
 #
 ###################################
 
+declare scriptDir_of_parseFnArgs
+scriptDir_of_parseFnArgs="$(cd -- "$(dirname -- "${BASH_SOURCE[0]:-$0}")" &>/dev/null && pwd 2>/dev/null)"
+declare -r scriptDir_of_parseFnArgs
+
 function parseFnArgs() {
-	local scriptDir
-	scriptDir="$(cd -- "$(dirname -- "${BASH_SOURCE[0]:-$0}")" &>/dev/null && pwd 2>/dev/null)"
-	local -r scriptDir
-	source "$scriptDir/log.sh"
+
+	source "$scriptDir_of_parseFnArgs/log.sh"
 
 	if ! [[ -v args[@] ]]; then
 		logError "parse-fn-args.sh requires you to define an array named 'args', for instance as follows"

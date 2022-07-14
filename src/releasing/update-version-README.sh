@@ -23,6 +23,10 @@
 ###################################
 set -eu
 
+declare dir_of_updateVersionReadme
+dir_of_updateVersionReadme="$(cd -- "$(dirname -- "${BASH_SOURCE[0]:-$0}")" &>/dev/null && pwd 2>/dev/null)"
+declare -r dir_of_updateVersionReadme
+
 function updateVersionReadme() {
 	local version file
 	# shellcheck disable=SC2034
@@ -41,10 +45,7 @@ function updateVersionReadme() {
 		EOM
 	)
 
-	local scriptDir
-	scriptDir="$(cd -- "$(dirname -- "${BASH_SOURCE[0]:-$0}")" &>/dev/null && pwd 2>/dev/null)"
-	local -r scriptDir
-	source "$scriptDir/../utility/parse-args.sh"
+	source "$dir_of_updateVersionReadme/../utility/parse-args.sh"
 
 	parseArguments params "$examples" "$@"
 	if ! [ -v file ]; then file="./README.md"; fi

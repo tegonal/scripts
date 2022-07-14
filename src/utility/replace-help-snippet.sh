@@ -42,6 +42,9 @@
 #
 ###################################
 set -eu
+declare dir_of_replaceHelpSnippet
+dir_of_replaceHelpSnippet="$(cd -- "$(dirname -- "${BASH_SOURCE[0]:-$0}")" &>/dev/null && pwd 2>/dev/null)"
+declare -r dir_of_replaceHelpSnippet
 
 function replaceHelpSnippet() {
 	local script id dir pattern varargs
@@ -49,11 +52,8 @@ function replaceHelpSnippet() {
 	# shellcheck disable=SC2034
 	local -ra args=(script id dir pattern)
 
-	local scriptDir
-	scriptDir="$(cd -- "$(dirname -- "${BASH_SOURCE[0]:-$0}")" &>/dev/null && pwd 2>/dev/null)"
-	local -r scriptDir
-	source "$scriptDir/parse-fn-args.sh" || return 1
-	source "$scriptDir/replace-snippet.sh"
+	source "$dir_of_replaceHelpSnippet/parse-fn-args.sh" || return 1
+	source "$dir_of_replaceHelpSnippet/replace-snippet.sh"
 
 	if ((${#varargs[@]} == 0)); then
 		varargs=("--help")

@@ -27,6 +27,10 @@
 ###################################
 set -eu
 
+declare dir_of_toggleSections
+dir_of_toggleSections="$(cd -- "$(dirname -- "${BASH_SOURCE[0]:-$0}")" &>/dev/null && pwd 2>/dev/null)"
+declare -r dir_of_toggleSections
+
 function toggleSections() {
 
 	local command file
@@ -44,11 +48,7 @@ function toggleSections() {
 			toggle-sections.sh -c release -f ./docs/index.md
 		EOM
 	)
-
-	local scriptDir
-	scriptDir="$(cd -- "$(dirname -- "${BASH_SOURCE[0]:-$0}")" &>/dev/null && pwd 2>/dev/null)"
-	local -r scriptDir
-	source "$scriptDir/../utility/parse-args.sh"
+	source "$dir_of_toggleSections/../utility/parse-args.sh"
 
 	parseArguments params "$examples" "$@"
 	if ! [ -v file ]; then file="./README.md"; fi

@@ -37,17 +37,18 @@
 ###################################
 set -eu
 
-function updateBashDocumentation(){
+declare dir_of_updateBashDocumentation
+dir_of_updateBashDocumentation="$(cd -- "$(dirname -- "${BASH_SOURCE[0]:-$0}")" &>/dev/null && pwd 2>/dev/null)"
+declare -r dir_of_updateBashDocumentation
+
+function updateBashDocumentation() {
 	local script id dir pattern
 	# args is required for parse-fn-args.sh thus:
 	# shellcheck disable=SC2034
 	local -ra args=(script id dir pattern)
 
-	local scriptDir
-	scriptDir="$( cd -- "$( dirname -- "${BASH_SOURCE[0]:-$0}"; )" &> /dev/null && pwd 2> /dev/null; )";
-	local -r scriptDir
-	source "$scriptDir/parse-fn-args.sh" || return 1
-	source "$scriptDir/replace-snippet.sh"
+	source "$dir_of_updateBashDocumentation/parse-fn-args.sh" || return 1
+	source "$dir_of_updateBashDocumentation/replace-snippet.sh"
 
 	local snippet
 	snippet=$(cat "${script::-3}.doc.sh")
