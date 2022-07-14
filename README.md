@@ -37,9 +37,11 @@ The scripts are ordered by topic:
 
 - [Script Utilities](#script-utilities)
   - [Parse arguments](#parse-arguments)
+  - [log functions](#log)
+  - [Recursive `declare -p`](#recursive-declare--p)
   - [Replace Snippets](#replace-snippets)
   - [Update Documentation](#update-bash-documentation)
-  - [log](#log)
+
 
 See also:
 - [Contributors and contribute](#contributors-and-contribute)
@@ -345,6 +347,89 @@ function myFunctionWithVarargs() {
 
 </utility-parse-fn-args>
 
+
+## Log
+
+Utility functions to log messages including a severity level where logError writes to stderr
+
+<utility-log>
+
+<!-- auto-generated, do not modify here but in src/utility/log.sh -->
+```bash
+#!/usr/bin/env bash
+set -eu
+declare dir_of_tegonal_scripts
+# Assuming tegonal's scripts are in the same directory as your script
+dir_of_tegonal_scripts="$(cd -- "$(dirname -- "${BASH_SOURCE[0]:-$0}")" &>/dev/null && pwd 2>/dev/null)"
+source "$dir_of_tegonal_scripts/utility/log.sh"
+
+logInfo "hello %s" "world"
+# INFO: hello world
+
+logInfo "line %s" 1 2 3
+# INFO: line 1
+# INFO: line 2
+# INFO: line 3
+
+logWarning "oho..."
+# WARNING: oho...
+
+logError "illegal state..."
+# ERROR: illegal state...
+
+seconds=54
+logSuccess "import finished in %s seconds" "$seconds"
+# SUCCESS: import finished in 54 seconds
+
+die "fatal error, shutting down"
+# ERROR: fatal error, shutting down
+# exit 1
+
+# in case you don't want a newline at the end of the message, then use one of
+logInfoWithoutNewline "hello"
+# INFO: hello%
+logWarningWithoutNewline "be careful"
+logErrorWithoutNewline "oho"
+logSuccessWithoutNewline "yay"
+```
+
+</utility-log>
+
+## Recursive `declare -p`
+
+Utility function to find out the initial `declare` statement after following `declare -n` statements
+
+<utility-recursive-declare-p>
+
+<!-- auto-generated, do not modify here but in src/utility/recursive-declare-p.sh -->
+```bash
+#!/usr/bin/env bash
+# shellcheck disable=SC2034
+set -eu
+
+declare dir_of_tegonal_scripts
+# Assuming tegonal's scripts are in the same directory as your script
+dir_of_tegonal_scripts="$(cd -- "$(dirname -- "${BASH_SOURCE[0]:-$0}")" &>/dev/null && pwd 2>/dev/null)"
+source "$dir_of_tegonal_scripts/utility/recursive-declare-p.sh"
+
+declare -i tmp=1
+declare -n ref1=tmp
+declare -n ref2=ref1
+declare -n ref3=ref2
+
+printf "%s\n" \
+	"$(set -e; recursiveDeclareP tmp)" \
+	"$(set -e; recursiveDeclareP ref1)" \
+	"$(set -e; recursiveDeclareP ref2)" \
+	"$(set -e; recursiveDeclareP ref3)"
+# declare -i tmp="1"
+# declare -i tmp="1"
+# declare -i tmp="1"
+# declare -i tmp="1"
+```
+
+</utility-recursive-declare-p>
+
 ## Replace Snippets
 
 If you want to include some code in markdown files (or any other HTML-like file) then replace-snippet.sh could come in handy.
@@ -416,53 +501,6 @@ find . -name "*.sh" \
 ```
 
 </utility-update-bash-docu>
-
-## Log
-
-Utility functions to log messages including a severity level where logError writes to stderr
-
-<utility-log>
-
-<!-- auto-generated, do not modify here but in src/utility/log.sh -->
-```bash
-#!/usr/bin/env bash
-set -eu
-declare dir_of_tegonal_scripts
-# Assuming tegonal's scripts are in the same directory as your script
-dir_of_tegonal_scripts="$(cd -- "$(dirname -- "${BASH_SOURCE[0]:-$0}")" &>/dev/null && pwd 2>/dev/null)"
-source "$dir_of_tegonal_scripts/utility/log.sh"
-
-logInfo "hello %s" "world"
-# INFO: hello world
-
-logInfo "line %s" 1 2 3
-# INFO: line 1
-# INFO: line 2
-# INFO: line 3
-
-logWarning "oho..."
-# WARNING: oho...
-
-logError "illegal state..."
-# ERROR: illegal state...
-
-seconds=54
-logSuccess "import finished in %s seconds" "$seconds"
-# SUCCESS: import finished in 54 seconds
-
-die "fatal error, shutting down"
-# ERROR: fatal error, shutting down
-# exit 1
-
-# in case you don't want a newline at the end of the message, then use one of
-logInfoWithoutNewline "hello"
-# INFO: hello%
-logWarningWithoutNewline "be careful"
-logErrorWithoutNewline "oho"
-logSuccessWithoutNewline "yay"
-```
-
-</utility-log>
 
 # Contributors and contribute
 
