@@ -57,7 +57,7 @@ function updateVersionScripts() {
 	if ! [[ -v additionalPattern ]]; then additionalPattern=""; fi
 	checkAllArgumentsSet params "$examples" "$TEGONAL_SCRIPTS_VERSION"
 
-	echo "set version $version in bash headers"
+	echo "set version $version in bash headers in directory $directory"
 	if [[ -n $additionalPattern ]]; then
 		echo "also going to search for $additionalPattern and replace with \${1}$version\${2}"
 	fi
@@ -65,7 +65,7 @@ function updateVersionScripts() {
 	find "$directory" -name "*.sh" -print0 |
 		while read -r -d $'\0' script; do
 			perl -0777 -i \
-				-pe "s/Version:.+(\n[\S\s]+?###+\s+Description)/Version: $version\${1}/g;" \
+				-pe "s/Version:.+(\n[\S\s]+?###)/Version: $version\${1}/g;" \
 				"$script"
 
 			if [[ -n $additionalPattern ]]; then
