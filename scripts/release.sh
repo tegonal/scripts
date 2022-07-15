@@ -63,13 +63,13 @@ if ! [[ $branch == "main" ]]; then
 fi
 if ! (($(git rev-list --count origin/main..main) == 0)); then
 	logError "you are ahead of origin, please push first and check if CI succeeds before releasing"
-	git log origin/main..main
+	git -P log origin/main..main
 	exit 1
 fi
 if ! (($(git rev-list --count main..origin/main) == 0)); then
 	git fetch
-	logError "you are behind of origin. I already fetched the changes for you, please check if you still want to release. Following the changes"
-	git log main..origin/main
+	logError "you are behind of origin. I already fetched the changes for you, please check if you still want to release. Following the changes:"
+	git -P log main..origin/main
 	exit 1
 fi
 
