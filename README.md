@@ -166,6 +166,7 @@ Help:
 Parameters:
 -v              the version which shall be used
 -f|--file       (optional) the file where search & replace shall be done -- default: ./README.md
+-p|--pattern    (optional) pattern which is used in a perl command (separator /) to search & replace additional occurrences. It should define two match groups and the replace operation looks as follows: \$1=$version\$2
 
 --help     prints this help
 --version  prints the version of this script
@@ -176,6 +177,10 @@ update-version-README.sh -v v0.1.0
 
 # update version for ./docs/index.md
 update-version-README.sh -v v0.1.0 -f ./docs/index.md
+
+# update version for ./README.md
+# also replace occurrences of the defined pattern
+update-version-README.sh -v v0.1.0 -p "(VERSION=['"])[^'"]+(['"])
 
 INFO: Version of update-version-README.sh is:
 v0.6.0-SNAPSHOT
@@ -213,7 +218,7 @@ Help:
 Parameters:
 -v               the version which shall be used
 -d|--directory   (optional) the working directory -- default: ./src
--p|--pattern     (optional) pattern which is used to search & replace additional occurrences. The pattern is used in a regex of the form (pattern)=.* and is replaced with $1=$version
+-p|--pattern     (optional) pattern which is used in a perl command (separator /) to search & replace additional occurrences. It should define two match groups and the replace operation looks as follows: \$1=$version\$2
 
 --help     prints this help
 --version  prints the version of this script
@@ -224,6 +229,10 @@ update-version-scripts.sh -v v0.1.0
 
 # update version to v0.1.0 for all *.sh in ./scripts and subdirectories
 update-version-scripts.sh -v v0.1.0 -d ./scripts
+
+# update version to v0.1.0 for all *.sh in ./src and subdirectories
+# also replace occurrences of the defined pattern
+update-version-scripts.sh -v v0.1.0 -p "(VERSION=['"])[^'"]+(['"])
 
 INFO: Version of update-version-scripts.sh is:
 v0.6.0-SNAPSHOT

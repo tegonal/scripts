@@ -48,7 +48,7 @@ function updateVersionScripts() {
 
 			# update version to v0.1.0 for all *.sh in ./src and subdirectories
 			# also replace occurrences of the defined pattern
-			update-version-scripts.sh -v v0.1.0 -p "(VERSION=['"])[^'"]+(['"])
+			update-version-scripts.sh -v v0.1.0 -p "(VERSION=['\"])[^'\"]+(['\"])"
 		EOM
 	)
 
@@ -60,12 +60,12 @@ function updateVersionScripts() {
 	find "$directory" -name "*.sh" -print0 |
 		while read -r -d $'\0' script; do
 			perl -0777 -i \
-				-pe "s/Version:.+(\n[\S\s]+?###+\s+Description)/Version: $version\$1/g;" \
+				-pe "s/Version:.+(\n[\S\s]+?###+\s+Description)/Version: $version\${1}/g;" \
 				"$script"
 
 			if [[ -n $additionalPattern ]]; then
 				perl -0777 -i \
-					-pe "s/$additionalPattern/\$1$version\$2/g;" \
+					-pe "s/$additionalPattern/\${1}$version\${2}/g;" \
 					"$script"
 			fi
 		done
