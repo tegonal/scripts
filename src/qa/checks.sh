@@ -32,10 +32,8 @@
 set -eu
 
 if ! [[ -v dir_of_tegonal_scripts ]]; then
-	declare dir_of_tegonal_scripts
 	dir_of_tegonal_scripts="$(realpath "$(cd -- "$(dirname -- "${BASH_SOURCE[0]:-$0}")" &>/dev/null && pwd 2>/dev/null)/..")"
-	declare -r dir_of_tegonal_scripts
-	source "$dir_of_tegonal_scripts/utility/source-once.sh"
+	source "$dir_of_tegonal_scripts/setup.sh" "$dir_of_tegonal_scripts"
 fi
 sourceOnce "$dir_of_tegonal_scripts/utility/recursive-declare-p.sh"
 
