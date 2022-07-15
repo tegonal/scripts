@@ -21,8 +21,8 @@ fi
 
 sourceOnce "$dir_of_tegonal_scripts/utility/log.sh"
 
-if ! [[ -v "$1" ]]; then
-	die "no version provided as first argument"
+if [[ -z "${1-""}" ]]; then
+	die "no version provided as first argument to prepare-next-dev-cycle in %s" "${BASH_SOURCE[1]}"
 fi
 
 version=$1

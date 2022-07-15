@@ -107,7 +107,6 @@ find "$scriptDir/../src" -name "*.sh" \
 if ! [[ $prepareOnly == true ]]; then
 	git add .
 	git commit -m "$version"
-	git push
 	git tag "$version"
 
 	"$scriptDir/prepare-next-dev-cycle.sh" "$nextVersion"
