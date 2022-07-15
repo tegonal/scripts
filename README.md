@@ -183,7 +183,7 @@ update-version-README.sh -v v0.1.0 -f ./docs/index.md
 update-version-README.sh -v v0.1.0 -p "(VERSION=['\"])[^'\"]+(['\"])"
 
 INFO: Version of update-version-README.sh is:
-v0.6.0
+v0.7.0-SNAPSHOT
 ```
 
 </releasing-update-version-README-help>
@@ -235,7 +235,7 @@ update-version-scripts.sh -v v0.1.0 -d ./scripts
 update-version-scripts.sh -v v0.1.0 -p "(VERSION=['\"])[^'\"]+(['\"])"
 
 INFO: Version of update-version-scripts.sh is:
-v0.6.0
+v0.7.0-SNAPSHOT
 ```
 
 </releasing-update-version-scripts-help>
@@ -295,7 +295,7 @@ toggle-sections.sh -c main
 toggle-sections.sh -c release -f ./docs/index.md
 
 INFO: Version of toggle-sections.sh is:
-v0.6.0
+v0.7.0-SNAPSHOT
 ```
 
 </releasing-toggle-sections-help>
@@ -341,7 +341,7 @@ sneak-peek-banner.sh -c hide
 sneak-peek-banner.sh -c show -f ./docs/index.md
 
 INFO: Version of sneak-peek-banner.sh is:
-v0.6.0
+v0.7.0-SNAPSHOT
 ```
 
 </releasing-sneak-peek-banner-help>
