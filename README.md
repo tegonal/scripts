@@ -43,19 +43,19 @@ the sources.
 Following the commands you need to execute to setup tegonal scripts via [gget](https://github.com/tegonal/gget).
 ```bash
 TEGONAL_SCRIPTS_VERSION="v0.5.0" && \
-gget remote add -r tegonal-scripts -u https://github.com/tegonal/scripts && \
-gget pull -r tegonal-scripts -t "$TEGONAL_SCRIPTS_VERSION" -p src/setup.sh && \
-gget pull -r tegonal-scripts -t "$TEGONAL_SCRIPTS_VERSION" -p src/utility/source-once.sh
-```
+gget remote add -r tegonal-scripts -u https://github.com/tegonal/scripts
+````
 
-Now you can pull the scripts you want in addition via:
+Now you can pull the scripts you want via:
 ```bash
 gget pull -r tegonal-scripts -t "$TEGONAL_SCRIPTS_VERSION" -p ...
 ```
 
-Note that dependencies have to be pulled manually and many scripts depend on scripts defined in `src/utility`.
-Therefore, for simplicity reasons, we recommend you pull all files of `src/utility`:
+Note that dependencies have to be pulled manually and almost all scripts depend on `src/setup.sh` 
+and many depend on scripts defined in `src/utility`.
+Therefore, for simplicity reasons, we recommend you pull `src/setup.sh` all files of `src/utility` in addition:
 ```
+gget pull -r tegonal-scripts -t "$TEGONAL_SCRIPTS_VERSION" -p src/setup.sh
 gget pull -r tegonal-scripts -t "$TEGONAL_SCRIPTS_VERSION" -p src/utility/
 ```
 
