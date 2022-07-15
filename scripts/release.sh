@@ -37,6 +37,8 @@ declare versionRegex="^(v[0-9]+)\.([0-9]+)\.[0-9]+(-RC[0-9]+)?$"
 
 if ! [[ -v nextVersion ]] && [[ -v version ]] && [[ "$version" =~ $versionRegex ]]; then
 	nextVersion="${BASH_REMATCH[1]}.$((BASH_REMATCH[2] + 1)).0"
+else
+	logInfo "cannot deduce nextVersion from version as it does not follow format vX.Y.Z(-RC...): $version"
 fi
 if ! [[ -v prepareOnly ]] || ! [[ "$prepareOnly" == "true" ]]; then prepareOnly=false; fi
 checkAllArgumentsSet params "" "$TEGONAL_SCRIPTS_VERSION"
