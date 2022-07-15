@@ -10,10 +10,8 @@
 set -eu
 
 if ! [[ -v dir_of_tegonal_scripts ]]; then
-	declare dir_of_tegonal_scripts
 	dir_of_tegonal_scripts="$(realpath "$(cd -- "$(dirname -- "${BASH_SOURCE[0]:-$0}")" &>/dev/null && pwd 2>/dev/null)/../src")"
-	declare -r dir_of_tegonal_scripts
-	source "$dir_of_tegonal_scripts/utility/source-once.sh"
+	source "$dir_of_tegonal_scripts/setup.sh" "$dir_of_tegonal_scripts"
 fi
 
 source "$dir_of_tegonal_scripts/utility/log.sh"
@@ -54,7 +52,6 @@ git checkout main
 git pull
 
 if ! [[ -v scriptDir ]]; then
-	declare scriptDir
 	scriptDir="$(cd -- "$(dirname -- "${BASH_SOURCE[0]:-$0}")" &>/dev/null && pwd 2>/dev/null)"
 	declare -r scriptDir
 fi
@@ -65,6 +62,8 @@ fi
 "$dir_of_tegonal_scripts/releasing/toggle-sections.sh" -c release
 "$dir_of_tegonal_scripts/releasing/update-version-README.sh" -v "$version"
 "$dir_of_tegonal_scripts/releasing/update-version-scripts.sh" -v "$version"
+
+perl -0777 -pe "s/(TEGONAL_SCRIPTS_VERSION)=.*/\$1=$version/g" "$scriptDir/../README.md"
 
 rm -rf "$scriptDir/../.gget/gpg"
 mkdir "$scriptDir/../.gget/gpg"

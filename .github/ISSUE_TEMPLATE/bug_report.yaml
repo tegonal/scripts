@@ -33,6 +33,7 @@ body:
         - utility/replace-help-snippet.sh
         - utility/source-once.sh
         - utility/update-bash-docu.sh
+        - setup.sh
     validations:
       required: false
   - type: textarea

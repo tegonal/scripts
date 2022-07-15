@@ -27,6 +27,64 @@ For instance, the [README of v0.5.0](https://github.com/tegonal/scripts/tree/v0.
 
 ---
 
+**Table of Content**
+- [Installation](#Installation)
+- [Documentation](#documentation)
+- [Contributors and contribute](#contributors-and-contribute)
+- [License](#license)
+
+# Installation
+
+We recommend you pull the scripts with the help of [gget](https://github.com/tegonal/gget).  
+Alternatively you can 
+[![Download](https://img.shields.io/badge/Download-v0.5.0-%23007ec6)](https://github.com/tegonal/scripts/releases/tag/v0.5.0)
+the sources.
+
+Following the commands you need to execute to setup tegonal scripts via [gget](https://github.com/tegonal/gget).
+```bash
+TEGONAL_SCRIPTS_VERSION="v0.5.0" && \
+gget remote add -r tegonal-scripts -u https://github.com/tegonal/scripts && \
+gget pull -r tegonal-scripts -t "$TEGONAL_SCRIPTS_VERSION" -p src/setup.sh && \
+gget pull -r tegonal-scripts -t "$TEGONAL_SCRIPTS_VERSION" -p src/utility/source-once.sh
+```
+
+Now you can pull the scripts you want in addition via:
+```bash
+gget pull -r tegonal-scripts -t "$TEGONAL_SCRIPTS_VERSION" -p ...
+```
+
+Note that dependencies have to be pulled manually and many scripts depend on scripts defined in `src/utility`.
+Therefore, for simplicity reasons, we recommend you pull all files of `src/utility`:
+```
+gget pull -r tegonal-scripts -t "$TEGONAL_SCRIPTS_VERSION" -p src/utility/
+```
+
+## Sourcing functions
+
+We recommend you use the following code at the beginning of your script in case you want to `source` a file/function
+(in the example below we want to use tegonal's log functions):
+
+<setup>
+
+<!-- auto-generated, do not modify here but in src/setup.sh -->
+```bash
+#!/usr/bin/env bash
+set -eu
+
+if ! [[ -v dir_of_tegonal_scripts ]]; then
+	# Assumes your script is in (root is project folder) e.g. /src or /scripts and
+	# the tegonal scripts have been pulled via gget and put into /lib/tegonal-scripts
+	dir_of_tegonal_scripts="$(realpath "$(cd -- "$(dirname -- "${BASH_SOURCE[0]:-$0}")" &>/dev/null && pwd 2>/dev/null)/../lib/tegonal-scripts/src")"
+	source "$dir_of_tegonal_scripts/setup.sh" "$dir_of_tegonal_scripts"
+fi
+
+sourceOnce "$dir_of_tegonal_scripts/utility/log.sh"
+```
+
+</setup>
+
+# Documentation
+
 The scripts are ordered by topic:
 
 - [Quality Assurance](#quality-assurance)
@@ -46,13 +104,10 @@ The scripts are ordered by topic:
   - [Update Documentation](#update-bash-documentation)
 
 
-See also:
-- [Contributors and contribute](#contributors-and-contribute)
-- [License](#license)
 
 # Quality Assurance
 
-The scripts under this topic perform checks or execute qa tools.
+The scripts under this topic (in directory `qa`) perform checks or execute qa tools.
 
 ## runShellcheck
 
@@ -86,7 +141,7 @@ runShellcheck dirs "$sourcePath"
 
 # Releasing
 
-The scripts under this topic perform some steps of your release process.
+The scripts under this topic (in directory `releasing`) perform some steps of your release process.
 
 ## Update Version in README
 
@@ -275,7 +330,7 @@ dir_of_tegonal_scripts="$(cd -- "$(dirname -- "${BASH_SOURCE[0]:-$0}")" &>/dev/n
 
 # Script Utilities
 
-The scripts under this topic are useful for bash programming as such.
+The scripts under this topic (in directory `utility`) are useful for bash programming as such.
 
 ## Parse arguments
 
