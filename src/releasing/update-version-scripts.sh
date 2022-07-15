@@ -22,7 +22,7 @@
 #
 ###################################
 set -eu
-declare -x TEGONAL_SCRIPTS_VERSION="v0.6.0-SNAPSHOT"
+declare -x TEGONAL_SCRIPTS_VERSION='v0.6.0-SNAPSHOT'
 
 if ! [[ -v dir_of_tegonal_scripts ]]; then
 	dir_of_tegonal_scripts="$(realpath "$(cd -- "$(dirname -- "${BASH_SOURCE[0]:-$0}")" &>/dev/null && pwd 2>/dev/null)/..")"
@@ -36,6 +36,7 @@ function updateVersionScripts() {
 	local -ra params=(
 		version '-v' 'the version which shall be used'
 		directory '-d|--directory' '(optional) the working directory -- default: ./src'
+		additionalPattern '-p|--pattern' '(optional) pattern which is used in a perl command (separator /) to search & replace additional occurrences. It should define two match groups and the replace operation looks as follows: '"\\\$1=\$version\\\$2"
 	)
 	local -r examples=$(
 		cat <<-EOM
@@ -44,18 +45,29 @@ function updateVersionScripts() {
 
 			# update version to v0.1.0 for all *.sh in ./scripts and subdirectories
 			update-version-scripts.sh -v v0.1.0 -d ./scripts
+
+			# update version to v0.1.0 for all *.sh in ./src and subdirectories
+			# also replace occurrences of the defined pattern
+			update-version-scripts.sh -v v0.1.0 -p "(VERSION=['"])[^'"]+(['"])
 		EOM
 	)
 
 	parseArguments params "$examples" "$TEGONAL_SCRIPTS_VERSION" "$@"
 	if ! [[ -v directory ]]; then directory="./src"; fi
+	if ! [[ -v additionalPattern ]]; then additionalPattern=""; fi
 	checkAllArgumentsSet params "$examples" "$TEGONAL_SCRIPTS_VERSION"
 
-	find "$directory" -name "*.sh" \
-		-print0 | while read -r -d $'\0' script; do
-		perl -0777 -i \
-			-pe "s/Version:.+(\n[\S\s]+?###+\s+Description)/Version: $version\$1/g;" \
-			"$script"
-	done
+	find "$directory" -name "*.sh" -print0 |
+		while read -r -d $'\0' script; do
+			perl -0777 -i \
+				-pe "s/Version:.+(\n[\S\s]+?###+\s+Description)/Version: $version\$1/g;" \
+				"$script"
+
+			if [[ -n $additionalPattern ]]; then
+				perl -0777 -i \
+					-pe "s/$additionalPattern/\$1$version\$2/g;" \
+					"$script"
+			fi
+		done
 }
 updateVersionScripts "$@"

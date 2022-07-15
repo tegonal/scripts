@@ -8,7 +8,7 @@
 #                                         Version: v0.6.0-SNAPSHOT
 #
 set -eu
-declare -x TEGONAL_SCRIPTS_VERSION="v0.6.0-SNAPSHOT"
+declare -x TEGONAL_SCRIPTS_VERSION='v0.6.0-SNAPSHOT'
 
 if ! [[ -v dir_of_tegonal_scripts ]]; then
 	dir_of_tegonal_scripts="$(realpath "$(cd -- "$(dirname -- "${BASH_SOURCE[0]:-$0}")" &>/dev/null && pwd 2>/dev/null)/../src")"
@@ -64,8 +64,8 @@ fi
 "$dir_of_tegonal_scripts/releasing/sneak-peek-banner.sh" -c hide
 "$dir_of_tegonal_scripts/releasing/toggle-sections.sh" -c release
 "$dir_of_tegonal_scripts/releasing/update-version-README.sh" -v "$version"
-"$dir_of_tegonal_scripts/releasing/update-version-scripts.sh" -v "$version"
-"$dir_of_tegonal_scripts/releasing/update-version-scripts.sh" -v "$version" -d "$scriptDir"
+"$dir_of_tegonal_scripts/releasing/update-version-scripts.sh" -v "$version" -p "TEGONAL_SCRIPTS_VERSION"
+"$dir_of_tegonal_scripts/releasing/update-version-scripts.sh" -v "$version" -p "TEGONAL_SCRIPTS_VERSION" -d "$scriptDir"
 
 # update docu with new version
 "$scriptDir/update-docu.sh"

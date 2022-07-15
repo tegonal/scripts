@@ -213,6 +213,7 @@ Help:
 Parameters:
 -v               the version which shall be used
 -d|--directory   (optional) the working directory -- default: ./src
+-p|--pattern     (optional) pattern which is used to search & replace additional occurrences. The pattern is used in a regex of the form (pattern)=.* and is replaced with $1=$version
 
 --help     prints this help
 --version  prints the version of this script
