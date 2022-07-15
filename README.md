@@ -177,7 +177,7 @@ update-version-README.sh -v v0.1.0
 # update version for ./docs/index.md
 update-version-README.sh -v v0.1.0 -f ./docs/index.md
 
-[0;34mINFO: Version of update-version-README.sh is:
+INFO: Version of update-version-README.sh is:
 v0.6.0-SNAPSHOT
 ```
 
@@ -224,7 +224,7 @@ update-version-scripts.sh -v v0.1.0
 # update version to v0.1.0 for all *.sh in ./scripts and subdirectories
 update-version-scripts.sh -v v0.1.0 -d ./scripts
 
-[0;34mINFO: Version of update-version-scripts.sh is:
+INFO: Version of update-version-scripts.sh is:
 v0.6.0-SNAPSHOT
 ```
 
@@ -284,7 +284,7 @@ toggle-sections.sh -c main
 # comment the main sections in ./docs/index.md and uncomment the release sections
 toggle-sections.sh -c release -f ./docs/index.md
 
-[0;34mINFO: Version of toggle-sections.sh is:
+INFO: Version of toggle-sections.sh is:
 v0.6.0-SNAPSHOT
 ```
 
@@ -330,7 +330,7 @@ sneak-peek-banner.sh -c hide
 # show the sneak peek banner in ./docs/index.md
 sneak-peek-banner.sh -c show -f ./docs/index.md
 
-[0;34mINFO: Version of sneak-peek-banner.sh is:
+INFO: Version of sneak-peek-banner.sh is:
 v0.6.0-SNAPSHOT
 ```
 
