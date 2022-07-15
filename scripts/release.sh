@@ -56,9 +56,22 @@ if git tag | grep "$version" >/dev/null; then
 	die "tag %s already exists, delete with git tag -d %s" "$version" "$version"
 fi
 
-git checkout main
-git pull
-
+declare branch
+branch="$(git rev-parse --abbrev-ref HEAD)"
+if ! [[ $branch == "main" ]]; then
+	die "you need to be on the \033[0;36mmain\033[0m branch to release, check that you have merged all changes from your current branch \033[0;36m%s\033[0m" "$branch"
+fi
+if ! (($(git rev-list --count origin/main..main) == 0)); then
+	logError "you are ahead of origin, please push first and check if CI succeeds before releasing"
+	git log origin/main..main
+	exit 1
+fi
+if ! (($(git rev-list --count main..origin/main) == 0)); then
+	git fetch
+	logError "you are behind of origin. I already fetched the changes for you, please check if you still want to release. Following the changes"
+	git log main..origin/main
+	exit 1
+fi
 
 # make sure everything is up-to-date and works as it should
 "$scriptDir/before-pr.sh"
@@ -68,7 +81,7 @@ declare additionalPattern="(TEGONAL_SCRIPTS_VERSION=['\"])[^'\"]+(['\"])"
 
 "$dir_of_tegonal_scripts/releasing/sneak-peek-banner.sh" -c hide
 "$dir_of_tegonal_scripts/releasing/toggle-sections.sh" -c release
-"$dir_of_tegonal_scripts/releasing/update-version-README.sh" -v "$version"  -p "$additionalPattern"
+"$dir_of_tegonal_scripts/releasing/update-version-README.sh" -v "$version" -p "$additionalPattern"
 "$dir_of_tegonal_scripts/releasing/update-version-scripts.sh" -v "$version" -p "$additionalPattern"
 "$dir_of_tegonal_scripts/releasing/update-version-scripts.sh" -v "$version" -p "$additionalPattern" -d "$scriptDir"
 
