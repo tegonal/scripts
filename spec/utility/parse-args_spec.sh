@@ -18,8 +18,8 @@ Describe 'parse_arg.sh'
 					version -v 'The version'
 					withoutHelp -wv ''
 				)
-				When call parseArguments params '' --help
-				The status should equal 99
+				When call parseArguments params '' 'v1.0.0' --help
+				The status should be successful
 				The output should include 'Parameters'
 				The output should include '-v'
 				The output should include '-wv'
@@ -28,14 +28,20 @@ Describe 'parse_arg.sh'
 			End
 			It 'with examples'
 				declare params=(version -v 'The version')
-				When call parseArguments params "example code\non multiple lines" --help
-				The status should equal 99
+				When call parseArguments params "example code\non multiple lines" 'v1.0.0' --help
+				The status should be successful
 				The output should include 'Parameters'
 				The output should include '-v'
 				The output should include 'The version'
 				The output should include 'example code'
 				The output should include 'on multiple lines'
 			End
+		End
+		It '--version'
+			declare params=(version -v 'The version')
+			When call parseArguments params "example code\non multiple lines" "v1.2.0-RC2" --version
+			The status should be successful
+			The output should include 'v1.2.0-RC2'
 		End
 		Describe 'happy cases'
 			It 'does not fail if not for all parameters an argument is passed'
@@ -44,9 +50,23 @@ Describe 'parse_arg.sh'
 						version -v ''
 						asdf -a ''
 					)
-					When call parseArguments params 'example' -v v0.1.0
+					When call parseArguments params 'example' 'v1.0.0' -v v0.1.0
 					The status should be success
-					The value "$version" should equal "v0.1.0"
+					The variable version should equal "v0.1.0"
+			End
+			It 'does not pollute parent "scope"'
+				function foo() {
+					declare version
+					declare params=(
+						version -v ''
+						asdf -a ''
+					)
+					parseArguments params 'example' 'v1.0.0' -v v0.1.0
+					echo "Version: $version"
+				}
+				When call foo
+				The variable version should be undefined
+				The output should equal "Version: v0.1.0"
 			End
 		End
 		Describe 'errors'
@@ -54,12 +74,12 @@ Describe 'parse_arg.sh'
 				declare params=(version -v '')
 				When call parseArguments params
 				The status should be failure
-				The stderr should include 'At least two arguments need to be passed to parseArguments'
+				The stderr should include 'At least three arguments need to be passed to parseArguments'
 			End
 			Describe 'wrong number in params'
 				It 'one leftover'
 					declare params=(version -v '' leftOver1)
-					When call parseArguments params '' --help
+					When call parseArguments params '' 'v1.0.0'--help
 					The status should be failure
 					The stderr should include 'array with parameter definitions is broken'
 					The stderr should include 'The array needs to contain parameter definitions'
@@ -68,7 +88,7 @@ Describe 'parse_arg.sh'
 				End
 				It 'two leftovers'
 					declare params=(version -v '' leftOver1 leftOver2)
-					When call parseArguments params '' --help
+					When call parseArguments params '' 'v1.0.0' --help
 					The status should be failure
 					The stderr should include 'array with parameter definitions is broken'
 					The stderr should include 'leftOver1'
@@ -78,9 +98,9 @@ Describe 'parse_arg.sh'
 			It 'associative array passed'
 				# shellcheck disable=SC2034
 				declare -A associativeParams=([version]=-v)
-				When call parseArguments associativeParams '' --help
+				When call parseArguments associativeParams '' 'v1.0.0' --help
 				The status should be failure
-				The stderr should include 'array with parameter definitions is broken'
+				The stderr should include "$(printf "the array \033[1;34massociativeParams\033[0m is broken")"
 				The stderr should include 'the first argument needs to be a non-associative array'
 			End
 		End
@@ -90,7 +110,7 @@ Describe 'parse_arg.sh'
 			Describe 'happy cases'
 				It 'complains if not all variables are set'
 					declare params=(version -v '')
-					When call checkAllArgumentsSet params ''
+					When call checkAllArgumentsSet params '' 'v1.0.0'
 					The status should be failure
 					The stderr should include 'version not set'
 					The stderr should include 'Parameters:'
@@ -102,19 +122,19 @@ Describe 'parse_arg.sh'
 					declare params=(version -v '')
 					When call checkAllArgumentsSet params
 					The status should be failure
-					The stderr should include 'Two arguments need to be passed to checkAllArgumentsSet'
+					The stderr should include 'Three arguments need to be passed to checkAllArgumentsSet'
 				End
 				Describe 'wrong number in params'
 					It 'one leftover'
 						declare params=(version -v '' leftOver1)
-						When call checkAllArgumentsSet params ''
+						When call checkAllArgumentsSet params '' 'v1.0.0'
 						The status should be failure
 						The stderr should include 'leftOver1'
 					End
 					It 'two leftovers'
 						# shellcheck disable=SC2034
 						declare params=(version -v '' leftOver1 leftOver2)
-						When call checkAllArgumentsSet params ''
+						When call checkAllArgumentsSet params '' 'v1.0.0'
 						The status should be failure
 						The stderr should include 'leftOver1'
 						The stderr should include 'leftOver2'

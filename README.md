@@ -164,8 +164,11 @@ Help:
 <!-- auto-generated, do not modify here but in src/releasing/update-version-README.sh -->
 ```text
 Parameters:
--v|--version    the version which shall be used
+-v              the version which shall be used
 -f|--file       (optional) the file where search & replace shall be done -- default: ./README.md
+
+--help     prints this help
+--version  prints the version of this script
 
 Examples:
 # update version for ./README.md
@@ -173,6 +176,9 @@ update-version-README.sh -v v0.1.0
 
 # update version for ./docs/index.md
 update-version-README.sh -v v0.1.0 -f ./docs/index.md
+
+INFO: Version of update-version-README.sh is:
+v0.6.0-SNAPSHOT
 ```
 
 </releasing-update-version-README-help>
@@ -205,8 +211,11 @@ Help:
 <!-- auto-generated, do not modify here but in src/releasing/update-version-scripts.sh -->
 ```text
 Parameters:
--v|--version     the version which shall be used
+-v               the version which shall be used
 -d|--directory   (optional) the working directory -- default: ./src
+
+--help     prints this help
+--version  prints the version of this script
 
 Examples:
 # update version to v0.1.0 for all *.sh in ./src and subdirectories
@@ -214,6 +223,9 @@ update-version-scripts.sh -v v0.1.0
 
 # update version to v0.1.0 for all *.sh in ./scripts and subdirectories
 update-version-scripts.sh -v v0.1.0 -d ./scripts
+
+INFO: Version of update-version-scripts.sh is:
+v0.6.0-SNAPSHOT
 ```
 
 </releasing-update-version-scripts-help>
@@ -262,12 +274,18 @@ Parameters:
 -c|--command    either 'main' or 'release'
 -f|--file       (optional) the file where search & replace shall be done -- default: ./README.md
 
+--help     prints this help
+--version  prints the version of this script
+
 Examples:
 # comment the release sections in ./README.md and uncomment the main sections
 toggle-sections.sh -c main
 
 # comment the main sections in ./docs/index.md and uncomment the release sections
 toggle-sections.sh -c release -f ./docs/index.md
+
+INFO: Version of toggle-sections.sh is:
+v0.6.0-SNAPSHOT
 ```
 
 </releasing-toggle-sections-help>
@@ -302,12 +320,18 @@ Parameters:
 -c|--command    either 'show' or 'hide'
 -f|--file       (optional) the file where search & replace shall be done -- default: ./README.md
 
+--help     prints this help
+--version  prints the version of this script
+
 Examples:
 # hide the sneak peek banner in ./README.md
 sneak-peek-banner.sh -c hide
 
 # show the sneak peek banner in ./docs/index.md
 sneak-peek-banner.sh -c show -f ./docs/index.md
+
+INFO: Version of sneak-peek-banner.sh is:
+v0.6.0-SNAPSHOT
 ```
 
 </releasing-sneak-peek-banner-help>
@@ -359,9 +383,9 @@ declare directory pattern version
 # as shellcheck doesn't get that we are passing `params` to parseArguments ¯\_(ツ)_/¯ (an open issue of shellcheck)
 # shellcheck disable=SC2034
 declare params=(
+	pattern '-p|--pattern' ''
+	version '-v' 'the version'
 	directory '-d|--directory' '(optional) the working directory -- default: .'
-	pattern '-p|--pattern' 'pattern used during analysis'
-	version '-v|--version' ''
 )
 # optional: you can define examples which are included in the help text -- use an empty string for no example
 declare examples

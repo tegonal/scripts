@@ -22,6 +22,7 @@
 #
 ###################################
 set -eu
+declare -x TEGONAL_SCRIPTS_VERSION="v0.6.0-SNAPSHOT"
 
 if ! [[ -v dir_of_tegonal_scripts ]]; then
 	dir_of_tegonal_scripts="$(realpath "$(cd -- "$(dirname -- "${BASH_SOURCE[0]:-$0}")" &>/dev/null && pwd 2>/dev/null)/..")"
@@ -46,11 +47,11 @@ function sneakPeekBanner() {
 		EOM
 	)
 
-	parseArguments params "$examples" "$@"
+	parseArguments params "$examples" "$TEGONAL_SCRIPTS_VERSION" "$@"
 	if ! [[ -v file ]]; then file="./README.md"; fi
-	checkAllArgumentsSet params "$examples"
+	checkAllArgumentsSet params "$examples" "$TEGONAL_SCRIPTS_VERSION"
 
-	if [[ $command ==  show ]]; then
+	if [[ $command == show ]]; then
 		echo "show sneak peek banner in $file"
 		perl -0777 -i -pe 's/<!(---\n❗ You are taking[\S\s]+?---)>/$1/;' "$file"
 	elif [[ $command == hide ]]; then

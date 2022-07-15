@@ -5,9 +5,10 @@
 #  / __/ -_) _ `/ _ \/ _ \/ _ `/ /        It is licensed under Apache 2.0
 #  \__/\__/\_, /\___/_//_/\_,_/_/         Please report bugs and contribute back your improvements
 #         /___/
-#
+#                                         Version: v0.6.0-SNAPSHOT
 #
 set -eu
+declare -x TEGONAL_SCRIPTS_VERSION="v0.6.0-SNAPSHOT"
 
 if ! [[ -v dir_of_tegonal_scripts ]]; then
 	dir_of_tegonal_scripts="$(realpath "$(cd -- "$(dirname -- "${BASH_SOURCE[0]:-$0}")" &>/dev/null && pwd 2>/dev/null)/../src")"
@@ -23,14 +24,14 @@ fi
 declare version key nextVersion prepareOnly
 # shellcheck disable=SC2034
 declare params=(
-	version '-v|--version' "The version to release in the format vX.Y.Z(-RC...)"
+	version '-v' "The version to release in the format vX.Y.Z(-RC...)"
 	key '-k|--key' 'The GPG private key which shall be used to sign the files'
 	nextVersion '-nv|--next-version' '(optional) the version to use for prepare-next-dev-cycle -- default: is next minor based on version'
 	prepareOnly '--prepare-only' '(optional) defines whether the release shall only be prepared (i.e. no push, no tag, no prepare-next-dev-cycle) -- default: false'
 )
 
 source "$dir_of_tegonal_scripts/utility/parse-args.sh"
-parseArguments params "" "$@"
+parseArguments params "" "$TEGONAL_SCRIPTS_VERSION" "$@"
 
 declare versionRegex="^(v[0-9]+)\.([0-9]+)\.[0-9]+(-RC[0-9]+)?$"
 
@@ -38,7 +39,7 @@ if ! [[ -v nextVersion ]] && [[ -v version ]] && [[ "$version" =~ $versionRegex 
 	nextVersion="${BASH_REMATCH[1]}.$((BASH_REMATCH[2] + 1)).0"
 fi
 if ! [[ -v prepareOnly ]] || ! [[ "$prepareOnly" == "true" ]]; then prepareOnly=false; fi
-checkAllArgumentsSet params ""
+checkAllArgumentsSet params "" "$TEGONAL_SCRIPTS_VERSION"
 
 if ! [[ "$version" =~ $versionRegex ]]; then
 	die "--version should match vX.Y.Z(-RC...), was %s" "$version"
@@ -62,6 +63,10 @@ fi
 "$dir_of_tegonal_scripts/releasing/toggle-sections.sh" -c release
 "$dir_of_tegonal_scripts/releasing/update-version-README.sh" -v "$version"
 "$dir_of_tegonal_scripts/releasing/update-version-scripts.sh" -v "$version"
+"$dir_of_tegonal_scripts/releasing/update-version-scripts.sh" -v "$version" -d "$scriptDir"
+
+# update docu with new version
+"$scriptDir/update-docu.sh"
 
 perl -0777 -pe "s/(TEGONAL_SCRIPTS_VERSION)=.*/\$1=$version/g" "$scriptDir/../README.md"
 
