@@ -8,7 +8,7 @@
 #                                         Version: v0.6.0-SNAPSHOT
 #
 set -eu
-declare -x TEGONAL_SCRIPTS_VERSION='v0.6.0-SNAPSHOT'
+declare -x TEGONAL_SCRIPTS_VERSION='v0.6.0'
 
 if ! [[ -v scriptDir ]]; then
 	scriptDir="$(cd -- "$(dirname -- "${BASH_SOURCE[0]:-$0}")" &>/dev/null && pwd 2>/dev/null)"
