@@ -121,9 +121,10 @@ settings for shellcheck.
 ```bash
 #!/usr/bin/env bash
 set -eu
-declare dir_of_tegonal_scripts
-# Assuming tegonal's scripts are in the same directory as your script
-dir_of_tegonal_scripts="$(cd -- "$(dirname -- "${BASH_SOURCE[0]:-$0}")" &>/dev/null && pwd 2>/dev/null)"
+# Assuming tegonal's scripts were fetched with gget - adjust location accordingly
+dir_of_tegonal_scripts="$(realpath "$(cd -- "$(dirname -- "${BASH_SOURCE[0]:-$0}")" &>/dev/null && pwd 2>/dev/null)/../lib/tegonal-scripts/src")"
+source "$dir_of_tegonal_scripts/setup.sh" "$dir_of_tegonal_scripts"
+
 source "$dir_of_tegonal_scripts/qa/run-shellcheck.sh"
 
 # shellcheck disable=SC2034
@@ -196,9 +197,10 @@ Full usage example:
 ```bash
 #!/usr/bin/env bash
 set -eu
-declare dir_of_tegonal_scripts
-# Assuming tegonal's scripts are in the same directory as your script
-dir_of_tegonal_scripts="$(cd -- "$(dirname -- "${BASH_SOURCE[0]:-$0}")" &>/dev/null && pwd 2>/dev/null)"
+# Assuming tegonal's scripts were fetched with gget - adjust location accordingly
+dir_of_tegonal_scripts="$(realpath "$(cd -- "$(dirname -- "${BASH_SOURCE[0]:-$0}")" &>/dev/null && pwd 2>/dev/null)/../lib/tegonal-scripts/src")"
+source "$dir_of_tegonal_scripts/setup.sh" "$dir_of_tegonal_scripts"
+
 "$dir_of_tegonal_scripts/releasing/update-version-README.sh" -v 0.1.0
 ```
 
@@ -248,9 +250,10 @@ Full usage example:
 ```bash
 #!/usr/bin/env bash
 set -eu
-declare dir_of_tegonal_scripts
-# Assuming tegonal's scripts are in the same directory as your script
-dir_of_tegonal_scripts="$(cd -- "$(dirname -- "${BASH_SOURCE[0]:-$0}")" &>/dev/null && pwd 2>/dev/null)"
+# Assuming tegonal's scripts were fetched with gget - adjust location accordingly
+dir_of_tegonal_scripts="$(realpath "$(cd -- "$(dirname -- "${BASH_SOURCE[0]:-$0}")" &>/dev/null && pwd 2>/dev/null)/../lib/tegonal-scripts/src")"
+source "$dir_of_tegonal_scripts/setup.sh" "$dir_of_tegonal_scripts"
+
 "$dir_of_tegonal_scripts/releasing/update-version-scripts.sh" -v 0.1.0
 ```
 
@@ -308,9 +311,10 @@ Full usage example:
 ```bash
 #!/usr/bin/env bash
 set -eu
-declare dir_of_tegonal_scripts
-# Assuming tegonal's scripts are in the same directory as your script
-dir_of_tegonal_scripts="$(cd -- "$(dirname -- "${BASH_SOURCE[0]:-$0}")" &>/dev/null && pwd 2>/dev/null)"
+# Assuming tegonal's scripts were fetched with gget - adjust location accordingly
+dir_of_tegonal_scripts="$(realpath "$(cd -- "$(dirname -- "${BASH_SOURCE[0]:-$0}")" &>/dev/null && pwd 2>/dev/null)/../lib/tegonal-scripts/src")"
+source "$dir_of_tegonal_scripts/setup.sh" "$dir_of_tegonal_scripts"
+
 "$dir_of_tegonal_scripts/releasing/sneak-peek-banner.sh" -c hide
 ```
 
@@ -354,9 +358,10 @@ Full usage example:
 ```bash
 #!/usr/bin/env bash
 set -eu
-declare dir_of_tegonal_scripts
-# Assuming tegonal's scripts are in the same directory as your script
-dir_of_tegonal_scripts="$(cd -- "$(dirname -- "${BASH_SOURCE[0]:-$0}")" &>/dev/null && pwd 2>/dev/null)"
+# Assuming tegonal's scripts were fetched with gget - adjust location accordingly
+dir_of_tegonal_scripts="$(realpath "$(cd -- "$(dirname -- "${BASH_SOURCE[0]:-$0}")" &>/dev/null && pwd 2>/dev/null)/../lib/tegonal-scripts/src")"
+source "$dir_of_tegonal_scripts/setup.sh" "$dir_of_tegonal_scripts"
+
 "$dir_of_tegonal_scripts/releasing/sneak-peek-banner.sh" -c hide
 ```
 
@@ -382,6 +387,11 @@ Full usage example:
 ```bash
 #!/usr/bin/env bash
 set -eu
+# Assuming tegonal's scripts were fetched with gget - adjust location accordingly
+dir_of_tegonal_scripts="$(realpath "$(cd -- "$(dirname -- "${BASH_SOURCE[0]:-$0}")" &>/dev/null && pwd 2>/dev/null)/../lib/tegonal-scripts/src")"
+source "$dir_of_tegonal_scripts/setup.sh" "$dir_of_tegonal_scripts"
+
+sourceOnce "$dir_of_tegonal_scripts/utility/parse-args.sh"
 
 # declare the variables where the arguments shall be stored (used as identifier afterwards)
 declare directory pattern version
@@ -407,11 +417,6 @@ analysis.sh -p "%{21}" -v v0.1.0
 EOM
 )
 
-declare dir_of_tegonal_scripts
-# Assuming tegonal's scripts are in the same directory as your script
-dir_of_tegonal_scripts="$(cd -- "$(dirname -- "${BASH_SOURCE[0]:-$0}")" &>/dev/null && pwd 2>/dev/null)"
-source "$dir_of_tegonal_scripts/utility/parse-args.sh"
-
 parseArguments params "$examples" "$@"
 # in case there are optional parameters, then fill them in here before calling checkAllArgumentsSet
 if ! [[ -v directory ]]; then directory="."; fi
@@ -435,20 +440,19 @@ Full usage example:
 set -eu
 
 if ! [[ -v dir_of_tegonal_scripts ]]; then
-	declare dir_of_tegonal_scripts
-	# Assuming tegonal's scripts are in the same directory as your script
-	dir_of_tegonal_scripts="$(cd -- "$(dirname -- "${BASH_SOURCE[0]:-$0}")" &>/dev/null && pwd 2>/dev/null)"
+	# Assuming tegonal's scripts were fetched with gget - adjust location accordingly
+	dir_of_tegonal_scripts="$(realpath "$(cd -- "$(dirname -- "${BASH_SOURCE[0]:-$0}")" &>/dev/null && pwd 2>/dev/null)/../lib/tegonal-scripts/src")"
+	source "$dir_of_tegonal_scripts/setup.sh" "$dir_of_tegonal_scripts"
 fi
+sourceOnce "$dir_of_tegonal_scripts/utility/parse-fn-args.sh"
 
 function myFunction() {
-	# declare the variable you want to use and repeat in `declare args`
+	# declare the variable you want to use and repeat in `declare params`
 	local command dir
 
 	# as shellcheck doesn't get that we are passing `params` to parseFnArgs ¯\_(ツ)_/¯ (an open issue of shellcheck)
 	# shellcheck disable=SC2034
 	local -ra params=(command dir)
-
-	source "$dir_of_tegonal_scripts/utility/parse-fn-args.sh"
 	parseFnArgs params "$@"
 
 	# pass your variables storing the arguments to other scripts
@@ -460,14 +464,11 @@ function myFunctionWithVarargs() {
 	# in case you want to use a vararg parameter as last parameter then name your last parameter for `params` varargs:
 	local command dir varargs
 	# shellcheck disable=SC2034
-	local -ra params=(command dir)
-
-	source "$dir_of_tegonal_scripts/utility/parse-fn-args.sh"
+	local -ra params=(command dir varargs)
 	parseFnArgs params "$@"
 
 	# use varargs in another script
-	echo "${varargs[0]}"
-
+	echo "command: $command, dir: $dir, varargs: ${varargs*}"
 }
 ```
 
@@ -484,10 +485,11 @@ Utility functions to log messages including a severity level where logError writ
 ```bash
 #!/usr/bin/env bash
 set -eu
-declare dir_of_tegonal_scripts
-# Assuming tegonal's scripts are in the same directory as your script
-dir_of_tegonal_scripts="$(cd -- "$(dirname -- "${BASH_SOURCE[0]:-$0}")" &>/dev/null && pwd 2>/dev/null)"
-source "$dir_of_tegonal_scripts/utility/log.sh"
+# Assuming tegonal's scripts were fetched with gget - adjust location accordingly
+dir_of_tegonal_scripts="$(realpath "$(cd -- "$(dirname -- "${BASH_SOURCE[0]:-$0}")" &>/dev/null && pwd 2>/dev/null)/../lib/tegonal-scripts/src")"
+source "$dir_of_tegonal_scripts/setup.sh" "$dir_of_tegonal_scripts"
+
+sourceOnce "$dir_of_tegonal_scripts/utility/log.sh"
 
 logInfo "hello %s" "world"
 # INFO: hello world
@@ -540,10 +542,10 @@ Utility function to find out the initial `declare` statement after following `de
 #!/usr/bin/env bash
 # shellcheck disable=SC2034
 set -eu
+# Assuming tegonal's scripts were fetched with gget - adjust location accordingly
+dir_of_tegonal_scripts="$(realpath "$(cd -- "$(dirname -- "${BASH_SOURCE[0]:-$0}")" &>/dev/null && pwd 2>/dev/null)/../lib/tegonal-scripts/src")"
+source "$dir_of_tegonal_scripts/setup.sh" "$dir_of_tegonal_scripts"
 
-declare dir_of_tegonal_scripts
-# Assuming tegonal's scripts are in the same directory as your script
-dir_of_tegonal_scripts="$(cd -- "$(dirname -- "${BASH_SOURCE[0]:-$0}")" &>/dev/null && pwd 2>/dev/null)"
 source "$dir_of_tegonal_scripts/utility/recursive-declare-p.sh"
 
 declare -i tmp=1
@@ -576,10 +578,10 @@ Full usage example:
 ```bash
 #!/usr/bin/env bash
 set -eu
+# Assuming tegonal's scripts were fetched with gget - adjust location accordingly
+dir_of_tegonal_scripts="$(realpath "$(cd -- "$(dirname -- "${BASH_SOURCE[0]:-$0}")" &>/dev/null && pwd 2>/dev/null)/../lib/tegonal-scripts/src")"
+source "$dir_of_tegonal_scripts/setup.sh" "$dir_of_tegonal_scripts"
 
-declare dir_of_tegonal_scripts
-# Assuming tegonal's scripts are in the same directory as your script
-dir_of_tegonal_scripts="$(cd -- "$(dirname -- "${BASH_SOURCE[0]:-$0}")" &>/dev/null && pwd 2>/dev/null)"
 source "$dir_of_tegonal_scripts/utility/replace-snippet.sh"
 
 declare file
@@ -617,10 +619,10 @@ Full usage example:
 ```bash
 #!/usr/bin/env bash
 set -eu
+# Assuming tegonal's scripts were fetched with gget - adjust location accordingly
+dir_of_tegonal_scripts="$(realpath "$(cd -- "$(dirname -- "${BASH_SOURCE[0]:-$0}")" &>/dev/null && pwd 2>/dev/null)/../lib/tegonal-scripts/src")"
+source "$dir_of_tegonal_scripts/setup.sh" "$dir_of_tegonal_scripts"
 
-declare dir_of_tegonal_scripts
-# Assuming tegonal's scripts are in the same directory as your script
-dir_of_tegonal_scripts="$(cd -- "$(dirname -- "${BASH_SOURCE[0]:-$0}")" &>/dev/null && pwd 2>/dev/null)"
 source "$dir_of_tegonal_scripts/utility/update-bash-docu.sh"
 
 find . -name "*.sh" \
