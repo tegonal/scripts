@@ -72,8 +72,6 @@ declare additionalPattern="(TEGONAL_SCRIPTS_VERSION=['\"])[^'\"]+(['\"])"
 # update docu with new version
 "$scriptDir/update-docu.sh"
 
-perl -0777 -pe "s/(TEGONAL_SCRIPTS_VERSION)=.*/\$1=$version/g" "$scriptDir/../README.md"
-
 rm -rf "$scriptDir/../.gget/gpg"
 mkdir "$scriptDir/../.gget/gpg"
 chmod 700 "$scriptDir/../.gget/gpg"
