@@ -166,7 +166,7 @@ Help:
 Parameters:
 -v              the version which shall be used
 -f|--file       (optional) the file where search & replace shall be done -- default: ./README.md
--p|--pattern    (optional) pattern which is used in a perl command (separator /) to search & replace additional occurrences. It should define two match groups and the replace operation looks as follows: \$1=$version\$2
+-p|--pattern    (optional) pattern which is used in a perl command (separator /) to search & replace additional occurrences. It should define two match groups and the replace operation looks as follows: \${1}$version\${2}
 
 --help     prints this help
 --version  prints the version of this script
@@ -218,7 +218,7 @@ Help:
 Parameters:
 -v               the version which shall be used
 -d|--directory   (optional) the working directory -- default: ./src
--p|--pattern     (optional) pattern which is used in a perl command (separator /) to search & replace additional occurrences. It should define two match groups and the replace operation looks as follows: \$1=$version\$2
+-p|--pattern     (optional) pattern which is used in a perl command (separator /) to search & replace additional occurrences. It should define two match groups and the replace operation looks as follows: \${1}$version\${2}
 
 --help     prints this help
 --version  prints the version of this script

@@ -36,7 +36,7 @@ function updateVersionScripts() {
 	local -ra params=(
 		version '-v' 'the version which shall be used'
 		directory '-d|--directory' '(optional) the working directory -- default: ./src'
-		additionalPattern '-p|--pattern' '(optional) pattern which is used in a perl command (separator /) to search & replace additional occurrences. It should define two match groups and the replace operation looks as follows: '"\\\$1=\$version\\\$2"
+		additionalPattern '-p|--pattern' '(optional) pattern which is used in a perl command (separator /) to search & replace additional occurrences. It should define two match groups and the replace operation looks as follows: '"\\\${1}\$version\\\${2}"
 	)
 	local -r examples=$(
 		cat <<-EOM

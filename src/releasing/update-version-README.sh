@@ -36,7 +36,7 @@ function updateVersionReadme() {
 	local -ra params=(
 		version '-v' 'the version which shall be used'
 		file '-f|--file' '(optional) the file where search & replace shall be done -- default: ./README.md'
-		additionalPattern '-p|--pattern' '(optional) pattern which is used in a perl command (separator /) to search & replace additional occurrences. It should define two match groups and the replace operation looks as follows: '"\\\$1=\$version\\\$2"
+		additionalPattern '-p|--pattern' '(optional) pattern which is used in a perl command (separator /) to search & replace additional occurrences. It should define two match groups and the replace operation looks as follows: '"\\\${1}\$version\\\${2}"
 	)
 	local -r examples=$(
 		cat <<-EOM
@@ -65,6 +65,7 @@ function updateVersionReadme() {
 		"$file"
 
 	if [[ -n $additionalPattern ]]; then
+		echo "also going to search for $additionalPattern and replace with \${1}$version\${2}"
 		perl -0777 -i \
 			-pe "s/$additionalPattern/\${1}$version\${2}/g;" \
 			"$file"
