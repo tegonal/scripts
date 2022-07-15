@@ -19,12 +19,12 @@ body:
     attributes:
       label: Script
       options:
-        - qa/checks.sh
         - qa/run-shellcheck.sh
         - releasing/sneak-peek-banner.sh
         - releasing/toggle-sections.sh
         - releasing/update-version-README.sh
         - releasing/update-version-scripts.sh
+        - utility/checks.sh
         - utility/log.sh
         - utility/parse-args.sh
         - utility/parse-fn-args.sh
