@@ -224,7 +224,7 @@ function printVersion() {
 		return 9
 	fi
 	local version=$1
-	logInfo "Version of %s is:\n%s" "$(basename "${BASH_SOURCE[2]:-${BASH_SOURCE[1]}}")" "$version"
+	logInfo "Version of %s is:\n%s" "$(basename "${BASH_SOURCE[3]:-${BASH_SOURCE[2]}}")" "$version"
 }
 
 function printHelp {
