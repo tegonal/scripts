@@ -290,6 +290,7 @@ function checkAllArgumentsSet {
 	if ((checkAllArgumentsSet_good == 0)); then
 		echo >&2 ""
 		echo >&2 "following the help documentation:"
+		echo >&2 ""
 		printHelp >&2 checkAllArgumentsSet_paramArr4 "$checkAllArgumentsSet_examples" "$checkAllArgumentsSet_version"
 		return 1
 	fi

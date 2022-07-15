@@ -26,7 +26,7 @@
 #
 ###################################
 set -eu
-declare -x TEGONAL_SCRIPTS_VERSION="v0.6.0-SNAPSHOT"
+declare -x TEGONAL_SCRIPTS_VERSION='v0.6.0-SNAPSHOT'
 
 if ! [[ -v dir_of_tegonal_scripts ]]; then
 	dir_of_tegonal_scripts="$(realpath "$(cd -- "$(dirname -- "${BASH_SOURCE[0]:-$0}")" &>/dev/null && pwd 2>/dev/null)/..")"

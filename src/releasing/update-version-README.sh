@@ -22,7 +22,7 @@
 #
 ###################################
 set -eu
-declare -x TEGONAL_SCRIPTS_VERSION="v0.6.0-SNAPSHOT"
+declare -x TEGONAL_SCRIPTS_VERSION='v0.6.0-SNAPSHOT'
 
 if ! [[ -v dir_of_tegonal_scripts ]]; then
 	dir_of_tegonal_scripts="$(realpath "$(cd -- "$(dirname -- "${BASH_SOURCE[0]:-$0}")" &>/dev/null && pwd 2>/dev/null)/..")"
@@ -36,6 +36,7 @@ function updateVersionReadme() {
 	local -ra params=(
 		version '-v' 'the version which shall be used'
 		file '-f|--file' '(optional) the file where search & replace shall be done -- default: ./README.md'
+		additionalPattern '-p|--pattern' '(optional) pattern which is used in a perl command (separator /) to search & replace additional occurrences. It should define two match groups and the replace operation looks as follows: '"\\\$1=\$version\\\$2"
 	)
 	local -r examples=$(
 		cat <<-EOM
@@ -44,11 +45,16 @@ function updateVersionReadme() {
 
 			# update version for ./docs/index.md
 			update-version-README.sh -v v0.1.0 -f ./docs/index.md
+
+			# update version for ./README.md
+			# also replace occurrences of the defined pattern
+			update-version-README.sh -v v0.1.0 -p "(VERSION=['\"])[^'\"]+(['\"])"
 		EOM
 	)
 
 	parseArguments params "$examples" "$TEGONAL_SCRIPTS_VERSION" "$@"
 	if ! [[ -v file ]]; then file="./README.md"; fi
+	if ! [[ -v additionalPattern ]]; then additionalPattern=""; fi
 	checkAllArgumentsSet params "$examples" "$TEGONAL_SCRIPTS_VERSION"
 
 	echo "set version $version for Download badges and sneak peek banner in $file"
@@ -57,5 +63,11 @@ function updateVersionReadme() {
 		-pe "s@(\[!\[Download\]\(https://img.shields.io/badge/Download-).*(-%23[0-9a-f]+\)\]\([^\)]+(?:=|/))[^\)]+\)@\${1}$version\${2}$version\)@g;" \
 		-pe "s@(For instance, the \[README of )[^\]]+(\].*/tree/)[^/]+/@\${1}$version\${2}$version/@;" \
 		"$file"
+
+	if [[ -n $additionalPattern ]]; then
+		perl -0777 -i \
+			-pe "s/$additionalPattern/\${1}$version\${2}/g;" \
+			"$file"
+	fi
 }
 updateVersionReadme "$@"
