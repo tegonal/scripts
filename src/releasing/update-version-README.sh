@@ -32,7 +32,7 @@ fi
 sourceOnce "$dir_of_tegonal_scripts/utility/parse-args.sh"
 
 function updateVersionReadme() {
-	local version file
+	local version
 	# shellcheck disable=SC2034
 	local -ra params=(
 		version '-v' 'the version which shall be used'

@@ -22,6 +22,7 @@ body:
         - qa/run-shellcheck.sh
         - releasing/sneak-peek-banner.sh
         - releasing/toggle-sections.sh
+        - releasing/release-files.sh
         - releasing/update-version-README.sh
         - releasing/update-version-scripts.sh
         - utility/checks.sh

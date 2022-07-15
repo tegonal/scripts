@@ -22,12 +22,14 @@ Feel free to use it and report bugs if you should find one.
 
 ---
 ❗ You are taking a _sneak peek_ at the next version.
-Please have a look at the README of the git tag in case you are looking for the documentation of the corresponding version.
+Please have a look at the README of the git tag in case you are looking for the documentation of the corresponding
+version.
 For instance, the [README of v0.7.1](https://github.com/tegonal/scripts/tree/v0.7.1/README.md).
 
 ---
 
 **Table of Content**
+
 - [Installation](#Installation)
 - [Documentation](#documentation)
 - [Contributors and contribute](#contributors-and-contribute)
@@ -36,24 +38,27 @@ For instance, the [README of v0.7.1](https://github.com/tegonal/scripts/tree/v0.
 # Installation
 
 We recommend you pull the scripts with the help of [gget](https://github.com/tegonal/gget).  
-Alternatively you can 
+Alternatively you can
 [![Download](https://img.shields.io/badge/Download-v0.7.1-%23007ec6)](https://github.com/tegonal/scripts/releases/tag/v0.7.1)
 the sources.
 
 Following the commands you need to execute to setup tegonal scripts via [gget](https://github.com/tegonal/gget).
+
 ```bash
 TEGONAL_SCRIPTS_VERSION="v0.7.1" && \
 gget remote add -r tegonal-scripts -u https://github.com/tegonal/scripts
 ````
 
 Now you can pull the scripts you want via:
+
 ```bash
 gget pull -r tegonal-scripts -t "$TEGONAL_SCRIPTS_VERSION" -p ...
 ```
 
-Note that dependencies have to be pulled manually and almost all scripts depend on `src/setup.sh` 
+Note that dependencies have to be pulled manually and almost all scripts depend on `src/setup.sh`
 and many depend on scripts defined in `src/utility`.
 Therefore, for simplicity reasons, we recommend you pull `src/setup.sh` all files of `src/utility` in addition:
+
 ```
 gget pull -r tegonal-scripts -t "$TEGONAL_SCRIPTS_VERSION" -p src/setup.sh
 gget pull -r tegonal-scripts -t "$TEGONAL_SCRIPTS_VERSION" -p src/utility/
@@ -88,23 +93,22 @@ sourceOnce "$dir_of_tegonal_scripts/utility/log.sh"
 The scripts are ordered by topic:
 
 - [Quality Assurance](#quality-assurance)
-  - [runShellcheck](#runshellcheck)
+	- [runShellcheck](#runshellcheck)
 - [Releasing](#releasing)
-  - [Update Version in README](#update-version-in-readme)
-  - [Update Version in bash scripts](#update-version-in-bash-scripts)
-  - [Toggle main/release sections](#toggle-mainrelease-sections)
-  - [Hide/Show sneak-peek banner](#hideshow-sneak-peek-banner)
+	- [Update Version in README](#update-version-in-readme)
+	- [Update Version in bash scripts](#update-version-in-bash-scripts)
+	- [Toggle main/release sections](#toggle-mainrelease-sections)
+	- [Hide/Show sneak-peek banner](#hideshow-sneak-peek-banner)
+	- [Releasing Files](#releasing-files)
 
 - [Script Utilities](#script-utilities)
-  - [Parse arguments](#parse-arguments)
-  - [Log functions](#log)
-  - [`source` once](#source-once)
-  - [GPG Utils](#gpg-utils)
-  - [Recursive `declare -p`](#recursive-declare--p)
-  - [Replace Snippets](#replace-snippets)
-  - [Update Documentation](#update-bash-documentation)
-
-
+	- [Parse arguments](#parse-arguments)
+	- [Log functions](#log)
+	- [`source` once](#source-once)
+	- [GPG Utils](#gpg-utils)
+	- [Recursive `declare -p`](#recursive-declare--p)
+	- [Replace Snippets](#replace-snippets)
+	- [Update Documentation](#update-bash-documentation)
 
 # Quality Assurance
 
@@ -112,7 +116,7 @@ The scripts under this topic (in directory `qa`) perform checks or execute qa to
 
 ## runShellcheck
 
-A function which expects the name of an array of dirs as first argument and a source path as second argument (which is 
+A function which expects the name of an array of dirs as first argument and a source path as second argument (which is
 passed to shellcheck via -P parameter). It then executes shellcheck for each *.sh in these directories with predefined
 settings for shellcheck.
 
@@ -140,7 +144,6 @@ runShellcheck dirs "$sourcePath"
 
 </qa-run-shellcheck>
 
-
 # Releasing
 
 The scripts under this topic (in directory `releasing`) perform some steps of your release process.
@@ -149,12 +152,14 @@ The scripts under this topic (in directory `releasing`) perform some steps of yo
 
 Updates the version used in download badges and in the sneak peek banner.
 Requires that you follow one of the following schemas for the download badges:
+
 ```
 [![Download](https://img.shields.io/badge/Download-<YOUR_VERSION>-%23<YOUR_COLOR>)](<ANY_URL>/v0.2.0)
 [![Download](https://img.shields.io/badge/Download-<YOUR_VERSION>-%23<YOUR_COLOR>)](<ANY_URL>=v0.2.0)
 ```
 
 And it searches for the following text for the sneak peek banner:
+
 ```
 For instance, the [README of <YOUR_VERSION>](<ANY_URL>/tree/<YOUR_VERSION>/...) 
 ```
@@ -206,7 +211,6 @@ source "$dir_of_tegonal_scripts/setup.sh" "$dir_of_tegonal_scripts"
 ```
 
 </releasing-update-version-README>
-
 
 ## Update Version in bash scripts
 
@@ -261,13 +265,17 @@ source "$dir_of_tegonal_scripts/setup.sh" "$dir_of_tegonal_scripts"
 </releasing-update-version-scripts>
 
 ## Toggle main/release sections
-Utility to comment/uncomment sections defined via 
+
+Utility to comment/uncomment sections defined via
+
 ```
 <!-- for main -->
 ...
 <!-- for main end -->
 ```
+
 and
+
 ```
 <!-- for release -->
 ...
@@ -275,6 +283,7 @@ and
 ```
 
 depending on the passed command:
+
 - Passing `main` will uncomment main sections and comment release sections.
 - Passing `release` will uncomment release sections and comment main sections.
 
@@ -322,6 +331,7 @@ source "$dir_of_tegonal_scripts/setup.sh" "$dir_of_tegonal_scripts"
 </releasing-toggle-sections>
 
 ## Hide/Show sneak peek banner
+
 In case you use a sneak peek banner as we do in this repo, then this script can be used to hide it (before tagging)
 and show it again in the new dev cycle.
 
@@ -368,6 +378,45 @@ source "$dir_of_tegonal_scripts/setup.sh" "$dir_of_tegonal_scripts"
 
 </releasing-sneak-peek-banner>
 
+## Release Files
+
+Script which releases a version for a repository containing files which don't need to be compiled or packaged.
+Useful if you want to release e.g. scripts which can then be fetched via [gget](https://github.com/tegonal/gget)
+
+Help:
+<releasing-release-files-help>
+
+<!-- auto-generated, do not modify here but in src/releasing/release-files.sh -->
+```text
+
+```
+
+</releasing-release-files-help>
+
+Full usage example:
+<releasing-release-files>
+
+<!-- auto-generated, do not modify here but in src/releasing/release-files.sh -->
+```bash
+#!/usr/bin/env bash
+set -eu
+# Assuming tegonal's scripts were fetched with gget - adjust location accordingly
+dir_of_tegonal_scripts="$(realpath "$(cd -- "$(dirname -- "${BASH_SOURCE[0]:-$0}")" &>/dev/null && pwd 2>/dev/null)/../lib/tegonal-scripts/src")"
+source "$dir_of_tegonal_scripts/setup.sh" "$dir_of_tegonal_scripts"
+
+# releases version v0.1.0 using the key 0x945FE615904E5C85 for signing
+"$dir_of_tegonal_scripts/releasing/release-files.sh" -v v0.1.0 -k "0x945FE615904E5C85"
+
+# releases version v0.1.0 using the key 0x945FE615904E5C85 for signing and
+# searches for additional occurrences of the version via the specified pattern in:
+# - script files in ./src and ./scripts
+# - ./README.md
+"$dir_of_tegonal_scripts/releasing/release-files.sh" \
+	-v v0.1.0 -k "0x945FE615904E5C85" -p "(TEGONAL_SCRIPTS_VERSION=['\"])[^'\"]+(['\"])"
+```
+
+</releasing-release-files>
+
 # Script Utilities
 
 The scripts under this topic (in directory `utility`) are useful for bash programming as such.
@@ -375,6 +424,7 @@ The scripts under this topic (in directory `utility`) are useful for bash progra
 ## Parse arguments
 
 We have two scripts helping in parsing arguments:
+
 - parse-args.sh which expects named arguments
 - parse-fn-args which is supposed to be sourced into a function
 
@@ -474,7 +524,6 @@ function myFunctionWithVarargs() {
 ```
 
 </utility-parse-fn-args>
-
 
 ## Log
 
@@ -600,7 +649,8 @@ printf "%s\n" \
 
 ## Replace Snippets
 
-If you want to include some code in markdown files (or any other HTML-like file) then replace-snippet.sh could come in handy.
+If you want to include some code in markdown files (or any other HTML-like file) then replace-snippet.sh could come in
+handy.
 
 Full usage example:
 
@@ -676,12 +726,15 @@ Our thanks go to [code contributors](https://github.com/tegonal/scripts/graphs/c
 as well as all other contributors (e.g. bug reporters, feature request creators etc.)
 
 You are more than welcome to contribute as well:
+
 - star this repository if you like/use it
 - [open a bug](https://github.com/tegonal/scripts/issues/new?template=bug_report.md) if you find one
-- Open a [new discussion](https://github.com/tegonal/scripts/discussions/new?category=ideas) if you are missing a feature
+- Open a [new discussion](https://github.com/tegonal/scripts/discussions/new?category=ideas) if you are missing a
+  feature
 - [ask a question](https://github.com/tegonal/scripts/discussions/new?category=q-a)
   so that we better understand where our scripts need to improve.
-- have a look at the [help wanted issues](https://github.com/tegonal/scripts/issues?q=is%3Aissue+is%3Aopen+label%3A%22help+wanted%22)
+- have a look at
+  the [help wanted issues](https://github.com/tegonal/scripts/issues?q=is%3Aissue+is%3Aopen+label%3A%22help+wanted%22)
   if you would like to code.
 
 # License

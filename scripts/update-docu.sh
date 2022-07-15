@@ -36,6 +36,7 @@ find "$dir_of_tegonal_scripts" -name "*.sh" \
 declare executableScripts=(
 	releasing/sneak-peek-banner
 	releasing/toggle-sections
+	releasing/release-files
 	releasing/update-version-README
 	releasing/update-version-scripts
 )

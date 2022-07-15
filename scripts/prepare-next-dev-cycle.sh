@@ -10,13 +10,13 @@
 ###################################
 set -eu
 
-if ! [[ -v scriptDir ]]; then
-	scriptDir="$(cd -- "$(dirname -- "${BASH_SOURCE[0]:-$0}")" &>/dev/null && pwd 2>/dev/null)"
-	declare -r scriptDir
+if ! [[ -v scriptsDir ]]; then
+	scriptsDir="$(cd -- "$(dirname -- "${BASH_SOURCE[0]:-$0}")" &>/dev/null && pwd 2>/dev/null)"
+	declare -r scriptsDir
 fi
 
 if ! [[ -v dir_of_tegonal_scripts ]]; then
-	dir_of_tegonal_scripts="$(realpath "$scriptDir/../src")"
+	dir_of_tegonal_scripts="$(realpath "$scriptsDir/../src")"
 	source "$dir_of_tegonal_scripts/setup.sh" "$dir_of_tegonal_scripts"
 fi
 
@@ -39,9 +39,9 @@ declare additionalPattern="(TEGONAL_SCRIPTS_VERSION=['\"])[^'\"]+(['\"])"
 "$dir_of_tegonal_scripts/releasing/sneak-peek-banner.sh" -c show
 "$dir_of_tegonal_scripts/releasing/toggle-sections.sh" -c main
 "$dir_of_tegonal_scripts/releasing/update-version-scripts.sh" -v "$version-SNAPSHOT" -p "$additionalPattern"
-"$dir_of_tegonal_scripts/releasing/update-version-scripts.sh" -v "$version-SNAPSHOT" -p "$additionalPattern" -d "$scriptDir"
+"$dir_of_tegonal_scripts/releasing/update-version-scripts.sh" -v "$version-SNAPSHOT" -p "$additionalPattern" -d "$scriptsDir"
 
 # update docu with new version
-"$scriptDir/update-docu.sh"
+"$scriptsDir/update-docu.sh"
 
 git commit -a -m "prepare next dev cycle for $version"
