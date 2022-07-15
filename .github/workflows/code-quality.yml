@@ -10,7 +10,7 @@ jobs:
       - name: Run ShellCheck
         uses: ludeeus/action-shellcheck@1.1.0
         env:
-          SHELLCHECK_OPTS: -C -x -o all -P ./src
+          SHELLCHECK_OPTS: -C -x -o all -P ./src:./scripts
 
       - name: check all scripts in bug template
         run: ./scripts/check-in-bug-template.sh
