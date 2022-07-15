@@ -19,8 +19,9 @@ if ! [[ -v dir_of_tegonal_scripts ]]; then
 	declare dir_of_tegonal_scripts
 	dir_of_tegonal_scripts="$(realpath "$scriptDir/../src")"
 	declare -r dir_of_tegonal_scripts
+	source "$dir_of_tegonal_scripts/utility/source-once.sh"
 fi
-source "$dir_of_tegonal_scripts/utility/log.sh"
+sourceOnce "$dir_of_tegonal_scripts/utility/log.sh"
 
 find "$dir_of_tegonal_scripts" -name "*.sh" \
 	-not -name "*.doc.sh" \

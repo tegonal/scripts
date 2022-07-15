@@ -63,16 +63,16 @@ if ! [[ -v dir_of_tegonal_scripts ]]; then
 	declare dir_of_tegonal_scripts
 	dir_of_tegonal_scripts="$(realpath "$(cd -- "$(dirname -- "${BASH_SOURCE[0]:-$0}")" &>/dev/null && pwd 2>/dev/null)/..")"
 	declare -r dir_of_tegonal_scripts
+	source "$dir_of_tegonal_scripts/utility/source-once.sh"
 fi
+sourceOnce "$dir_of_tegonal_scripts/qa/checks.sh"
+sourceOnce "$dir_of_tegonal_scripts/utility/log.sh"
 
 function parseFnArgs() {
-	source "$dir_of_tegonal_scripts/qa/checks.sh"
-	source "$dir_of_tegonal_scripts/utility/log.sh"
-
-	if (($# < 2)); then
+		if (($# < 2)); then
 		logError "At least two arguments need to be passed to parseFnArgs.\nGiven \033[0;36m%s\033[0m in \033[0;36m%s\033[0m\nFollowing a description of the parameters:" "$#" "${BASH_SOURCE[1]}"
-		echo >&2 '1. params		  an array with the parameter names'
-		echo >&2 '2... args...	the arguments as such, typically "$@"'
+		echo >&2 '1. params     the name of an array which contains the parameter names'
+		echo >&2 '2... args...  the arguments as such, typically "$@"'
 		return 9
 	fi
 
@@ -114,7 +114,7 @@ function parseFnArgs() {
 
 	# assign arguments to specified variables
 	for name in "${paramArr1[@]}"; do
-		printf -v "${name}" "%s" "$1"
+		printf -v "$name" "%s" "$1"
 		shift
 	done
 

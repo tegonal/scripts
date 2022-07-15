@@ -35,11 +35,11 @@ if ! [[ -v dir_of_tegonal_scripts ]]; then
 	declare dir_of_tegonal_scripts
 	dir_of_tegonal_scripts="$(realpath "$(cd -- "$(dirname -- "${BASH_SOURCE[0]:-$0}")" &>/dev/null && pwd 2>/dev/null)/..")"
 	declare -r dir_of_tegonal_scripts
+	source "$dir_of_tegonal_scripts/utility/source-once.sh"
 fi
+sourceOnce "$dir_of_tegonal_scripts/utility/recursive-declare-p.sh"
 
 function checkArgIsArray() {
-	source "$dir_of_tegonal_scripts/utility/recursive-declare-p.sh"
-
 	local -n arr1=$1
 	local argNumber=$2
 

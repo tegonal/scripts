@@ -13,6 +13,7 @@ if ! [[ -v dir_of_tegonal_scripts ]]; then
 	declare dir_of_tegonal_scripts
 	dir_of_tegonal_scripts="$(realpath "$(cd -- "$(dirname -- "${BASH_SOURCE[0]:-$0}")" &>/dev/null && pwd 2>/dev/null)/../src")"
 	declare -r dir_of_tegonal_scripts
+	source "$dir_of_tegonal_scripts/utility/source-once.sh"
 fi
 
 source "$dir_of_tegonal_scripts/utility/log.sh"

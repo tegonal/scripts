@@ -46,10 +46,11 @@ if ! [[ -v dir_of_tegonal_scripts ]]; then
 	declare dir_of_tegonal_scripts
 	dir_of_tegonal_scripts="$(realpath "$(cd -- "$(dirname -- "${BASH_SOURCE[0]:-$0}")" &>/dev/null && pwd 2>/dev/null)/..")"
 	declare -r dir_of_tegonal_scripts
+	source "$dir_of_tegonal_scripts/utility/source-once.sh"
 fi
+sourceOnce "$dir_of_tegonal_scripts/utility/log.sh"
 
 function recursiveDeclareP() {
-	source "$dir_of_tegonal_scripts/utility/log.sh"
 	if ! (($# == 1)); then
 		logError "One parameter needs to be passed to recursiveDeclareP\nGiven \033[0;36m%s\033[0m in \033[0;36m%s\033[0m\nFollowing a description of the parameters:" "$#" "${BASH_SOURCE[1]}"
 		echo >&2 '1. variableName		 the name of the variable whose declaration statement shall be determined'

@@ -37,13 +37,13 @@ if ! [[ -v dir_of_tegonal_scripts ]]; then
 	declare dir_of_tegonal_scripts
 	dir_of_tegonal_scripts="$(realpath "$(cd -- "$(dirname -- "${BASH_SOURCE[0]:-$0}")" &>/dev/null && pwd 2>/dev/null)/..")"
 	declare -r dir_of_tegonal_scripts
+	source "$dir_of_tegonal_scripts/utility/source-once.sh"
 fi
+sourceOnce "$dir_of_tegonal_scripts/qa/checks.sh"
+sourceOnce "$dir_of_tegonal_scripts/utility/log.sh"
+sourceOnce "$dir_of_tegonal_scripts/utility/recursive-declare-p.sh"
 
 function runShellcheck() {
-	source "$dir_of_tegonal_scripts/qa/checks.sh"
-	source "$dir_of_tegonal_scripts/utility/log.sh"
-	source "$dir_of_tegonal_scripts/utility/recursive-declare-p.sh"
-
 	if ! (($# == 2)); then
 		logError "Two parameter need to be passed to runShellcheck\nGiven \033[0;36m%s\033[0m in \033[0;36m%s\033[0m\nFollowing a description of the parameters:" "$#" "${BASH_SOURCE[1]}"
 		echo >&2 '1. dirs		 name of array which contains directories in which *.sh files are searched'

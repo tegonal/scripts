@@ -31,6 +31,7 @@ body:
         - utility/recursive-declare-p.sh
         - utility/replace-snippet.sh
         - utility/replace-help-snippet.sh
+        - utility/source-once.sh
         - utility/update-bash-docu.sh
     validations:
       required: false
