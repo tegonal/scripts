@@ -15,7 +15,8 @@ if ! [[ -v dir_of_tegonal_scripts ]]; then
 	source "$dir_of_tegonal_scripts/setup.sh" "$dir_of_tegonal_scripts"
 fi
 
-source "$dir_of_tegonal_scripts/utility/log.sh"
+sourceOnce "$dir_of_tegonal_scripts/utility/log.sh"
+sourceOnce "$dir_of_tegonal_scripts/utility/parse-args.sh"
 
 if ! [[ -x "$(command -v "shellspec")" ]]; then
 	die "You need to have shellspec installed if you want to create a release"
@@ -30,7 +31,6 @@ declare params=(
 	prepareOnly '--prepare-only' '(optional) defines whether the release shall only be prepared (i.e. no push, no tag, no prepare-next-dev-cycle) -- default: false'
 )
 
-source "$dir_of_tegonal_scripts/utility/parse-args.sh"
 parseArguments params "" "$TEGONAL_SCRIPTS_VERSION" "$@"
 
 declare versionRegex="^(v[0-9]+)\.([0-9]+)\.[0-9]+(-RC[0-9]+)?$"
