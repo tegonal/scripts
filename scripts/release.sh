@@ -10,8 +10,13 @@
 set -eu
 declare -x TEGONAL_SCRIPTS_VERSION='v0.6.0-SNAPSHOT'
 
+if ! [[ -v scriptDir ]]; then
+	scriptDir="$(cd -- "$(dirname -- "${BASH_SOURCE[0]:-$0}")" &>/dev/null && pwd 2>/dev/null)"
+	declare -r scriptDir
+fi
+
 if ! [[ -v dir_of_tegonal_scripts ]]; then
-	dir_of_tegonal_scripts="$(realpath "$(cd -- "$(dirname -- "${BASH_SOURCE[0]:-$0}")" &>/dev/null && pwd 2>/dev/null)/../src")"
+	dir_of_tegonal_scripts="$(realpath "$scriptDir/../src")"
 	source "$dir_of_tegonal_scripts/setup.sh" "$dir_of_tegonal_scripts"
 fi
 
@@ -54,13 +59,11 @@ fi
 git checkout main
 git pull
 
-if ! [[ -v scriptDir ]]; then
-	scriptDir="$(cd -- "$(dirname -- "${BASH_SOURCE[0]:-$0}")" &>/dev/null && pwd 2>/dev/null)"
-	declare -r scriptDir
-fi
+
 # make sure everything is up-to-date and works as it should
 "$scriptDir/before-pr.sh"
 
+# same as in prepare-next-dev-cycle.sh, update there as well
 declare additionalPattern="(TEGONAL_SCRIPTS_VERSION=['\"])[^'\"]+(['\"])"
 
 "$dir_of_tegonal_scripts/releasing/sneak-peek-banner.sh" -c hide
