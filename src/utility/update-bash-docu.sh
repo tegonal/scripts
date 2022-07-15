@@ -41,12 +41,12 @@ if ! [[ -v dir_of_tegonal_scripts ]]; then
 	declare dir_of_tegonal_scripts
 	dir_of_tegonal_scripts="$(realpath "$(cd -- "$(dirname -- "${BASH_SOURCE[0]:-$0}")" &>/dev/null && pwd 2>/dev/null)/..")"
 	declare -r dir_of_tegonal_scripts
+	source "$dir_of_tegonal_scripts/utility/source-once.sh"
 fi
+sourceOnce "$dir_of_tegonal_scripts/utility/parse-fn-args.sh"
+sourceOnce "$dir_of_tegonal_scripts/utility/replace-snippet.sh"
 
 function updateBashDocumentation() {
-	source "$dir_of_tegonal_scripts/utility/parse-fn-args.sh"
- 	source "$dir_of_tegonal_scripts/utility/replace-snippet.sh"
-
 	local script id dir pattern
 	# shellcheck disable=SC2034
 	local -ra params=(script id dir pattern)

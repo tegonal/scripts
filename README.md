@@ -39,7 +39,8 @@ The scripts are ordered by topic:
 
 - [Script Utilities](#script-utilities)
   - [Parse arguments](#parse-arguments)
-  - [log functions](#log)
+  - [Log functions](#log)
+  - [`source` once](#source-once)
   - [Recursive `declare -p`](#recursive-declare--p)
   - [Replace Snippets](#replace-snippets)
   - [Update Documentation](#update-bash-documentation)
@@ -430,6 +431,10 @@ logSuccessWithoutNewline "yay"
 ```
 
 </utility-log>
+
+## Source once
+
+Establishes a guard by creating a variable based on the file which shall be sourced
 
 ## Recursive `declare -p`
 

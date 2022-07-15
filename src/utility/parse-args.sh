@@ -68,7 +68,10 @@ if ! [[ -v dir_of_tegonal_scripts ]]; then
 	declare dir_of_tegonal_scripts
 	dir_of_tegonal_scripts="$(realpath "$(cd -- "$(dirname -- "${BASH_SOURCE[0]:-$0}")" &>/dev/null && pwd 2>/dev/null)/..")"
 	declare -r dir_of_tegonal_scripts
+	source "$dir_of_tegonal_scripts/utility/source-once.sh"
 fi
+sourceOnce "$dir_of_tegonal_scripts/utility/log.sh"
+sourceOnce "$dir_of_tegonal_scripts/utility/recursive-declare-p.sh"
 
 function describeParameterTriple() {
 	echo >&2 "The array needs to contain parameter definitions where a parameter definition consist of 3 values:"
@@ -86,21 +89,20 @@ function describeParameterTriple() {
 }
 
 function checkParameterDefinitionIsTriple() {
-	source "$dir_of_tegonal_scripts/utility/log.sh"
-	source "$dir_of_tegonal_scripts/utility/recursive-declare-p.sh"
-
 	if ! (($# == 1)); then
 		logError "One parameter needs to be passed to checkParameterDefinitionIsTriple\nGiven \033[0;36m%s\033[0m in \033[0;36m%s\033[0m\nFollowing a description of the parameters:" "$#" "${BASH_SOURCE[1]}"
-		echo >&2 '1. params		 an array with the parameter definitions'
+		echo >&2 '1. params   the name of an array which contains the parameter definitions'
 		return 9
 	fi
 
 	local -n paramArr2=$1
 	local arrLength=${#paramArr2[@]}
 
-
 	local arrayDefinition
-	arrayDefinition="$(set -e; recursiveDeclareP paramArr2)"
+	arrayDefinition="$(
+		set -e
+		recursiveDeclareP paramArr2
+	)"
 	reg='declare -a.*'
 	if ! [[ "$arrayDefinition" =~ $reg ]]; then
 		logError "array with parameter definitions is broken for \033[1;34m%s\033[0m in %s" "${!paramArr2}" "${BASH_SOURCE[2]}"
@@ -141,13 +143,11 @@ function checkParameterDefinitionIsTriple() {
 }
 
 function parseArguments {
-	source "$dir_of_tegonal_scripts/utility/log.sh"
-
 	if (($# < 2)); then
 		logError "At least two arguments need to be passed to parseArguments.\nGiven \033[0;36m%s\033[0m in \033[0;36m%s\033[0m\nFollowing a description of the parameters:" "$#" "${BASH_SOURCE[1]}"
-		echo >&2 '1. params		 an array with the parameter definitions'
-		echo >&2 '2. examples	 a string containing examples (or an empty string)'
-		echo >&2 '3... args...	the arguments as such, typically "$@"'
+		echo >&2 '1. params     the name of an array which contains the parameter definitions'
+		echo >&2 '2. examples   a string containing examples (or an empty string)'
+		echo >&2 '3... args...  the arguments as such, typically "$@"'
 		return 9
 	fi
 
@@ -201,12 +201,10 @@ function parseArguments {
 }
 
 function printHelp {
-	source "$dir_of_tegonal_scripts/utility/log.sh"
-
 	if ! (($# == 2)); then
 		logError "Two arguments need to be passed to printHelp.\nGiven \033[0;36m%s\033[0m in \033[0;36m%s\033[0m\nFollowing a description of the parameters:" "$#" "${BASH_SOURCE[1]}"
-		echo >&2 '1. params		 an array with the parameter definitions'
-		echo >&2 '2. examples	 a string containing examples (or an empty string)'
+		echo >&2 '1. params    the name of an array which contains the parameter definitions'
+		echo >&2 '2. examples  a string containing examples (or an empty string)'
 		return 9
 	fi
 	local -n paramArr3=$1
@@ -245,12 +243,10 @@ function printHelp {
 }
 
 function checkAllArgumentsSet {
-	source "$dir_of_tegonal_scripts/utility/log.sh"
-
 	if ! (($# == 2)); then
 		logError "Two arguments need to be passed to checkAllArgumentsSet.\nGiven \033[0;36m%s\033[0m in \033[0;36m%s\033[0m\nFollowing a description of the parameters:" "$#" "${BASH_SOURCE[1]}"
-		echo >&2 '1. params		 an array with the parameter definitions'
-		echo >&2 '2. examples	 a string containing examples (or an empty string)'
+		echo >&2 '1. params    the name of an array which contains the parameter definitions'
+		echo >&2 '2. examples  a string containing examples (or an empty string)'
 		return 9
 	fi
 	local -n paramArr4=$1
