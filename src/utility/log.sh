@@ -44,6 +44,10 @@
 #    # ERROR: fatal error, shutting down
 #    # exit 1
 #
+#    returnDying "fatal error, shutting down"
+#    # ERROR: fatal error, shutting down
+#    # return 1
+#
 #    # in case you don't want a newline at the end of the message, then use one of
 #    logInfoWithoutNewline "hello"
 #    # INFO: hello%
@@ -101,4 +105,8 @@ function logSuccessWithoutNewline() {
 function die() {
 	logError "$@"
 	exit 1
+}
+function returnDying() {
+	logError "$@"
+	return 1
 }
