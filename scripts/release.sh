@@ -61,11 +61,13 @@ fi
 # make sure everything is up-to-date and works as it should
 "$scriptDir/before-pr.sh"
 
+declare additionalPattern="(TEGONAL_SCRIPTS_VERSION=['\"])[^'\"]+(['\"])"
+
 "$dir_of_tegonal_scripts/releasing/sneak-peek-banner.sh" -c hide
 "$dir_of_tegonal_scripts/releasing/toggle-sections.sh" -c release
-"$dir_of_tegonal_scripts/releasing/update-version-README.sh" -v "$version"
-"$dir_of_tegonal_scripts/releasing/update-version-scripts.sh" -v "$version" -p "TEGONAL_SCRIPTS_VERSION"
-"$dir_of_tegonal_scripts/releasing/update-version-scripts.sh" -v "$version" -p "TEGONAL_SCRIPTS_VERSION" -d "$scriptDir"
+"$dir_of_tegonal_scripts/releasing/update-version-README.sh" -v "$version"  -p "$additionalPattern"
+"$dir_of_tegonal_scripts/releasing/update-version-scripts.sh" -v "$version" -p "$additionalPattern"
+"$dir_of_tegonal_scripts/releasing/update-version-scripts.sh" -v "$version" -p "$additionalPattern" -d "$scriptDir"
 
 # update docu with new version
 "$scriptDir/update-docu.sh"
