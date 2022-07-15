@@ -182,7 +182,7 @@ update-version-README.sh -v v0.1.0 -f ./docs/index.md
 # also replace occurrences of the defined pattern
 update-version-README.sh -v v0.1.0 -p "(VERSION=['\"])[^'\"]+(['\"])"
 
-INFO: Version of update-version-README.sh is:
+INFO: Version of parse-args.sh is:
 v0.6.0-SNAPSHOT
 ```
 
@@ -234,7 +234,7 @@ update-version-scripts.sh -v v0.1.0 -d ./scripts
 # also replace occurrences of the defined pattern
 update-version-scripts.sh -v v0.1.0 -p "(VERSION=['\"])[^'\"]+(['\"])"
 
-INFO: Version of update-version-scripts.sh is:
+INFO: Version of parse-args.sh is:
 v0.6.0-SNAPSHOT
 ```
 
@@ -294,7 +294,7 @@ toggle-sections.sh -c main
 # comment the main sections in ./docs/index.md and uncomment the release sections
 toggle-sections.sh -c release -f ./docs/index.md
 
-INFO: Version of toggle-sections.sh is:
+INFO: Version of parse-args.sh is:
 v0.6.0-SNAPSHOT
 ```
 
@@ -340,7 +340,7 @@ sneak-peek-banner.sh -c hide
 # show the sneak peek banner in ./docs/index.md
 sneak-peek-banner.sh -c show -f ./docs/index.md
 
-INFO: Version of sneak-peek-banner.sh is:
+INFO: Version of parse-args.sh is:
 v0.6.0-SNAPSHOT
 ```
 
