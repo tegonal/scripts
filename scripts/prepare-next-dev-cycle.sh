@@ -9,8 +9,13 @@
 #
 set -eu
 
+if ! [[ -v scriptDir ]]; then
+	scriptDir="$(cd -- "$(dirname -- "${BASH_SOURCE[0]:-$0}")" &>/dev/null && pwd 2>/dev/null)"
+	declare -r scriptDir
+fi
+
 if ! [[ -v dir_of_tegonal_scripts ]]; then
-	dir_of_tegonal_scripts="$(realpath "$(cd -- "$(dirname -- "${BASH_SOURCE[0]:-$0}")" &>/dev/null && pwd 2>/dev/null)/../src")"
+	dir_of_tegonal_scripts="$(realpath "$scriptDir/../src")"
 	source "$dir_of_tegonal_scripts/setup.sh" "$dir_of_tegonal_scripts"
 fi
 
@@ -27,8 +32,12 @@ fi
 
 echo "prepare next dev cycle for version $version"
 
+# same as in release.sh, update there as well
+declare additionalPattern="(TEGONAL_SCRIPTS_VERSION=['\"])[^'\"]+(['\"])"
+
 "$dir_of_tegonal_scripts/releasing/sneak-peek-banner.sh" -c show
 "$dir_of_tegonal_scripts/releasing/toggle-sections.sh" -c main
-"$dir_of_tegonal_scripts/releasing/update-version-scripts.sh" -v "$version-SNAPSHOT"
+"$dir_of_tegonal_scripts/releasing/update-version-scripts.sh" -v "$version-SNAPSHOT" -p "$additionalPattern"
+"$dir_of_tegonal_scripts/releasing/update-version-scripts.sh" -v "$version-SNAPSHOT" -p "$additionalPattern" -d "$scriptDir"
 
 git commit -a -m "prepare next dev cycle for $version"
