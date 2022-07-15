@@ -28,6 +28,6 @@ else
 	logWarning "shellspec is not installed, skipping running specs"
 fi
 
-"$scriptDir/check-in-bug-template.sh"
-"$scriptDir/run-shellcheck.sh"
-"$scriptDir/update-docu.sh"
+source "$scriptDir/check-in-bug-template.sh"
+source "$scriptDir/run-shellcheck.sh"
+source "$scriptDir/update-docu.sh"
