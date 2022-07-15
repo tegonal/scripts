@@ -24,7 +24,7 @@
 #    	source "$dir_of_tegonal_scripts/qa/checks.sh"
 #
 #    	# shellcheck disable=SC2034
-#    	local -n arr=$1
+#    	local -rn arr=$1
 #    	checkArgIsArray arr 1
 #    }
 #
@@ -38,14 +38,14 @@ fi
 sourceOnce "$dir_of_tegonal_scripts/utility/recursive-declare-p.sh"
 
 function checkArgIsArray() {
-	local -n arr1=$1
+	local -rn arr1=$1
 	local argNumber=$2
 
 	reg='declare -a.*'
 	local arrayDefinition
 	arrayDefinition="$(set -e && recursiveDeclareP arr1)"
 	if ! [[ $arrayDefinition =~ $reg ]]; then
-		logError "the passed array \033[1;34m%s\033[0m defined in %s is broken." "${!arr1}" "${BASH_SOURCE[2]:-${BASH_SOURCE[1]}}"
+		logError "the array \033[1;34m%s\033[0m defined in %s is broken." "${!arr1}" "${BASH_SOURCE[2]:-${BASH_SOURCE[1]}}"
 		printf >&2 "the %s argument to %s needs to be a non-associative array, given:\n" "$argNumber" "${FUNCNAME[1]}"
 		echo >&2 "$arrayDefinition"
 		return 9

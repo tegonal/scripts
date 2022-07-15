@@ -8,6 +8,6 @@ function foo() {
 	source "$dir_of_tegonal_scripts/qa/checks.sh"
 
 	# shellcheck disable=SC2034
-	local -n arr=$1
+	local -rn arr=$1
 	checkArgIsArray arr 1
 }

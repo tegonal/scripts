@@ -74,50 +74,51 @@ function parseFnArgs() {
 		return 9
 	fi
 
-	local -n paramArr1=$1
+	# using unconventional naming in order to avoid name clashes with the variables we will initialise further below
+	local -rn parseFnArgs_paramArr1=$1
 	shift
 
-	checkArgIsArray paramArr1 1
+	checkArgIsArray parseFnArgs_paramArr1 1
 
-	local withVarArgs
+	local parseFnArgs_withVarArgs
 	if declare -p varargs >/dev/null 2>&1; then
-		withVarArgs=true
+		parseFnArgs_withVarArgs=true
 	else
-		withVarArgs=false
+		parseFnArgs_withVarArgs=false
 	fi
 
-	if (($# < ${#paramArr1[@]})); then
-		logError "Not enough arguments supplied to \033[0m\033[0;36m%s\033[0m: expected %s, given %s\nFollowing a listing of the arguments (red means missing):" "${FUNCNAME[2]:-${FUNCNAME[1]}}" "${#paramArr1[@]}" "$#"
+	if (($# < ${#parseFnArgs_paramArr1[@]})); then
+		logError "Not enough arguments supplied to \033[0m\033[0;36m%s\033[0m: expected %s, given %s\nFollowing a listing of the arguments (red means missing):" "${FUNCNAME[2]:-${FUNCNAME[1]}}" "${#parseFnArgs_paramArr1[@]}" "$#"
 
-		local -i i=1
-		for name in "${paramArr1[@]}"; do
+		local -i parseFnArgs_i=1
+		for parseFnArgs_name in "${parseFnArgs_paramArr1[@]}"; do
 			printf "\033[0m"
-			if ((i - 1 < $#)); then
+			if ((parseFnArgs_i - 1 < $#)); then
 				printf "\033[0;32m"
 			else
 				printf "\033[0;31m"
 			fi
-			printf >&2 "%2s: %s\n" "$i" "$name"
-			((i = i + 1))
+			printf >&2 "%2s: %s\n" "$parseFnArgs_i" "$parseFnArgs_name"
+			((++parseFnArgs_i))
 		done
 		printf "\033[0m"
 		return 9
 	fi
 
-	if ! [[ $withVarArgs == false ]] && ! (($# == ${#paramArr1[@]})); then
-		logError "more arguments supplied than expected to \033[0m\033[0;36m%s\033[0m: expected %s, given %s" "${FUNCNAME[1]}" "${#paramArr1[@]}" "$#"
+	if ! [[ $parseFnArgs_withVarArgs == false ]] && ! (($# == ${#parseFnArgs_paramArr1[@]})); then
+		logError "more arguments supplied than expected to \033[0m\033[0;36m%s\033[0m: expected %s, given %s" "${FUNCNAME[1]}" "${#parseFnArgs_paramArr1[@]}" "$#"
 		echo >&2 "in case you wanted your last parameter to be a vararg parameter, then use 'vararg' as last variable name your array containing the parameter names"
 		return 9
 	fi
 
 	# assign arguments to specified variables
-	for name in "${paramArr1[@]}"; do
-		printf -v "$name" "%s" "$1"
+	for parseFnArgs_name in "${parseFnArgs_paramArr1[@]}"; do
+		printf -v "$parseFnArgs_name" "%s" "$1"
 		shift
 	done
 
 	# assign rest to varags if declared
-	if $withVarArgs; then
+	if $parseFnArgs_withVarArgs; then
 		# is used afterwards
 		# shellcheck disable=SC2034
 		varargs=("$@")

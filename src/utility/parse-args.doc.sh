@@ -11,9 +11,9 @@ declare directory pattern version
 # as shellcheck doesn't get that we are passing `params` to parseArguments ¯\_(ツ)_/¯ (an open issue of shellcheck)
 # shellcheck disable=SC2034
 declare params=(
+	pattern '-p|--pattern' ''
+	version '-v' 'the version'
 	directory '-d|--directory' '(optional) the working directory -- default: .'
-	pattern '-p|--pattern' 'pattern used during analysis'
-	version '-v|--version' ''
 )
 # optional: you can define examples which are included in the help text -- use an empty string for no example
 declare examples

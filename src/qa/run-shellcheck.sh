@@ -48,8 +48,8 @@ function runShellcheck() {
 		echo >&2 '2. sourcePath		 equivalent to shellcheck''s -P, path to search for sourced files, separated by :'
 		return 9
 	fi
-	local -n directories=$1
-	local sourcePath=$2
+	local -rn directories=$1
+	local -r sourcePath=$2
 
 	checkArgIsArray directories 1
 

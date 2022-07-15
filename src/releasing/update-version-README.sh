@@ -22,6 +22,7 @@
 #
 ###################################
 set -eu
+declare -x TEGONAL_SCRIPTS_VERSION="v0.6.0-SNAPSHOT"
 
 if ! [[ -v dir_of_tegonal_scripts ]]; then
 	dir_of_tegonal_scripts="$(realpath "$(cd -- "$(dirname -- "${BASH_SOURCE[0]:-$0}")" &>/dev/null && pwd 2>/dev/null)/..")"
@@ -33,7 +34,7 @@ function updateVersionReadme() {
 	local version file
 	# shellcheck disable=SC2034
 	local -ra params=(
-		version '-v|--version' 'the version which shall be used'
+		version '-v' 'the version which shall be used'
 		file '-f|--file' '(optional) the file where search & replace shall be done -- default: ./README.md'
 	)
 	local -r examples=$(
@@ -46,9 +47,9 @@ function updateVersionReadme() {
 		EOM
 	)
 
-	parseArguments params "$examples" "$@"
+	parseArguments params "$examples" "$TEGONAL_SCRIPTS_VERSION" "$@"
 	if ! [[ -v file ]]; then file="./README.md"; fi
-	checkAllArgumentsSet params "$examples"
+	checkAllArgumentsSet params "$examples" "$TEGONAL_SCRIPTS_VERSION"
 
 	echo "set version $version for Download badges and sneak peek banner in $file"
 

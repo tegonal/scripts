@@ -22,6 +22,7 @@
 #
 ###################################
 set -eu
+declare -x TEGONAL_SCRIPTS_VERSION="v0.6.0-SNAPSHOT"
 
 if ! [[ -v dir_of_tegonal_scripts ]]; then
 	dir_of_tegonal_scripts="$(realpath "$(cd -- "$(dirname -- "${BASH_SOURCE[0]:-$0}")" &>/dev/null && pwd 2>/dev/null)/..")"
@@ -33,7 +34,7 @@ function updateVersionScripts() {
 	local version directory
 	# shellcheck disable=SC2034
 	local -ra params=(
-		version '-v|--version' 'the version which shall be used'
+		version '-v' 'the version which shall be used'
 		directory '-d|--directory' '(optional) the working directory -- default: ./src'
 	)
 	local -r examples=$(
@@ -46,9 +47,9 @@ function updateVersionScripts() {
 		EOM
 	)
 
-	parseArguments params "$examples" "$@"
+	parseArguments params "$examples" "$TEGONAL_SCRIPTS_VERSION" "$@"
 	if ! [[ -v directory ]]; then directory="./src"; fi
-	checkAllArgumentsSet params "$examples"
+	checkAllArgumentsSet params "$examples" "$TEGONAL_SCRIPTS_VERSION"
 
 	find "$directory" -name "*.sh" \
 		-print0 | while read -r -d $'\0' script; do
