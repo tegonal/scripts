@@ -163,15 +163,22 @@ function parseArguments {
 
 	local -r parseArguments_arrLength="${#parseArguments_paramArr1[@]}"
 
+	local -i parseArguments_numOfArgumentsParsed=0
 	while (($# > 0)); do
 		parseArguments_argName="$1"
 		if [[ $parseArguments_argName == --help ]]; then
+			if ! ((parseArguments_numOfArgumentsParsed == 0)); then
+				logWarning "there were arguments defined prior to --help, they will all be ignored and instead printHelp will be called"
+			fi
 			printHelp parseArguments_paramArr1 "$parseArguments_examples" "$parseArguments_version"
 			return 99
 		fi
 		if [[ $parseArguments_argName == --version ]]; then
-			echo "$parseArguments_version"
-			return 0
+			if ! ((parseArguments_numOfArgumentsParsed == 0)); then
+				logWarning "there were arguments defined prior to --version, they will all be ignored and instead printVersion will be called"
+			fi
+			printVersion "$parseArguments_version"
+			return 99
 		fi
 
 		local -i parseArguments_expectedName=0
@@ -180,7 +187,7 @@ function parseArguments {
 			local parseArguments_pattern="${parseArguments_paramArr1[parseArguments_i + 1]}"
 			local parseArguments_regex="^($parseArguments_pattern)$"
 			if [[ $parseArguments_argName =~ $parseArguments_regex ]]; then
-				if (( $# < 2)); then
+				if (($# < 2)); then
 					logError "no value defined for parameter \033[1;36m%s\033[0m (pattern %s) in %s" "$parseArguments_paramName" "$parseArguments_pattern" "${BASH_SOURCE[1]}"
 					echo >&2 "following the help documentation:"
 					echo >&2 ""
@@ -190,6 +197,7 @@ function parseArguments {
 				# that's where the black magic happens, we are assigning to global variables here
 				printf -v "$parseArguments_paramName" "%s" "$2"
 				parseArguments_expectedName=1
+				((++parseArguments_numOfArgumentsParsed))
 				shift
 			elif [[ "$parseArguments_argName" =~ $parseArguments_regex ]]; then
 				echo "ou shit"
@@ -207,6 +215,16 @@ function parseArguments {
 		fi
 		shift
 	done
+}
+
+function printVersion() {
+	if ! (($# == 1)); then
+		logError "One argument needs to be passed to printVersion.\nGiven \033[0;36m%s\033[0m in \033[0;36m%s\033[0m\nFollowing a description of the parameters:" "$#" "${BASH_SOURCE[1]}"
+		echo >&2 '1. version   the version which shall be shown if one uses --version'
+		return 9
+	fi
+	local version=$1
+	logInfo "Version of %s is:\n%s" "$(basename "${BASH_SOURCE[2]:-${BASH_SOURCE[1]}}")" "$version"
 }
 
 function printHelp {
@@ -256,7 +274,7 @@ function printHelp {
 		echo "$examples"
 	fi
 	echo ""
-	logInfo "Version of %s is:\n%s" "$(basename "${BASH_SOURCE[2]:-${BASH_SOURCE[1]}}")" "$version"
+	printVersion "$version"
 }
 
 function checkAllArgumentsSet {
