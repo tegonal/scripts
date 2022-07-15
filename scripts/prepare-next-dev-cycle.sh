@@ -19,29 +19,41 @@ if ! [[ -v dir_of_tegonal_scripts ]]; then
 	dir_of_tegonal_scripts="$(realpath "$scriptsDir/../src")"
 	source "$dir_of_tegonal_scripts/setup.sh" "$dir_of_tegonal_scripts"
 fi
-
 sourceOnce "$dir_of_tegonal_scripts/utility/log.sh"
+sourceOnce "$dir_of_tegonal_scripts/releasing/sneak-peek-banner.sh"
+sourceOnce "$dir_of_tegonal_scripts/releasing/toggle-sections.sh"
+sourceOnce "$dir_of_tegonal_scripts/releasing/update-version-README.sh"
+sourceOnce "$dir_of_tegonal_scripts/releasing/update-version-scripts.sh"
+sourceOnce "$scriptsDir/update-docu.sh"
 
-if [[ -z "${1-""}" ]]; then
-	die "no version provided as first argument to prepare-next-dev-cycle in %s" "${BASH_SOURCE[1]}"
-fi
+function prepareNextDevCycle() {
+	if [[ -z "${1-""}" ]]; then
+		returnDying "no version provided as first argument to prepare-next-dev-cycle in %s" "${BASH_SOURCE[1]}"
+	fi
 
-version=$1
-if ! [[ "$version" =~ ^(v[0-9]+)\.([0-9]+)\.[0-9]+(-RC[0-9]+)?$ ]]; then
-	die "version should match vX.Y.Z(-RC...), was %s" "$version"
-fi
+	version=$1
+	if (($# > 1)); then
+		additionalPattern=$2
+	else
+		# same as in release.sh, update there as well
+		local -r additionalPattern="(TEGONAL_SCRIPTS_VERSION=['\"])[^'\"]+(['\"])"
+	fi
+	if ! [[ "$version" =~ ^(v[0-9]+)\.([0-9]+)\.[0-9]+(-RC[0-9]+)?$ ]]; then
+		returnDying "version should match vX.Y.Z(-RC...), was %s" "$version"
+	fi
 
-echo "prepare next dev cycle for version $version"
+	echo "prepare next dev cycle for version $version"
 
-# same as in release.sh, update there as well
-declare additionalPattern="(TEGONAL_SCRIPTS_VERSION=['\"])[^'\"]+(['\"])"
+	sneakPeekBanner -c show
+	toggleSection -c main
+	updateVersionReadme -v "$version-SNAPSHOT" -p "$additionalPattern"
+	updateVersionScripts -v "$version-SNAPSHOT" -p "$additionalPattern" -d "$scriptsDir"
 
-"$dir_of_tegonal_scripts/releasing/sneak-peek-banner.sh" -c show
-"$dir_of_tegonal_scripts/releasing/toggle-sections.sh" -c main
-"$dir_of_tegonal_scripts/releasing/update-version-scripts.sh" -v "$version-SNAPSHOT" -p "$additionalPattern"
-"$dir_of_tegonal_scripts/releasing/update-version-scripts.sh" -v "$version-SNAPSHOT" -p "$additionalPattern" -d "$scriptsDir"
+	# update docu with new version
+	updateDocu
 
-# update docu with new version
-"$scriptsDir/update-docu.sh"
+	git commit -a -m "prepare next dev cycle for $version"
+}
 
-git commit -a -m "prepare next dev cycle for $version"
+${__SOURCED__:+return}
+prepareNextDevCycle "$@"

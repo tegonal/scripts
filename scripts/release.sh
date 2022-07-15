@@ -9,6 +9,7 @@
 #
 ###################################
 set -eu
+declare -x TEGONAL_SCRIPTS_VERSION='v0.7.2'
 
 if ! [[ -v scriptsDir ]]; then
 	scriptsDir="$(cd -- "$(dirname -- "${BASH_SOURCE[0]:-$0}")" &>/dev/null && pwd 2>/dev/null)"
@@ -19,6 +20,8 @@ if ! [[ -v dir_of_tegonal_scripts ]]; then
 	dir_of_tegonal_scripts="$(realpath "$scriptsDir/../src")"
 	source "$dir_of_tegonal_scripts/setup.sh" "$dir_of_tegonal_scripts"
 fi
+sourceOnce "$dir_of_tegonal_scripts/releasing/release-files.sh"
+
 if ! [[ -x "$(command -v "shellspec")" ]]; then
 	die "You need to have shellspec installed if you want to create a release"
 fi
@@ -26,10 +29,8 @@ fi
 function findScripts() {
 	find "$scriptsDir/../src" -name "*.sh" -not -name "*.doc.sh" "$@"
 }
-# TODO would be nicer if we could source release-files.sh because then we don't have to export the function
-declare -fx findScripts
 
-"$dir_of_tegonal_scripts/releasing/release-files.sh" "$@" \
+releaseFiles "$@" \
 	--scripts-dir "$scriptsDir" \
 	--sign-fn findScripts \
 	-p "(TEGONAL_SCRIPTS_VERSION=['\"])[^'\"]+(['\"])"

@@ -10,39 +10,45 @@
 ###################################
 set -eu
 
+if ! [[ -v projectDir ]]; then
+	projectDir="$(realpath "$dir_of_tegonal_scripts/../")"
+	declare -r projectDir
+fi
+
 if ! [[ -v dir_of_tegonal_scripts ]]; then
 	dir_of_tegonal_scripts="$(realpath "$(cd -- "$(dirname -- "${BASH_SOURCE[0]:-$0}")" &>/dev/null && pwd 2>/dev/null)/../src")"
 	source "$dir_of_tegonal_scripts/setup.sh" "$dir_of_tegonal_scripts"
 fi
-
 sourceOnce "$dir_of_tegonal_scripts/utility/log.sh"
 sourceOnce "$dir_of_tegonal_scripts/utility/replace-help-snippet.sh"
 sourceOnce "$dir_of_tegonal_scripts/utility/update-bash-docu.sh"
 
-declare projectDir
-projectDir="$(realpath "$dir_of_tegonal_scripts/../")"
+function updateDocu() {
+	find "$dir_of_tegonal_scripts" -name "*.sh" \
+		-not -name "*.doc.sh" \
+		-print0 |
+		while read -r -d $'\0' script; do
+			declare relative
+			relative="$(realpath --relative-to="$projectDir" "$script")"
+			declare id="${relative:4:-3}"
 
-find "$dir_of_tegonal_scripts" -name "*.sh" \
-	-not -name "*.doc.sh" \
-	-print0 |
-	while read -r -d $'\0' script; do
-		declare relative
-		relative="$(realpath --relative-to="$projectDir" "$script")"
-		declare id="${relative:4:-3}"
+			updateBashDocumentation "$script" "${id////-}" . README.md
+		done
 
-		updateBashDocumentation "$script" "${id////-}" . README.md
+	local -ra scriptsWithHelp=(
+		releasing/sneak-peek-banner
+		releasing/toggle-sections
+		releasing/release-files
+		releasing/update-version-README
+		releasing/update-version-scripts
+	)
+
+	for script in "${scriptsWithHelp[@]}"; do
+		replaceHelpSnippet "$dir_of_tegonal_scripts/$script.sh" "${script////-}-help" . README.md
 	done
 
-declare executableScripts=(
-	releasing/sneak-peek-banner
-	releasing/toggle-sections
-	releasing/release-files
-	releasing/update-version-README
-	releasing/update-version-scripts
-)
+	logSuccess "Updating bash docu and README completed"
+}
 
-for script in "${executableScripts[@]}"; do
-	replaceHelpSnippet "$dir_of_tegonal_scripts/$script.sh" "${script////-}-help" . README.md
-done
-
-logSuccess "Updating bash docu and README completed"
+${__SOURCED__:+return}
+updateDocu "$@"

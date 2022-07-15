@@ -32,7 +32,7 @@ fi
 sourceOnce "$dir_of_tegonal_scripts/utility/parse-args.sh"
 
 function updateVersionScripts() {
-	local version directory additionalPattern
+	local version
 	# shellcheck disable=SC2034
 	local -ra params=(
 		version '-v' 'the version which shall be used'
@@ -76,4 +76,5 @@ function updateVersionScripts() {
 			fi
 		done
 }
+${__SOURCED__:+return}
 updateVersionScripts "$@"

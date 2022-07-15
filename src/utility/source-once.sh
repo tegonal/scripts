@@ -53,7 +53,9 @@ function sourceOnce() {
 
 	if ! [[ -v "$guard" ]]; then
 		printf -v "$guard" "%s" "true"
+		declare __SOURCED__=true
 		# shellcheck disable=SC1090
 		source "$@"
+		unset __SOURCED__
 	fi
 }

@@ -99,7 +99,7 @@ The scripts are ordered by topic:
 	- [Update Version in bash scripts](#update-version-in-bash-scripts)
 	- [Toggle main/release sections](#toggle-mainrelease-sections)
 	- [Hide/Show sneak-peek banner](#hideshow-sneak-peek-banner)
-	- [Releasing Files](#releasing-files)
+	- [Releasing Files](#release-files)
 
 - [Script Utilities](#script-utilities)
 	- [Parse arguments](#parse-arguments)
@@ -384,16 +384,31 @@ Script which releases a version for a repository containing files which don't ne
 Useful if you want to release e.g. scripts which can then be fetched via [gget](https://github.com/tegonal/gget)
 
 Help:
+
 <releasing-release-files-help>
 
 <!-- auto-generated, do not modify here but in src/releasing/release-files.sh -->
 ```text
+Parameters:
+-v                   The version to release in the format vX.Y.Z(-RC...)
+-k|--key             The GPG private key which shall be used to sign the files
+--scripts-dir        The directory which needs to contain before-pr.sh etc.
+--sign-fn            Function which is called to determine what files should be signed. It should be based find and allow to pass further arguments (we will i.a. pass -print0)
+-p|--pattern         (optional) pattern which is used in a perl command (separator /) to search & replace additional occurrences. It should define two match groups and the replace operation looks as follows: \${1}$version\${2}
+-nv|--next-version   (optional) the version to use for prepare-next-dev-cycle -- default: is next minor based on version
+--prepare-only       (optional) defines whether the release shall only be prepared (i.e. no push, no tag, no prepare-next-dev-cycle) -- default: false
 
+--help     prints this help
+--version  prints the version of this script
+
+INFO: Version of release-files.sh is:
+v0.8.0-SNAPSHOT
 ```
 
 </releasing-release-files-help>
 
 Full usage example:
+
 <releasing-release-files>
 
 <!-- auto-generated, do not modify here but in src/releasing/release-files.sh -->
@@ -444,8 +459,8 @@ source "$dir_of_tegonal_scripts/setup.sh" "$dir_of_tegonal_scripts"
 
 sourceOnce "$dir_of_tegonal_scripts/utility/parse-args.sh"
 
-# declare the variables where the arguments shall be stored (used as identifier afterwards)
-declare directory pattern version
+# declare all mandatory parameter names here (used as identifier afterwards)
+declare pattern version
 
 # parameter definitions where each parameter definition consists of three values (separated via space)
 # VARIABLE_NAME PATTERN HELP_TEXT
@@ -474,7 +489,7 @@ if ! [[ -v directory ]]; then directory="."; fi
 checkAllArgumentsSet params "$examples"
 
 # pass your variables storing the arguments to other scripts
-echo "d: $directory, p: $pattern, v: $version"
+echo "p: $pattern, v: $version, d: $directory"
 ```
 
 </utility-parse-args>

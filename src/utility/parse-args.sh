@@ -24,8 +24,8 @@
 #
 #    sourceOnce "$dir_of_tegonal_scripts/utility/parse-args.sh"
 #
-#    # declare the variables where the arguments shall be stored (used as identifier afterwards)
-#    declare directory pattern version
+#    # declare all mandatory parameter names here (used as identifier afterwards)
+#    declare pattern version
 #
 #    # parameter definitions where each parameter definition consists of three values (separated via space)
 #    # VARIABLE_NAME PATTERN HELP_TEXT
@@ -54,7 +54,7 @@
 #    checkAllArgumentsSet params "$examples"
 #
 #    # pass your variables storing the arguments to other scripts
-#    echo "d: $directory, p: $pattern, v: $version"
+#    echo "p: $pattern, v: $version, d: $directory"
 #
 #######	Limitations	#############
 #

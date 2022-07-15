@@ -32,7 +32,7 @@ fi
 sourceOnce "$dir_of_tegonal_scripts/utility/parse-args.sh"
 
 function sneakPeekBanner() {
-	local command file
+	local command
 	# shellcheck disable=SC2034
 	local -ra params=(
 		command '-c|--command' "either 'show' or 'hide'"
@@ -63,4 +63,5 @@ function sneakPeekBanner() {
 		printHelp params help "$examples"
 	fi
 }
+${__SOURCED__:+return}
 sneakPeekBanner "$@"

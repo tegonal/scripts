@@ -36,7 +36,7 @@ fi
 sourceOnce "$dir_of_tegonal_scripts/utility/parse-args.sh"
 
 function toggleSections() {
-	local command file
+	local command
 	# shellcheck disable=SC2034
 	local -ra params=(
 		command '-c|--command' "either 'main' or 'release'"
@@ -77,4 +77,5 @@ function toggleSections() {
 		printHelp params
 	fi
 }
+${__SOURCED__:+return}
 toggleSections "$@"

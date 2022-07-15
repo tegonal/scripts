@@ -12,10 +12,10 @@
 #  Releasing files based on conventions:
 #  - expects a version in format vX.Y.Z(-RC...)
 #  - main is your default branch
-#  - requires you to have a scripts folder in your root which contains:
-#    - before--pr.sh
+#  - requires you to have a scripts folder in your project root which contains:
+#    - before-pr.sh with function beforePr
 #    - prepare-next-dev-cycle.sh
-#    - update-docu.sh
+#    - update-docu.sh with function updateDocu
 #  - there is a public key defined at .gget/signing-key.public.asc which will be used
 #    to verify the signatures which will be created
 #
@@ -48,15 +48,19 @@ fi
 sourceOnce "$dir_of_tegonal_scripts/utility/gpg-utils.sh"
 sourceOnce "$dir_of_tegonal_scripts/utility/log.sh"
 sourceOnce "$dir_of_tegonal_scripts/utility/parse-args.sh"
+sourceOnce "$dir_of_tegonal_scripts/releasing/sneak-peek-banner.sh"
+sourceOnce "$dir_of_tegonal_scripts/releasing/toggle-sections.sh"
+sourceOnce "$dir_of_tegonal_scripts/releasing/update-version-README.sh"
+sourceOnce "$dir_of_tegonal_scripts/releasing/update-version-scripts.sh"
 
 function releaseFiles() {
-	local version key scriptsDir findForSigning
+	local version key findForSigning
 	# shellcheck disable=SC2034
 	local -ra params=(
 		version '-v' "The version to release in the format vX.Y.Z(-RC...)"
 		key '-k|--key' 'The GPG private key which shall be used to sign the files'
-		scriptsDir '--scripts-dir' 'The directory which needs to contain before-pr.sh etc.'
 		findForSigning '--sign-fn' 'Function which is called to determine what files should be signed. It should be based find and allow to pass further arguments (we will i.a. pass -print0)'
+		projectDir '-w|--working-directory' '(optional) The projects directory -- default: .'
 		additionalPattern '-p|--pattern' '(optional) pattern which is used in a perl command (separator /) to search & replace additional occurrences. It should define two match groups and the replace operation looks as follows: '"\\\${1}\$version\\\${2}"
 		nextVersion '-nv|--next-version' '(optional) the version to use for prepare-next-dev-cycle -- default: is next minor based on version'
 		prepareOnly '--prepare-only' '(optional) defines whether the release shall only be prepared (i.e. no push, no tag, no prepare-next-dev-cycle) -- default: false'
@@ -71,6 +75,7 @@ function releaseFiles() {
 	else
 		logInfo "cannot deduce nextVersion from version as it does not follow format vX.Y.Z(-RC...): $version"
 	fi
+	if ! [[ -v projectDir ]]; then projectDir=$(realpath "."); fi
 	if ! [[ -v additionalPattern ]]; then additionalPattern=""; fi
 	if ! [[ -v prepareOnly ]] || ! [[ "$prepareOnly" == "true" ]]; then prepareOnly=false; fi
 	checkAllArgumentsSet params "" "$TEGONAL_SCRIPTS_VERSION"
@@ -78,6 +83,9 @@ function releaseFiles() {
 	if ! [[ "$version" =~ $versionRegex ]]; then
 		returnDying "--version should match vX.Y.Z(-RC...), was %s" "$version"
 	fi
+
+	local -r projectsScriptsDir="$projectDir/scripts"
+	sourceOnce "$projectsScriptsDir/before-pr.sh"
 
 	if git tag | grep "$version" >/dev/null; then
 		returnDying "tag %s already exists, adjust version or delete it with: git tag -d %s" "$version" "$version"
@@ -87,35 +95,36 @@ function releaseFiles() {
 		returnDying "you have uncommitted changes (see above) please commit/stash first"
 	fi
 
-#	local -r branch="$(git rev-parse --abbrev-ref HEAD)"
-#	if ! [[ $branch == "main" ]]; then
-#		returnDying "you need to be on the \033[0;36mmain\033[0m branch to release, check that you have merged all changes from your current branch \033[0;36m%s\033[0m" "$branch"
-#	fi
-#	if ! (($(git rev-list --count origin/main..main) == 0)); then
-#		logError "you are ahead of origin, please push first and check if CI succeeds before releasing. Following your additional changes:"
-#		git -P log origin/main..main
-#		return 1
-#	fi
-#	if ! (($(git rev-list --count main..origin/main) == 0)); then
-#		git fetch
-#		logError "you are behind of origin. I already fetched the changes for you, please check if you still want to release. Following the additional changes in origin/main"
-#		git -P log main..origin/main
-#		return 1
-#	fi
+	#	local -r branch="$(git rev-parse --abbrev-ref HEAD)"
+	#	if ! [[ $branch == "main" ]]; then
+	#		returnDying "you need to be on the \033[0;36mmain\033[0m branch to release, check that you have merged all changes from your current branch \033[0;36m%s\033[0m" "$branch"
+	#	fi
+	#	if ! (($(git rev-list --count origin/main..main) == 0)); then
+	#		logError "you are ahead of origin, please push first and check if CI succeeds before releasing. Following your additional changes:"
+	#		git -P log origin/main..main
+	#		return 1
+	#	fi
+	#	if ! (($(git rev-list --count main..origin/main) == 0)); then
+	#		git fetch
+	#		logError "you are behind of origin. I already fetched the changes for you, please check if you still want to release. Following the additional changes in origin/main"
+	#		git -P log main..origin/main
+	#		return 1
+	#	fi
 
 	# make sure everything is up-to-date and works as it should
-	"$scriptsDir/before-pr.sh"
+	beforePr
 
-	"$dir_of_tegonal_scripts/releasing/sneak-peek-banner.sh" -c hide
-	"$dir_of_tegonal_scripts/releasing/toggle-sections.sh" -c release
-	"$dir_of_tegonal_scripts/releasing/update-version-README.sh" -v "$version" -p "$additionalPattern"
-	"$dir_of_tegonal_scripts/releasing/update-version-scripts.sh" -v "$version" -p "$additionalPattern" -d "$scriptsDir"
-	source "$scriptsDir/additional-release-preparations.sh"
+	sneakPeekBanner -c hide
+	toggleSections -c release
+	updateVersionReadme -v "$version" -p "$additionalPattern"
+	updateVersionScripts -v "$version" -p "$additionalPattern" -d "$projectsScriptsDir"
+	sourceOnce "$projectsScriptsDir/additional-release-preparations.sh"
+	sourceOnce "$projectsScriptsDir/prepare-next-dev-cycle.sh"
 
-	# update docu with new version
-	"$scriptsDir/update-docu.sh"
+	# update docu due to new version
+	updateDocu
 
-	local -r ggetDir="$scriptsDir/../.gget"
+	local -r ggetDir="$projectDir/.gget"
 	local -r gpgDir="$ggetDir/gpg"
 	rm -rf "$gpgDir"
 	mkdir "$gpgDir"
@@ -136,7 +145,7 @@ function releaseFiles() {
 		git commit -m "$version"
 		git tag "$version"
 
-		"$scriptsDir/prepare-next-dev-cycle.sh" "$nextVersion"
+		prepareNextDevCycle "$nextVersion" "$additionalPattern"
 
 		git push origin "$version"
 		git push
@@ -144,4 +153,6 @@ function releaseFiles() {
 		printf "\033[1;33mskipping commit, creating tag and prepare-next-dev-cylce due to --prepare-only\033[0m\n"
 	fi
 }
+
+${__SOURCED__:+return}
 releaseFiles "$@"

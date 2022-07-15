@@ -72,4 +72,5 @@ function updateVersionReadme() {
 			"$file"
 	fi
 }
+${__SOURCED__:+return}
 updateVersionReadme "$@"
