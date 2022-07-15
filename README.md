@@ -99,6 +99,7 @@ The scripts are ordered by topic:
   - [Parse arguments](#parse-arguments)
   - [Log functions](#log)
   - [`source` once](#source-once)
+  - [GPG Utils](#gpg-utils)
   - [Recursive `declare -p`](#recursive-declare--p)
   - [Replace Snippets](#replace-snippets)
   - [Update Documentation](#update-bash-documentation)
@@ -530,6 +531,37 @@ logSuccessWithoutNewline "yay"
 ## Source once
 
 Establishes a guard by creating a variable based on the file which shall be sourced
+
+## GPG Utils
+
+Utility function which hopefully make it easier for you to deal with gpg
+
+<utility-gpg-utils>
+
+<!-- auto-generated, do not modify here but in src/utility/gpg-utils.sh -->
+```bash
+#!/usr/bin/env bash
+set -eu
+# Assuming tegonal's scripts were fetched with gget - adjust location accordingly
+dir_of_tegonal_scripts="$(realpath "$(cd -- "$(dirname -- "${BASH_SOURCE[0]:-$0}")" &>/dev/null && pwd 2>/dev/null)/../lib/tegonal-scripts/src")"
+source "$dir_of_tegonal_scripts/setup.sh" "$dir_of_tegonal_scripts"
+
+sourceOnce "$dir_of_tegonal_scripts/utility/gpg-utils.sh"
+
+# import public-key.asc into gpg store located at ~/.gpg but ask for confirmation first
+importGpgKey ~/.gpg ./public-key.asc --confirmation=true
+
+# import public-key.asc into gpg store located at ~/.gpg and trust automatically
+importGpgKey ~/.gpg ./public-key.asc --confirmation=false
+
+# import public-key.asc into gpg store located at .gget/.gpg and trust automatically
+importGpgKey .gget/.gpg ./public-key.asc --confirmation=false
+
+# trust key which is identified via info.com in gpg store located at ~/.gpg
+trustGpgKey ~/.gpg info.com
+```
+
+</utility-gpg-utils>
 
 ## Recursive `declare -p`
 
