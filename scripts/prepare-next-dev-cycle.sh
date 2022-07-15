@@ -40,4 +40,7 @@ declare additionalPattern="(TEGONAL_SCRIPTS_VERSION=['\"])[^'\"]+(['\"])"
 "$dir_of_tegonal_scripts/releasing/update-version-scripts.sh" -v "$version-SNAPSHOT" -p "$additionalPattern"
 "$dir_of_tegonal_scripts/releasing/update-version-scripts.sh" -v "$version-SNAPSHOT" -p "$additionalPattern" -d "$scriptDir"
 
+# update docu with new version
+"$scriptDir/update-docu.sh"
+
 git commit -a -m "prepare next dev cycle for $version"
