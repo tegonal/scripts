@@ -21,7 +21,7 @@
 #    dir_of_tegonal_scripts="$(cd -- "$(dirname -- "${BASH_SOURCE[0]:-$0}")" &>/dev/null && pwd 2>/dev/null)"
 #
 #    function foo() {
-#    	source "$dir_of_tegonal_scripts/qa/checks.sh"
+#    	source "$dir_of_tegonal_scripts/utility/checks.sh"
 #
 #    	# shellcheck disable=SC2034
 #    	local -rn arr=$1
