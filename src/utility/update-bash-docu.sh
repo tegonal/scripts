@@ -10,9 +10,12 @@
 #
 #######  Description  #############
 #
-#  checks if there is a script.help.sh next to the script.sh file, calls
+#  checks if there is a script.doc.sh next to the script.sh file, calls
 #  replaceSnippet (from replace-snippet.sh) with its content
 #  and updates the `Usage` section in script.sh accordingly
+
+#  If your Usage section is currently empty, then make sure it has 3 empty `#` lines
+#  otherwise it will not be replaced.
 #
 #######  Usage  ###################
 #
