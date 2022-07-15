@@ -180,7 +180,7 @@ update-version-README.sh -v v0.1.0 -f ./docs/index.md
 
 # update version for ./README.md
 # also replace occurrences of the defined pattern
-update-version-README.sh -v v0.1.0 -p "(VERSION=['"])[^'"]+(['"])
+update-version-README.sh -v v0.1.0 -p "(VERSION=['\"])[^'\"]+(['\"])"
 
 INFO: Version of update-version-README.sh is:
 v0.6.0-SNAPSHOT
@@ -232,7 +232,7 @@ update-version-scripts.sh -v v0.1.0 -d ./scripts
 
 # update version to v0.1.0 for all *.sh in ./src and subdirectories
 # also replace occurrences of the defined pattern
-update-version-scripts.sh -v v0.1.0 -p "(VERSION=['"])[^'"]+(['"])
+update-version-scripts.sh -v v0.1.0 -p "(VERSION=['\"])[^'\"]+(['\"])"
 
 INFO: Version of update-version-scripts.sh is:
 v0.6.0-SNAPSHOT
