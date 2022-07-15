@@ -175,22 +175,25 @@ function parseArguments {
 		fi
 
 		local -i parseArguments_expectedName=0
-		for ((i = 0; i < parseArguments_arrLength; i += 3)); do
-			local parseArguments_paramName="${parseArguments_paramArr1[i]}"
-			local parseArguments_pattern="${parseArguments_paramArr1[i + 1]}"
+		for ((parseArguments_i = 0; parseArguments_i < parseArguments_arrLength; parseArguments_i += 3)); do
+			local parseArguments_paramName="${parseArguments_paramArr1[parseArguments_i]}"
+			local parseArguments_pattern="${parseArguments_paramArr1[parseArguments_i + 1]}"
 			local parseArguments_regex="^($parseArguments_pattern)$"
 			if [[ $parseArguments_argName =~ $parseArguments_regex ]]; then
-				if [[ -z $2 ]]; then
-					logError "no value defined for parameter \033[1;36m%s\033[0m in %s" "$parseArguments_pattern" "${BASH_SOURCE[1]}"
+				if (( $# < 2)); then
+					logError "no value defined for parameter \033[1;36m%s\033[0m (pattern %s) in %s" "$parseArguments_paramName" "$parseArguments_pattern" "${BASH_SOURCE[1]}"
 					echo >&2 "following the help documentation:"
 					echo >&2 ""
 					printHelp >&2 parseArguments_paramArr1 "$parseArguments_examples" "$parseArguments_version"
 					return 1
 				fi
 				# that's where the black magic happens, we are assigning to global variables here
-				printf -v "${parseArguments_paramName}" "%s" "$2"
+				printf -v "$parseArguments_paramName" "%s" "$2"
 				parseArguments_expectedName=1
 				shift
+			elif [[ "$parseArguments_argName" =~ $parseArguments_regex ]]; then
+				echo "ou shit"
+				exit 3
 			fi
 		done
 
@@ -276,9 +279,9 @@ function checkAllArgumentsSet {
 
 	local -r checkAllArgumentsSet_arrLength="${#checkAllArgumentsSet_paramArr4[@]}"
 	local -i checkAllArgumentsSet_good=1
-	for ((i = 0; i < checkAllArgumentsSet_arrLength; i += 3)); do
-		local checkAllArgumentsSet_paramName="${checkAllArgumentsSet_paramArr4[i]}"
-		local checkAllArgumentsSet_pattern="${checkAllArgumentsSet_paramArr4[i + 1]}"
+	for ((checkAllArgumentsSet_i = 0; checkAllArgumentsSet_i < checkAllArgumentsSet_arrLength; checkAllArgumentsSet_i += 3)); do
+		local checkAllArgumentsSet_paramName="${checkAllArgumentsSet_paramArr4[checkAllArgumentsSet_i]}"
+		local checkAllArgumentsSet_pattern="${checkAllArgumentsSet_paramArr4[checkAllArgumentsSet_i + 1]}"
 		if ! [[ -v "$checkAllArgumentsSet_paramName" ]]; then
 			logError "%s not set via %s" "$checkAllArgumentsSet_paramName" "$checkAllArgumentsSet_pattern"
 			checkAllArgumentsSet_good=0

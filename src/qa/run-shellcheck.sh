@@ -56,13 +56,13 @@ function runShellcheck() {
 	local -i fileWithIssuesCounter=0
 	local -i fileCounter=0
 	while read -r -d $'\0' script; do
-		((fileCounter += 1))
+		((++fileCounter))
 		declare output
 
 		output=$(shellcheck -C -x -o all -P "$sourcePath" "$script" || true)
 		if ! [[ $output == "" ]]; then
 			printf "%s\n" "$output"
-			((fileWithIssuesCounter += 1))
+			((++fileWithIssuesCounter))
 		fi
 		if ((fileWithIssuesCounter >= 5)); then
 			logInfoWithoutNewline "Already found issues in %s files, going to stop the analysis now in order to keep the output small" "$fileWithIssuesCounter"
