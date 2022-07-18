@@ -124,13 +124,36 @@ function releaseFiles() {
 	if localGitIsAhead "$expectedDefaultBranch"; then
 		logError "you are ahead of origin, please push first and check if CI succeeds before releasing. Following your additional changes:"
 		git -P log origin/main..main
+		printf "\n\033[0;36mShall I git push for you?\033[0m y/[N]:"
+		local shallPush='n'
+		while read -t 30 -r shallPush; do
+			break
+		done
+		if [[ $shallPush == "y" ]]; then
+			git push
+		fi
 		return 1
 	fi
 	if localGitIsBehind "$expectedDefaultBranch"; then
 		git fetch
-		logError "you are behind of origin. I already fetched the changes for you, please check if you still want to release. Following the additional changes in origin/main"
-		git -P log main..origin/main
-		return 1
+		logError "you are behind of origin. I already fetched the changes for you, please check if you still want to release. Following the additional changes in origin/main:"
+		git -P log "${expectedDefaultBranch}..origin/$expectedDefaultBranch"
+		printf "\n\033[0;36mDo you want to git pull?\033[0m y/[N]:"
+		local shallPull='n'
+		while read -t 30 -r shallPull; do
+			break
+		done
+		if [[ $shallPull == "y" ]]; then
+			git pull
+		fi
+		printf "\n\033[0;36mDo you want to release now?\033[0m y/[N]:"
+		local doRelease='n'
+		while read -t 30 -r doRelease; do
+			break
+		done
+		if ! [[ $doRelease == 'y' ]]; then
+			return 1
+		fi
 	fi
 
 	# make sure everything is up-to-date and works as it should
