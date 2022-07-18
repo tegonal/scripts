@@ -146,6 +146,7 @@ function releaseFiles() {
 		git -P log origin/main..main
 		if askYesOrNo "Shall I git push for you?"; then
 			git push
+			logInfo "please check if your push passes CI and re-execute the release command afterwards"
 		fi
 		return 1
 	fi
