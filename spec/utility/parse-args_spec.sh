@@ -72,7 +72,7 @@ Describe 'parse_arg.sh'
 		Describe 'errors'
 			It 'not enough arguments passed'
 				declare params=(version -v '')
-				When call parseArguments params
+				When run parseArguments params
 				The status should be failure
 				The stderr should include 'At least three arguments need to be passed to parseArguments'
 			End
@@ -120,7 +120,7 @@ Describe 'parse_arg.sh'
 			Describe 'errors'
 				It 'not enough arguments passed'
 					declare params=(version -v '')
-					When call checkAllArgumentsSet params
+					When run checkAllArgumentsSet params
 					The status should be failure
 					The stderr should include 'Three arguments need to be passed to checkAllArgumentsSet'
 				End

@@ -68,7 +68,7 @@ function parseFnArgs() {
 		echo >&2 '1. params     the name of an array which contains the parameter names'
 		echo >&2 '2... args...  the arguments as such, typically "$@"'
 		printStackTrace
-		return 9
+		exit 9
 	fi
 
 	# using unconventional naming in order to avoid name clashes with the variables we will initialise further below
