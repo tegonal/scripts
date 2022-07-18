@@ -10,13 +10,13 @@
 ###################################
 set -eu
 
-if ! [[ -v scriptDir ]]; then
-	scriptDir="$(cd -- "$(dirname -- "${BASH_SOURCE[0]:-$0}")" &>/dev/null && pwd 2>/dev/null)"
-	declare -r scriptDir
+if ! [[ -v scriptsDir ]]; then
+	scriptsDir="$(cd -- "$(dirname -- "${BASH_SOURCE[0]:-$0}")" &>/dev/null && pwd 2>/dev/null)"
+	declare -r scriptsDir
 fi
 
 if ! [[ -v dir_of_tegonal_scripts ]]; then
-	dir_of_tegonal_scripts="$(realpath "$scriptDir/../src")"
+	dir_of_tegonal_scripts="$(realpath "$scriptsDir/../src")"
 	source "$dir_of_tegonal_scripts/setup.sh" "$dir_of_tegonal_scripts"
 fi
 sourceOnce "$dir_of_tegonal_scripts/qa/run-shellcheck.sh"
@@ -25,10 +25,10 @@ function customRunShellcheck() {
 	# shellcheck disable=SC2034
 	local -ra dirs=(
 		"$dir_of_tegonal_scripts"
-		"$scriptDir"
+		"$scriptsDir"
 		"$dir_of_tegonal_scripts/../spec"
 	)
-	local sourcePath="$dir_of_tegonal_scripts:$scriptDir"
+	local sourcePath="$dir_of_tegonal_scripts:$scriptsDir"
 	runShellcheck dirs "$sourcePath"
 }
 
