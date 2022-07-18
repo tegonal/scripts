@@ -104,7 +104,8 @@ The scripts are ordered by topic:
 
 - [Script Utilities](#script-utilities)
     - [Parse arguments](#parse-arguments)
-    - [Log functions](#log)
+    - [Log functions](#log-functions)
+    - [Ask functions](#ask-functions)
     - [`source` once](#source-once)
     - [git Utils](#git-utils)
     - [GPG Utils](#gpg-utils)
@@ -608,7 +609,7 @@ function myFunctionWithVarargs() {
 
 </utility-parse-fn-args>
 
-## Log
+## Log Functions
 
 Utility functions to log messages including a severity level where logError writes to stderr
 
@@ -683,6 +684,29 @@ printStackTrace
 ```
 
 </utility-log>
+
+## Ask functions
+
+Utility functions to interact with the user.
+
+<utility-ask>
+
+<!-- auto-generated, do not modify here but in src/utility/ask.sh -->
+```bash
+#!/usr/bin/env bash
+set -euo pipefail
+# Assumes tegonal's scripts were fetched with gget - adjust location accordingly
+dir_of_tegonal_scripts="$(realpath "$(cd -- "$(dirname -- "${BASH_SOURCE[0]:-$0}")" &>/dev/null && pwd 2>/dev/null)/../lib/tegonal-scripts/src")"
+source "$dir_of_tegonal_scripts/setup.sh" "$dir_of_tegonal_scripts"
+
+sourceOnce "$dir_of_tegonal_scripts/utility/ask.sh"
+
+if askYesOrNo "shall I say hello"; then
+	echo "hello"
+fi
+```
+
+</utility-ask>
 
 ## Source once
 
