@@ -65,6 +65,7 @@ if ! [[ -v dir_of_tegonal_scripts ]]; then
 fi
 sourceOnce "$dir_of_tegonal_scripts/utility/git-utils.sh"
 sourceOnce "$dir_of_tegonal_scripts/utility/gpg-utils.sh"
+sourceOnce "$dir_of_tegonal_scripts/utility/ask.sh"
 sourceOnce "$dir_of_tegonal_scripts/utility/log.sh"
 sourceOnce "$dir_of_tegonal_scripts/utility/parse-args.sh"
 sourceOnce "$dir_of_tegonal_scripts/releasing/sneak-peek-banner.sh"
@@ -116,12 +117,7 @@ function releaseFiles() {
 			return 1
 		fi
 		logInfo "looks like the tag only exists locally."
-		local shallDelete='n'
-		printf "\n\033[0;36mShall I \`git tag -d %s\` and continue with the release?\033[0m y/[N]:" "$version"
-		while read -t  30 -r shallDelete; do
-			break
-		done
-		if [[ $shallDelete == 'y' ]]; then
+		if askYesOrNo "Shall I \`git tag -d %s\` and continue with the release?" "$version"; then
 			git tag -d "$version"
 		else
 			return 1
@@ -135,43 +131,36 @@ function releaseFiles() {
 	local -r branch="$(currentGitBranch)"
 	local -r expectedDefaultBranch="main"
 	if ! [[ $branch == "$expectedDefaultBranch" ]]; then
-		returnDying "you need to be on the \033[0;36m%s\033[0m branch to release, check that you have merged all changes from your current branch \033[0;36m%s\033[0m" "$expectedDefaultBranch" "$branch"
-	fi
-	if localGitIsAhead "$expectedDefaultBranch"; then
-		logError "you are ahead of origin, please push first and check if CI succeeds before releasing. Following your additional changes:"
-		git -P log origin/main..main
-		printf "\n\033[0;36mShall I git push for you?\033[0m y/[N]:"
-		local shallPush='n'
-		while read -t 30 -r shallPush; do
-			break
-		done
-		if [[ $shallPush == "y" ]]; then
-			git push
-		fi
-		return 1
-	fi
-	if localGitIsBehind "$expectedDefaultBranch"; then
-		git fetch
-		logError "you are behind of origin. I already fetched the changes for you, please check if you still want to release. Following the additional changes in origin/main:"
-		git -P log "${expectedDefaultBranch}..origin/$expectedDefaultBranch"
-		printf "\n\033[0;36mDo you want to git pull?\033[0m y/[N]:"
-		local shallPull='n'
-		while read -t 30 -r shallPull; do
-			break
-		done
-		if [[ $shallPull == "y" ]]; then
-			git pull
-		fi
-		printf "\n\033[0;36mDo you want to release now?\033[0m y/[N]:"
-		local doRelease='n'
-		while read -t 30 -r doRelease; do
-			break
-		done
-		if ! [[ $doRelease == 'y' ]]; then
+		logError "you need to be on the \033[0;36m%s\033[0m branch to release, check that you have merged all changes from your current branch \033[0;36m%s\033[0m." "$expectedDefaultBranch" "$branch"
+		if askYesOrNo "Shall I switch to %s for you?" "$branch"; then
+			git checkout "$expectedDefaultBranch"
+		else
 			return 1
 		fi
 	fi
 
+	if localGitIsAhead "$expectedDefaultBranch"; then
+		logError "you are ahead of origin, please push first and check if CI succeeds before releasing. Following your additional changes:"
+		git -P log origin/main..main
+		if askYesOrNo "Shall I git push for you?"; then
+			git push
+		fi
+		return 1
+	fi
+
+	if localGitIsBehind "$expectedDefaultBranch"; then
+		git fetch
+		logError "you are behind of origin. I already fetched the changes for you, please check if you still want to release. Following the additional changes in origin/main:"
+		git -P log "${expectedDefaultBranch}..origin/$expectedDefaultBranch"
+		if askYesOrNo "Do you want to git pull?"; then
+			git pull
+			if ! askYesOrNo "Do you want to release now?"; then
+				return 1
+			fi
+		else
+			return 1
+		fi
+	fi
 
 	local -r projectsScriptsDir="$projectDir/scripts"
 	sourceOnce "$projectsScriptsDir/before-pr.sh"
