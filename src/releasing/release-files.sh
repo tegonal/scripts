@@ -118,7 +118,7 @@ function releaseFiles() {
 		logInfo "looks like the tag only exists locally."
 		local shallDelete='n'
 		printf "\n\033[0;36mShall I \`git tag -d %s\` and continue with the release?\033[0m y/[N]:" "$version"
-		while read -t -r 30 shallDelete; do
+		while read -t  30 -r shallDelete; do
 			break
 		done
 		if [[ $shallDelete == 'y' ]]; then
