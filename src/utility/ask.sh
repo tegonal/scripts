@@ -36,7 +36,7 @@ fi
 sourceOnce "$dir_of_tegonal_scripts/utility/parse-fn-args.sh"
 
 function askYesOrNo() {
-	if ! (($# > 1)); then
+	if (($# == 0)); then
 		logError "At least one argument needs to be passed to askYesOrNo, given \033[0;36m%s\033[0m\n" "$#"
 		echo >&2 '1: question  the question which the user should answer with y or n'
 		printStackTrace
