@@ -9,6 +9,7 @@
 #
 ###################################
 set -eu
+declare -x TEGONAL_SCRIPTS_VERSION='v0.1.0-SNAPSHOT'
 
 if ! [[ -v scriptsDir ]]; then
 	scriptsDir="$(cd -- "$(dirname -- "${BASH_SOURCE[0]:-$0}")" &>/dev/null && pwd 2>/dev/null)"
@@ -25,7 +26,7 @@ function prepareNextDevCycle() {
 	# same as in release.sh, update there as well
 	local -r additionalPattern="(TEGONAL_SCRIPTS_VERSION=['\"])[^'\"]+(['\"])"
 
-	prepareFilesNextDevCycle "$@" --project-dir "$(realpath "$scriptsDir/..")" -p "$additionalPattern"
+	prepareFilesNextDevCycle --project-dir "$(realpath "$scriptsDir/..")" -p "$additionalPattern" "$@"
 }
 
 ${__SOURCED__:+return}

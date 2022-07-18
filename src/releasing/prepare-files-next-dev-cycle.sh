@@ -82,7 +82,7 @@ function prepareFilesNextDevCycle() {
 	logInfo "prepare next dev cycle for version $version"
 
 	sneakPeekBanner -c show
-	toggleSection -c main
+	toggleSections -c main
 	updateVersionReadme -v "$version-SNAPSHOT" -p "$additionalPattern"
 	updateVersionScripts -v "$version-SNAPSHOT" -p "$additionalPattern" -d "$projectsScriptsDir"
 
