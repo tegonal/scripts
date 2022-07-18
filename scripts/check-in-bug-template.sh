@@ -34,5 +34,5 @@ function checkInBugTemplate() {
 }
 
 ${__SOURCED__:+return}
-beforePr "$@"
+checkInBugTemplate "$@"
 
