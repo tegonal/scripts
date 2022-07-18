@@ -53,6 +53,13 @@ function sourceOnce() {
 
 	if ! [[ -v "$guard" ]]; then
 		printf -v "$guard" "%s" "true"
+		if ! [[ -f $1 ]]; then
+			if [[ -d $1 ]]; then
+				traceAndDie "file is a directory, cannot source %s" "$1"
+			fi
+			traceAndDie "file does not exist, cannot source %s" "$1"
+		fi
+
 		# shellcheck disable=SC2034
 		declare __SOURCED__=true
 		# shellcheck disable=SC1090
@@ -60,3 +67,8 @@ function sourceOnce() {
 		unset __SOURCED__
 	fi
 }
+
+if ! [[ -v dir_of_tegonal_scripts ]]; then
+	dir_of_tegonal_scripts="$(realpath "$(cd -- "$(dirname -- "${BASH_SOURCE[0]:-$0}")" &>/dev/null && pwd 2>/dev/null)/..")"
+fi
+sourceOnce "$dir_of_tegonal_scripts/utility/log.sh"
