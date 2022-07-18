@@ -15,11 +15,17 @@
 #
 #    #!/usr/bin/env bash
 #    set -eu
-#    # Assuming tegonal's scripts were fetched with gget - adjust location accordingly
+#    # Assumes tegonal's scripts were fetched with gget - adjust location accordingly
 #    dir_of_tegonal_scripts="$(realpath "$(cd -- "$(dirname -- "${BASH_SOURCE[0]:-$0}")" &>/dev/null && pwd 2>/dev/null)/../lib/tegonal-scripts/src")"
 #    source "$dir_of_tegonal_scripts/setup.sh" "$dir_of_tegonal_scripts"
 #
 #    "$dir_of_tegonal_scripts/releasing/sneak-peek-banner.sh" -c hide
+#
+#    # if you use it in combination with other files, then you might want to source it instead
+#    sourceOnce "$dir_of_tegonal_scripts/releasing/sneak-peek-banner.sh"
+#
+#    # and then call the function
+#    sneakPeekBanner -c show
 #
 ###################################
 set -eu
@@ -32,7 +38,7 @@ fi
 sourceOnce "$dir_of_tegonal_scripts/utility/parse-args.sh"
 
 function sneakPeekBanner() {
-	local command file
+	local command
 	# shellcheck disable=SC2034
 	local -ra params=(
 		command '-c|--command' "either 'show' or 'hide'"
@@ -63,4 +69,5 @@ function sneakPeekBanner() {
 		printHelp params help "$examples"
 	fi
 }
+${__SOURCED__:+return}
 sneakPeekBanner "$@"

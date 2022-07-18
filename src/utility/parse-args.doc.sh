@@ -1,13 +1,13 @@
 #!/usr/bin/env bash
 set -eu
-# Assuming tegonal's scripts were fetched with gget - adjust location accordingly
+# Assumes tegonal's scripts were fetched with gget - adjust location accordingly
 dir_of_tegonal_scripts="$(realpath "$(cd -- "$(dirname -- "${BASH_SOURCE[0]:-$0}")" &>/dev/null && pwd 2>/dev/null)/../lib/tegonal-scripts/src")"
 source "$dir_of_tegonal_scripts/setup.sh" "$dir_of_tegonal_scripts"
 
 sourceOnce "$dir_of_tegonal_scripts/utility/parse-args.sh"
 
-# declare the variables where the arguments shall be stored (used as identifier afterwards)
-declare directory pattern version
+# declare all mandatory parameter names here (used as identifier afterwards)
+declare pattern version
 
 # parameter definitions where each parameter definition consists of three values (separated via space)
 # VARIABLE_NAME PATTERN HELP_TEXT
@@ -36,4 +36,4 @@ if ! [[ -v directory ]]; then directory="."; fi
 checkAllArgumentsSet params "$examples"
 
 # pass your variables storing the arguments to other scripts
-echo "d: $directory, p: $pattern, v: $version"
+echo "p: $pattern, v: $version, d: $directory"

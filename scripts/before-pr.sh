@@ -10,24 +10,32 @@
 ###################################
 set -eu
 
-if ! [[ -v scriptDir ]]; then
-	scriptDir="$(cd -- "$(dirname -- "${BASH_SOURCE[0]:-$0}")" &>/dev/null && pwd 2>/dev/null)"
-	declare -r scriptDir
+if ! [[ -v scriptsDir ]]; then
+	scriptsDir="$(cd -- "$(dirname -- "${BASH_SOURCE[0]:-$0}")" &>/dev/null && pwd 2>/dev/null)"
+	declare -r scriptsDir
 fi
 
 if ! [[ -v dir_of_tegonal_scripts ]]; then
-	dir_of_tegonal_scripts="$(realpath "$scriptDir/../src")"
+	dir_of_tegonal_scripts="$(realpath "$scriptsDir/../src")"
 	source "$dir_of_tegonal_scripts/setup.sh" "$dir_of_tegonal_scripts"
 fi
-
 sourceOnce "$dir_of_tegonal_scripts/utility/log.sh"
 
-if [[ -x "$(command -v "shellspec")" ]]; then
-	shellspec
-else
-	logWarning "shellspec is not installed, skipping running specs"
-fi
+sourceOnce "$scriptsDir/check-in-bug-template.sh"
+sourceOnce "$scriptsDir/run-shellcheck.sh"
+sourceOnce "$scriptsDir/update-docu.sh"
 
-source "$scriptDir/check-in-bug-template.sh"
-source "$scriptDir/run-shellcheck.sh"
-source "$scriptDir/update-docu.sh"
+function beforePr() {
+	if [[ -x "$(command -v "shellspec")" ]]; then
+		shellspec
+	else
+		logWarning "shellspec is not installed, skipping running specs"
+	fi
+
+	checkInBugTemplate
+	customRunShellcheck
+	updateDocu
+}
+
+${__SOURCED__:+return}
+beforePr "$@"

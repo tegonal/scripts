@@ -19,14 +19,18 @@ if ! [[ -v dir_of_tegonal_scripts ]]; then
 	dir_of_tegonal_scripts="$(realpath "$scriptDir/../src")"
 	source "$dir_of_tegonal_scripts/setup.sh" "$dir_of_tegonal_scripts"
 fi
-
 sourceOnce "$dir_of_tegonal_scripts/qa/run-shellcheck.sh"
 
-# shellcheck disable=SC2034
-declare -a dirs=(
-	"$dir_of_tegonal_scripts"
-	"$scriptDir"
-	"$dir_of_tegonal_scripts/../spec"
-)
-declare sourcePath="$dir_of_tegonal_scripts:$scriptDir"
-runShellcheck dirs "$sourcePath"
+function customRunShellcheck() {
+	# shellcheck disable=SC2034
+	local -ra dirs=(
+		"$dir_of_tegonal_scripts"
+		"$scriptDir"
+		"$dir_of_tegonal_scripts/../spec"
+	)
+	local sourcePath="$dir_of_tegonal_scripts:$scriptDir"
+	runShellcheck dirs "$sourcePath"
+}
+
+${__SOURCED__:+return}
+customRunShellcheck "$@"
