@@ -209,7 +209,7 @@ function parseArguments {
 		done
 
 		if ((parseArguments_expectedName == 0)); then
-			if [[ $parseArguments_argName =~ ^- ]]; then
+			if [[ $parseArguments_argName =~ ^- ]] && (($# > 1)); then
 				logWarning "ignored argument \033[1;36m%s\033[0m (and its value %s)" "$parseArguments_argName" "$2"
 				shift
 			else
