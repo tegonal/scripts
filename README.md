@@ -527,8 +527,8 @@ source "$dir_of_tegonal_scripts/setup.sh" "$dir_of_tegonal_scripts"
 
 sourceOnce "$dir_of_tegonal_scripts/utility/parse-args.sh"
 
-# declare all mandatory parameter names here (used as identifier afterwards)
-declare pattern version
+# declare all parameter names here (used as identifier afterwards)
+declare pattern version directory
 
 # parameter definitions where each parameter definition consists of three values (separated via space)
 # VARIABLE_NAME PATTERN HELP_TEXT
