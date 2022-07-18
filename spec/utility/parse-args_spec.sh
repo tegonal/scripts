@@ -81,7 +81,7 @@ Describe 'parse_arg.sh'
 					declare params=(version -v '' leftOver1)
 					When call parseArguments params '' 'v1.0.0'--help
 					The status should be failure
-					The stderr should include 'array with parameter definitions is broken'
+					The stderr should include "$(printf "array \033[0;36mparams\033[0m with parameter definitions is broken")"
 					The stderr should include 'The array needs to contain parameter definitions'
 					The stderr should not include 'the first argument needs to be a non-associative array'
 					The stderr should include 'leftOver1'
@@ -90,7 +90,7 @@ Describe 'parse_arg.sh'
 					declare params=(version -v '' leftOver1 leftOver2)
 					When call parseArguments params '' 'v1.0.0' --help
 					The status should be failure
-					The stderr should include 'array with parameter definitions is broken'
+					The stderr should include "$(printf "array \033[0;36mparams\033[0m with parameter definitions is broken")"
 					The stderr should include 'leftOver1'
 					The stderr should include 'leftOver2'
 				End
@@ -100,7 +100,7 @@ Describe 'parse_arg.sh'
 				declare -A associativeParams=([version]=-v)
 				When call parseArguments associativeParams '' 'v1.0.0' --help
 				The status should be failure
-				The stderr should include "$(printf "the array \033[1;34massociativeParams\033[0m is broken")"
+				The stderr should include "$(printf "array \033[0;36massociativeParams\033[0m is broken")"
 				The stderr should include 'the first argument needs to be a non-associative array'
 			End
 		End

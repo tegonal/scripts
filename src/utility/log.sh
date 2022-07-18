@@ -69,13 +69,12 @@
 #    # ERROR: fatal error, shutting down
 #    #
 #    # Stacktrace:
-#    # Stacktrace:
 #    #    foo @ /opt/foo.sh:32:1
 #    #    bar @ /opt/bar.sh:10:1
 #    #    ...
 #    # return 1
 #
-#    printStacktrace
+#    printStackTrace
 #    # Stacktrace:
 #    #    foo @ /opt/foo.sh:32:1
 #    #    bar @ /opt/bar.sh:10:1
@@ -137,25 +136,28 @@ function returnDying() {
 	return 1
 }
 
-function printStacktrace() {
+function printStackTrace() {
 	echo >&2 ""
 	echo >&2 "Stacktrace:"
 	local -i frame=${1:-1}
 	while read -r line sub file < <(caller "$frame"); do
-		printf '%20s @ %s:%s:1\n' "$sub" "$(realpath "$file" || echo "$file")" "$line"
+		printf >&2 '%20s @ %s:%s:1\n' "$sub" "$(realpath "$file" || echo "$file")" "$line"
 		((++frame))
+		if ((frame > 10)); then
+			echo >&2 " ..."
+			break
+		fi
 	done
 }
 
 function traceAndDie() {
 	logError "$@"
-	printStacktrace 1
+	printStackTrace 1
 	exit 1
 }
 
 function traceAndReturnDying() {
 	logError "$@"
-	printStacktrace 1
+	printStackTrace 1
 	return 1
 }
-

@@ -90,8 +90,9 @@ function describeParameterTriple() {
 
 function checkParameterDefinitionIsTriple() {
 	if ! (($# == 1)); then
-		logError "One parameter needs to be passed to checkParameterDefinitionIsTriple\nGiven \033[0;36m%s\033[0m in \033[0;36m%s\033[0m\nFollowing a description of the parameters:" "$#" "${BASH_SOURCE[1]}"
+		logError "One parameter needs to be passed to checkParameterDefinitionIsTriple, given \033[0;36m%s\033[0m\nFollowing a description of the parameters:" "$#"
 		echo >&2 '1. params   the name of an array which contains the parameter definitions'
+		printStackTrace
 		return 9
 	fi
 
@@ -105,21 +106,23 @@ function checkParameterDefinitionIsTriple() {
 	)"
 	reg='declare -a.*'
 	if ! [[ "$arrayDefinition" =~ $reg ]]; then
-		logError "the array \033[1;34m%s\033[0m is broken, is defined in %s" "${!paramArr2}" "${BASH_SOURCE[2]}"
+		logError "the passed array \033[0;36m%s\033[0m is broken" "${!paramArr2}"
 		echo >&2 "the first argument needs to be a non-associative array containing the parameter definitions, given:"
 		echo >&2 "$arrayDefinition"
 		echo >&2 ""
 		describeParameterTriple
+		printStackTrace
 		return 9
 	fi
 
 	if ((arrLength == 0)); then
-		logError "array with parameter definitions is broken, length was 0\033[0m in %s" "${BASH_SOURCE[2]}"
+		logError "the passed array \033[0;36m%s\033[0m with parameter definitions is broken, length was 0\033[0m" "${!paramArr2}"
 		describeParameterTriple
+		printStackTrace
 	fi
 
 	if ! ((arrLength % 3 == 0)); then
-		logError "array with parameter definitions is broken for \033[1;34m%s\033[0m in %s" "${!paramArr2}" "${BASH_SOURCE[2]}"
+		logError "the passed array \033[0;36m%s\033[0m with parameter definitions is broken" "${!paramArr2}"
 		describeParameterTriple
 		echo >&2 ""
 		echo >&2 "given:"
@@ -138,17 +141,19 @@ function checkParameterDefinitionIsTriple() {
 				fi
 			fi
 		done
+		printStackTrace
 		return 9
 	fi
 }
 
 function parseArguments {
 	if (($# < 3)); then
-		logError "At least three arguments need to be passed to parseArguments.\nGiven \033[0;36m%s\033[0m in \033[0;36m%s\033[0m\nFollowing a description of the parameters:" "$#" "${BASH_SOURCE[1]}"
+		logError "At least three arguments need to be passed to parseArguments, given \033[0;36m%s\033[0m\nFollowing a description of the parameters:" "$#"
 		echo >&2 '1. params     the name of an array which contains the parameter definitions'
 		echo >&2 '2. examples   a string containing examples (or an empty string)'
 		echo >&2 '3. version    the version which shall be shown if one uses --version'
 		echo >&2 '4... args...  the arguments as such, typically "$@"'
+		printStackTrace
 		return 9
 	fi
 
@@ -192,6 +197,7 @@ function parseArguments {
 					echo >&2 "following the help documentation:"
 					echo >&2 ""
 					printHelp >&2 parseArguments_paramArr1 "$parseArguments_examples" "$parseArguments_version"
+					printStackTrace
 					return 1
 				fi
 				# that's where the black magic happens, we are assigning to global variables here
@@ -199,9 +205,6 @@ function parseArguments {
 				parseArguments_expectedName=1
 				((++parseArguments_numOfArgumentsParsed))
 				shift
-			elif [[ "$parseArguments_argName" =~ $parseArguments_regex ]]; then
-				echo "ou shit"
-				exit 3
 			fi
 		done
 
@@ -219,8 +222,9 @@ function parseArguments {
 
 function printVersion() {
 	if ! (($# == 1)); then
-		logError "One argument needs to be passed to printVersion.\nGiven \033[0;36m%s\033[0m in \033[0;36m%s\033[0m\nFollowing a description of the parameters:" "$#" "${BASH_SOURCE[1]}"
+		logError "One argument needs to be passed to printVersion, given \033[0;36m%s\033[0m\nFollowing a description of the parameters:" "$#"
 		echo >&2 '1. version   the version which shall be shown if one uses --version'
+		printStackTrace
 		return 9
 	fi
 	local version=$1
@@ -229,10 +233,11 @@ function printVersion() {
 
 function printHelp {
 	if ! (($# == 3)); then
-		logError "Three arguments need to be passed to printHelp.\nGiven \033[0;36m%s\033[0m in \033[0;36m%s\033[0m\nFollowing a description of the parameters:" "$#" "${BASH_SOURCE[1]}"
+		logError "Three arguments need to be passed to printHelp, given \033[0;36m%s\033[0m\nFollowing a description of the parameters:" "$#"
 		echo >&2 '1. params    the name of an array which contains the parameter definitions'
 		echo >&2 '2. examples  a string containing examples (or an empty string)'
 		echo >&2 '3. version   the version which shall be shown if one uses --version'
+		printStackTrace
 		return 9
 	fi
 	local -rn paramArr3=$1
@@ -279,10 +284,11 @@ function printHelp {
 
 function checkAllArgumentsSet {
 	if ! (($# == 3)); then
-		logError "Three arguments need to be passed to checkAllArgumentsSet.\nGiven \033[0;36m%s\033[0m in \033[0;36m%s\033[0m\nFollowing a description of the parameters:" "$#" "${BASH_SOURCE[1]}"
+		logError "Three arguments need to be passed to checkAllArgumentsSet, given \033[0;36m%s\033[0m\nFollowing a description of the parameters:" "$#"
 		echo >&2 '1. params    the name of an array which contains the parameter definitions'
 		echo >&2 '2. examples  a string containing examples (or an empty string)'
 		echo >&2 '3. version    the version which shall be shown if one uses --version'
+		printStackTrace
 		return 9
 	fi
 

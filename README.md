@@ -670,13 +670,12 @@ traceAndReturnDying "fatal error, shutting down"
 # ERROR: fatal error, shutting down
 #
 # Stacktrace:
-# Stacktrace:
 #    foo @ /opt/foo.sh:32:1
 #    bar @ /opt/bar.sh:10:1
 #    ...
 # return 1
 
-printStacktrace
+printStackTrace
 # Stacktrace:
 #    foo @ /opt/foo.sh:32:1
 #    bar @ /opt/bar.sh:10:1
