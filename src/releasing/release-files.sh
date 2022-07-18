@@ -13,12 +13,12 @@
 #  - expects a version in format vX.Y.Z(-RC...)
 #  - main is your default branch
 #  - requires you to have a /scripts folder in your project root which contains:
-#    - before-pr.sh which provides function beforePr and updateDocu and can be sourced (add ${__SOURCED__:+return} before executing beforePr)
+#    - before-pr.sh which provides a parameterless function beforePr and can be sourced (add ${__SOURCED__:+return} before executing beforePr)
 #    - prepare-next-dev-cycle.sh which provides function prepareNextDevCycle and can be sourced
 #  - there is a public key defined at .gget/signing-key.public.asc which will be used
 #    to verify the signatures which will be created
 #
-#  You can define a /scripts/additional-release-preparations.sh which is sourced (via sourceOnce) if it exists
+#  You can define /scripts/additional-release-files-preparations.sh which is sourced (via sourceOnce) if it exists.
 #
 #######  Usage  ###################
 #
@@ -31,14 +31,14 @@
 #    function findScripts() {
 #    	find "src" -name "*.sh" -not -name "*.doc.sh" "$@"
 #    }
-#    # make the function visible to release-files.sh
+#    # make the function visible to release-files.sh / not necessary if you source release-files.sh, see further below
 #    declare -fx findScripts
 #
 #    # releases version v0.1.0 using the key 0x945FE615904E5C85 for signing
 #    "$dir_of_tegonal_scripts/releasing/release-files.sh" -v v0.1.0 -k "0x945FE615904E5C85" --sign-fn findScripts
 #
 #    # releases version v0.1.0 using the key 0x945FE615904E5C85 for signing and
-#    # searches for additional occurrences of the version via the specified pattern in:
+#    # searches for additional occurrences where the version should be replaced via the specified pattern in:
 #    # - script files in ./src and ./scripts
 #    # - ./README.md
 #    "$dir_of_tegonal_scripts/releasing/release-files.sh" \
@@ -51,7 +51,7 @@
 #
 #    # and then call the function with your pre-configuration settings:
 #    # here we define the function which shall be used to find the files to be signed
-#    # since "$@" follows afterwards, once could still override it via command line arguments.
+#    # since "$@" follows afterwards, one could still override it via command line arguments.
 #    # put "$@" first, if you don't want that a user can override your pre-configuration
 #    releaseFiles --sign-fn findScripts "$@"
 #
@@ -72,7 +72,7 @@ sourceOnce "$dir_of_tegonal_scripts/releasing/update-version-README.sh"
 sourceOnce "$dir_of_tegonal_scripts/releasing/update-version-scripts.sh"
 
 function releaseFiles() {
-	local version key findForSigning
+	local version key findForSigning projectDir additionalPattern nextVersion prepareOnly
 	# shellcheck disable=SC2034
 	local -ra params=(
 		version '-v' "The version to release in the format vX.Y.Z(-RC...)"
@@ -94,7 +94,7 @@ function releaseFiles() {
 		logInfo "cannot deduce nextVersion from version as it does not follow format vX.Y.Z(-RC...): $version"
 	fi
 	if ! [[ -v projectDir ]]; then projectDir=$(realpath "."); fi
-	if ! [[ -v additionalPattern ]]; then additionalPattern=""; fi
+	if ! [[ -v additionalPattern ]]; then additionalPattern="^$"; fi
 	if ! [[ -v prepareOnly ]] || ! [[ "$prepareOnly" == "true" ]]; then prepareOnly=false; fi
 	checkAllArgumentsSet params "" "$TEGONAL_SCRIPTS_VERSION"
 
@@ -137,12 +137,13 @@ function releaseFiles() {
 	updateVersionReadme -v "$version" -p "$additionalPattern"
 	updateVersionScripts -v "$version" -p "$additionalPattern"
 	updateVersionScripts -v "$version" -p "$additionalPattern" -d "$projectsScriptsDir"
-	if [[ -f "$projectsScriptsDir/additional-release-preparations.sh" ]]; then
-		sourceOnce "$projectsScriptsDir/additional-release-preparations.sh"
+	local -r additionalSteps="$projectsScriptsDir/additional-release-files-preparations.sh"
+	if [[ -f $additionalSteps ]]; then
+		sourceOnce "$additionalSteps"
 	fi
 
-	# update docu again, due to new version
-	updateDocu
+	# run again since we made changes
+	beforePr
 
 	local -r ggetDir="$projectDir/.gget"
 	local -r gpgDir="$ggetDir/gpg"

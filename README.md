@@ -96,11 +96,11 @@ The scripts are ordered by topic:
 - [Quality Assurance](#quality-assurance)
 	- [runShellcheck](#runshellcheck)
 - [Releasing](#releasing)
-	- [Update Version in README](#update-version-in-readme)
-	- [Update Version in bash scripts](#update-version-in-bash-scripts)
-	- [Toggle main/release sections](#toggle-mainrelease-sections)
-	- [Hide/Show sneak-peek banner](#hideshow-sneak-peek-banner)
-	- [Releasing Files](#release-files)
+    - [Update Version in README](#update-version-in-readme)
+    - [Update Version in bash scripts](#update-version-in-bash-scripts)
+    - [Toggle main/release sections](#toggle-mainrelease-sections)
+    - [Hide/Show sneak-peek banner](#hideshow-sneak-peek-banner)
+    - [Releasing Files](#release-files)
 
 - [Script Utilities](#script-utilities)
 	- [Parse arguments](#parse-arguments)
@@ -406,7 +406,32 @@ sneakPeekBanner -c show
 ## Release Files
 
 Script which releases a version for a repository containing files which don't need to be compiled or packaged.
-Useful if you want to release e.g. scripts which can then be fetched via [gget](https://github.com/tegonal/gget)
+It is based on some conventions (see src/releasing/release-files.sh for more details):
+- expects a version in format vX.Y.Z(-RC...)
+- main is your default branch
+- requires you to have a /scripts folder in your project root which contains:
+  - before-pr.sh which provides a parameterless function `beforePr` and can be sourced (add `${__SOURCED__:+return}` before executing `beforePr`)
+  - prepare-next-dev-cycle.sh which provides function `prepareNextDevCycle` with parameters `-v` for version
+    and `-p` for additionalPattern (see source for more detail). Also this file needs to be sourcable.
+- there is a public key defined at .gget/signing-key.public.asc which will be used
+  to verify the signatures which will be created
+
+It then includes the following steps:
+- some checks regarding git status 
+- `beforePr`
+- rewrite sneak-peek banner
+- toggle main/release sections in README
+- update version in download badges and sneak-peek banner in README as well as   
+  replace additional occurrences defined via `-p|--pattern` (see output of `--help` further below for further details) 
+- update version in script headers in /src and /scripts of your project
+- `beforePr`
+- sign files via GPG where you define which files via `--sign-fn`
+- commit
+- `prepareNextDevCycle`
+- push changes
+- tag and push tag
+
+Useful if you want to release e.g. scripts which can then be fetched via [gget](https://github.com/tegonal/gget).
 
 Help:
 
@@ -447,14 +472,14 @@ source "$dir_of_tegonal_scripts/setup.sh" "$dir_of_tegonal_scripts"
 function findScripts() {
 	find "src" -name "*.sh" -not -name "*.doc.sh" "$@"
 }
-# make the function visible to release-files.sh
+# make the function visible to release-files.sh / not necessary if you source release-files.sh, see further below
 declare -fx findScripts
 
 # releases version v0.1.0 using the key 0x945FE615904E5C85 for signing
 "$dir_of_tegonal_scripts/releasing/release-files.sh" -v v0.1.0 -k "0x945FE615904E5C85" --sign-fn findScripts
 
 # releases version v0.1.0 using the key 0x945FE615904E5C85 for signing and
-# searches for additional occurrences of the version via the specified pattern in:
+# searches for additional occurrences where the version should be replaced via the specified pattern in:
 # - script files in ./src and ./scripts
 # - ./README.md
 "$dir_of_tegonal_scripts/releasing/release-files.sh" \
@@ -467,7 +492,7 @@ sourceOnce "$dir_of_tegonal_scripts/releasing/release-files.sh"
 
 # and then call the function with your pre-configuration settings:
 # here we define the function which shall be used to find the files to be signed
-# since "$@" follows afterwards, once could still override it via command line arguments.
+# since "$@" follows afterwards, one could still override it via command line arguments.
 # put "$@" first, if you don't want that a user can override your pre-configuration
 releaseFiles --sign-fn findScripts "$@"
 ```

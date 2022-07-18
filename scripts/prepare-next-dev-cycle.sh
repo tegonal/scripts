@@ -19,40 +19,13 @@ if ! [[ -v dir_of_tegonal_scripts ]]; then
 	dir_of_tegonal_scripts="$(realpath "$scriptsDir/../src")"
 	source "$dir_of_tegonal_scripts/setup.sh" "$dir_of_tegonal_scripts"
 fi
-sourceOnce "$dir_of_tegonal_scripts/utility/log.sh"
-sourceOnce "$dir_of_tegonal_scripts/releasing/sneak-peek-banner.sh"
-sourceOnce "$dir_of_tegonal_scripts/releasing/toggle-sections.sh"
-sourceOnce "$dir_of_tegonal_scripts/releasing/update-version-README.sh"
-sourceOnce "$dir_of_tegonal_scripts/releasing/update-version-scripts.sh"
-sourceOnce "$scriptsDir/update-docu.sh"
+sourceOnce "$dir_of_tegonal_scripts/releasing/prepare-files-next-dev-cycle.sh"
 
 function prepareNextDevCycle() {
-	if [[ -z "${1-""}" ]]; then
-		returnDying "no version provided as first argument to prepare-next-dev-cycle in %s" "${BASH_SOURCE[1]}"
-	fi
+	# same as in release.sh, update there as well
+	local -r additionalPattern="(TEGONAL_SCRIPTS_VERSION=['\"])[^'\"]+(['\"])"
 
-	version=$1
-	if (($# > 1)); then
-		additionalPattern=$2
-	else
-		# same as in release.sh, update there as well
-		local -r additionalPattern="(TEGONAL_SCRIPTS_VERSION=['\"])[^'\"]+(['\"])"
-	fi
-	if ! [[ "$version" =~ ^(v[0-9]+)\.([0-9]+)\.[0-9]+(-RC[0-9]+)?$ ]]; then
-		returnDying "version should match vX.Y.Z(-RC...), was %s" "$version"
-	fi
-
-	echo "prepare next dev cycle for version $version"
-
-	sneakPeekBanner -c show
-	toggleSection -c main
-	updateVersionReadme -v "$version-SNAPSHOT" -p "$additionalPattern"
-	updateVersionScripts -v "$version-SNAPSHOT" -p "$additionalPattern" -d "$scriptsDir"
-
-	# update docu with new version
-	updateDocu
-
-	git commit -a -m "prepare next dev cycle for $version"
+	prepareFilesNextDevCycle "$@" --project-dir "$(realpath "$scriptsDir/..")" -p "$additionalPattern"
 }
 
 ${__SOURCED__:+return}
