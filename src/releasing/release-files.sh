@@ -5,37 +5,55 @@
 #  / __/ -_) _ `/ _ \/ _ \/ _ `/ /        It is licensed under Apache 2.0
 #  \__/\__/\_, /\___/_//_/\_,_/_/         Please report bugs and contribute back your improvements
 #         /___/
-#                                         Version: v0.1.0-SNAPSHOT
+#                                         Version: v0.8.0-SNAPSHOT
 #
 #######  Description  #############
 #
 #  Releasing files based on conventions:
 #  - expects a version in format vX.Y.Z(-RC...)
 #  - main is your default branch
-#  - requires you to have a scripts folder in your project root which contains:
-#    - before-pr.sh with function beforePr
-#    - prepare-next-dev-cycle.sh
-#    - update-docu.sh with function updateDocu
+#  - requires you to have a /scripts folder in your project root which contains:
+#    - before-pr.sh which provides function beforePr and updateDocu and can be sourced (add ${__SOURCED__:+return} before executing beforePr)
+#    - prepare-next-dev-cycle.sh which provides function prepareNextDevCycle and can be sourced
 #  - there is a public key defined at .gget/signing-key.public.asc which will be used
 #    to verify the signatures which will be created
+#
+#  You can define a /scripts/additional-release-preparations.sh which is sourced (via sourceOnce) if it exists
 #
 #######  Usage  ###################
 #
 #    #!/usr/bin/env bash
 #    set -eu
-#    # Assuming tegonal's scripts were fetched with gget - adjust location accordingly
+#    # Assumes tegonal's scripts were fetched with gget - adjust location accordingly
 #    dir_of_tegonal_scripts="$(realpath "$(cd -- "$(dirname -- "${BASH_SOURCE[0]:-$0}")" &>/dev/null && pwd 2>/dev/null)/../lib/tegonal-scripts/src")"
 #    source "$dir_of_tegonal_scripts/setup.sh" "$dir_of_tegonal_scripts"
 #
+#    function findScripts() {
+#    	find "src" -name "*.sh" -not -name "*.doc.sh" "$@"
+#    }
+#    # make the function visible to release-files.sh
+#    declare -fx findScripts
+#
 #    # releases version v0.1.0 using the key 0x945FE615904E5C85 for signing
-#    "$dir_of_tegonal_scripts/releasing/release-files.sh" -v v0.1.0 -k "0x945FE615904E5C85"
+#    "$dir_of_tegonal_scripts/releasing/release-files.sh" -v v0.1.0 -k "0x945FE615904E5C85" --sign-fn findScripts
 #
 #    # releases version v0.1.0 using the key 0x945FE615904E5C85 for signing and
 #    # searches for additional occurrences of the version via the specified pattern in:
 #    # - script files in ./src and ./scripts
 #    # - ./README.md
 #    "$dir_of_tegonal_scripts/releasing/release-files.sh" \
-#    	-v v0.1.0 -k "0x945FE615904E5C85" -p "(TEGONAL_SCRIPTS_VERSION=['\"])[^'\"]+(['\"])"
+#    	-v v0.1.0 -k "0x945FE615904E5C85" --sign-fn findScripts \
+#    	-p "(TEGONAL_SCRIPTS_VERSION=['\"])[^'\"]+(['\"])"
+#
+#    # in case you want to provide your own release.sh and only want to do some pre-configuration
+#    # then you might want to source it instead
+#    sourceOnce "$dir_of_tegonal_scripts/releasing/release-files.sh"
+#
+#    # and then call the function with your pre-configuration settings:
+#    # here we define the function which shall be used to find the files to be signed
+#    # since "$@" follows afterwards, once could still override it via command line arguments.
+#    # put "$@" first, if you don't want that a user can override your pre-configuration
+#    releaseFiles --sign-fn findScripts "$@"
 #
 ###################################
 set -eu
@@ -60,7 +78,7 @@ function releaseFiles() {
 		version '-v' "The version to release in the format vX.Y.Z(-RC...)"
 		key '-k|--key' 'The GPG private key which shall be used to sign the files'
 		findForSigning '--sign-fn' 'Function which is called to determine what files should be signed. It should be based find and allow to pass further arguments (we will i.a. pass -print0)'
-		projectDir '-w|--working-directory' '(optional) The projects directory -- default: .'
+		projectDir '--project-dir' '(optional) The projects directory -- default: .'
 		additionalPattern '-p|--pattern' '(optional) pattern which is used in a perl command (separator /) to search & replace additional occurrences. It should define two match groups and the replace operation looks as follows: '"\\\${1}\$version\\\${2}"
 		nextVersion '-nv|--next-version' '(optional) the version to use for prepare-next-dev-cycle -- default: is next minor based on version'
 		prepareOnly '--prepare-only' '(optional) defines whether the release shall only be prepared (i.e. no push, no tag, no prepare-next-dev-cycle) -- default: false'
@@ -117,11 +135,13 @@ function releaseFiles() {
 	sneakPeekBanner -c hide
 	toggleSections -c release
 	updateVersionReadme -v "$version" -p "$additionalPattern"
+	updateVersionScripts -v "$version" -p "$additionalPattern"
 	updateVersionScripts -v "$version" -p "$additionalPattern" -d "$projectsScriptsDir"
-	sourceOnce "$projectsScriptsDir/additional-release-preparations.sh"
-	sourceOnce "$projectsScriptsDir/prepare-next-dev-cycle.sh"
+	if [[ -f "$projectsScriptsDir/additional-release-preparations.sh" ]]; then
+		sourceOnce "$projectsScriptsDir/additional-release-preparations.sh"
+	fi
 
-	# update docu due to new version
+	# update docu again, due to new version
 	updateDocu
 
 	local -r ggetDir="$projectDir/.gget"
@@ -145,6 +165,7 @@ function releaseFiles() {
 		git commit -m "$version"
 		git tag "$version"
 
+		sourceOnce "$projectsScriptsDir/prepare-next-dev-cycle.sh"
 		prepareNextDevCycle "$nextVersion" "$additionalPattern"
 
 		git push origin "$version"

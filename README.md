@@ -45,13 +45,13 @@ the sources.
 Following the commands you need to execute to setup tegonal scripts via [gget](https://github.com/tegonal/gget).
 
 ```bash
-TEGONAL_SCRIPTS_VERSION="v0.7.1" && \
 gget remote add -r tegonal-scripts -u https://github.com/tegonal/scripts
 ````
 
 Now you can pull the scripts you want via:
 
 ```bash
+export TEGONAL_SCRIPTS_VERSION="v0.7.1"
 gget pull -r tegonal-scripts -t "$TEGONAL_SCRIPTS_VERSION" -p ...
 ```
 
@@ -60,6 +60,7 @@ and many depend on scripts defined in `src/utility`.
 Therefore, for simplicity reasons, we recommend you pull `src/setup.sh` all files of `src/utility` in addition:
 
 ```
+export TEGONAL_SCRIPTS_VERSION="v0.7.1" 
 gget pull -r tegonal-scripts -t "$TEGONAL_SCRIPTS_VERSION" -p src/setup.sh
 gget pull -r tegonal-scripts -t "$TEGONAL_SCRIPTS_VERSION" -p src/utility/
 ```
@@ -126,7 +127,7 @@ settings for shellcheck.
 ```bash
 #!/usr/bin/env bash
 set -eu
-# Assuming tegonal's scripts were fetched with gget - adjust location accordingly
+# Assumes tegonal's scripts were fetched with gget - adjust location accordingly
 dir_of_tegonal_scripts="$(realpath "$(cd -- "$(dirname -- "${BASH_SOURCE[0]:-$0}")" &>/dev/null && pwd 2>/dev/null)/../lib/tegonal-scripts/src")"
 source "$dir_of_tegonal_scripts/setup.sh" "$dir_of_tegonal_scripts"
 
@@ -203,11 +204,17 @@ Full usage example:
 ```bash
 #!/usr/bin/env bash
 set -eu
-# Assuming tegonal's scripts were fetched with gget - adjust location accordingly
+# Assumes tegonal's scripts were fetched with gget - adjust location accordingly
 dir_of_tegonal_scripts="$(realpath "$(cd -- "$(dirname -- "${BASH_SOURCE[0]:-$0}")" &>/dev/null && pwd 2>/dev/null)/../lib/tegonal-scripts/src")"
 source "$dir_of_tegonal_scripts/setup.sh" "$dir_of_tegonal_scripts"
 
 "$dir_of_tegonal_scripts/releasing/update-version-README.sh" -v 0.1.0
+
+# if you use it in combination with other tegonal-scripts files, then you might want to source it instead
+sourceOnce "$dir_of_tegonal_scripts/releasing/update-version-README.sh"
+
+# and then call the function
+updateVersionReadme -v 0.2.0
 ```
 
 </releasing-update-version-README>
@@ -255,11 +262,17 @@ Full usage example:
 ```bash
 #!/usr/bin/env bash
 set -eu
-# Assuming tegonal's scripts were fetched with gget - adjust location accordingly
+# Assumes tegonal's scripts were fetched with gget - adjust location accordingly
 dir_of_tegonal_scripts="$(realpath "$(cd -- "$(dirname -- "${BASH_SOURCE[0]:-$0}")" &>/dev/null && pwd 2>/dev/null)/../lib/tegonal-scripts/src")"
 source "$dir_of_tegonal_scripts/setup.sh" "$dir_of_tegonal_scripts"
 
 "$dir_of_tegonal_scripts/releasing/update-version-scripts.sh" -v 0.1.0
+
+# if you use it in combination with other tegonal-scripts files, then you might want to source it instead
+sourceOnce "$dir_of_tegonal_scripts/releasing/update-version-README.sh"
+
+# and then call the function
+updateVersionReadme -v 0.2.0
 ```
 
 </releasing-update-version-scripts>
@@ -321,11 +334,17 @@ Full usage example:
 ```bash
 #!/usr/bin/env bash
 set -eu
-# Assuming tegonal's scripts were fetched with gget - adjust location accordingly
+# Assumes tegonal's scripts were fetched with gget - adjust location accordingly
 dir_of_tegonal_scripts="$(realpath "$(cd -- "$(dirname -- "${BASH_SOURCE[0]:-$0}")" &>/dev/null && pwd 2>/dev/null)/../lib/tegonal-scripts/src")"
 source "$dir_of_tegonal_scripts/setup.sh" "$dir_of_tegonal_scripts"
 
-"$dir_of_tegonal_scripts/releasing/sneak-peek-banner.sh" -c hide
+"$dir_of_tegonal_scripts/releasing/toggle-sections.sh" -c main
+
+# if you use it in combination with other files, then you might want to source it instead
+sourceOnce "$dir_of_tegonal_scripts/releasing/toggle-sections.sh"
+
+# and then call the function
+toggleSections -c release
 ```
 
 </releasing-toggle-sections>
@@ -369,11 +388,17 @@ Full usage example:
 ```bash
 #!/usr/bin/env bash
 set -eu
-# Assuming tegonal's scripts were fetched with gget - adjust location accordingly
+# Assumes tegonal's scripts were fetched with gget - adjust location accordingly
 dir_of_tegonal_scripts="$(realpath "$(cd -- "$(dirname -- "${BASH_SOURCE[0]:-$0}")" &>/dev/null && pwd 2>/dev/null)/../lib/tegonal-scripts/src")"
 source "$dir_of_tegonal_scripts/setup.sh" "$dir_of_tegonal_scripts"
 
 "$dir_of_tegonal_scripts/releasing/sneak-peek-banner.sh" -c hide
+
+# if you use it in combination with other files, then you might want to source it instead
+sourceOnce "$dir_of_tegonal_scripts/releasing/sneak-peek-banner.sh"
+
+# and then call the function
+sneakPeekBanner -c show
 ```
 
 </releasing-sneak-peek-banner>
@@ -392,8 +417,8 @@ Help:
 Parameters:
 -v                   The version to release in the format vX.Y.Z(-RC...)
 -k|--key             The GPG private key which shall be used to sign the files
---scripts-dir        The directory which needs to contain before-pr.sh etc.
 --sign-fn            Function which is called to determine what files should be signed. It should be based find and allow to pass further arguments (we will i.a. pass -print0)
+--project-dir        (optional) The projects directory -- default: .
 -p|--pattern         (optional) pattern which is used in a perl command (separator /) to search & replace additional occurrences. It should define two match groups and the replace operation looks as follows: \${1}$version\${2}
 -nv|--next-version   (optional) the version to use for prepare-next-dev-cycle -- default: is next minor based on version
 --prepare-only       (optional) defines whether the release shall only be prepared (i.e. no push, no tag, no prepare-next-dev-cycle) -- default: false
@@ -415,19 +440,36 @@ Full usage example:
 ```bash
 #!/usr/bin/env bash
 set -eu
-# Assuming tegonal's scripts were fetched with gget - adjust location accordingly
+# Assumes tegonal's scripts were fetched with gget - adjust location accordingly
 dir_of_tegonal_scripts="$(realpath "$(cd -- "$(dirname -- "${BASH_SOURCE[0]:-$0}")" &>/dev/null && pwd 2>/dev/null)/../lib/tegonal-scripts/src")"
 source "$dir_of_tegonal_scripts/setup.sh" "$dir_of_tegonal_scripts"
 
+function findScripts() {
+	find "src" -name "*.sh" -not -name "*.doc.sh" "$@"
+}
+# make the function visible to release-files.sh
+declare -fx findScripts
+
 # releases version v0.1.0 using the key 0x945FE615904E5C85 for signing
-"$dir_of_tegonal_scripts/releasing/release-files.sh" -v v0.1.0 -k "0x945FE615904E5C85"
+"$dir_of_tegonal_scripts/releasing/release-files.sh" -v v0.1.0 -k "0x945FE615904E5C85" --sign-fn findScripts
 
 # releases version v0.1.0 using the key 0x945FE615904E5C85 for signing and
 # searches for additional occurrences of the version via the specified pattern in:
 # - script files in ./src and ./scripts
 # - ./README.md
 "$dir_of_tegonal_scripts/releasing/release-files.sh" \
-	-v v0.1.0 -k "0x945FE615904E5C85" -p "(TEGONAL_SCRIPTS_VERSION=['\"])[^'\"]+(['\"])"
+	-v v0.1.0 -k "0x945FE615904E5C85" --sign-fn findScripts \
+	-p "(TEGONAL_SCRIPTS_VERSION=['\"])[^'\"]+(['\"])"
+
+# in case you want to provide your own release.sh and only want to do some pre-configuration
+# then you might want to source it instead
+sourceOnce "$dir_of_tegonal_scripts/releasing/release-files.sh"
+
+# and then call the function with your pre-configuration settings:
+# here we define the function which shall be used to find the files to be signed
+# since "$@" follows afterwards, once could still override it via command line arguments.
+# put "$@" first, if you don't want that a user can override your pre-configuration
+releaseFiles --sign-fn findScripts "$@"
 ```
 
 </releasing-release-files>
@@ -453,7 +495,7 @@ Full usage example:
 ```bash
 #!/usr/bin/env bash
 set -eu
-# Assuming tegonal's scripts were fetched with gget - adjust location accordingly
+# Assumes tegonal's scripts were fetched with gget - adjust location accordingly
 dir_of_tegonal_scripts="$(realpath "$(cd -- "$(dirname -- "${BASH_SOURCE[0]:-$0}")" &>/dev/null && pwd 2>/dev/null)/../lib/tegonal-scripts/src")"
 source "$dir_of_tegonal_scripts/setup.sh" "$dir_of_tegonal_scripts"
 
@@ -506,7 +548,7 @@ Full usage example:
 set -eu
 
 if ! [[ -v dir_of_tegonal_scripts ]]; then
-	# Assuming tegonal's scripts were fetched with gget - adjust location accordingly
+	# Assumes tegonal's scripts were fetched with gget - adjust location accordingly
 	dir_of_tegonal_scripts="$(realpath "$(cd -- "$(dirname -- "${BASH_SOURCE[0]:-$0}")" &>/dev/null && pwd 2>/dev/null)/../lib/tegonal-scripts/src")"
 	source "$dir_of_tegonal_scripts/setup.sh" "$dir_of_tegonal_scripts"
 fi
@@ -550,7 +592,7 @@ Utility functions to log messages including a severity level where logError writ
 ```bash
 #!/usr/bin/env bash
 set -eu
-# Assuming tegonal's scripts were fetched with gget - adjust location accordingly
+# Assumes tegonal's scripts were fetched with gget - adjust location accordingly
 dir_of_tegonal_scripts="$(realpath "$(cd -- "$(dirname -- "${BASH_SOURCE[0]:-$0}")" &>/dev/null && pwd 2>/dev/null)/../lib/tegonal-scripts/src")"
 source "$dir_of_tegonal_scripts/setup.sh" "$dir_of_tegonal_scripts"
 
@@ -606,7 +648,7 @@ Utility function which hopefully make it easier for you to deal with gpg
 ```bash
 #!/usr/bin/env bash
 set -eu
-# Assuming tegonal's scripts were fetched with gget - adjust location accordingly
+# Assumes tegonal's scripts were fetched with gget - adjust location accordingly
 dir_of_tegonal_scripts="$(realpath "$(cd -- "$(dirname -- "${BASH_SOURCE[0]:-$0}")" &>/dev/null && pwd 2>/dev/null)/../lib/tegonal-scripts/src")"
 source "$dir_of_tegonal_scripts/setup.sh" "$dir_of_tegonal_scripts"
 
@@ -638,7 +680,7 @@ Utility function to find out the initial `declare` statement after following `de
 #!/usr/bin/env bash
 # shellcheck disable=SC2034
 set -eu
-# Assuming tegonal's scripts were fetched with gget - adjust location accordingly
+# Assumes tegonal's scripts were fetched with gget - adjust location accordingly
 dir_of_tegonal_scripts="$(realpath "$(cd -- "$(dirname -- "${BASH_SOURCE[0]:-$0}")" &>/dev/null && pwd 2>/dev/null)/../lib/tegonal-scripts/src")"
 source "$dir_of_tegonal_scripts/setup.sh" "$dir_of_tegonal_scripts"
 
@@ -675,7 +717,7 @@ Full usage example:
 ```bash
 #!/usr/bin/env bash
 set -eu
-# Assuming tegonal's scripts were fetched with gget - adjust location accordingly
+# Assumes tegonal's scripts were fetched with gget - adjust location accordingly
 dir_of_tegonal_scripts="$(realpath "$(cd -- "$(dirname -- "${BASH_SOURCE[0]:-$0}")" &>/dev/null && pwd 2>/dev/null)/../lib/tegonal-scripts/src")"
 source "$dir_of_tegonal_scripts/setup.sh" "$dir_of_tegonal_scripts"
 
@@ -716,7 +758,7 @@ Full usage example:
 ```bash
 #!/usr/bin/env bash
 set -eu
-# Assuming tegonal's scripts were fetched with gget - adjust location accordingly
+# Assumes tegonal's scripts were fetched with gget - adjust location accordingly
 dir_of_tegonal_scripts="$(realpath "$(cd -- "$(dirname -- "${BASH_SOURCE[0]:-$0}")" &>/dev/null && pwd 2>/dev/null)/../lib/tegonal-scripts/src")"
 source "$dir_of_tegonal_scripts/setup.sh" "$dir_of_tegonal_scripts"
 

@@ -22,15 +22,21 @@ if ! [[ -v dir_of_tegonal_scripts ]]; then
 fi
 sourceOnce "$dir_of_tegonal_scripts/releasing/release-files.sh"
 
-if ! [[ -x "$(command -v "shellspec")" ]]; then
-	die "You need to have shellspec installed if you want to create a release"
-fi
+function release() {
+	if ! [[ -x "$(command -v "shellspec")" ]]; then
+		die "You need to have shellspec installed if you want to create a release"
+	fi
 
-function findScripts() {
-	find "$scriptsDir/../src" -name "*.sh" -not -name "*.doc.sh" "$@"
+	function findScripts() {
+		find "$scriptsDir/../src" -name "*.sh" -not -name "*.doc.sh" "$@"
+	}
+
+	# same as in prepare-next-dev-cycle.sh, update there as well
+	local -r additionalPattern="(TEGONAL_SCRIPTS_VERSION=['\"])[^'\"]+(['\"])"
+
+	releaseFiles "$@" \
+		--project-dir "$(realpath "$scriptsDir/..")" \
+		--sign-fn findScripts \
+		-p "$additionalPattern"
 }
-
-releaseFiles "$@" \
-	--scripts-dir "$scriptsDir" \
-	--sign-fn findScripts \
-	-p "(TEGONAL_SCRIPTS_VERSION=['\"])[^'\"]+(['\"])"
+release "$@"
