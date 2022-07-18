@@ -656,6 +656,31 @@ logInfoWithoutNewline "hello"
 logWarningWithoutNewline "be careful"
 logErrorWithoutNewline "oho"
 logSuccessWithoutNewline "yay"
+
+traceAndDie "fatal error, shutting down"
+# ERROR: fatal error, shutting down
+#
+# Stacktrace:
+#    foo @ /opt/foo.sh:32:1
+#    bar @ /opt/bar.sh:10:1
+#    ...
+# exit 1
+
+traceAndReturnDying "fatal error, shutting down"
+# ERROR: fatal error, shutting down
+#
+# Stacktrace:
+# Stacktrace:
+#    foo @ /opt/foo.sh:32:1
+#    bar @ /opt/bar.sh:10:1
+#    ...
+# return 1
+
+printStacktrace
+# Stacktrace:
+#    foo @ /opt/foo.sh:32:1
+#    bar @ /opt/bar.sh:10:1
+#   main @ /opt/main.sh:4:1
 ```
 
 </utility-log>
