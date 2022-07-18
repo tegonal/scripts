@@ -318,4 +318,8 @@ function checkAllArgumentsSet {
 		printHelp >&2 checkAllArgumentsSet_paramArr4 "$checkAllArgumentsSet_examples" "$checkAllArgumentsSet_version"
 		return 1
 	fi
+	if ((${#FUNCNAME} > 1)); then
+		# it is handy to see the stacktrace if it is not a direct call from command line
+		printStackTrace
+	fi
 }
