@@ -39,6 +39,12 @@
 #    	echo "do whatever you want to do..."
 #    fi
 #
+#    if hasRemoteTag "v0.1.0"; then
+#    	echo "do whatever you want to do..."
+#    elif hasRemoteTag "v0.1.0" "anotherRemote"; then
+#    	echo "do whatever you want to do..."
+#    fi
+#
 ###################################
 set -eu
 
@@ -58,8 +64,8 @@ function hasGitChanges() {
 }
 
 function localGitIsAhead() {
-	if (($# == 0)); then
-		die "you need to pass at least the branch name to localGitIsAhead"
+	if ! (($# == 0)) && ! (($# == 1)); then
+		die "you need to pass at least the branch name to localGitIsAhead and optionally the name of the remote (defaults to origin)"
 	fi
 	local -r branch=$1
 	local -r remote=${2-"origin"}
@@ -67,10 +73,19 @@ function localGitIsAhead() {
 }
 
 function localGitIsBehind() {
-	if (($# == 0)); then
-		die "you need to pass at least the branch name to localGitIsBehind"
+	if ! (($# == 0)) && ! (($# == 1)); then
+		die "you need to pass at least the branch name to localGitIsBehind and optionally the name of the remote (defaults to origin)"
 	fi
 	local -r branch=$1
 	local -r remote=${2-"origin"}
 	! (($(git rev-list --count "${branch}..$remote/$branch") == 0))
+}
+
+function hasRemoteTag() {
+	if ! (($# == 0)) && ! (($# == 1)); then
+		die "you need to pass at least the tag to hasRemoteTag and optionally the name of the remote (defaults to origin)"
+	fi
+	local -r tag=$1
+	local -r remote=${2-"origin"}
+	git ls-remote -t "$remote" | grep "$tag" >/dev/null || false
 }

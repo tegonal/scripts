@@ -23,3 +23,9 @@ if localGitIsBehind "main"; then
 elif localGitIsBehind "main"; then
 	echo "do whatever you want to do..."
 fi
+
+if hasRemoteTag "v0.1.0"; then
+	echo "do whatever you want to do..."
+elif hasRemoteTag "v0.1.0" "anotherRemote"; then
+	echo "do whatever you want to do..."
+fi
