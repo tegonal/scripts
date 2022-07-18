@@ -90,10 +90,12 @@ function releaseFiles() {
 
 	local -r versionRegex="^(v[0-9]+)\.([0-9]+)\.[0-9]+(-RC[0-9]+)?$"
 
-	if ! [[ -v nextVersion ]] && [[ -v version ]] && [[ "$version" =~ $versionRegex ]]; then
-		nextVersion="${BASH_REMATCH[1]}.$((BASH_REMATCH[2] + 1)).0"
-	else
-		logInfo "cannot deduce nextVersion from version as it does not follow format vX.Y.Z(-RC...): $version"
+	if [[ -v version ]]; then
+		if ! [[ -v nextVersion ]] && [[ "$version" =~ $versionRegex ]]; then
+			nextVersion="${BASH_REMATCH[1]}.$((BASH_REMATCH[2] + 1)).0"
+		else
+			logInfo "cannot deduce nextVersion from version as it does not follow format vX.Y.Z(-RC...): $version"
+		fi
 	fi
 	if ! [[ -v projectDir ]]; then projectDir=$(realpath "."); fi
 	if ! [[ -v additionalPattern ]]; then additionalPattern="^$"; fi
