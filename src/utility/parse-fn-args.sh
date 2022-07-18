@@ -14,7 +14,7 @@
 #######  Usage  ###################
 #
 #    #!/usr/bin/env bash
-#    set -eu
+#    set -euo pipefail
 #
 #    if ! [[ -v dir_of_tegonal_scripts ]]; then
 #    	# Assumes tegonal's scripts were fetched with gget - adjust location accordingly
@@ -53,7 +53,7 @@
 #	1. Does not support named arguments (see parse-args.sh if you want named arguments for your function)
 #
 ###################################
-set -eu
+set -euo pipefail
 
 if ! [[ -v dir_of_tegonal_scripts ]]; then
 	dir_of_tegonal_scripts="$(realpath "$(cd -- "$(dirname -- "${BASH_SOURCE[0]:-$0}")" &>/dev/null && pwd 2>/dev/null)/..")"

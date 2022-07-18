@@ -8,7 +8,7 @@
 #                                         Version: v0.9.0-SNAPSHOT
 #
 ###################################
-set -eu
+set -euo pipefail
 declare -x TEGONAL_SCRIPTS_VERSION='v0.9.0-SNAPSHOT'
 
 if ! [[ -v scriptsDir ]]; then

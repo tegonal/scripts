@@ -75,7 +75,7 @@ We recommend you use the following code at the beginning of your script in case 
 <!-- auto-generated, do not modify here but in src/setup.sh -->
 ```bash
 #!/usr/bin/env bash
-set -eu
+set -euo pipefail
 
 if ! [[ -v dir_of_tegonal_scripts ]]; then
 	# Assumes your script is in (root is project folder) e.g. /src or /scripts and
@@ -127,7 +127,7 @@ settings for shellcheck.
 <!-- auto-generated, do not modify here but in src/qa/run-shellcheck.sh -->
 ```bash
 #!/usr/bin/env bash
-set -eu
+set -euo pipefail
 # Assumes tegonal's scripts were fetched with gget - adjust location accordingly
 dir_of_tegonal_scripts="$(realpath "$(cd -- "$(dirname -- "${BASH_SOURCE[0]:-$0}")" &>/dev/null && pwd 2>/dev/null)/../lib/tegonal-scripts/src")"
 source "$dir_of_tegonal_scripts/setup.sh" "$dir_of_tegonal_scripts"
@@ -204,7 +204,7 @@ Full usage example:
 <!-- auto-generated, do not modify here but in src/releasing/update-version-README.sh -->
 ```bash
 #!/usr/bin/env bash
-set -eu
+set -euo pipefail
 # Assumes tegonal's scripts were fetched with gget - adjust location accordingly
 dir_of_tegonal_scripts="$(realpath "$(cd -- "$(dirname -- "${BASH_SOURCE[0]:-$0}")" &>/dev/null && pwd 2>/dev/null)/../lib/tegonal-scripts/src")"
 source "$dir_of_tegonal_scripts/setup.sh" "$dir_of_tegonal_scripts"
@@ -262,7 +262,7 @@ Full usage example:
 <!-- auto-generated, do not modify here but in src/releasing/update-version-scripts.sh -->
 ```bash
 #!/usr/bin/env bash
-set -eu
+set -euo pipefail
 # Assumes tegonal's scripts were fetched with gget - adjust location accordingly
 dir_of_tegonal_scripts="$(realpath "$(cd -- "$(dirname -- "${BASH_SOURCE[0]:-$0}")" &>/dev/null && pwd 2>/dev/null)/../lib/tegonal-scripts/src")"
 source "$dir_of_tegonal_scripts/setup.sh" "$dir_of_tegonal_scripts"
@@ -334,7 +334,7 @@ Full usage example:
 <!-- auto-generated, do not modify here but in src/releasing/toggle-sections.sh -->
 ```bash
 #!/usr/bin/env bash
-set -eu
+set -euo pipefail
 # Assumes tegonal's scripts were fetched with gget - adjust location accordingly
 dir_of_tegonal_scripts="$(realpath "$(cd -- "$(dirname -- "${BASH_SOURCE[0]:-$0}")" &>/dev/null && pwd 2>/dev/null)/../lib/tegonal-scripts/src")"
 source "$dir_of_tegonal_scripts/setup.sh" "$dir_of_tegonal_scripts"
@@ -388,7 +388,7 @@ Full usage example:
 <!-- auto-generated, do not modify here but in src/releasing/sneak-peek-banner.sh -->
 ```bash
 #!/usr/bin/env bash
-set -eu
+set -euo pipefail
 # Assumes tegonal's scripts were fetched with gget - adjust location accordingly
 dir_of_tegonal_scripts="$(realpath "$(cd -- "$(dirname -- "${BASH_SOURCE[0]:-$0}")" &>/dev/null && pwd 2>/dev/null)/../lib/tegonal-scripts/src")"
 source "$dir_of_tegonal_scripts/setup.sh" "$dir_of_tegonal_scripts"
@@ -465,7 +465,7 @@ Full usage example:
 <!-- auto-generated, do not modify here but in src/releasing/release-files.sh -->
 ```bash
 #!/usr/bin/env bash
-set -eu
+set -euo pipefail
 # Assumes tegonal's scripts were fetched with gget - adjust location accordingly
 dir_of_tegonal_scripts="$(realpath "$(cd -- "$(dirname -- "${BASH_SOURCE[0]:-$0}")" &>/dev/null && pwd 2>/dev/null)/../lib/tegonal-scripts/src")"
 source "$dir_of_tegonal_scripts/setup.sh" "$dir_of_tegonal_scripts"
@@ -520,7 +520,7 @@ Full usage example:
 <!-- auto-generated, do not modify here but in src/utility/parse-args.sh -->
 ```bash
 #!/usr/bin/env bash
-set -eu
+set -euo pipefail
 # Assumes tegonal's scripts were fetched with gget - adjust location accordingly
 dir_of_tegonal_scripts="$(realpath "$(cd -- "$(dirname -- "${BASH_SOURCE[0]:-$0}")" &>/dev/null && pwd 2>/dev/null)/../lib/tegonal-scripts/src")"
 source "$dir_of_tegonal_scripts/setup.sh" "$dir_of_tegonal_scripts"
@@ -571,7 +571,7 @@ Full usage example:
 <!-- auto-generated, do not modify here but in src/utility/parse-fn-args.sh -->
 ```bash
 #!/usr/bin/env bash
-set -eu
+set -euo pipefail
 
 if ! [[ -v dir_of_tegonal_scripts ]]; then
 	# Assumes tegonal's scripts were fetched with gget - adjust location accordingly
@@ -617,7 +617,7 @@ Utility functions to log messages including a severity level where logError writ
 <!-- auto-generated, do not modify here but in src/utility/log.sh -->
 ```bash
 #!/usr/bin/env bash
-set -eu
+set -euo pipefail
 # Assumes tegonal's scripts were fetched with gget - adjust location accordingly
 dir_of_tegonal_scripts="$(realpath "$(cd -- "$(dirname -- "${BASH_SOURCE[0]:-$0}")" &>/dev/null && pwd 2>/dev/null)/../lib/tegonal-scripts/src")"
 source "$dir_of_tegonal_scripts/setup.sh" "$dir_of_tegonal_scripts"
@@ -693,7 +693,7 @@ Establishes a guard by creating a variable based on the file which shall be sour
 <!-- auto-generated, do not modify here but in src/utility/source-once.sh -->
 ```bash
 #!/usr/bin/env bash
-set -eu
+set -euo pipefail
 # Assumes tegonal's scripts were fetched with gget - adjust location accordingly
 dir_of_tegonal_scripts="$(realpath "$(cd -- "$(dirname -- "${BASH_SOURCE[0]:-$0}")" &>/dev/null && pwd 2>/dev/null)/../lib/tegonal-scripts/src")"
 source "$dir_of_tegonal_scripts/setup.sh" "$dir_of_tegonal_scripts"
@@ -726,7 +726,7 @@ Utility functions around git.
 <!-- auto-generated, do not modify here but in src/utility/git-utils.sh -->
 ```bash
 #!/usr/bin/env bash
-set -eu
+set -euo pipefail
 # Assumes tegonal's scripts were fetched with gget - adjust location accordingly
 dir_of_tegonal_scripts="$(realpath "$(cd -- "$(dirname -- "${BASH_SOURCE[0]:-$0}")" &>/dev/null && pwd 2>/dev/null)/../lib/tegonal-scripts/src")"
 source "$dir_of_tegonal_scripts/setup.sh" "$dir_of_tegonal_scripts"
@@ -769,7 +769,7 @@ Utility functions which hopefully make it easier for you to deal with gpg
 <!-- auto-generated, do not modify here but in src/utility/gpg-utils.sh -->
 ```bash
 #!/usr/bin/env bash
-set -eu
+set -euo pipefail
 # Assumes tegonal's scripts were fetched with gget - adjust location accordingly
 dir_of_tegonal_scripts="$(realpath "$(cd -- "$(dirname -- "${BASH_SOURCE[0]:-$0}")" &>/dev/null && pwd 2>/dev/null)/../lib/tegonal-scripts/src")"
 source "$dir_of_tegonal_scripts/setup.sh" "$dir_of_tegonal_scripts"
@@ -801,7 +801,7 @@ Utility function to find out the initial `declare` statement after following `de
 ```bash
 #!/usr/bin/env bash
 # shellcheck disable=SC2034
-set -eu
+set -euo pipefail
 # Assumes tegonal's scripts were fetched with gget - adjust location accordingly
 dir_of_tegonal_scripts="$(realpath "$(cd -- "$(dirname -- "${BASH_SOURCE[0]:-$0}")" &>/dev/null && pwd 2>/dev/null)/../lib/tegonal-scripts/src")"
 source "$dir_of_tegonal_scripts/setup.sh" "$dir_of_tegonal_scripts"
@@ -838,7 +838,7 @@ Full usage example:
 <!-- auto-generated, do not modify here but in src/utility/replace-snippet.sh -->
 ```bash
 #!/usr/bin/env bash
-set -eu
+set -euo pipefail
 # Assumes tegonal's scripts were fetched with gget - adjust location accordingly
 dir_of_tegonal_scripts="$(realpath "$(cd -- "$(dirname -- "${BASH_SOURCE[0]:-$0}")" &>/dev/null && pwd 2>/dev/null)/../lib/tegonal-scripts/src")"
 source "$dir_of_tegonal_scripts/setup.sh" "$dir_of_tegonal_scripts"
@@ -879,7 +879,7 @@ Full usage example:
 <!-- auto-generated, do not modify here but in src/utility/update-bash-docu.sh -->
 ```bash
 #!/usr/bin/env bash
-set -eu
+set -euo pipefail
 # Assumes tegonal's scripts were fetched with gget - adjust location accordingly
 dir_of_tegonal_scripts="$(realpath "$(cd -- "$(dirname -- "${BASH_SOURCE[0]:-$0}")" &>/dev/null && pwd 2>/dev/null)/../lib/tegonal-scripts/src")"
 source "$dir_of_tegonal_scripts/setup.sh" "$dir_of_tegonal_scripts"

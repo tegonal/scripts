@@ -14,7 +14,7 @@
 #######  Usage  ###################
 #
 #    #!/usr/bin/env bash
-#    set -eu
+#    set -euo pipefail
 #
 #    if ! [[ -v dir_of_tegonal_scripts ]]; then
 #    	# Assumes your script is in (root is project folder) e.g. /src or /scripts and

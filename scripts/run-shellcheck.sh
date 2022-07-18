@@ -8,7 +8,7 @@
 #                                         Version: v0.9.0-SNAPSHOT
 #
 ###################################
-set -eu
+set -euo pipefail
 
 if ! [[ -v scriptsDir ]]; then
 	scriptsDir="$(cd -- "$(dirname -- "${BASH_SOURCE[0]:-$0}")" &>/dev/null && pwd 2>/dev/null)"
