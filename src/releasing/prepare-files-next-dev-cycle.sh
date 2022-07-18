@@ -84,6 +84,7 @@ function prepareFilesNextDevCycle() {
 	sneakPeekBanner -c show
 	toggleSections -c main
 	updateVersionReadme -v "$version-SNAPSHOT" -p "$additionalPattern"
+	updateVersionScripts -v "$version-SNAPSHOT" -p "$additionalPattern"
 	updateVersionScripts -v "$version-SNAPSHOT" -p "$additionalPattern" -d "$projectsScriptsDir"
 
 	# check if we accidentally have broken something, run formatting or whatever is done in beforePr
