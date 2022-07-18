@@ -194,7 +194,7 @@ function releaseFiles() {
 		git tag "$version"
 
 		sourceOnce "$projectsScriptsDir/prepare-next-dev-cycle.sh"
-		prepareNextDevCycle "$nextVersion" "$additionalPattern"
+		prepareNextDevCycle -v "$nextVersion" -p "$additionalPattern"
 
 		git push origin "$version"
 		git push
