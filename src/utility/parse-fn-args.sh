@@ -64,9 +64,10 @@ sourceOnce "$dir_of_tegonal_scripts/utility/log.sh"
 
 function parseFnArgs() {
 	if (($# < 2)); then
-		logError "At least two arguments need to be passed to parseFnArgs.\nGiven \033[0;36m%s\033[0m in \033[0;36m%s\033[0m\nFollowing a description of the parameters:" "$#" "${BASH_SOURCE[1]}"
+		logError "At least two arguments need to be passed to parseFnArgs, given \033[0;36m%s\033[0m\nFollowing a description of the parameters:" "$#"
 		echo >&2 '1. params     the name of an array which contains the parameter names'
 		echo >&2 '2... args...  the arguments as such, typically "$@"'
+		printStackTrace
 		return 9
 	fi
 
@@ -85,8 +86,8 @@ function parseFnArgs() {
 
 	local -r minExpected=$( ([[ $parseFnArgs_withVarArgs == false ]] && echo "${#parseFnArgs_paramArr1[@]}") || echo "$((${#parseFnArgs_paramArr1[@]} - 1))")
 	if (($# < minExpected)); then
-		logError "Not enough arguments supplied to \033[0m\033[0;36m%s\033[0m in %s\nExpected %s, given %s\nFollowing a listing of the expected arguments (red means missing):" \
-			"${FUNCNAME[1]}" "${BASH_SOURCE[1]}" "${#parseFnArgs_paramArr1[@]}" "$#"
+		logError "Not enough arguments supplied to \033[0m\033[0;36m%s\033[0m\nExpected %s, given %s\nFollowing a listing of the expected arguments (red means missing):" \
+			"${FUNCNAME[1]}" "${#parseFnArgs_paramArr1[@]}" "$#"
 
 		for ((parseFnArgs_i = 0; parseFnArgs_i < minExpected; ++parseFnArgs_i)); do
 			local parseFnArgs_name=${parseFnArgs_paramArr1[parseFnArgs_i]}
@@ -102,18 +103,20 @@ function parseFnArgs() {
 		if [[ $parseFnArgs_withVarArgs == true ]]; then
 			printf >&2 "%2s: %s\n" "$((parseFnArgs_i + 1))" "varargs"
 		fi
+		printStackTrace
 		return 9
 	fi
 
 	if [[ $parseFnArgs_withVarArgs == false ]] && ! (($# == ${#parseFnArgs_paramArr1[@]})); then
-		logError "more arguments supplied to \033[0m\033[0;36m%s\033[0m in %s than expected\nExpected %s, given %s" \
-			"${FUNCNAME[1]}" "${BASH_SOURCE[1]}" "${#parseFnArgs_paramArr1[@]}" "$#"
+		logError "more arguments supplied to \033[0m\033[0;36m%s\033[0m than expected\nExpected %s, given %s" \
+			"${FUNCNAME[1]}" "${#parseFnArgs_paramArr1[@]}" "$#"
 		echo >&2 "in case you wanted your last parameter to be a vararg parameter, then use 'varargs' as last variable name in your array containing the parameter names."
 		echo >&2 "Following a listing of the expected arguments:"
 		for ((parseFnArgs_i = 0; parseFnArgs_i < minExpected; ++parseFnArgs_i)); do
 			local parseFnArgs_name=${parseFnArgs_paramArr1[parseFnArgs_i]}
 			printf >&2 "%2s: %s\n" "$((parseFnArgs_i + 1))" "$parseFnArgs_name"
 		done
+		printStackTrace
 		return 9
 	fi
 

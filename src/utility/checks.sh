@@ -35,6 +35,7 @@ if ! [[ -v dir_of_tegonal_scripts ]]; then
 	dir_of_tegonal_scripts="$(realpath "$(cd -- "$(dirname -- "${BASH_SOURCE[0]:-$0}")" &>/dev/null && pwd 2>/dev/null)/..")"
 	source "$dir_of_tegonal_scripts/setup.sh" "$dir_of_tegonal_scripts"
 fi
+sourceOnce "$dir_of_tegonal_scripts/utility/log.sh"
 sourceOnce "$dir_of_tegonal_scripts/utility/recursive-declare-p.sh"
 
 function checkArgIsArray() {
@@ -45,9 +46,10 @@ function checkArgIsArray() {
 	local arrayDefinition
 	arrayDefinition="$(set -e && recursiveDeclareP arr1)"
 	if ! [[ $arrayDefinition =~ $reg ]]; then
-		logError "the array \033[1;34m%s\033[0m defined in %s is broken." "${!arr1}" "${BASH_SOURCE[2]:-${BASH_SOURCE[1]}}"
+		logError "the passed array \033[0;36m%s\033[0m is broken." "${!arr1}"
 		printf >&2 "the %s argument to %s needs to be a non-associative array, given:\n" "$argNumber" "${FUNCNAME[1]}"
 		echo >&2 "$arrayDefinition"
+		printStackTrace
 		return 9
 	fi
 }

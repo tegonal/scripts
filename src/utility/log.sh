@@ -56,6 +56,30 @@
 #    logErrorWithoutNewline "oho"
 #    logSuccessWithoutNewline "yay"
 #
+#    traceAndDie "fatal error, shutting down"
+#    # ERROR: fatal error, shutting down
+#    #
+#    # Stacktrace:
+#    #    foo @ /opt/foo.sh:32:1
+#    #    bar @ /opt/bar.sh:10:1
+#    #    ...
+#    # exit 1
+#
+#    traceAndReturnDying "fatal error, shutting down"
+#    # ERROR: fatal error, shutting down
+#    #
+#    # Stacktrace:
+#    #    foo @ /opt/foo.sh:32:1
+#    #    bar @ /opt/bar.sh:10:1
+#    #    ...
+#    # return 1
+#
+#    printStackTrace
+#    # Stacktrace:
+#    #    foo @ /opt/foo.sh:32:1
+#    #    bar @ /opt/bar.sh:10:1
+#    #   main @ /opt/main.sh:4:1
+#
 ###################################
 set -eu
 
@@ -109,5 +133,31 @@ function die() {
 }
 function returnDying() {
 	logError "$@"
+	return 1
+}
+
+function printStackTrace() {
+	echo >&2 ""
+	echo >&2 "Stacktrace:"
+	local -i frame=${1:-1}
+	while read -r line sub file < <(caller "$frame"); do
+		printf >&2 '%20s @ %s:%s:1\n' "$sub" "$(realpath "$file" || echo "$file")" "$line"
+		((++frame))
+		if ((frame > 10)); then
+			echo >&2 " ..."
+			break
+		fi
+	done
+}
+
+function traceAndDie() {
+	logError "$@"
+	printStackTrace 1
+	exit 1
+}
+
+function traceAndReturnDying() {
+	logError "$@"
+	printStackTrace 1
 	return 1
 }

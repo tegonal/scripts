@@ -44,9 +44,10 @@ sourceOnce "$dir_of_tegonal_scripts/utility/recursive-declare-p.sh"
 
 function runShellcheck() {
 	if ! (($# == 2)); then
-		logError "Two parameter need to be passed to runShellcheck\nGiven \033[0;36m%s\033[0m in \033[0;36m%s\033[0m\nFollowing a description of the parameters:" "$#" "${BASH_SOURCE[1]}"
-		echo >&2 '1. dirs		 name of array which contains directories in which *.sh files are searched'
-		echo >&2 '2. sourcePath		 equivalent to shellcheck''s -P, path to search for sourced files, separated by :'
+		logError "Two parameters need to be passed to runShellcheck, given \033[0;36m%s\033[0m\nFollowing a description of the parameters:" "$#"
+		echo >&2 '1: dirs         name of array which contains directories in which *.sh files are searched'
+		echo >&2 '2: sourcePath   equivalent to shellcheck''s -P, path to search for sourced files, separated by :'
+		printStackTrace
 		return 9
 	fi
 	local -rn directories=$1
