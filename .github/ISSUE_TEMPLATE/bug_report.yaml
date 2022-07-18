@@ -27,6 +27,7 @@ body:
         - releasing/update-version-README.sh
         - releasing/update-version-scripts.sh
         - utility/checks.sh
+        - utility/git-utils.sh
         - utility/gpg-utils.sh
         - utility/log.sh
         - utility/parse-args.sh

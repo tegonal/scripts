@@ -63,6 +63,7 @@ if ! [[ -v dir_of_tegonal_scripts ]]; then
 	dir_of_tegonal_scripts="$(realpath "$(cd -- "$(dirname -- "${BASH_SOURCE[0]:-$0}")" &>/dev/null && pwd 2>/dev/null)/..")"
 	source "$dir_of_tegonal_scripts/setup.sh" "$dir_of_tegonal_scripts"
 fi
+sourceOnce "$dir_of_tegonal_scripts/utility/git-utils.sh"
 sourceOnce "$dir_of_tegonal_scripts/utility/gpg-utils.sh"
 sourceOnce "$dir_of_tegonal_scripts/utility/log.sh"
 sourceOnce "$dir_of_tegonal_scripts/utility/parse-args.sh"
@@ -109,20 +110,23 @@ function releaseFiles() {
 		returnDying "tag %s already exists, adjust version or delete it with: git tag -d %s" "$version" "$version"
 	fi
 
-	if ! git status --porcelain; then
-		returnDying "you have uncommitted changes (see above) please commit/stash first"
-	fi
+		if hasGitChanges; then
+			logError "you have uncommitted changes, please commit/stash first, following the output of git status:"
+			git status
+			return 1
+		fi
 
-	local -r branch="$(git rev-parse --abbrev-ref HEAD)"
-	if ! [[ $branch == "main" ]]; then
-		returnDying "you need to be on the \033[0;36mmain\033[0m branch to release, check that you have merged all changes from your current branch \033[0;36m%s\033[0m" "$branch"
+	local -r branch="$(currentGitBranch)"
+	local -r expectedDefaultBranch="main"
+	if ! [[ $branch == "$expectedDefaultBranch" ]]; then
+		returnDying "you need to be on the \033[0;36m%s\033[0m branch to release, check that you have merged all changes from your current branch \033[0;36m%s\033[0m" "$expectedDefaultBranch" "$branch"
 	fi
-	if ! (($(git rev-list --count origin/main..main) == 0)); then
+	if localGitIsAhead "$expectedDefaultBranch"; then
 		logError "you are ahead of origin, please push first and check if CI succeeds before releasing. Following your additional changes:"
 		git -P log origin/main..main
 		return 1
 	fi
-	if ! (($(git rev-list --count main..origin/main) == 0)); then
+	if localGitIsBehind "$expectedDefaultBranch"; then
 		git fetch
 		logError "you are behind of origin. I already fetched the changes for you, please check if you still want to release. Following the additional changes in origin/main"
 		git -P log main..origin/main
