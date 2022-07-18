@@ -83,7 +83,6 @@ function prepareFilesNextDevCycle() {
 
 	sneakPeekBanner -c show
 	toggleSections -c main
-	updateVersionReadme -v "$version-SNAPSHOT" -p "$additionalPattern"
 	updateVersionScripts -v "$version-SNAPSHOT" -p "$additionalPattern"
 	updateVersionScripts -v "$version-SNAPSHOT" -p "$additionalPattern" -d "$projectsScriptsDir"
 
