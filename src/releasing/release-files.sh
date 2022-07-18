@@ -103,18 +103,34 @@ function releaseFiles() {
 		returnDying "--version should match vX.Y.Z(-RC...), was %s" "$version"
 	fi
 
-	local -r projectsScriptsDir="$projectDir/scripts"
-	sourceOnce "$projectsScriptsDir/before-pr.sh"
-
-	if git tag | grep "$version" >/dev/null; then
-		returnDying "tag %s already exists, adjust version or delete it with: git tag -d %s" "$version" "$version"
+	if hasGitChanges; then
+		logError "you have uncommitted changes, please commit/stash first, following the output of git status:"
+		git status
+		return 1
 	fi
 
-		if hasGitChanges; then
-			logError "you have uncommitted changes, please commit/stash first, following the output of git status:"
-			git status
+	if git tag | grep "$version" >/dev/null; then
+		logError "tag %s already exists locally, adjust version or delete it with git tag -d %s" "$version" "$version"
+		if hasRemoteTag "$version"; then
+			printf >&2 "Note, it also exists on the remote which means you also need to delete it there -- e.g. via git push origin :%s\n" "$version"
 			return 1
 		fi
+		logInfo "looks like the tag only exists locally."
+		local shallDelete='n'
+		printf "\n\033[0;36mShall I \`git tag -d %s\` and continue with the release?\033[0m y/[N]:" "$version"
+		while read -t -r 30 shallDelete; do
+			break
+		done
+		if [[ $shallDelete == 'y' ]]; then
+			git tag -d "$version"
+		else
+			return 1
+		fi
+	fi
+
+	if hasRemoteTag "$version"; then
+		returnDying "tag %s already exists on remote origin, adjust version or delete it with git push origin :%s\n" "$version" "$version"
+	fi
 
 	local -r branch="$(currentGitBranch)"
 	local -r expectedDefaultBranch="main"
@@ -155,6 +171,10 @@ function releaseFiles() {
 			return 1
 		fi
 	fi
+
+
+	local -r projectsScriptsDir="$projectDir/scripts"
+	sourceOnce "$projectsScriptsDir/before-pr.sh"
 
 	# make sure everything is up-to-date and works as it should
 	beforePr
