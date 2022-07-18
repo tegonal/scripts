@@ -45,7 +45,7 @@ function sourceOnce() {
 		printf >&2 "you need to pass at least the file you want to source to sourceOnce in \033[0;36m%s\033[0m\nFollowing a description of the parameters:" "${BASH_SOURCE[1]}"
 		echo >&2 '1. file       the file to source'
 		echo >&2 '2... args...  additional parameters which are passed to the source command'
-		return 9
+		exit 9
 	fi
 
 	local guard

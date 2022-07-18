@@ -53,7 +53,7 @@ function recursiveDeclareP() {
 		logError "One parameter needs to be passed to recursiveDeclareP, given \033[0;36m%s\033[0m\nFollowing a description of the parameters:" "$#"
 		echo >&2 '1. variableName		 the name of the variable whose declaration statement shall be determined'
 		printStackTrace
-		return 9
+		exit 9
 	fi
 
 	definition=$(declare -p "$1")

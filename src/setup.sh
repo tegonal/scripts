@@ -30,7 +30,7 @@
 if ! (($# == 1)); then
 	printf >&2 "\033[0;31mERROR\033[0m: You need to pass the path to the tegonal scripts directory as first argument. Following an example\n"
 	echo >&2 "source \"\$dir_of_tegonal_scripts/setup.sh\" \"\$dir_of_tegonal_scripts\""
-	exit
+	exit 9
 fi
 
 declare -r dir_of_tegonal_scripts="$1"
