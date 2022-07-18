@@ -26,6 +26,7 @@ body:
         - releasing/release-files.sh
         - releasing/update-version-README.sh
         - releasing/update-version-scripts.sh
+        - utility/ask.sh
         - utility/checks.sh
         - utility/git-utils.sh
         - utility/gpg-utils.sh
