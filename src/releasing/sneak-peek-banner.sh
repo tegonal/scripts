@@ -38,7 +38,7 @@ fi
 sourceOnce "$dir_of_tegonal_scripts/utility/parse-args.sh"
 
 function sneakPeekBanner() {
-	local command
+	local command file
 	# shellcheck disable=SC2034
 	local -ra params=(
 		command '-c|--command' "either 'show' or 'hide'"
