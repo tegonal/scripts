@@ -20,10 +20,12 @@ if ! [[ -v dir_of_tegonal_scripts ]]; then
 	source "$dir_of_tegonal_scripts/setup.sh" "$dir_of_tegonal_scripts"
 fi
 sourceOnce "$dir_of_tegonal_scripts/releasing/release-files.sh"
+sourceOnce "$dir_of_tegonal_scripts/utility/checks.sh"
 
 function release() {
-	if ! [[ -x "$(command -v "shellspec")" ]]; then
-		die "You need to have shellspec installed if you want to create a release"
+	if ! checkCommandExists "shellspec" "please install https://github.com/shellspec/shellspec#installation"; then
+		printf >&2 "You need to have shellspec installed if you want to create a release.\n"
+		exit 1
 	fi
 
 	function findScripts() {
