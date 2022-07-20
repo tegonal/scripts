@@ -30,6 +30,7 @@ body:
         - utility/checks.sh
         - utility/git-utils.sh
         - utility/gpg-utils.sh
+        - utility/io.sh
         - utility/log.sh
         - utility/parse-args.sh
         - utility/parse-fn-args.sh
