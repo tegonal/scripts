@@ -134,7 +134,7 @@ function releaseFiles() {
 	local -r expectedDefaultBranch="main"
 	if ! [[ $branch == "$expectedDefaultBranch" ]]; then
 		logError "you need to be on the \033[0;36m%s\033[0m branch to release, check that you have merged all changes from your current branch \033[0;36m%s\033[0m." "$expectedDefaultBranch" "$branch"
-		if askYesOrNo "Shall I switch to %s for you?" "$branch"; then
+		if askYesOrNo "Shall I switch to %s for you?" "$expectedDefaultBranch"; then
 			git checkout "$expectedDefaultBranch"
 		else
 			return 1
