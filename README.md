@@ -110,6 +110,7 @@ The scripts are ordered by topic:
     - [git Utils](#git-utils)
     - [GPG Utils](#gpg-utils)
     - [IO functions](#io-functions)
+    - [checks](#checks)
     - [Recursive `declare -p`](#recursive-declare--p)
     - [Replace Snippets](#replace-snippets)
     - [Update Documentation](#update-bash-documentation)
@@ -848,6 +849,40 @@ withCustomOutputInput 3 4 readFile
 ```
 
 </utility-io>
+
+## Checks
+
+Utility functions which check some conditions like is passed arg the correct type etc.
+
+<utility-checks>
+
+<!-- auto-generated, do not modify here but in src/utility/checks.sh -->
+```bash
+#!/usr/bin/env bash
+set -euo pipefail
+# Assumes tegonal's scripts were fetched with gget - adjust location accordingly
+dir_of_tegonal_scripts="$(realpath "$(cd -- "$(dirname -- "${BASH_SOURCE[0]:-$0}")" &>/dev/null && pwd 2>/dev/null)/../lib/tegonal-scripts/src")"
+source "$dir_of_tegonal_scripts/setup.sh" "$dir_of_tegonal_scripts"
+
+sourceOnce "$dir_of_tegonal_scripts/utility/checks.sh"
+
+function foo() {
+	# shellcheck disable=SC2034
+	local -rn arr=$1
+	local -r fn=$2
+
+	# resolves arr recursively via recursiveDeclareP and check that is a non-associative array
+	checkArgIsArray arr 1
+	checkArgIsFunction "$fn" 2
+}
+
+checkCommandExists "cat"
+
+# give a hint how to install the command
+checkCommandExists "git" "please install it via https://git-scm.com/downloads"
+```
+
+</utility-checks>
 
 ## Recursive `declare -p`
 

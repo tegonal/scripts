@@ -9,5 +9,14 @@ sourceOnce "$dir_of_tegonal_scripts/utility/checks.sh"
 function foo() {
 	# shellcheck disable=SC2034
 	local -rn arr=$1
+	local -r fn=$2
+
+	# resolves arr recursively via recursiveDeclareP and check that is a non-associative array
 	checkArgIsArray arr 1
+	checkArgIsFunction "$fn" 2
 }
+
+checkCommandExists "cat"
+
+# give a hint how to install the command
+checkCommandExists "git" "please install it via https://git-scm.com/downloads"

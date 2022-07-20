@@ -106,6 +106,8 @@ function releaseFiles() {
 		returnDying "--version should match vX.Y.Z(-RC...), was %s" "$version"
 	fi
 
+	checkArgIsFunction "$findForSigning" "--sign-fn"
+
 	if hasGitChanges; then
 		logError "you have uncommitted changes, please commit/stash first, following the output of git status:"
 		git status

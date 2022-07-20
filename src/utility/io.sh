@@ -40,6 +40,7 @@ if ! [[ -v dir_of_tegonal_scripts ]]; then
 	dir_of_tegonal_scripts="$(realpath "$(cd -- "$(dirname -- "${BASH_SOURCE[0]:-$0}")" &>/dev/null && pwd 2>/dev/null)/..")"
 	source "$dir_of_tegonal_scripts/setup.sh" "$dir_of_tegonal_scripts"
 fi
+sourceOnce "$dir_of_tegonal_scripts/utility/checks.sh"
 
 function withCustomOutputInput() {
 	local outputNr=$1
@@ -47,10 +48,12 @@ function withCustomOutputInput() {
 	local fun=$3
 	shift 3
 
+	checkArgIsFunction "$fun" 3
+
 	local tmpFile
 	tmpFile=$(mktemp /tmp/tegonal-scripts-io.XXXXXXXXX)
-	eval "exec${outputNr}>\"$tmpFile\""
-	eval "exec${inputNr}<\"$tmpFile\""
+	eval "exec ${outputNr}>\"$tmpFile\""
+	eval "exec ${inputNr}<\"$tmpFile\""
 	rm "$tmpFile"
 
 	$fun
