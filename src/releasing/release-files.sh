@@ -195,6 +195,7 @@ function releaseFiles() {
 	gpg --homedir "$gpgDir" --import "$ggetDir/signing-key.public.asc"
 	trustGpgKey "$gpgDir" "info@tegonal.com"
 
+	local script
 	"$findForSigning" -print0 |
 		while read -r -d $'\0' script; do
 			echo "signing $script"

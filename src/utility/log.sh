@@ -140,6 +140,7 @@ function printStackTrace() {
 	echo >&2 ""
 	echo >&2 "Stacktrace:"
 	local -i frame=${1:-1}
+	local line sub file
 	while read -r line sub file < <(caller "$frame"); do
 		printf >&2 '%20s @ %s:%s:1\n' "$sub" "$(realpath "$file" || echo "$file")" "$line"
 		((++frame))

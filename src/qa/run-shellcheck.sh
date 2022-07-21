@@ -57,6 +57,7 @@ function runShellcheck() {
 
 	local -i fileWithIssuesCounter=0
 	local -i fileCounter=0
+	local script
 	while read -r -d $'\0' script; do
 		((++fileCounter))
 		declare output
