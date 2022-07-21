@@ -60,7 +60,12 @@ function importGpgKey() {
 	parseFnArgs params "$@" || exit $?
 
 	local outputKey
-	outputKey=$(gpg --homedir "$gpgDir" --keyid-format LONG --import-options show-only --import "$file")
+	outputKey=$(
+		gpg --homedir "$gpgDir" --keyid-format LONG \
+			--list-options show-user-notations,show-std-notations,show-usage,show-sig-expire \
+			--import-options show-only \
+			--import "$file"
+	)
 	local isTrusting='y'
 	if [[ $withConfirmation == "--confirm=true" ]]; then
 		echo "$outputKey"
