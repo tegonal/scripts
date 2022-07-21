@@ -838,6 +838,7 @@ sourceOnce "$dir_of_tegonal_scripts/utility/io.sh"
 function readFile() {
 	cat "$1" >&3
 	echo "reading from 4 which was written to 3"
+	local line
 	while read -u 4 -r line; do
 		echo "$line"
 	done
