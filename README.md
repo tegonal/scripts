@@ -846,7 +846,7 @@ function readFile() {
 
 # creates file descriptors 3 (output) and 4 (input) based on temporary files
 # executes readFile and closes the file descriptors again
-withCustomOutputInput 3 4 readFile
+withCustomOutputInput 3 4 readFile "my-file.txt"
 ```
 
 </utility-io>

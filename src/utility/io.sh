@@ -32,7 +32,7 @@
 #
 #    # creates file descriptors 3 (output) and 4 (input) based on temporary files
 #    # executes readFile and closes the file descriptors again
-#    withCustomOutputInput 3 4 readFile
+#    withCustomOutputInput 3 4 readFile "my-file.txt"
 #
 ###################################
 set -euo pipefail
@@ -57,7 +57,7 @@ function withCustomOutputInput() {
 	eval "exec ${inputNr}<\"$tmpFile\""
 	rm "$tmpFile"
 
-	$fun
+	$fun "$@"
 
 	eval "exec ${outputNr}>&-"
 	eval "exec ${inputNr}<&-"
