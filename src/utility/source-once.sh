@@ -57,10 +57,11 @@ function sourceOnce() {
 		exit 9
 	fi
 
-	local sourceOnce_file="$1"
+	local -r sourceOnce_file="$1"
 
 	local sourceOnce_guard
 	sourceOnce_guard=$(set -e && determineSourceOnceGuard "$sourceOnce_file")
+	local -r sourceOnce_guard
 
 	if ! [[ -v "$sourceOnce_guard" ]]; then
 		printf -v "$sourceOnce_guard" "%s" "true"
