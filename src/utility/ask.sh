@@ -47,8 +47,13 @@ function askYesOrNo() {
 
 	printf "\n\033[0;36m$question\033[0m y/[N]:" "$@"
 	local answer='n'
-	while read -t 20 -r answer; do
-		break
-	done
+	local -r timeout=20
+	set +e
+	read -t "$timeout" -r answer
+	local lastResult=$?
+	set -e
+	if ((lastResult > 128)); then
+		logInfo "no user interaction after %s seconds, going to interpret that as a 'no'" "$timeout"
+	fi
 	[[ $answer == y ]]
 }
