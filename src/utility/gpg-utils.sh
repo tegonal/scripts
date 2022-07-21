@@ -64,7 +64,7 @@ function importGpgKey() {
 	local isTrusting='y'
 	if [[ $withConfirmation == "--confirm=true" ]]; then
 		echo "$outputKey"
-		if askYesNo "The above key(s) will be used to verify the files you will pull from this remote, do you trust it?"; then
+		if askYesOrNo "The above key(s) will be used to verify the files you will pull from this remote, do you trust it?"; then
 			isTrusting='y'
 		else
 			isTrusting='n'
