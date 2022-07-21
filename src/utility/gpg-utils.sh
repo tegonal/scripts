@@ -76,6 +76,7 @@ function importGpgKey() {
 	if [[ $isTrusting == y ]]; then
 		echo "importing key $file"
 		gpg --homedir "$gpgDir" --import "$file"
+		local keyId
 		echo "$outputKey" | grep pub | perl -0777 -pe "s#pub\s+[^/]+/([0-9A-Z]+).*#\$1#g" |
 			while read -r keyId; do
 				trustGpgKey "$gpgDir" "$keyId"

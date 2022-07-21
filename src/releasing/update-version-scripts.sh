@@ -69,6 +69,7 @@ function updateVersionScripts() {
 		echo "also going to search for $additionalPattern and replace with \${1}$version\${2}"
 	fi
 
+	local script
 	find "$directory" -name "*.sh" -print0 |
 		while read -r -d $'\0' script; do
 			perl -0777 -i \
