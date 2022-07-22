@@ -58,6 +58,7 @@ function sourceOnce() {
 	fi
 
 	local -r sourceOnce_file="$1"
+	shift
 
 	local sourceOnce_guard
 	sourceOnce_guard=$(set -e && determineSourceOnceGuard "$sourceOnce_file")
@@ -75,7 +76,7 @@ function sourceOnce() {
 		# shellcheck disable=SC2034
 		declare __SOURCED__=true
 		# shellcheck disable=SC1090
-		source "$@"
+		source "$sourceOnce_file" "$@"
 		unset __SOURCED__
 	fi
 }
