@@ -77,12 +77,12 @@ function updateVersionScripts() {
 		while read -r -d $'\0' script; do
 			perl -0777 -i \
 				-pe "s/Version:.+(\n[\S\s]+?###)/Version: $version\${1}/g;" \
-				"$script"
+				"$script" || returnDying "was not able to update the version in the header of bash files" || return $?
 
 			if [[ -n $additionalPattern ]]; then
 				perl -0777 -i \
 					-pe "s/$additionalPattern/\${1}$version\${2}/g;" \
-					"$script"
+					"$script" || returnDying "error during the additional replacement, see above" || return $?
 			fi
 		done
 }

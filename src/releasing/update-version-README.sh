@@ -72,13 +72,13 @@ function updateVersionReadme() {
 	perl -0777 -i \
 		-pe "s@(\[!\[Download\]\(https://img.shields.io/badge/Download-).*(-%23[0-9a-f]+\)\]\([^\)]+(?:=|/))[^\)]+\)@\${1}$version\${2}$version\)@g;" \
 		-pe "s@(For instance, the \[README of )[^\]]+(\].*/tree/)[^/]+/@\${1}$version\${2}$version/@;" \
-		"$file"
+		"$file" || returnDying "was not able to update the version in download badges and in the sneak peek banner" || return $?
 
 	if [[ -n $additionalPattern ]]; then
 		echo "also going to search for $additionalPattern and replace with \${1}$version\${2}"
 		perl -0777 -i \
 			-pe "s/$additionalPattern/\${1}$version\${2}/g;" \
-			"$file"
+			"$file" || returnDying "error during the additional replacement, see above" || return $?
 	fi
 }
 ${__SOURCED__:+return}

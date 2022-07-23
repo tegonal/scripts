@@ -75,25 +75,25 @@ function prepareFilesNextDevCycle() {
 	checkAllArgumentsSet params "" "$TEGONAL_SCRIPTS_VERSION"
 
 	if ! [[ "$version" =~ ^(v[0-9]+)\.([0-9]+)\.[0-9]+(-RC[0-9]+)?$ ]]; then
-		returnDying "version should match vX.Y.Z(-RC...), was %s" "$version"
+		die "version should match vX.Y.Z(-RC...), was %s" "$version"
 	fi
 
 	local -r projectsScriptsDir="$projectDir/scripts"
-	sourceOnce "$projectsScriptsDir/before-pr.sh"
+	sourceOnce "$projectsScriptsDir/before-pr.sh" || die "could not source before-pr.sh"
 
 	logInfo "prepare next dev cycle for version $version"
 
-	sneakPeekBanner -c show
-	toggleSections -c main
-	updateVersionScripts -v "$version-SNAPSHOT" -p "$additionalPattern"
-	updateVersionScripts -v "$version-SNAPSHOT" -p "$additionalPattern" -d "$projectsScriptsDir"
+	sneakPeekBanner -c show || return $?
+	toggleSections -c main || return $?
+	updateVersionScripts -v "$version-SNAPSHOT" -p "$additionalPattern" || return $?
+	updateVersionScripts -v "$version-SNAPSHOT" -p "$additionalPattern" -d "$projectsScriptsDir" || return $?
 
 	# check if we accidentally have broken something, run formatting or whatever is done in beforePr
-	beforePr
+	beforePr || return $?
 
 	local -r additionalSteps="$projectsScriptsDir/additional-prepare-files-next-dev-cycle-steps.sh"
 	if [[ -f $additionalSteps ]]; then
-		sourceOnce "$additionalSteps"
+		sourceOnce "$additionalSteps" || die "could not source $additionalSteps"
 	fi
 
 	git commit -a -m "prepare next dev cycle for $version"

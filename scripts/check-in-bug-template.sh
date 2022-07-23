@@ -23,17 +23,27 @@ fi
 sourceOnce "$dir_of_tegonal_scripts/utility/log.sh"
 
 function checkInBugTemplate() {
-	find "$dir_of_tegonal_scripts" -name "*.sh" \
-		-not -name "*.doc.sh" \
-		-print0 |
-		while read -r -d $'\0' script; do
-			declare path=${script:(${#dir_of_tegonal_scripts} + 1)}
-			grep "$path" "$scriptsDir/../.github/ISSUE_TEMPLATE/bug_report.yaml" >/dev/null || (die "you forgot to add \033[0;36m%s\033[0m to .github/ISSUE_TEMPLATE/bug_report.yaml" "$path")
-		done
+	local -r bugReportPath='.github/ISSUE_TEMPLATE/bug_report.yaml'
 
-	logSuccess "all scripts are listed in the bug template"
+	local missingInBugTemplate
+	missingInBugTemplate=$(
+		find "$dir_of_tegonal_scripts" -name "*.sh" \
+			-not -name "*.doc.sh" \
+			-print0 |
+			while read -r -d $'\0' script; do
+				declare path=${script:(${#dir_of_tegonal_scripts} + 1)}
+				if ! grep "$path" "$scriptsDir/../$bugReportPath" >/dev/null; then
+					echo "- $path"
+				fi
+			done
+	) || die "could not determine whether files are missing in %s or not, see above" "$bugReportPath"
+
+	if ! [[ $missingInBugTemplate == "" ]]; then
+		returnDying "you forgot to add the following files to %s:\n%s" "$bugReportPath" "$missingInBugTemplate"
+	else
+		logSuccess "all scripts are listed in the bug template: $?"
+	fi
 }
 
 ${__SOURCED__:+return}
 checkInBugTemplate "$@"
-

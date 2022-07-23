@@ -102,10 +102,7 @@ function checkParameterDefinitionIsTriple() {
 	local -r arrLength=${#paramArr2[@]}
 
 	local arrayDefinition
-	arrayDefinition="$(
-		set -e
-		recursiveDeclareP paramArr2
-	)"
+	arrayDefinition=$(recursiveDeclareP paramArr2)
 	reg='declare -a.*'
 	if ! [[ "$arrayDefinition" =~ $reg ]]; then
 		logError "the passed array \033[0;36m%s\033[0m is broken" "${!paramArr2}"
@@ -114,13 +111,14 @@ function checkParameterDefinitionIsTriple() {
 		echo >&2 ""
 		describeParameterTriple
 		printStackTrace
-		return 9
+		exit 9
 	fi
 
 	if ((arrLength == 0)); then
 		logError "the passed array \033[0;36m%s\033[0m with parameter definitions is broken, length was 0\033[0m" "${!paramArr2}"
 		describeParameterTriple
 		printStackTrace
+		exit 9
 	fi
 
 	if ! ((arrLength % 3 == 0)); then
@@ -144,7 +142,7 @@ function checkParameterDefinitionIsTriple() {
 			fi
 		done
 		printStackTrace
-		return 9
+		exit 9
 	fi
 }
 
@@ -164,9 +162,7 @@ function parseArguments {
 	local -r parseArguments_version=$3
 	shift 3
 
-	# we want to be sure that we return at this point even if someone has `set +e` thus the or clause
-	# shellcheck disable=SC2310
-	checkParameterDefinitionIsTriple parseArguments_paramArr1 || return $?
+	checkParameterDefinitionIsTriple parseArguments_paramArr1
 
 	local -r parseArguments_arrLength="${#parseArguments_paramArr1[@]}"
 
@@ -200,10 +196,10 @@ function parseArguments {
 					echo >&2 ""
 					printHelp >&2 parseArguments_paramArr1 "$parseArguments_examples" "$parseArguments_version"
 					printStackTrace
-					return 1
+					exit 9
 				fi
 				# that's where the black magic happens, we are assigning to global variables here
-				printf -v "$parseArguments_paramName" "%s" "$2"
+				printf -v "$parseArguments_paramName" "%s" "$2" || die "could not assign value to $parseArguments_paramName"
 				parseArguments_expectedName=1
 				((++parseArguments_numOfArgumentsParsed))
 				shift
@@ -246,9 +242,7 @@ function printHelp {
 	local -r examples=$2
 	local -r version=$3
 
-	# we want to be sure that we return at this point even if someone has `set +e` thus the or clause
-	# shellcheck disable=SC2310
-	checkParameterDefinitionIsTriple paramArr3 || return $?
+	checkParameterDefinitionIsTriple paramArr3
 
 	local arrLength="${#paramArr3[@]}"
 
@@ -299,9 +293,7 @@ function checkAllArgumentsSet {
 	local -r checkAllArgumentsSet_examples=$2
 	local -r checkAllArgumentsSet_version=$3
 
-	# we want to be sure that we return at this point even if someone has `set +e` thus the or clause
-	# shellcheck disable=SC2310
-	checkParameterDefinitionIsTriple checkAllArgumentsSet_paramArr4 || return $?
+	checkParameterDefinitionIsTriple checkAllArgumentsSet_paramArr4
 
 	local -r checkAllArgumentsSet_arrLength="${#checkAllArgumentsSet_paramArr4[@]}"
 	local -i checkAllArgumentsSet_good=1
@@ -322,6 +314,6 @@ function checkAllArgumentsSet {
 			# it is handy to see the stacktrace if it is not a direct call from command line
 			printStackTrace
 		fi
-		return 1
+		exit 1
 	fi
 }

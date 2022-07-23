@@ -56,7 +56,7 @@ function updateBashDocumentation() {
 	parseFnArgs params "$@"
 
 	local snippet
-	snippet=$(cat "${script::-3}.doc.sh")
+	snippet=$(cat "${script::-3}.doc.sh") || return $?
 
 	local quotedSnippet
 	quotedSnippet=$(echo "$snippet" | perl -0777 -pe 's/(\/|\$|\\)/\\$1/g;' | sed 's/^/#    /' | sed 's/^#    $/#/')

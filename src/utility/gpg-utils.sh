@@ -50,7 +50,7 @@ function trustGpgKey() {
 	# params is required for parse-fn-args.sh thus:
 	# shellcheck disable=SC2034
 	local -ra params=(gpgDir keyId)
-	parseFnArgs params "$@" || return $?
+	parseFnArgs params "$@"
 	echo -e "5\ny\n" | gpg --homedir "$gpgDir" --command-fd 0 --edit-key "$keyId" trust
 }
 
@@ -59,7 +59,7 @@ function importGpgKey() {
 	# params is required for parse-fn-args.sh thus:
 	# shellcheck disable=SC2034
 	local -ra params=(gpgDir file withConfirmation)
-	parseFnArgs params "$@" || exit $?
+	parseFnArgs params "$@"
 
 	local outputKey
 	outputKey=$(
@@ -67,7 +67,7 @@ function importGpgKey() {
 			--list-options show-user-notations,show-std-notations,show-usage,show-sig-expire \
 			--import-options show-only \
 			--import "$file"
-	)
+	) || die "not able to show the theoretical import of %s, aborting" "$file"
 	local isTrusting='y'
 	if [[ $withConfirmation == "--confirm=true" ]]; then
 		echo "$outputKey"
@@ -82,13 +82,12 @@ function importGpgKey() {
 
 	if [[ $isTrusting == y ]]; then
 		echo "importing key $file"
-		gpg --homedir "$gpgDir" --import "$file"
+		gpg --homedir "$gpgDir" --import "$file" || die "failed to import $file"
 		local keyId
 		echo "$outputKey" | grep pub | perl -0777 -pe "s#pub\s+[^/]+/([0-9A-Z]+).*#\$1#g" |
 			while read -r keyId; do
 				trustGpgKey "$gpgDir" "$keyId"
 			done
-		return 0
 	else
 		return 1
 	fi

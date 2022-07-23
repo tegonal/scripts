@@ -35,8 +35,10 @@ function beforePr() {
 		logWarning "shellspec is not installed, skipping running specs.\nConsider to install it https://github.com/shellspec/shellspec#installation"
 	fi
 
-	checkInBugTemplate
-	customRunShellcheck
+	# using && in case this function is used in one of: if || && etc.
+	# this way we still have fail fast behaviour and don't mask an exit code
+	checkInBugTemplate && \
+	customRunShellcheck && \
 	updateDocu
 }
 

@@ -96,6 +96,10 @@ function exitIfArgIsNotFunction() {
 	checkArgIsFunction "$@" || exit $?
 }
 
+function exitIfArgIsNotFunction() {
+	checkArgIsFunction "$@" || exit $?
+}
+
 function checkCommandExists() {
 	local -r name=$1
 	local file

@@ -51,7 +51,7 @@ function withCustomOutputInput() {
 	local fun=$3
 	shift 3
 
-	checkArgIsFunction "$fun" 3
+	exitIfArgIsNotFunction "$fun" 3
 
 	local tmpFile
 	tmpFile=$(mktemp /tmp/tegonal-scripts-io.XXXXXXXXX)
@@ -63,4 +63,12 @@ function withCustomOutputInput() {
 
 	eval "exec ${outputNr}>&-"
 	eval "exec ${inputNr}<&-"
+}
+
+function deleteDirChmod777() {
+	local -r dir=$1
+	shift
+	# e.g files in .git will be write-protected and we don't want sudo for this command
+	chmod -R 777 "$dir"
+	rm -r "$dir"
 }

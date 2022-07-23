@@ -24,12 +24,10 @@
 #
 #    source "$dir_of_tegonal_scripts/utility/source-once.sh"
 #
-#    sourceOnce "foo.sh"    # creates a variable named foo__sh which acts as guard and sources foo.sh
-#    sourceOnce "foo.sh"    # will source nothing as foo__sh is already defined
-#    unset foo__sh          # unsets the guard
-#    sourceOnce "foo.sh"    # is sourced again and the guard established
-#
-#
+#    sourceOnce "foo.sh" # creates a variable named foo__sh which acts as guard and sources foo.sh
+#    sourceOnce "foo.sh" # will source nothing as foo__sh is already defined
+#    unset foo__sh       # unsets the guard
+#    sourceOnce "foo.sh" # is sourced again and the guard established
 #
 #    # creates a variable named bar__foo__sh which acts as guard and sources bar/foo.sh
 #    sourceOnce "bar/foo.sh"
@@ -80,7 +78,7 @@ function sourceOnce() {
 		# shellcheck disable=SC2034
 		declare __SOURCED__=true
 		# shellcheck disable=SC1090
-		source "$sourceOnce_file" "$@"
+		source "$sourceOnce_file" "$@" || exit $?
 		unset __SOURCED__
 	fi
 }
