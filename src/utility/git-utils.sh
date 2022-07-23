@@ -57,6 +57,7 @@ if ! [[ -v dir_of_tegonal_scripts ]]; then
 	source "$dir_of_tegonal_scripts/setup.sh" "$dir_of_tegonal_scripts"
 fi
 sourceOnce "$dir_of_tegonal_scripts/utility/log.sh"
+sourceOnce "$dir_of_tegonal_scripts/utility/parse-fn-args.sh"
 
 function currentGitBranch() {
 	git rev-parse --abbrev-ref HEAD
@@ -69,9 +70,10 @@ function hasGitChanges() {
 }
 
 function countCommits() {
-	local -r from=$1
-	local -r to=$2
-	shift 2
+	local from to
+	# params is required for parseFnArgs thus:
+	# shellcheck disable=SC2034
+	local -ra params=(from to)
 	git rev-list --count "$from..$to" || die "could not count commits for $from..$to, see above"
 }
 

@@ -47,19 +47,19 @@ sourceOnce "$dir_of_tegonal_scripts/utility/parse-fn-args.sh"
 
 function trustGpgKey() {
 	local gpgDir keyId
-	# params is required for parse-fn-args.sh thus:
+	# params is required for parseFnArgs thus:
 	# shellcheck disable=SC2034
 	local -ra params=(gpgDir keyId)
-	parseFnArgs params "$@" || return $?
+	parseFnArgs params "$@"
 	echo -e "5\ny\n" | gpg --homedir "$gpgDir" --command-fd 0 --edit-key "$keyId" trust
 }
 
 function importGpgKey() {
 	local gpgDir file withConfirmation
-	# params is required for parse-fn-args.sh thus:
+	# params is required for parseFnArgs thus:
 	# shellcheck disable=SC2034
 	local -ra params=(gpgDir file withConfirmation)
-	parseFnArgs params "$@" || exit $?
+	parseFnArgs params "$@"
 
 	local outputKey
 	outputKey=$(
@@ -84,7 +84,7 @@ function importGpgKey() {
 		echo "importing key $file"
 		gpg --homedir "$gpgDir" --import "$file"
 		local keyId
-		echo "$outputKey" | grep pub | perl -0777 -pe "s#pub\s+[^/]+/([0-9A-Z]+).*#\$1#g" |
+		grep pub <<< "$outputKey" | perl -0777 -pe "s#pub\s+[^/]+/([0-9A-Z]+).*#\$1#g" |
 			while read -r keyId; do
 				trustGpgKey "$gpgDir" "$keyId"
 			done

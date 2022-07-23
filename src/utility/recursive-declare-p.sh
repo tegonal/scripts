@@ -19,6 +19,7 @@
 #    # shellcheck disable=SC2034
 #    set -euo pipefail
 #    shopt -s inherit_errexit
+#
 #    # Assumes tegonal's scripts were fetched with gget - adjust location accordingly
 #    dir_of_tegonal_scripts="$(cd -- "$(dirname -- "${BASH_SOURCE[0]:-$0}")" >/dev/null && pwd 2>/dev/null)/../lib/tegonal-scripts/src"
 #    source "$dir_of_tegonal_scripts/setup.sh" "$dir_of_tegonal_scripts"
@@ -54,10 +55,7 @@ sourceOnce "$dir_of_tegonal_scripts/utility/log.sh"
 
 function recursiveDeclareP() {
 	if ! (($# == 1)); then
-		logError "One parameter needs to be passed to recursiveDeclareP, given \033[0;36m%s\033[0m\nFollowing a description of the parameters:" "$#"
-		echo >&2 '1. variableName		 the name of the variable whose declaration statement shall be determined'
-		printStackTrace
-		exit 9
+		traceAndDie "you need to pass the variable name, whose declaration statement shall be determined, to recursiveDeclareP"
 	fi
 
 	definition=$(declare -p "$1")

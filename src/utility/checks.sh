@@ -55,9 +55,17 @@ if ! [[ -v dir_of_tegonal_scripts ]]; then
 	source "$dir_of_tegonal_scripts/setup.sh" "$dir_of_tegonal_scripts"
 fi
 sourceOnce "$dir_of_tegonal_scripts/utility/log.sh"
+sourceOnce "$dir_of_tegonal_scripts/utility/parse-fn-args.sh"
 sourceOnce "$dir_of_tegonal_scripts/utility/recursive-declare-p.sh"
 
 function checkArgIsArray() {
+	if ! (($# == 2)); then
+		logError "Two arguments needs to be passed to checkArgIsArray, given \033[0;36m%s\033[0m\n" "$#"
+		echo >&2 '1: array      name of the array to check'
+		echo >&2 '2: argNumber  what argument do we check (used in error message)'
+		printStackTrace
+		exit 9
+	fi
 	local -rn checkArgIsArray_arr=$1
 	local -r argNumber=$2
 	shift 2
@@ -78,9 +86,11 @@ function exitIfArgIsNotArray() {
 }
 
 function checkArgIsFunction() {
-	local -r name=$1
-	local -r argNumber=$2
-	shift 2
+	local name argNumber
+	# params is required for parseFnArgs thus:
+	# shellcheck disable=SC2034
+	local -ra params=(name argNumber)
+	parseFnArgs params "$@"
 
 	if ! declare -F "$name" >/dev/null; then
 		local declareP
@@ -97,6 +107,9 @@ function exitIfArgIsNotFunction() {
 }
 
 function checkCommandExists() {
+	if ! (($# == 1)); then
+		traceAndDie "you need to pass the name of the command to check to checkCommandExists"
+	fi
 	local -r name=$1
 	local file
 	file=$(command -v "$name") || return $?
