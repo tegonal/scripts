@@ -28,14 +28,22 @@
 #    	local -r fn=$2
 #
 #    	# resolves arr recursively via recursiveDeclareP and check that is a non-associative array
-#    	checkArgIsArray arr 1
-#    	checkArgIsFunction "$fn" 2
+#    	checkArgIsArray arr 1       # same as exitIfArgIsNotArray if set -e has an effect on this line
+#    	checkArgIsFunction "$fn" 2   # same as exitIfArgIsNotFunction if set -e has an effect on this line
+#
+#    	exitIfArgIsNotArray arr 1
+#    	exitIfArgIsNotFunction "$fn" 2
 #    }
 #
-#    checkCommandExists "cat"
+#    if checkCommandExists "cat"; then
+#    	echo "do whatever you want to do..."
+#    fi
 #
 #    # give a hint how to install the command
 #    checkCommandExists "git" "please install it via https://git-scm.com/downloads"
+#
+#    # same as checkCommandExists but exits instead of returning non-zero in case command does not exist
+#    exitIfCommandDoesNotExist "git" "please install it via https://git-scm.com/downloads"
 #
 ###################################
 set -euo pipefail
@@ -48,33 +56,55 @@ sourceOnce "$dir_of_tegonal_scripts/utility/log.sh"
 sourceOnce "$dir_of_tegonal_scripts/utility/recursive-declare-p.sh"
 
 function checkArgIsArray() {
-	local -rn arr1=$1
+	local -rn checkArgIsArray_arr=$1
 	local -r argNumber=$2
+	shift 2
 
-	reg='declare -a.*'
+	reg='^declare -a.*'
 	local arrayDefinition
-	arrayDefinition="$(set -e && recursiveDeclareP arr1)"
+	arrayDefinition="$(recursiveDeclareP checkArgIsArray_arr)"
 	if ! [[ $arrayDefinition =~ $reg ]]; then
 		traceAndReturnDying "the passed array \033[0;36m%s\033[0m is broken.\nThe %s argument to %s needs to be a non-associative array, given:\n%s" \
-			"${!arr1}" "$argNumber" "${FUNCNAME[1]}" "$arrayDefinition"
+			"${!checkArgIsArray_arr}" "$argNumber" "${FUNCNAME[1]}" "$arrayDefinition"
 	fi
+}
+
+function exitIfArgIsNotArray() {
+	# we are aware of that || will disable set -e for checkArgIsArray
+	# shellcheck disable=SC2310
+	checkArgIsArray "$@" || exit $?
 }
 
 function checkArgIsFunction() {
 	local -r name=$1
 	local -r argNumber=$2
+	shift 2
 
 	if ! declare -F "$name" >/dev/null; then
+		local declareP
+		declareP=$(declare -p "$name" || echo "failure, is not a variable")
 		traceAndReturnDying "the %s argument to %s needs to be a function/command, %s isn't one\nMaybe it is a variable storing the name of a function?\nFollowing the output of: declare -p %s\n%s" \
-			"$argNumber" "${FUNCNAME[1]}" "$name" "$name" "$(declare -p "$name" || echo "failure, is not a variable")"
+			"$argNumber" "${FUNCNAME[1]}" "$name" "$name" "$declareP"
 	fi
+}
+
+function exitIfArgIsNotFunction() {
+	# we are aware of that || will disable set -e for checkArgIsFunction
+	# shellcheck disable=SC2310
+	checkArgIsFunction "$@" || exit $?
 }
 
 function checkCommandExists() {
 	local -r name=$1
-	if ! [[ -x "$(command -v "$name")" ]]; then
-		returnDying "$name is not installed (or not in PATH)${2:-""}"
-	else
-		return 0
+	local file
+	file=$(command -v "$name") || return $?
+	if ! [[ -x $file ]]; then
+		returnDying "$name is not installed (or not in PATH) ${2:-""}"
 	fi
+}
+
+function exitIfCommandDoesNotExist() {
+	# we are aware of that || will disable set -e for checkCommandExists
+	# shellcheck disable=SC2310
+	checkCommandExists "$@" || exit $?
 }

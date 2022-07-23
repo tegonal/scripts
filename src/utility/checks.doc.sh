@@ -12,11 +12,20 @@ function foo() {
 	local -r fn=$2
 
 	# resolves arr recursively via recursiveDeclareP and check that is a non-associative array
-	checkArgIsArray arr 1
-	checkArgIsFunction "$fn" 2
+	checkArgIsArray arr 1       # same as exitIfArgIsNotArray if set -e has an effect on this line
+	checkArgIsFunction "$fn" 2   # same as exitIfArgIsNotFunction if set -e has an effect on this line
+
+	exitIfArgIsNotArray arr 1
+	exitIfArgIsNotFunction "$fn" 2
 }
 
-checkCommandExists "cat"
+if checkCommandExists "cat"; then
+	echo "do whatever you want to do..."
+fi
 
 # give a hint how to install the command
 checkCommandExists "git" "please install it via https://git-scm.com/downloads"
+
+# same as checkCommandExists but exits instead of returning non-zero in case command does not exist
+exitIfCommandDoesNotExist "git" "please install it via https://git-scm.com/downloads"
+
