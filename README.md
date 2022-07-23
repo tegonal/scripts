@@ -81,7 +81,7 @@ shopt -s inherit_errexit
 if ! [[ -v dir_of_tegonal_scripts ]]; then
 	# Assumes your script is in (root is project folder) e.g. /src or /scripts and
 	# the tegonal scripts have been pulled via gget and put into /lib/tegonal-scripts
-	dir_of_tegonal_scripts="$(cd -- "$(dirname -- "${BASH_SOURCE[0]:-$0}")" &>/dev/null && pwd 2>/dev/null)/../lib/tegonal-scripts/src"
+	dir_of_tegonal_scripts="$(cd -- "$(dirname -- "${BASH_SOURCE[0]:-$0}")" >/dev/null && pwd 2>/dev/null)/../lib/tegonal-scripts/src"
 	source "$dir_of_tegonal_scripts/setup.sh" "$dir_of_tegonal_scripts"
 fi
 
@@ -134,7 +134,7 @@ settings for shellcheck.
 set -euo pipefail
 shopt -s inherit_errexit
 # Assumes tegonal's scripts were fetched with gget - adjust location accordingly
-dir_of_tegonal_scripts="$(cd -- "$(dirname -- "${BASH_SOURCE[0]:-$0}")" &>/dev/null && pwd 2>/dev/null)/../lib/tegonal-scripts/src"
+dir_of_tegonal_scripts="$(cd -- "$(dirname -- "${BASH_SOURCE[0]:-$0}")" >/dev/null && pwd 2>/dev/null)/../lib/tegonal-scripts/src"
 source "$dir_of_tegonal_scripts/setup.sh" "$dir_of_tegonal_scripts"
 
 source "$dir_of_tegonal_scripts/qa/run-shellcheck.sh"
@@ -212,7 +212,7 @@ Full usage example:
 set -euo pipefail
 shopt -s inherit_errexit
 # Assumes tegonal's scripts were fetched with gget - adjust location accordingly
-dir_of_tegonal_scripts="$(cd -- "$(dirname -- "${BASH_SOURCE[0]:-$0}")" &>/dev/null && pwd 2>/dev/null)/../lib/tegonal-scripts/src"
+dir_of_tegonal_scripts="$(cd -- "$(dirname -- "${BASH_SOURCE[0]:-$0}")" >/dev/null && pwd 2>/dev/null)/../lib/tegonal-scripts/src"
 source "$dir_of_tegonal_scripts/setup.sh" "$dir_of_tegonal_scripts"
 
 "$dir_of_tegonal_scripts/releasing/update-version-README.sh" -v 0.1.0
@@ -271,7 +271,7 @@ Full usage example:
 set -euo pipefail
 shopt -s inherit_errexit
 # Assumes tegonal's scripts were fetched with gget - adjust location accordingly
-dir_of_tegonal_scripts="$(cd -- "$(dirname -- "${BASH_SOURCE[0]:-$0}")" &>/dev/null && pwd 2>/dev/null)/../lib/tegonal-scripts/src"
+dir_of_tegonal_scripts="$(cd -- "$(dirname -- "${BASH_SOURCE[0]:-$0}")" >/dev/null && pwd 2>/dev/null)/../lib/tegonal-scripts/src"
 source "$dir_of_tegonal_scripts/setup.sh" "$dir_of_tegonal_scripts"
 
 "$dir_of_tegonal_scripts/releasing/update-version-scripts.sh" -v 0.1.0
@@ -344,7 +344,7 @@ Full usage example:
 set -euo pipefail
 shopt -s inherit_errexit
 # Assumes tegonal's scripts were fetched with gget - adjust location accordingly
-dir_of_tegonal_scripts="$(cd -- "$(dirname -- "${BASH_SOURCE[0]:-$0}")" &>/dev/null && pwd 2>/dev/null)/../lib/tegonal-scripts/src"
+dir_of_tegonal_scripts="$(cd -- "$(dirname -- "${BASH_SOURCE[0]:-$0}")" >/dev/null && pwd 2>/dev/null)/../lib/tegonal-scripts/src"
 source "$dir_of_tegonal_scripts/setup.sh" "$dir_of_tegonal_scripts"
 
 "$dir_of_tegonal_scripts/releasing/toggle-sections.sh" -c main
@@ -399,7 +399,7 @@ Full usage example:
 set -euo pipefail
 shopt -s inherit_errexit
 # Assumes tegonal's scripts were fetched with gget - adjust location accordingly
-dir_of_tegonal_scripts="$(cd -- "$(dirname -- "${BASH_SOURCE[0]:-$0}")" &>/dev/null && pwd 2>/dev/null)/../lib/tegonal-scripts/src"
+dir_of_tegonal_scripts="$(cd -- "$(dirname -- "${BASH_SOURCE[0]:-$0}")" >/dev/null && pwd 2>/dev/null)/../lib/tegonal-scripts/src"
 source "$dir_of_tegonal_scripts/setup.sh" "$dir_of_tegonal_scripts"
 
 "$dir_of_tegonal_scripts/releasing/sneak-peek-banner.sh" -c hide
@@ -477,7 +477,7 @@ Full usage example:
 set -euo pipefail
 shopt -s inherit_errexit
 # Assumes tegonal's scripts were fetched with gget - adjust location accordingly
-dir_of_tegonal_scripts="$(cd -- "$(dirname -- "${BASH_SOURCE[0]:-$0}")" &>/dev/null && pwd 2>/dev/null)/../lib/tegonal-scripts/src"
+dir_of_tegonal_scripts="$(cd -- "$(dirname -- "${BASH_SOURCE[0]:-$0}")" >/dev/null && pwd 2>/dev/null)/../lib/tegonal-scripts/src"
 source "$dir_of_tegonal_scripts/setup.sh" "$dir_of_tegonal_scripts"
 
 function findScripts() {
@@ -533,7 +533,7 @@ Full usage example:
 set -euo pipefail
 shopt -s inherit_errexit
 # Assumes tegonal's scripts were fetched with gget - adjust location accordingly
-dir_of_tegonal_scripts="$(cd -- "$(dirname -- "${BASH_SOURCE[0]:-$0}")" &>/dev/null && pwd 2>/dev/null)/../lib/tegonal-scripts/src"
+dir_of_tegonal_scripts="$(cd -- "$(dirname -- "${BASH_SOURCE[0]:-$0}")" >/dev/null && pwd 2>/dev/null)/../lib/tegonal-scripts/src"
 source "$dir_of_tegonal_scripts/setup.sh" "$dir_of_tegonal_scripts"
 
 sourceOnce "$dir_of_tegonal_scripts/utility/parse-args.sh"
@@ -587,7 +587,7 @@ shopt -s inherit_errexit
 
 if ! [[ -v dir_of_tegonal_scripts ]]; then
 	# Assumes tegonal's scripts were fetched with gget - adjust location accordingly
-	dir_of_tegonal_scripts="$(cd -- "$(dirname -- "${BASH_SOURCE[0]:-$0}")" &>/dev/null && pwd 2>/dev/null)/../lib/tegonal-scripts/src"
+	dir_of_tegonal_scripts="$(cd -- "$(dirname -- "${BASH_SOURCE[0]:-$0}")" >/dev/null && pwd 2>/dev/null)/../lib/tegonal-scripts/src"
 	source "$dir_of_tegonal_scripts/setup.sh" "$dir_of_tegonal_scripts"
 fi
 sourceOnce "$dir_of_tegonal_scripts/utility/parse-fn-args.sh"
@@ -632,7 +632,7 @@ Utility functions to log messages including a severity level where logError writ
 set -euo pipefail
 shopt -s inherit_errexit
 # Assumes tegonal's scripts were fetched with gget - adjust location accordingly
-dir_of_tegonal_scripts="$(cd -- "$(dirname -- "${BASH_SOURCE[0]:-$0}")" &>/dev/null && pwd 2>/dev/null)/../lib/tegonal-scripts/src"
+dir_of_tegonal_scripts="$(cd -- "$(dirname -- "${BASH_SOURCE[0]:-$0}")" >/dev/null && pwd 2>/dev/null)/../lib/tegonal-scripts/src"
 source "$dir_of_tegonal_scripts/setup.sh" "$dir_of_tegonal_scripts"
 
 sourceOnce "$dir_of_tegonal_scripts/utility/log.sh"
@@ -709,7 +709,7 @@ Utility functions to interact with the user.
 set -euo pipefail
 shopt -s inherit_errexit
 # Assumes tegonal's scripts were fetched with gget - adjust location accordingly
-dir_of_tegonal_scripts="$(cd -- "$(dirname -- "${BASH_SOURCE[0]:-$0}")" &>/dev/null && pwd 2>/dev/null)/../lib/tegonal-scripts/src"
+dir_of_tegonal_scripts="$(cd -- "$(dirname -- "${BASH_SOURCE[0]:-$0}")" >/dev/null && pwd 2>/dev/null)/../lib/tegonal-scripts/src"
 source "$dir_of_tegonal_scripts/setup.sh" "$dir_of_tegonal_scripts"
 
 sourceOnce "$dir_of_tegonal_scripts/utility/ask.sh"
@@ -733,7 +733,7 @@ Establishes a guard by creating a variable based on the file which shall be sour
 set -euo pipefail
 shopt -s inherit_errexit
 # Assumes tegonal's scripts were fetched with gget - adjust location accordingly
-dir_of_tegonal_scripts="$(cd -- "$(dirname -- "${BASH_SOURCE[0]:-$0}")" &>/dev/null && pwd 2>/dev/null)/../lib/tegonal-scripts/src"
+dir_of_tegonal_scripts="$(cd -- "$(dirname -- "${BASH_SOURCE[0]:-$0}")" >/dev/null && pwd 2>/dev/null)/../lib/tegonal-scripts/src"
 source "$dir_of_tegonal_scripts/setup.sh" "$dir_of_tegonal_scripts"
 
 source "$dir_of_tegonal_scripts/utility/source-once.sh"
@@ -773,7 +773,7 @@ Utility functions around git.
 set -euo pipefail
 shopt -s inherit_errexit
 # Assumes tegonal's scripts were fetched with gget - adjust location accordingly
-dir_of_tegonal_scripts="$(cd -- "$(dirname -- "${BASH_SOURCE[0]:-$0}")" &>/dev/null && pwd 2>/dev/null)/../lib/tegonal-scripts/src"
+dir_of_tegonal_scripts="$(cd -- "$(dirname -- "${BASH_SOURCE[0]:-$0}")" >/dev/null && pwd 2>/dev/null)/../lib/tegonal-scripts/src"
 source "$dir_of_tegonal_scripts/setup.sh" "$dir_of_tegonal_scripts"
 
 sourceOnce "$dir_of_tegonal_scripts/utility/git-utils.sh"
@@ -819,7 +819,7 @@ Utility functions which hopefully make it easier for you to deal with gpg
 set -euo pipefail
 shopt -s inherit_errexit
 # Assumes tegonal's scripts were fetched with gget - adjust location accordingly
-dir_of_tegonal_scripts="$(cd -- "$(dirname -- "${BASH_SOURCE[0]:-$0}")" &>/dev/null && pwd 2>/dev/null)/../lib/tegonal-scripts/src"
+dir_of_tegonal_scripts="$(cd -- "$(dirname -- "${BASH_SOURCE[0]:-$0}")" >/dev/null && pwd 2>/dev/null)/../lib/tegonal-scripts/src"
 source "$dir_of_tegonal_scripts/setup.sh" "$dir_of_tegonal_scripts"
 
 sourceOnce "$dir_of_tegonal_scripts/utility/gpg-utils.sh"
@@ -849,7 +849,7 @@ trustGpgKey ~/.gpg info.com
 set -euo pipefail
 shopt -s inherit_errexit
 # Assumes tegonal's scripts were fetched with gget - adjust location accordingly
-dir_of_tegonal_scripts="$(cd -- "$(dirname -- "${BASH_SOURCE[0]:-$0}")" &>/dev/null && pwd 2>/dev/null)/../lib/tegonal-scripts/src"
+dir_of_tegonal_scripts="$(cd -- "$(dirname -- "${BASH_SOURCE[0]:-$0}")" >/dev/null && pwd 2>/dev/null)/../lib/tegonal-scripts/src"
 source "$dir_of_tegonal_scripts/setup.sh" "$dir_of_tegonal_scripts"
 
 sourceOnce "$dir_of_tegonal_scripts/utility/io.sh"
@@ -882,7 +882,7 @@ Utility functions which check some conditions like is passed arg the correct typ
 set -euo pipefail
 shopt -s inherit_errexit
 # Assumes tegonal's scripts were fetched with gget - adjust location accordingly
-dir_of_tegonal_scripts="$(cd -- "$(dirname -- "${BASH_SOURCE[0]:-$0}")" &>/dev/null && pwd 2>/dev/null)/../lib/tegonal-scripts/src"
+dir_of_tegonal_scripts="$(cd -- "$(dirname -- "${BASH_SOURCE[0]:-$0}")" >/dev/null && pwd 2>/dev/null)/../lib/tegonal-scripts/src"
 source "$dir_of_tegonal_scripts/setup.sh" "$dir_of_tegonal_scripts"
 
 sourceOnce "$dir_of_tegonal_scripts/utility/checks.sh"
@@ -926,7 +926,7 @@ Utility function to find out the initial `declare` statement after following `de
 set -euo pipefail
 shopt -s inherit_errexit
 # Assumes tegonal's scripts were fetched with gget - adjust location accordingly
-dir_of_tegonal_scripts="$(cd -- "$(dirname -- "${BASH_SOURCE[0]:-$0}")" &>/dev/null && pwd 2>/dev/null)/../lib/tegonal-scripts/src"
+dir_of_tegonal_scripts="$(cd -- "$(dirname -- "${BASH_SOURCE[0]:-$0}")" >/dev/null && pwd 2>/dev/null)/../lib/tegonal-scripts/src"
 source "$dir_of_tegonal_scripts/setup.sh" "$dir_of_tegonal_scripts"
 
 source "$dir_of_tegonal_scripts/utility/recursive-declare-p.sh"
@@ -966,7 +966,7 @@ Full usage example:
 set -euo pipefail
 shopt -s inherit_errexit
 # Assumes tegonal's scripts were fetched with gget - adjust location accordingly
-dir_of_tegonal_scripts="$(cd -- "$(dirname -- "${BASH_SOURCE[0]:-$0}")" &>/dev/null && pwd 2>/dev/null)/../lib/tegonal-scripts/src"
+dir_of_tegonal_scripts="$(cd -- "$(dirname -- "${BASH_SOURCE[0]:-$0}")" >/dev/null && pwd 2>/dev/null)/../lib/tegonal-scripts/src"
 source "$dir_of_tegonal_scripts/setup.sh" "$dir_of_tegonal_scripts"
 
 source "$dir_of_tegonal_scripts/utility/replace-snippet.sh"
@@ -1013,7 +1013,7 @@ Full usage example:
 set -euo pipefail
 shopt -s inherit_errexit
 # Assumes tegonal's scripts were fetched with gget - adjust location accordingly
-dir_of_tegonal_scripts="$(cd -- "$(dirname -- "${BASH_SOURCE[0]:-$0}")" &>/dev/null && pwd 2>/dev/null)/../lib/tegonal-scripts/src"
+dir_of_tegonal_scripts="$(cd -- "$(dirname -- "${BASH_SOURCE[0]:-$0}")" >/dev/null && pwd 2>/dev/null)/../lib/tegonal-scripts/src"
 source "$dir_of_tegonal_scripts/setup.sh" "$dir_of_tegonal_scripts"
 
 source "$dir_of_tegonal_scripts/utility/update-bash-docu.sh"
