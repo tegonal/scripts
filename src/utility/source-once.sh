@@ -37,9 +37,11 @@
 #    # i.e. the corresponding guard is bar__foo__sh and thus this file is not sourced
 #    sourceOnce "asdf/bar/foo.sh"
 #
+#    declare guard
+#    guard=$(set -e && determineSourceOnceGuard "src/b.sh")
 #    # In case you have a cyclic dependency (a.sh sources b.sh and b.sh source a.sh),
 #    # then you can define the guard in file a yourself (before sourcing b.sh) so that b.sh does no longer source file a
-#    printf -v "$(set -e && determineSourceOnceGuard "src/b.sh")" "%s" "true"
+#    printf -v "$guard" "%s" "true"
 #
 ###################################
 set -euo pipefail

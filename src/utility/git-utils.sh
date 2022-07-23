@@ -21,7 +21,9 @@
 #
 #    sourceOnce "$dir_of_tegonal_scripts/utility/git-utils.sh"
 #
-#    echo "current git branch is: $(currentGitBranch)"
+#    declare currentBranch
+#    currentBranch=$(currentGitBranch)
+#    echo "current git branch is: $currentBranch"
 #
 #    if hasGitChanges; then
 #    	echo "do whatever you want to do..."
@@ -59,33 +61,46 @@ function currentGitBranch() {
 }
 
 function hasGitChanges() {
-	local -r gitStatus=$(git status --porcelain)
+	local gitStatus
+	gitStatus=$(git status --porcelain) || die "running git status --porcelain failed, see above"
 	! [[ $gitStatus == "" ]]
+}
+
+function countCommits() {
+	local -r from=$1
+	local -r to=$2
+	shift 2
+	git rev-list --count "$from..$to" || die "could not count commits for $from..$to, see above"
 }
 
 function localGitIsAhead() {
 	if ! (($# == 0)) && ! (($# == 1)); then
-		die "you need to pass at least the branch name to localGitIsAhead and optionally the name of the remote (defaults to origin)"
+		traceAndDie "you need to pass at least the branch name to localGitIsAhead and optionally the name of the remote (defaults to origin)"
 	fi
 	local -r branch=$1
 	local -r remote=${2-"origin"}
-	! (($(git rev-list --count "$remote/${branch}..$branch") == 0))
+	local count
+	count=$(set -e && countCommits "$remote/$branch" "$branch")
+	! ((count == 0))
 }
 
 function localGitIsBehind() {
 	if ! (($# == 0)) && ! (($# == 1)); then
-		die "you need to pass at least the branch name to localGitIsBehind and optionally the name of the remote (defaults to origin)"
+		traceAndDie "you need to pass at least the branch name to localGitIsBehind and optionally the name of the remote (defaults to origin)"
 	fi
 	local -r branch=$1
 	local -r remote=${2-"origin"}
-	! (($(git rev-list --count "${branch}..$remote/$branch") == 0))
+	local count
+	count=$(set -e && countCommits "$branch" "$remote/$branch")
+	! ((count == 0))
 }
 
 function hasRemoteTag() {
 	if ! (($# == 0)) && ! (($# == 1)); then
-		die "you need to pass at least the tag to hasRemoteTag and optionally the name of the remote (defaults to origin)"
+		traceAndDie "you need to pass at least the tag to hasRemoteTag and optionally the name of the remote (defaults to origin)"
 	fi
 	local -r tag=$1
 	local -r remote=${2-"origin"}
+	shift 1
 	git ls-remote -t "$remote" | grep "$tag" >/dev/null || false
 }

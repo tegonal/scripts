@@ -46,6 +46,7 @@ function updateVersionScripts() {
 		additionalPattern '-p|--pattern' '(optional) pattern which is used in a perl command (separator /) to search & replace additional occurrences. It should define two match groups and the replace operation looks as follows: '"\\\${1}\$version\\\${2}"
 	)
 	local -r examples=$(
+		# shellcheck disable=SC2312
 		cat <<-EOM
 			# update version to v0.1.0 for all *.sh in ./src and subdirectories
 			update-version-scripts.sh -v v0.1.0

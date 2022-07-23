@@ -740,9 +740,11 @@ sourceOnce "bar/foo.sh"
 # i.e. the corresponding guard is bar__foo__sh and thus this file is not sourced
 sourceOnce "asdf/bar/foo.sh"
 
+declare guard
+guard=$(set -e && determineSourceOnceGuard "src/b.sh")
 # In case you have a cyclic dependency (a.sh sources b.sh and b.sh source a.sh),
 # then you can define the guard in file a yourself (before sourcing b.sh) so that b.sh does no longer source file a
-printf -v "$(set -e && determineSourceOnceGuard "src/b.sh")" "%s" "true"
+printf -v "$guard" "%s" "true"
 ```
 
 </utility-source-once>
@@ -763,7 +765,9 @@ source "$dir_of_tegonal_scripts/setup.sh" "$dir_of_tegonal_scripts"
 
 sourceOnce "$dir_of_tegonal_scripts/utility/git-utils.sh"
 
-echo "current git branch is: $(currentGitBranch)"
+declare currentBranch
+currentBranch=$(currentGitBranch)
+echo "current git branch is: $currentBranch"
 
 if hasGitChanges; then
 	echo "do whatever you want to do..."
@@ -915,11 +919,13 @@ declare -n ref1=tmp
 declare -n ref2=ref1
 declare -n ref3=ref2
 
-printf "%s\n" \
-	"$(set -e; recursiveDeclareP tmp)" \
-	"$(set -e; recursiveDeclareP ref1)" \
-	"$(set -e; recursiveDeclareP ref2)" \
-	"$(set -e; recursiveDeclareP ref3)"
+declare r0 r1 r2 r3
+r0=$(set -e && recursiveDeclareP tmp)
+r1=$(set -e && recursiveDeclareP ref1)
+r2=$(set -e && recursiveDeclareP ref2)
+r3=$(set -e && recursiveDeclareP ref3)
+
+printf "%s\n" "$r0" "$r1" "$r2" "$r3"
 # declare -i tmp="1"
 # declare -i tmp="1"
 # declare -i tmp="1"
@@ -951,8 +957,13 @@ declare file
 file=$(mktemp)
 echo "<my-script></my-script>" > "$file"
 
+declare dir fileName output
+dir=$(dirname "$file")
+fileName=$(basename "$file")
+output=$(echo "replace with your command" | grep "command")
+
 # replaceSnippet file id dir pattern snippet
-replaceSnippet my-script.sh my-script-help "$(dirname "$file")" "$(basename "$file")" "$(echo "replace with your command" | grep "command")"
+replaceSnippet my-script.sh my-script-help "$dir" "$fileName" "$output"
 
 echo "content"
 cat "$file"

@@ -6,7 +6,9 @@ source "$dir_of_tegonal_scripts/setup.sh" "$dir_of_tegonal_scripts"
 
 sourceOnce "$dir_of_tegonal_scripts/utility/git-utils.sh"
 
-echo "current git branch is: $(currentGitBranch)"
+declare currentBranch
+currentBranch=$(currentGitBranch)
+echo "current git branch is: $currentBranch"
 
 if hasGitChanges; then
 	echo "do whatever you want to do..."

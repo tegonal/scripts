@@ -20,16 +20,18 @@ if ! [[ -v dir_of_tegonal_scripts ]]; then
 	source "$dir_of_tegonal_scripts/setup.sh" "$dir_of_tegonal_scripts"
 fi
 sourceOnce "$dir_of_tegonal_scripts/utility/log.sh"
+sourceOnce "$dir_of_tegonal_scripts/utility/checks.sh"
 
 sourceOnce "$scriptsDir/check-in-bug-template.sh"
 sourceOnce "$scriptsDir/run-shellcheck.sh"
 sourceOnce "$scriptsDir/update-docu.sh"
 
 function beforePr() {
-	if [[ -x "$(command -v "shellspec")" ]]; then
+	if checkCommandExists "shellspec" 2>/dev/null; then
+		logInfo "Running shellspec..."
 		shellspec
 	else
-		logWarning "shellspec is not installed, skipping running specs"
+		logWarning "shellspec is not installed, skipping running specs.\nConsider to install it https://github.com/shellspec/shellspec#installation"
 	fi
 
 	checkInBugTemplate

@@ -132,8 +132,9 @@ function releaseFiles() {
 		returnDying "tag %s already exists on remote origin, adjust version or delete it with git push origin :%s\n" "$version" "$version"
 	fi
 
-	local -r branch="$(currentGitBranch)"
-	local -r expectedDefaultBranch="main"
+	local branch
+	branch="$(currentGitBranch)"
+	local -r expectedDefaultBranch="main" branch
 	if ! [[ $branch == "$expectedDefaultBranch" ]]; then
 		logError "you need to be on the \033[0;36m%s\033[0m branch to release, check that you have merged all changes from your current branch \033[0;36m%s\033[0m." "$expectedDefaultBranch" "$branch"
 		if askYesOrNo "Shall I switch to %s for you?" "$expectedDefaultBranch"; then
