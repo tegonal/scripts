@@ -10,8 +10,13 @@ declare file
 file=$(mktemp)
 echo "<my-script></my-script>" > "$file"
 
+declare dir fileName output
+dir=$(dirname "$file")
+fileName=$(basename "$file")
+output=$(echo "replace with your command" | grep "command")
+
 # replaceSnippet file id dir pattern snippet
-replaceSnippet my-script.sh my-script-help "$(dirname "$file")" "$(basename "$file")" "$(echo "replace with your command" | grep "command")"
+replaceSnippet my-script.sh my-script-help "$dir" "$fileName" "$output"
 
 echo "content"
 cat "$file"

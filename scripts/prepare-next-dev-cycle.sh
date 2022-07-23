@@ -15,8 +15,13 @@ if ! [[ -v scriptsDir ]]; then
 	declare -r scriptsDir
 fi
 
+if ! [[ -v projectDir ]]; then
+	projectDir="$(realpath "$scriptsDir/../")"
+	declare -r projectDir
+fi
+
 if ! [[ -v dir_of_tegonal_scripts ]]; then
-	dir_of_tegonal_scripts="$scriptsDir/../src"
+	dir_of_tegonal_scripts="$projectDir/src"
 	source "$dir_of_tegonal_scripts/setup.sh" "$dir_of_tegonal_scripts"
 fi
 sourceOnce "$dir_of_tegonal_scripts/releasing/prepare-files-next-dev-cycle.sh"
@@ -25,7 +30,7 @@ function prepareNextDevCycle() {
 	# same as in release.sh, update there as well
 	local -r additionalPattern="(TEGONAL_SCRIPTS_VERSION=['\"])[^'\"]+(['\"])"
 
-	prepareFilesNextDevCycle --project-dir "$(realpath "$scriptsDir/..")" -p "$additionalPattern" "$@"
+	prepareFilesNextDevCycle --project-dir "$projectDir" -p "$additionalPattern" "$@"
 }
 
 ${__SOURCED__:+return}

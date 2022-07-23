@@ -72,7 +72,11 @@ function runShellcheck() {
 			break
 		fi
 		printf "."
-	done < <(find "${directories[@]}" -name '*.sh' -print0)
+	done < <(
+		find "${directories[@]}" -name '*.sh' -print0 ||
+			# `while read` will fail because there is no \0
+			true
+	)
 	printf "\n"
 
 	if ((fileWithIssuesCounter > 0)); then

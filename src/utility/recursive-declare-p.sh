@@ -29,11 +29,13 @@
 #    declare -n ref2=ref1
 #    declare -n ref3=ref2
 #
-#    printf "%s\n" \
-#    	"$(set -e; recursiveDeclareP tmp)" \
-#    	"$(set -e; recursiveDeclareP ref1)" \
-#    	"$(set -e; recursiveDeclareP ref2)" \
-#    	"$(set -e; recursiveDeclareP ref3)"
+#    declare r0 r1 r2 r3
+#    r0=$(set -e && recursiveDeclareP tmp)
+#    r1=$(set -e && recursiveDeclareP ref1)
+#    r2=$(set -e && recursiveDeclareP ref2)
+#    r3=$(set -e && recursiveDeclareP ref3)
+#
+#    printf "%s\n" "$r0" "$r1" "$r2" "$r3"
 #    # declare -i tmp="1"
 #    # declare -i tmp="1"
 #    # declare -i tmp="1"

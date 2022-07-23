@@ -45,6 +45,7 @@ function sneakPeekBanner() {
 		file '-f|--file' '(optional) the file where search & replace shall be done -- default: ./README.md'
 	)
 	local -r examples=$(
+		# shellcheck disable=SC2312
 		cat <<-EOM
 			# hide the sneak peek banner in ./README.md
 			sneak-peek-banner.sh -c hide

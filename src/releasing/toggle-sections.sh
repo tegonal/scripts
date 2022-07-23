@@ -49,6 +49,7 @@ function toggleSections() {
 		file '-f|--file' '(optional) the file where search & replace shall be done -- default: ./README.md'
 	)
 	local -r examples=$(
+		# shellcheck disable=SC2312
 		cat <<-EOM
 			# comment the release sections in ./README.md and uncomment the main sections
 			toggle-sections.sh -c main

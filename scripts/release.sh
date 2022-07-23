@@ -15,17 +15,22 @@ if ! [[ -v scriptsDir ]]; then
 	declare -r scriptsDir
 fi
 
+if ! [[ -v projectDir ]]; then
+	projectDir="$(realpath "$scriptsDir/../")"
+	declare -r projectDir
+fi
+
 if ! [[ -v dir_of_tegonal_scripts ]]; then
-	dir_of_tegonal_scripts="$scriptsDir/../src"
+	dir_of_tegonal_scripts="$projectDir/src"
 	source "$dir_of_tegonal_scripts/setup.sh" "$dir_of_tegonal_scripts"
 fi
 sourceOnce "$dir_of_tegonal_scripts/releasing/release-files.sh"
+sourceOnce "$dir_of_tegonal_scripts/utility/log.sh"
 sourceOnce "$dir_of_tegonal_scripts/utility/checks.sh"
 
 function release() {
 	if ! checkCommandExists "shellspec" "please install https://github.com/shellspec/shellspec#installation"; then
-		printf >&2 "You need to have shellspec installed if you want to create a release.\n"
-		exit 1
+		die "You need to have shellspec installed if you want to create a release."
 	fi
 
 	function findScripts() {
@@ -35,7 +40,7 @@ function release() {
 	# same as in prepare-next-dev-cycle.sh, update there as well
 	local -r additionalPattern="(TEGONAL_SCRIPTS_VERSION=['\"])[^'\"]+(['\"])"
 
-	releaseFiles --project-dir "$(realpath "$scriptsDir/..")" -p "$additionalPattern" --sign-fn findScripts "$@"
+	releaseFiles --project-dir "$projectDir" -p "$additionalPattern" --sign-fn findScripts "$@"
 }
 
 ${__SOURCED__:+return}

@@ -84,7 +84,13 @@ function parseFnArgs() {
 		parseFnArgs_withVarArgs=false
 	fi
 
-	local -r minExpected=$( ([[ $parseFnArgs_withVarArgs == false ]] && echo "${#parseFnArgs_paramArr1[@]}") || echo "$((${#parseFnArgs_paramArr1[@]} - 1))")
+	local minExpected
+	if [[ $parseFnArgs_withVarArgs == false ]]; then
+		minExpected="${#parseFnArgs_paramArr1[@]}"
+	else
+		minExpected="$((${#parseFnArgs_paramArr1[@]} - 1))"
+	fi
+	local -r minExpected
 	if (($# < minExpected)); then
 		logError "Not enough arguments supplied to \033[0m\033[0;36m%s\033[0m\nExpected %s, given %s\nFollowing a listing of the expected arguments (red means missing):" \
 			"${FUNCNAME[1]}" "${#parseFnArgs_paramArr1[@]}" "$#"
