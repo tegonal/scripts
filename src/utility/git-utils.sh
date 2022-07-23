@@ -15,6 +15,7 @@
 #
 #    #!/usr/bin/env bash
 #    set -euo pipefail
+#    shopt -s inherit_errexit
 #    # Assumes tegonal's scripts were fetched with gget - adjust location accordingly
 #    dir_of_tegonal_scripts="$(cd -- "$(dirname -- "${BASH_SOURCE[0]:-$0}")" &>/dev/null && pwd 2>/dev/null)/../lib/tegonal-scripts/src"
 #    source "$dir_of_tegonal_scripts/setup.sh" "$dir_of_tegonal_scripts"
@@ -49,6 +50,7 @@
 #
 ###################################
 set -euo pipefail
+shopt -s inherit_errexit
 
 if ! [[ -v dir_of_tegonal_scripts ]]; then
 	dir_of_tegonal_scripts="$(cd -- "$(dirname -- "${BASH_SOURCE[0]:-$0}")" &>/dev/null && pwd 2>/dev/null)/.."
@@ -80,7 +82,7 @@ function localGitIsAhead() {
 	local -r branch=$1
 	local -r remote=${2-"origin"}
 	local count
-	count=$(set -e && countCommits "$remote/$branch" "$branch")
+	count=$(countCommits "$remote/$branch" "$branch")
 	! ((count == 0))
 }
 
@@ -91,7 +93,7 @@ function localGitIsBehind() {
 	local -r branch=$1
 	local -r remote=${2-"origin"}
 	local count
-	count=$(set -e && countCommits "$branch" "$remote/$branch")
+	count=$(countCommits "$branch" "$remote/$branch")
 	! ((count == 0))
 }
 

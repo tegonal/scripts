@@ -17,6 +17,7 @@
 #
 #    #!/usr/bin/env bash
 #    set -euo pipefail
+#    shopt -s inherit_errexit
 #    # Assumes tegonal's scripts were fetched with gget - adjust location accordingly
 #    dir_of_tegonal_scripts="$(cd -- "$(dirname -- "${BASH_SOURCE[0]:-$0}")" &>/dev/null && pwd 2>/dev/null)/../lib/tegonal-scripts/src"
 #    source "$dir_of_tegonal_scripts/setup.sh" "$dir_of_tegonal_scripts"
@@ -38,13 +39,14 @@
 #    sourceOnce "asdf/bar/foo.sh"
 #
 #    declare guard
-#    guard=$(set -e && determineSourceOnceGuard "src/b.sh")
+#    guard=$(determineSourceOnceGuard "src/b.sh")
 #    # In case you have a cyclic dependency (a.sh sources b.sh and b.sh source a.sh),
 #    # then you can define the guard in file a yourself (before sourcing b.sh) so that b.sh does no longer source file a
 #    printf -v "$guard" "%s" "true"
 #
 ###################################
 set -euo pipefail
+shopt -s inherit_errexit
 
 function determineSourceOnceGuard() {
 	readlink -m "$1" | perl -0777 -pe "s@(?:.*/([^/]+)/)?([^/]+)\$@\$1__\$2@;" -pe "s/[-.]/_/g"
@@ -63,7 +65,7 @@ function sourceOnce() {
 	shift
 
 	local sourceOnce_guard
-	sourceOnce_guard=$(set -e && determineSourceOnceGuard "$sourceOnce_file")
+	sourceOnce_guard=$(determineSourceOnceGuard "$sourceOnce_file")
 	local -r sourceOnce_guard
 
 	if ! [[ -v "$sourceOnce_guard" ]]; then
