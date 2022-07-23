@@ -75,9 +75,9 @@ function parseFnArgs() {
 
 	# using unconventional naming in order to avoid name clashes with the variables we will initialise further below
 	local -rn parseFnArgs_paramArr1=$1
-	shift
+	shift 1
 
-	checkArgIsArray parseFnArgs_paramArr1 1
+	exitIfArgIsNotArray parseFnArgs_paramArr1 1
 
 	local parseFnArgs_withVarArgs
 	if [[ ${parseFnArgs_paramArr1[$((${#parseFnArgs_paramArr1[@]} - 1))]} == "varargs" ]]; then
@@ -112,7 +112,7 @@ function parseFnArgs() {
 			printf >&2 "%2s: %s\n" "$((parseFnArgs_i + 1))" "varargs"
 		fi
 		printStackTrace
-		return 9
+		exit 9
 	fi
 
 	if [[ $parseFnArgs_withVarArgs == false ]] && ! (($# == ${#parseFnArgs_paramArr1[@]})); then
@@ -125,13 +125,14 @@ function parseFnArgs() {
 			printf >&2 "%2s: %s\n" "$((parseFnArgs_i + 1))" "$parseFnArgs_name"
 		done
 		printStackTrace
-		return 9
+		exit 9
 	fi
 
 	for ((parseFnArgs_i = 0; parseFnArgs_i < minExpected; ++parseFnArgs_i)); do
 		local parseFnArgs_name=${parseFnArgs_paramArr1[parseFnArgs_i]}
 		# assign arguments to specified variables
-		printf -v "$parseFnArgs_name" "%s" "$1"
+		printf -v "$parseFnArgs_name" "%s" "$1" || die "could not assign value to $parseFnArgs_name"
+		local -r "$parseFnArgs_name"
 		shift
 	done
 
@@ -139,6 +140,6 @@ function parseFnArgs() {
 	if [[ $parseFnArgs_withVarArgs == true ]]; then
 		# is used afterwards
 		# shellcheck disable=SC2034
-		varargs=("$@")
+		varargs=("$@") || die "could not assign the rest of arguments to varargs"
 	fi
 }

@@ -12,8 +12,6 @@ sourceOnce "foo.sh"    # will source nothing as foo__sh is already defined
 unset foo__sh          # unsets the guard
 sourceOnce "foo.sh"    # is sourced again and the guard established
 
-
-
 # creates a variable named bar__foo__sh which acts as guard and sources bar/foo.sh
 sourceOnce "bar/foo.sh"
 

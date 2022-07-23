@@ -41,7 +41,7 @@ function checkInBugTemplate() {
 	if ! [[ $missingInBugTemplate == "" ]]; then
 		returnDying "you forgot to add the following files to %s:\n%s" "$bugReportPath" "$missingInBugTemplate"
 	else
-		logSuccess "all scripts are listed in the bug template: $?"
+		logSuccess "all scripts are listed in the bug template"
 	fi
 }
 

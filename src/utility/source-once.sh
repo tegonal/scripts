@@ -29,8 +29,6 @@
 #    unset foo__sh          # unsets the guard
 #    sourceOnce "foo.sh"    # is sourced again and the guard established
 #
-#
-#
 #    # creates a variable named bar__foo__sh which acts as guard and sources bar/foo.sh
 #    sourceOnce "bar/foo.sh"
 #
@@ -49,7 +47,11 @@ set -euo pipefail
 shopt -s inherit_errexit
 
 function determineSourceOnceGuard() {
-	readlink -m "$1" | perl -0777 -pe "s@(?:.*/([^/]+)/)?([^/]+)\$@\$1__\$2@;" -pe "s/[-.]/_/g"
+	if ! (($# == 1)); then
+  		traceAndDie "you need to pass the file name, for which we shall calculate the guard, to determineSourceOnceGuard"
+  	fi
+	local -r file="$1"
+	readlink -m "$file" | perl -0777 -pe "s@(?:.*/([^/]+)/)?([^/]+)\$@\$1__\$2@;" -pe "s/[-.]/_/g" || die "was not able to determine sourceOnce guard for %s" "$file"
 }
 
 function sourceOnce() {
@@ -80,7 +82,7 @@ function sourceOnce() {
 		# shellcheck disable=SC2034
 		declare __SOURCED__=true
 		# shellcheck disable=SC1090
-		source "$sourceOnce_file" "$@"
+		source "$sourceOnce_file" "$@" || die "there was an error sourcing %s, see above" "$sourceOnce_file"
 		unset __SOURCED__
 	fi
 }

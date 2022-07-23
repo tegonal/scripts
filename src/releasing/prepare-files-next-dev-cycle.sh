@@ -75,7 +75,7 @@ function prepareFilesNextDevCycle() {
 	checkAllArgumentsSet params "" "$TEGONAL_SCRIPTS_VERSION"
 
 	if ! [[ "$version" =~ ^(v[0-9]+)\.([0-9]+)\.[0-9]+(-RC[0-9]+)?$ ]]; then
-		returnDying "version should match vX.Y.Z(-RC...), was %s" "$version"
+		die "version should match vX.Y.Z(-RC...), was %s" "$version"
 	fi
 
 	local -r projectsScriptsDir="$projectDir/scripts"
