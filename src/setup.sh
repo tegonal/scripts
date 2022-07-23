@@ -19,7 +19,7 @@
 #    if ! [[ -v dir_of_tegonal_scripts ]]; then
 #    	# Assumes your script is in (root is project folder) e.g. /src or /scripts and
 #    	# the tegonal scripts have been pulled via gget and put into /lib/tegonal-scripts
-#    	dir_of_tegonal_scripts="$(realpath "$(cd -- "$(dirname -- "${BASH_SOURCE[0]:-$0}")" &>/dev/null && pwd 2>/dev/null)/../lib/tegonal-scripts/src")"
+#    	dir_of_tegonal_scripts="$(cd -- "$(dirname -- "${BASH_SOURCE[0]:-$0}")" &>/dev/null && pwd 2>/dev/null)/../lib/tegonal-scripts/src"
 #    	source "$dir_of_tegonal_scripts/setup.sh" "$dir_of_tegonal_scripts"
 #    fi
 #
@@ -33,5 +33,10 @@ if ! (($# == 1)); then
 	exit 9
 fi
 
-declare -r dir_of_tegonal_scripts="$1"
+declare dir_of_tegonal_scripts
+if ! dir_of_tegonal_scripts=$(realpath "$1"); then
+	printf >&2 "\033[0;31mERROR\033[0m: looks like the passed dir_of_tegonal_scripts is not a realpath: %s" "$1"
+	exit 9
+fi
+declare -r dir_of_tegonal_scripts
 source "$dir_of_tegonal_scripts/utility/source-once.sh"
