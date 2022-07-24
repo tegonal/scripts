@@ -21,7 +21,6 @@ if ! [[ -v projectDir ]]; then
 	declare -r projectDir
 fi
 
-sourceOnce "$dir_of_tegonal_scripts/utility/log.sh"
 sourceOnce "$dir_of_tegonal_scripts/utility/replace-help-snippet.sh"
 sourceOnce "$dir_of_tegonal_scripts/utility/update-bash-docu.sh"
 

@@ -56,7 +56,8 @@ gget pull -r tegonal-scripts -t "$TEGONAL_SCRIPTS_VERSION" -p ...
 ```
 
 Note that dependencies have to be pulled manually and almost all scripts depend on `src/setup.sh`
-and many depend on scripts defined in `src/utility`.
+which in turn depends on `src/utility/source-once.sh` and this one depends on `src/utility/log.sh`.
+Many of the scripts depend on further scripts located in `src/utility`.
 Therefore, for simplicity reasons, we recommend you pull `src/setup.sh` all files of `src/utility` in addition:
 
 ```
@@ -68,7 +69,7 @@ gget pull -r tegonal-scripts -t "$TEGONAL_SCRIPTS_VERSION" -p src/utility/
 ## Sourcing functions
 
 We recommend you use the following code at the beginning of your script in case you want to `source` a file/function
-(in the example below we want to use tegonal's log functions):
+(in the example below we want to use tegonal's io functions located in `utility/io.sh`):
 
 <setup>
 
@@ -85,10 +86,12 @@ if ! [[ -v dir_of_tegonal_scripts ]]; then
 	source "$dir_of_tegonal_scripts/setup.sh" "$dir_of_tegonal_scripts"
 fi
 
-sourceOnce "$dir_of_tegonal_scripts/utility/log.sh"
+sourceOnce "$dir_of_tegonal_scripts/utility/io.sh"
 ```
 
 </setup>
+
+Note that `source "$dir_of_tegonal_scripts/setup.sh"` will automatically source `utility/source-once.sh` and `utility/log.sh`
 
 # Documentation
 
@@ -417,6 +420,7 @@ sneakPeekBanner -c show
 
 Script which releases a version for a repository containing files which don't need to be compiled or packaged.
 It is based on some conventions (see src/releasing/release-files.sh for more details):
+
 - expects a version in format vX.Y.Z(-RC...)
 - main is your default branch
 - requires you to have a /scripts folder in your project root which contains:
@@ -432,7 +436,7 @@ It then includes the following steps:
 - rewrite sneak-peek banner
 - toggle main/release sections in README
 - update version in download badges and sneak-peek banner in README as well as   
-  replace additional occurrences defined via `-p|--pattern` (see output of `--help` further below for further details) 
+  replace additional occurrences defined via `-p|--pattern` (see output of `--help` further below for further details)
 - update version in script headers in /src and /scripts of your project
 - `beforePr`
 - sign files via GPG where you define which files via `--sign-fn`

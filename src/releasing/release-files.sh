@@ -68,7 +68,6 @@ fi
 sourceOnce "$dir_of_tegonal_scripts/utility/git-utils.sh"
 sourceOnce "$dir_of_tegonal_scripts/utility/gpg-utils.sh"
 sourceOnce "$dir_of_tegonal_scripts/utility/ask.sh"
-sourceOnce "$dir_of_tegonal_scripts/utility/log.sh"
 sourceOnce "$dir_of_tegonal_scripts/utility/parse-args.sh"
 sourceOnce "$dir_of_tegonal_scripts/releasing/sneak-peek-banner.sh"
 sourceOnce "$dir_of_tegonal_scripts/releasing/toggle-sections.sh"
