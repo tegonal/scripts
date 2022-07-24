@@ -133,6 +133,11 @@ function die() {
 	logError "$@"
 	exit 1
 }
+
+# note that this function has not the effect of a return if set -e is not in place
+# (either not set or function call tree passed an if while until or was on the left side of an || &&)
+# in such a case you either need to make sure that your returnDying is the last call in your function
+# or you need to add `|| return $?`.
 function returnDying() {
 	logError "$@"
 	return 1

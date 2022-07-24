@@ -24,7 +24,7 @@
 #    	source "$dir_of_tegonal_scripts/setup.sh" "$dir_of_tegonal_scripts"
 #    fi
 #
-#    sourceOnce "$dir_of_tegonal_scripts/utility/log.sh"
+#    sourceOnce "$dir_of_tegonal_scripts/utility/io.sh"
 #
 ###################################
 

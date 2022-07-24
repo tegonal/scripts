@@ -62,7 +62,6 @@ if ! [[ -v dir_of_tegonal_scripts ]]; then
 	source "$dir_of_tegonal_scripts/setup.sh" "$dir_of_tegonal_scripts"
 fi
 sourceOnce "$dir_of_tegonal_scripts/utility/checks.sh"
-sourceOnce "$dir_of_tegonal_scripts/utility/log.sh"
 
 function parseFnArgs() {
 	if (($# < 2)); then
