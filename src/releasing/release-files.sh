@@ -109,12 +109,7 @@ function releaseFiles() {
 	fi
 
 	exitIfArgIsNotFunction "$findForSigning" "--sign-fn"
-
-	if hasGitChanges; then
-		logError "you have uncommitted changes, please commit/stash first, following the output of git status:"
-		git status
-		return 1
-	fi
+	exitIfGitHasChanges
 
 	if git tag | grep "$version" >/dev/null; then
 		logError "tag %s already exists locally, adjust version or delete it with git tag -d %s" "$version" "$version"

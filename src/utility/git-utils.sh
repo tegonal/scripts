@@ -69,6 +69,16 @@ function hasGitChanges() {
 	! [[ $gitStatus == "" ]]
 }
 
+function exitIfGitHasChanges() {
+	# we are aware of that `if` will disable set -e for hasGitChanges
+	# shellcheck disable=SC2310
+	if hasGitChanges; then
+		logError "you have uncommitted changes, please commit/stash first, following the output of git status:"
+		git status || exit $?
+		exit 1
+	fi
+}
+
 function countCommits() {
 	local from to
 	# params is required for parseFnArgs thus:

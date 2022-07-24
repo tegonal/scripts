@@ -78,8 +78,11 @@ function prepareFilesNextDevCycle() {
 		die "version should match vX.Y.Z(-RC...), was %s" "$version"
 	fi
 
+	exitIfGitHasChanges
+
 	local -r projectsScriptsDir="$projectDir/scripts"
 	sourceOnce "$projectsScriptsDir/before-pr.sh"
+
 
 	logInfo "prepare next dev cycle for version $version"
 
