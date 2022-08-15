@@ -55,15 +55,17 @@ function updateBashDocumentation() {
 	local -ra params=(script id dir pattern)
 	parseFnArgs params "$@"
 
-	local snippet
-	snippet=$(cat "${script::-3}.doc.sh")
+	local snippet pathWithoutExtension
+	pathWithoutExtension=${script::-3} || die "could not determine path without extension for script %s and %id" "$script" "$id"
+	snippet=$(cat "${pathWithoutExtension}.doc.sh") || die "could not cat %s" "${pathWithoutExtension}.doc.sh"
 
-	local quotedSnippet
-	quotedSnippet=$(echo "$snippet" | perl -0777 -pe 's/(\/|\$|\\)/\\$1/g;' | sed 's/^/#    /' | sed 's/^#    $/#/')
+	local quotedSnippet markdownSnippet
+	quotedSnippet=$(perl -0777 -pe 's/(\/|\$|\\)/\\$1/g;' <<<"$snippet" | sed 's/^/#    /' | sed 's/^#    $/#/') || die "was not able to quote the snippet for script %s and id %s" "$script" "$id"
+	markdownSnippet=$(printf "\`\`\`bash\n%s\n\`\`\`" "$snippet") || die "could not create the markdownSnippet for script %s and id %s" "$script" "$id"
 
 	perl -0777 -i \
 		-pe "s/(###+\s+Usage\s+###+\n#\n)[\S\s]+?(\n#\n###+)/\$1${quotedSnippet}\$2/g;" \
-		"$script"
+		"$script" || die "could not replace the Usage section for %s" "$script"
 
-	replaceSnippet "$script" "$id" "$dir" "$pattern" "$(printf "\`\`\`bash\n%s\n\`\`\`" "$snippet")"
+	replaceSnippet "$script" "$id" "$dir" "$pattern" "$markdownSnippet"
 }

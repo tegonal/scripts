@@ -1,5 +1,4 @@
 #!/usr/bin/env bash
-# shellcheck disable=SC2059
 #
 #    __                          __
 #   / /____ ___ ____  ___  ___ _/ /       This script is provided to you by https://github.com/tegonal/scripts
@@ -40,13 +39,16 @@ sourceOnce "$dir_of_tegonal_scripts/utility/parse-fn-args.sh"
 function askYesOrNo() {
 	if (($# == 0)); then
 		logError "At least one argument needs to be passed to askYesOrNo, given \033[0;36m%s\033[0m\n" "$#"
-		echo >&2 '1: question  the question which the user should answer with y or n'
+		echo >&2 '1: question   the question which the user should answer with y or n'
+		echo >&2 '2... args...  arguments for the question (question is printed with printf)'
 		printStackTrace
 		exit 9
 	fi
 	local -r question=$1
 	shift
 
+	# the question itself can have %s thus we use it in the format string
+	# shellcheck disable=SC2059
 	printf "\n\033[0;36m$question\033[0m y/[N]:" "$@"
 	local answer='n'
 	local -r timeout=20

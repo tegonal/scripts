@@ -110,7 +110,9 @@ function releaseFiles() {
 	exitIfArgIsNotFunction "$findForSigning" "--sign-fn"
 	exitIfGitHasChanges
 
-	if git tag | grep "$version" >/dev/null; then
+	local tags
+	tags=$(git tag) || die "The following command failed (see above): git tag"
+	if grep "$version" <<< "$tags" >/dev/null; then
 		logError "tag %s already exists locally, adjust version or delete it with git tag -d %s" "$version" "$version"
 		if hasRemoteTag "$version"; then
 			printf >&2 "Note, it also exists on the remote which means you also need to delete it there -- e.g. via git push origin :%s\n" "$version"
@@ -118,14 +120,15 @@ function releaseFiles() {
 		fi
 		logInfo "looks like the tag only exists locally."
 		if askYesOrNo "Shall I \`git tag -d %s\` and continue with the release?" "$version"; then
-			git tag -d "$version"
+			git tag -d "$version" || die "deleting tag %s failed" "$version"
 		else
 			return 1
 		fi
 	fi
 
 	if hasRemoteTag "$version"; then
-		returnDying "tag %s already exists on remote origin, adjust version or delete it with git push origin :%s\n" "$version" "$version"
+		logError "tag %s already exists on remote origin, adjust version or delete it with git push origin :%s\n" "$version" "$version"
+		return 1
 	fi
 
 	local branch
@@ -134,7 +137,7 @@ function releaseFiles() {
 	if ! [[ $branch == "$expectedDefaultBranch" ]]; then
 		logError "you need to be on the \033[0;36m%s\033[0m branch to release, check that you have merged all changes from your current branch \033[0;36m%s\033[0m." "$expectedDefaultBranch" "$branch"
 		if askYesOrNo "Shall I switch to %s for you?" "$expectedDefaultBranch"; then
-			git checkout "$expectedDefaultBranch"
+			git checkout "$expectedDefaultBranch" || die "checking out branch %s failed" "$expectedDefaultBranch"
 		else
 			return 1
 		fi
@@ -150,7 +153,7 @@ function releaseFiles() {
 		return 1
 	fi
 
-	if localGitIsBehind "$expectedDefaultBranch"; then
+	while localGitIsBehind "$expectedDefaultBranch"; do
 		git fetch
 		logError "you are behind of origin. I already fetched the changes for you, please check if you still want to release. Following the additional changes in origin/main:"
 		git -P log "${expectedDefaultBranch}..origin/$expectedDefaultBranch"
@@ -162,54 +165,63 @@ function releaseFiles() {
 		else
 			return 1
 		fi
-	fi
+	done
 
 	local -r projectsScriptsDir="$projectDir/scripts"
-	sourceOnce "$projectsScriptsDir/before-pr.sh"
+	# we are aware of that || will disable set -e for sourceOnce
+	# shellcheck disable=SC2310
+	sourceOnce "$projectsScriptsDir/before-pr.sh" || die "could not source before-pr.sh"
 
 	# make sure everything is up-to-date and works as it should
-	beforePr
+	beforePr || return $?
 
-	sneakPeekBanner -c hide
-	toggleSections -c release
-	updateVersionReadme -v "$version" -p "$additionalPattern"
-	updateVersionScripts -v "$version" -p "$additionalPattern"
-	updateVersionScripts -v "$version" -p "$additionalPattern" -d "$projectsScriptsDir"
+	sneakPeekBanner -c hide || return $?
+	toggleSections -c release || return $?
+	updateVersionReadme -v "$version" -p "$additionalPattern" || return $?
+	updateVersionScripts -v "$version" -p "$additionalPattern" || return $?
+	updateVersionScripts -v "$version" -p "$additionalPattern" -d "$projectsScriptsDir" || return $?
 	local -r additionalSteps="$projectsScriptsDir/additional-release-files-preparations.sh"
 	if [[ -f $additionalSteps ]]; then
-		sourceOnce "$additionalSteps"
+		# we are aware of that || will disable set -e for sourceOnce
+		# shellcheck disable=SC2310
+		sourceOnce "$additionalSteps" || die "could not source $additionalSteps"
 	fi
 
 	# run again since we made changes
-	beforePr
+	beforePr || return $?
 
 	local -r ggetDir="$projectDir/.gget"
 	local -r gpgDir="$ggetDir/gpg"
-	rm -rf "$gpgDir"
+	if ! rm -rf "$gpgDir"; then
+		logError "was not able to remove gpg directory %s\nPlease do this manually and re-run the release command" "$gpgDir"
+		git reset --hard "origin/$expectedDefaultBranch"
+	fi
 	mkdir "$gpgDir"
 	chmod 700 "$gpgDir"
 
-	gpg --homedir "$gpgDir" --import "$ggetDir/signing-key.public.asc"
-	trustGpgKey "$gpgDir" "info@tegonal.com"
+	gpg --homedir "$gpgDir" --import "$ggetDir/signing-key.public.asc" || die "was not able to import %s" "$ggetDir/signing-key.public.asc"
+	trustGpgKey "$gpgDir" "info@tegonal.com" || logInfo "could not trust key with id info@tegonal.com, you will see warnings due to this during signing the files"
 
 	local script
 	"$findForSigning" -print0 |
 		while read -r -d $'\0' script; do
 			echo "signing $script"
-			gpg --detach-sign --batch --yes -u "$key" -o "${script}.sig" "$script"
-			gpg --homedir "$gpgDir" --batch --verify "${script}.sig" "$script"
-		done
+			gpg --detach-sign --batch --yes -u "$key" -o "${script}.sig" "$script" || die "was not able to sign %s" "$script"
+			gpg --homedir "$gpgDir" --batch --verify "${script}.sig" "$script" || die "verification via previously imported %s failed" "$ggetDir/signing-key.public.asc"
+		done || die $?
 
 	if ! [[ $prepareOnly == true ]]; then
-		git add .
-		git commit -m "$version"
-		git tag "$version"
+		git add . || return $?
+		git commit -m "$version" || return $?
+		git tag "$version" || return $?
 
-		sourceOnce "$projectsScriptsDir/prepare-next-dev-cycle.sh"
-		prepareNextDevCycle -v "$nextVersion" -p "$additionalPattern"
+		# we are aware of that || will disable set -e for sourceOnce
+		# shellcheck disable=SC2310
+		sourceOnce "$projectsScriptsDir/prepare-next-dev-cycle.sh" || die "could not source prepare-next-dev-cycle.sh"
+		prepareNextDevCycle -v "$nextVersion" -p "$additionalPattern" || die "could not prepare next dev cycle for version %s" "$nextVersion"
 
-		git push origin "$version"
-		git push
+		git push origin "$version" || die "could not push tag to origin"
+		git push || die "could not push commits on %s to origin" "$expectedDefaultBranch"
 	else
 		printf "\033[1;33mskipping commit, creating tag and prepare-next-dev-cylce due to --prepare-only\033[0m\n"
 	fi

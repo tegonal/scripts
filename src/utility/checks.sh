@@ -71,6 +71,7 @@ function checkArgIsArray() {
 
 	reg='^declare -a.*'
 	local arrayDefinition
+	# we are not failing (with || die...) on this line as the if will fail afterwards
 	arrayDefinition="$(recursiveDeclareP checkArgIsArray_arr)"
 	if ! [[ $arrayDefinition =~ $reg ]]; then
 		traceAndReturnDying "the passed array \033[0;36m%s\033[0m is broken.\nThe %s argument to %s needs to be a non-associative array, given:\n%s" \

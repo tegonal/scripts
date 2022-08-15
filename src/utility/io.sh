@@ -55,9 +55,10 @@ function withCustomOutputInput() {
 
 	local tmpFile
 	tmpFile=$(mktemp /tmp/tegonal-scripts-io.XXXXXXXXX)
-	eval "exec ${outputNr}>\"$tmpFile\""
-	eval "exec ${inputNr}<\"$tmpFile\""
-	rm "$tmpFile"
+	eval "exec ${outputNr}>\"$tmpFile\"" || die "could not create output file descriptor %s" "$outputNr"
+	eval "exec ${inputNr}<\"$tmpFile\"" || die "could not create input file descriptor %s" "$inputNr"
+	# don't fail if we cannot delete the tmp file, if this should happened, then the system should clean-up the file when the process ends
+	rm "$tmpFile" || true
 
 	$fun "$@"
 

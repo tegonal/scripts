@@ -67,11 +67,11 @@ function importGpgKey() {
 			--list-options show-user-notations,show-std-notations,show-usage,show-sig-expire \
 			--import-options show-only \
 			--import "$file"
-	)
+	) || die "not able to show the theoretical import of %s, aborting" "$file"
 	local isTrusting='y'
 	if [[ $withConfirmation == "--confirm=true" ]]; then
 		echo "$outputKey"
-		if askYesOrNo "The above key(s) will be used to verify the files you will pull from this remote, do you trust it?"; then
+		if askYesOrNo "The above key(s) will be used to verify the files you will pull from this remote, do you trust them?"; then
 			isTrusting='y'
 		else
 			isTrusting='n'
@@ -82,13 +82,12 @@ function importGpgKey() {
 
 	if [[ $isTrusting == y ]]; then
 		echo "importing key $file"
-		gpg --homedir "$gpgDir" --import "$file"
+		gpg --homedir "$gpgDir" --import "$file" || die "failed to import $file"
 		local keyId
 		grep pub <<< "$outputKey" | perl -0777 -pe "s#pub\s+[^/]+/([0-9A-Z]+).*#\$1#g" |
 			while read -r keyId; do
 				trustGpgKey "$gpgDir" "$keyId"
 			done
-		return 0
 	else
 		return 1
 	fi
