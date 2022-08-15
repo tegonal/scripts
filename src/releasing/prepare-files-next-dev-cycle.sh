@@ -61,15 +61,15 @@ sourceOnce "$dir_of_tegonal_scripts/releasing/update-version-README.sh"
 sourceOnce "$dir_of_tegonal_scripts/releasing/update-version-scripts.sh"
 
 function prepareFilesNextDevCycle() {
-	local version projectDir additionalPattern
+	local version projectsRootDir additionalPattern
 	# shellcheck disable=SC2034
 	local -ra params=(
 		version '-v' 'the version for which we prepare the dev cycle'
-		projectDir '--project-dir' '(optional) The projects directory -- default: .'
+		projectsRootDir '--project-dir' '(optional) The projects directory -- default: .'
 		additionalPattern '-p|--pattern' '(optional) pattern which is used in a perl command (separator /) to search & replace additional occurrences. It should define two match groups and the replace operation looks as follows: '"\\\${1}\$version\\\${2}"
 	)
 	parseArguments params "" "$TEGONAL_SCRIPTS_VERSION" "$@"
-	if ! [[ -v projectDir ]]; then projectDir=$(realpath "."); fi
+	if ! [[ -v projectsRootDir ]]; then projectsRootDir=$(realpath "."); fi
 	if ! [[ -v additionalPattern ]]; then additionalPattern="^$"; fi
 	checkAllArgumentsSet params "" "$TEGONAL_SCRIPTS_VERSION"
 
@@ -79,7 +79,7 @@ function prepareFilesNextDevCycle() {
 
 	exitIfGitHasChanges
 
-	local -r projectsScriptsDir="$projectDir/scripts"
+	local -r projectsScriptsDir="$projectsRootDir/scripts"
 	# we are aware of that || will disable set -e for sourceOnce
 	# shellcheck disable=SC2310
 	sourceOnce "$projectsScriptsDir/before-pr.sh" || die "could not source before-pr.sh"
