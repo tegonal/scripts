@@ -107,8 +107,8 @@ function exitIfArgIsNotFunction() {
 }
 
 function checkCommandExists() {
-	if ! (($# == 1)); then
-		traceAndDie "you need to pass the name of the command to check to checkCommandExists"
+	if ! (($# == 1 || $# == 2)); then
+		traceAndDie "you need to pass the name of the command to check to checkCommandExists and optionally an additional hint (e.g. install via...)"
 	fi
 	local -r name=$1
 	local file
