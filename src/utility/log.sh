@@ -148,9 +148,9 @@ function printStackTrace() {
 	echo >&2 "Stacktrace:"
 	local -i frame=${1:-1}
 	local line sub file
-	local result
-	result=$(caller "$frame")
-	while read -r line sub file <"$result"; do
+	# we want that the while loop ends in case caller "$frame" returns non-zero, thus
+	# shellcheck disable=SC2312
+	while read -r line sub file < <(caller "$frame"); do
 		local path
 		path=$(realpath "$file" || echo "$file")
 		printf >&2 '%20s @ %s:%s:1\n' "$sub" "$path" "$line"
@@ -159,7 +159,6 @@ function printStackTrace() {
 			echo >&2 " ..."
 			break
 		fi
-		result=$(caller "$frame")
 	done
 }
 
