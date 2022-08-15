@@ -75,13 +75,13 @@ sourceOnce "$dir_of_tegonal_scripts/releasing/update-version-README.sh"
 sourceOnce "$dir_of_tegonal_scripts/releasing/update-version-scripts.sh"
 
 function releaseFiles() {
-	local version key findForSigning projectDir additionalPattern nextVersion prepareOnly
+	local version key findForSigning projectsRootDir additionalPattern nextVersion prepareOnly
 	# shellcheck disable=SC2034
 	local -ra params=(
 		version '-v' "The version to release in the format vX.Y.Z(-RC...)"
 		key '-k|--key' 'The GPG private key which shall be used to sign the files'
 		findForSigning '--sign-fn' 'Function which is called to determine what files should be signed. It should be based find and allow to pass further arguments (we will i.a. pass -print0)'
-		projectDir '--project-dir' '(optional) The projects directory -- default: .'
+		projectsRootDir '--project-dir' '(optional) The projects directory -- default: .'
 		additionalPattern '-p|--pattern' '(optional) pattern which is used in a perl command (separator /) to search & replace additional occurrences. It should define two match groups and the replace operation looks as follows: '"\\\${1}\$version\\\${2}"
 		nextVersion '-nv|--next-version' '(optional) the version to use for prepare-next-dev-cycle -- default: is next minor based on version'
 		prepareOnly '--prepare-only' '(optional) defines whether the release shall only be prepared (i.e. no push, no tag, no prepare-next-dev-cycle) -- default: false'
@@ -98,7 +98,7 @@ function releaseFiles() {
 			logInfo "cannot deduce nextVersion from version as it does not follow format vX.Y.Z(-RC...): $version"
 		fi
 	fi
-	if ! [[ -v projectDir ]]; then projectDir=$(realpath "."); fi
+	if ! [[ -v projectsRootDir ]]; then projectsRootDir=$(realpath "."); fi
 	if ! [[ -v additionalPattern ]]; then additionalPattern="^$"; fi
 	if ! [[ -v prepareOnly ]] || ! [[ "$prepareOnly" == "true" ]]; then prepareOnly=false; fi
 	checkAllArgumentsSet params "" "$TEGONAL_SCRIPTS_VERSION"
@@ -167,7 +167,7 @@ function releaseFiles() {
 		fi
 	done
 
-	local -r projectsScriptsDir="$projectDir/scripts"
+	local -r projectsScriptsDir="$projectsRootDir/scripts"
 	# we are aware of that || will disable set -e for sourceOnce
 	# shellcheck disable=SC2310
 	sourceOnce "$projectsScriptsDir/before-pr.sh" || die "could not source before-pr.sh"
@@ -190,7 +190,7 @@ function releaseFiles() {
 	# run again since we made changes
 	beforePr || return $?
 
-	local -r ggetDir="$projectDir/.gget"
+	local -r ggetDir="$projectsRootDir/.gget"
 	local -r gpgDir="$ggetDir/gpg"
 	if ! rm -rf "$gpgDir"; then
 		logError "was not able to remove gpg directory %s\nPlease do this manually and re-run the release command" "$gpgDir"

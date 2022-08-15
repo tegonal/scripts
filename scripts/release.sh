@@ -34,7 +34,7 @@ function release() {
 	fi
 
 	function findScripts() {
-		find "$scriptsDir/../src" -name "*.sh" -not -name "*.doc.sh" "$@"
+		find "$dir_of_tegonal_scripts" -name "*.sh" -not -name "*.doc.sh" "$@"
 	}
 
 	# same as in prepare-next-dev-cycle.sh, update there as well
