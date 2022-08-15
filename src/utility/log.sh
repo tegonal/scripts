@@ -146,7 +146,7 @@ function returnDying() {
 function printStackTrace() {
 	echo >&2 ""
 	echo >&2 "Stacktrace:"
-	local -i frame=${1:-1}
+	local -i frame=${1:-0}
 	local line sub file
 	# we want that the while loop ends in case caller "$frame" returns non-zero, thus
 	# shellcheck disable=SC2312
