@@ -65,3 +65,12 @@ function withCustomOutputInput() {
 	eval "exec ${outputNr}>&-"
 	eval "exec ${inputNr}<&-"
 }
+
+function deleteDirChmod777() {
+	local -r dir=$1
+	shift
+	# e.g files in .git will be write-protected and we don't want sudo for this command
+	# yet, if it fails, then we ignore the problem and still try to delete the folder
+	chmod -R 777 "$dir" || true
+	rm -r "$dir"
+}
