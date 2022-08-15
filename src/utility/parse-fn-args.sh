@@ -66,7 +66,7 @@ sourceOnce "$dir_of_tegonal_scripts/utility/checks.sh"
 function parseFnArgs() {
 	if (($# < 2)); then
 		logError "At least two arguments need to be passed to parseFnArgs, given \033[0;36m%s\033[0m\nFollowing a description of the parameters:" "$#"
-		echo >&2 '1. params     the name of an array which contains the parameter names'
+		echo >&2 '1: params     the name of an array which contains the parameter names'
 		echo >&2 '2... args...  the arguments as such, typically "$@"'
 		printStackTrace
 		exit 9
@@ -85,18 +85,18 @@ function parseFnArgs() {
 		parseFnArgs_withVarArgs=false
 	fi
 
-	local minExpected
+	local parseFnArgs_minExpected
 	if [[ $parseFnArgs_withVarArgs == false ]]; then
-		minExpected="${#parseFnArgs_paramArr1[@]}"
+		parseFnArgs_minExpected="${#parseFnArgs_paramArr1[@]}"
 	else
-		minExpected="$((${#parseFnArgs_paramArr1[@]} - 1))"
+		parseFnArgs_minExpected="$((${#parseFnArgs_paramArr1[@]} - 1))"
 	fi
-	local -r minExpected
-	if (($# < minExpected)); then
+	local -r parseFnArgs_minExpected
+	if (($# < parseFnArgs_minExpected)); then
 		logError "Not enough arguments supplied to \033[0m\033[0;36m%s\033[0m\nExpected %s, given %s\nFollowing a listing of the expected arguments (red means missing):" \
 			"${FUNCNAME[1]}" "${#parseFnArgs_paramArr1[@]}" "$#"
 
-		for ((parseFnArgs_i = 0; parseFnArgs_i < minExpected; ++parseFnArgs_i)); do
+		for ((parseFnArgs_i = 0; parseFnArgs_i < parseFnArgs_minExpected; ++parseFnArgs_i)); do
 			local parseFnArgs_name=${parseFnArgs_paramArr1[parseFnArgs_i]}
 			printf "\033[0m"
 			if ((parseFnArgs_i < $#)); then
@@ -119,7 +119,7 @@ function parseFnArgs() {
 			"${FUNCNAME[1]}" "${#parseFnArgs_paramArr1[@]}" "$#"
 		echo >&2 "in case you wanted your last parameter to be a vararg parameter, then use 'varargs' as last variable name in your array containing the parameter names."
 		echo >&2 "Following a listing of the expected arguments:"
-		for ((parseFnArgs_i = 0; parseFnArgs_i < minExpected; ++parseFnArgs_i)); do
+		for ((parseFnArgs_i = 0; parseFnArgs_i < parseFnArgs_minExpected; ++parseFnArgs_i)); do
 			local parseFnArgs_name=${parseFnArgs_paramArr1[parseFnArgs_i]}
 			printf >&2 "%2s: %s\n" "$((parseFnArgs_i + 1))" "$parseFnArgs_name"
 		done
@@ -127,7 +127,7 @@ function parseFnArgs() {
 		exit 9
 	fi
 
-	for ((parseFnArgs_i = 0; parseFnArgs_i < minExpected; ++parseFnArgs_i)); do
+	for ((parseFnArgs_i = 0; parseFnArgs_i < parseFnArgs_minExpected; ++parseFnArgs_i)); do
 		local parseFnArgs_name=${parseFnArgs_paramArr1[parseFnArgs_i]}
 		# assign arguments to specified variables
 		printf -v "$parseFnArgs_name" "%s" "$1" || die "could not assign value to $parseFnArgs_name"

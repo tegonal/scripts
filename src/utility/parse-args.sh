@@ -92,7 +92,7 @@ function describeParameterTriple() {
 function checkParameterDefinitionIsTriple() {
 	if ! (($# == 1)); then
 		logError "One parameter needs to be passed to checkParameterDefinitionIsTriple, given \033[0;36m%s\033[0m\nFollowing a description of the parameters:" "$#"
-		echo >&2 '1. params   the name of an array which contains the parameter definitions'
+		echo >&2 '1: params   the name of an array which contains the parameter definitions'
 		printStackTrace
 		exit 9
 	fi
@@ -148,9 +148,9 @@ function checkParameterDefinitionIsTriple() {
 function parseArguments {
 	if (($# < 3)); then
 		logError "At least three arguments need to be passed to parseArguments, given \033[0;36m%s\033[0m\nFollowing a description of the parameters:" "$#"
-		echo >&2 '1. params     the name of an array which contains the parameter definitions'
-		echo >&2 '2. examples   a string containing examples (or an empty string)'
-		echo >&2 '3. version    the version which shall be shown if one uses --version'
+		echo >&2 '1: params     the name of an array which contains the parameter definitions'
+		echo >&2 '2: examples   a string containing examples (or an empty string)'
+		echo >&2 '3: version    the version which shall be shown if one uses --version'
 		echo >&2 '4... args...  the arguments as such, typically "$@"'
 		printStackTrace
 		exit 9
@@ -220,7 +220,7 @@ function parseArguments {
 function printVersion() {
 	if ! (($# == 1)); then
 		logError "One argument needs to be passed to printVersion, given \033[0;36m%s\033[0m\nFollowing a description of the parameters:" "$#"
-		echo >&2 '1. version   the version which shall be shown if one uses --version'
+		echo >&2 '1: version   the version which shall be shown if one uses --version'
 		printStackTrace
 		exit 9
 	fi
@@ -231,9 +231,9 @@ function printVersion() {
 function printHelp {
 	if ! (($# == 3)); then
 		logError "Three arguments need to be passed to printHelp, given \033[0;36m%s\033[0m\nFollowing a description of the parameters:" "$#"
-		echo >&2 '1. params    the name of an array which contains the parameter definitions'
-		echo >&2 '2. examples  a string containing examples (or an empty string)'
-		echo >&2 '3. version   the version which shall be shown if one uses --version'
+		echo >&2 '1: params    the name of an array which contains the parameter definitions'
+		echo >&2 '2: examples  a string containing examples (or an empty string)'
+		echo >&2 '3: version   the version which shall be shown if one uses --version'
 		printStackTrace
 		exit 9
 	fi
@@ -280,9 +280,9 @@ function printHelp {
 function checkAllArgumentsSet {
 	if ! (($# == 3)); then
 		logError "Three arguments need to be passed to checkAllArgumentsSet, given \033[0;36m%s\033[0m\nFollowing a description of the parameters:" "$#"
-		echo >&2 '1. params    the name of an array which contains the parameter definitions'
-		echo >&2 '2. examples  a string containing examples (or an empty string)'
-		echo >&2 '3. version    the version which shall be shown if one uses --version'
+		echo >&2 '1: params    the name of an array which contains the parameter definitions'
+		echo >&2 '2: examples  a string containing examples (or an empty string)'
+		echo >&2 '3: version    the version which shall be shown if one uses --version'
 		printStackTrace
 		exit 9
 	fi

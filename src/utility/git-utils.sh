@@ -92,7 +92,7 @@ function localGitIsAhead() {
 	fi
 	local -r branch=$1
 	local -r remote=${2-"origin"}
-	local count
+	local -i count
 	count=$(countCommits "$remote/$branch" "$branch")
 	! ((count == 0))
 }
@@ -103,7 +103,7 @@ function localGitIsBehind() {
 	fi
 	local -r branch=$1
 	local -r remote=${2-"origin"}
-	local count
+	local -i count
 	count=$(countCommits "$branch" "$remote/$branch")
 	! ((count == 0))
 }
@@ -115,5 +115,7 @@ function hasRemoteTag() {
 	local -r tag=$1
 	local -r remote=${2-"origin"}
 	shift 1
-	git ls-remote -t "$remote" | grep "$tag" >/dev/null || false
+	local output
+	output=$(git ls-remote -t "$remote") || die "the following command failed: git ls-remote -t $remote"
+	grep "$tag" >/dev/null <<< "$output" || false
 }

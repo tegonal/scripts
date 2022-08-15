@@ -61,29 +61,29 @@ function replaceHelpSnippet() {
 	parseFnArgs params "$@"
 
 	if ! [[ -f $script ]] && ! checkCommandExists "$script" >/dev/null; then
-		returnDying "$script is neither a file nor a command"
+		logError "$script is neither a file nor a command"
+		return 1
 	fi
 
 	if [[ -f $script ]] && ! [[ -x $script ]]; then
-		returnDying "$script is not executable"
+		logError "$script is not executable"
+		return 1
 	fi
 
 	if ((${#varargs[@]} == 0)); then
 		varargs=("--help")
 	fi
 
-	local snippet
 	# shellcheck disable=SC2145
 	echo "capturing output of calling: $script ${varargs[@]}"
-	set +e
+
+	local snippet quotedSnippet markdownSnippet
 	# we actually want that the array is passed as multiple arguments
 	# shellcheck disable=SC2068
-	snippet=$("$script" ${varargs[@]})
-	set -e
-
-	local quotedSnippet
+	snippet=$("$script" ${varargs[@]}) || true
 	# remove ansi colour codes form snippet
-	quotedSnippet=$(echo "$snippet" | perl -0777 -pe "s/\033\[([01];\d{2}|0)m//g")
+	quotedSnippet=$(perl -0777 -pe "s/\033\[([01];\d{2}|0)m//g" <<<"$snippet") || die "could not quote snippet for %s" "$script"
+	markdownSnippet=$(printf "\`\`\`text\n%s\n\`\`\`" "$quotedSnippet") || die "could not create markdownSnippet for %s" "$script"
 
-	replaceSnippet "$script" "$id" "$dir" "$pattern" "$(printf "\`\`\`text\n%s\n\`\`\`" "$quotedSnippet")"
+	replaceSnippet "$script" "$id" "$dir" "$pattern" "$markdownSnippet"
 }

@@ -63,7 +63,7 @@ function replaceSnippet() {
 	parseFnArgs params "$@"
 
 	local quotedSnippet
-	quotedSnippet=$(echo "$snippet" | perl -0777 -pe 's/(@|\$|\\)/\\$1/g;')
+	quotedSnippet=$(perl -0777 -pe 's/(@|\$|\\)/\\$1/g;' <<< "$snippet" ) || die "could not quote snippet for file \033[1;36m%s\033[0m and id %s" "$file" "$id"
 
 	find "$dir" -name "$pattern" \
 		-exec echo "updating $id in {} " \; \

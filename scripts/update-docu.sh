@@ -25,16 +25,16 @@ sourceOnce "$dir_of_tegonal_scripts/utility/replace-help-snippet.sh"
 sourceOnce "$dir_of_tegonal_scripts/utility/update-bash-docu.sh"
 
 function updateDocu() {
+	local script
 	find "$dir_of_tegonal_scripts" -name "*.sh" \
 		-not -name "*.doc.sh" \
 		-print0 |
 		while read -r -d $'\0' script; do
-			declare relative
-			relative="$(realpath --relative-to="$projectDir" "$script")"
-			declare id="${relative:4:-3}"
-
-			updateBashDocumentation "$script" "${id////-}" . README.md
-		done
+			local relative
+			relative="$(realpath --relative-to="$projectDir" "$script")" || return $?
+			local id="${relative:4:-3}"
+			updateBashDocumentation "$script" "${id////-}" . README.md || return $?
+		done || die "updating bash documentation failed, see above"
 
 	local -ra scriptsWithHelp=(
 		releasing/sneak-peek-banner
@@ -46,7 +46,7 @@ function updateDocu() {
 
 	for script in "${scriptsWithHelp[@]}"; do
 		replaceHelpSnippet "$dir_of_tegonal_scripts/$script.sh" "${script////-}-help" . README.md
-	done
+	done || die "replacing help snippets failed, see above"
 
 	logSuccess "Updating bash docu and README completed"
 }

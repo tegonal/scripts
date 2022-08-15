@@ -80,22 +80,26 @@ function prepareFilesNextDevCycle() {
 	exitIfGitHasChanges
 
 	local -r projectsScriptsDir="$projectDir/scripts"
-	sourceOnce "$projectsScriptsDir/before-pr.sh"
+	# we are aware of that || will disable set -e for sourceOnce
+	# shellcheck disable=SC2310
+	sourceOnce "$projectsScriptsDir/before-pr.sh" || die "could not source before-pr.sh"
 
 
 	logInfo "prepare next dev cycle for version $version"
 
-	sneakPeekBanner -c show
-	toggleSections -c main
-	updateVersionScripts -v "$version-SNAPSHOT" -p "$additionalPattern"
-	updateVersionScripts -v "$version-SNAPSHOT" -p "$additionalPattern" -d "$projectsScriptsDir"
+	sneakPeekBanner -c show || return $?
+	toggleSections -c main || return $?
+	updateVersionScripts -v "$version-SNAPSHOT" -p "$additionalPattern" || return $?
+	updateVersionScripts -v "$version-SNAPSHOT" -p "$additionalPattern" -d "$projectsScriptsDir" || return $?
 
 	# check if we accidentally have broken something, run formatting or whatever is done in beforePr
-	beforePr
+	beforePr || return $?
 
 	local -r additionalSteps="$projectsScriptsDir/additional-prepare-files-next-dev-cycle-steps.sh"
 	if [[ -f $additionalSteps ]]; then
-		sourceOnce "$additionalSteps"
+		# we are aware of that || will disable set -e for sourceOnce
+		# shellcheck disable=SC2310
+		sourceOnce "$additionalSteps" || die "could not source $additionalSteps"
 	fi
 
 	git commit -a -m "prepare next dev cycle for $version"

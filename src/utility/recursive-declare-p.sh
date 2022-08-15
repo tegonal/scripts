@@ -57,7 +57,7 @@ function recursiveDeclareP() {
 		traceAndDie "you need to pass the variable name, whose declaration statement shall be determined, to recursiveDeclareP"
 	fi
 
-	definition=$(declare -p "$1")
+	definition=$(declare -p "$1") || echo "executing 'declare -p $1' failed, see previous error message further above"
 	local -r reg='^declare -n(r)? [^=]+=\"([^\"]+)\"$'
 	while [[ $definition =~ $reg ]]; do
 		definition=$(declare -p "${BASH_REMATCH[2]}" || echo "executing 'declare -p ${BASH_REMATCH[2]}' failed, see previous error message further above")
