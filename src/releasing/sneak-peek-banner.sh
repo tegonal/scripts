@@ -59,7 +59,7 @@ function sneakPeekBanner() {
 
 	parseArguments params "$examples" "$TEGONAL_SCRIPTS_VERSION" "$@"
 	if ! [[ -v file ]]; then file="./README.md"; fi
-	checkAllArgumentsSet params "$examples" "$TEGONAL_SCRIPTS_VERSION"
+	exitIfNotAllArgumentsSet params "$examples" "$TEGONAL_SCRIPTS_VERSION"
 
 	if [[ $command == show ]]; then
 		echo "show sneak peek banner in $file"

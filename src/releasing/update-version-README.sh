@@ -65,7 +65,7 @@ function updateVersionReadme() {
 	parseArguments params "$examples" "$TEGONAL_SCRIPTS_VERSION" "$@"
 	if ! [[ -v file ]]; then file="./README.md"; fi
 	if ! [[ -v additionalPattern ]]; then additionalPattern=""; fi
-	checkAllArgumentsSet params "$examples" "$TEGONAL_SCRIPTS_VERSION"
+	exitIfNotAllArgumentsSet params "$examples" "$TEGONAL_SCRIPTS_VERSION"
 
 	echo "set version $version for Download badges and sneak peek banner in $file"
 

@@ -101,7 +101,7 @@ function releaseFiles() {
 	if ! [[ -v projectsRootDir ]]; then projectsRootDir=$(realpath "."); fi
 	if ! [[ -v additionalPattern ]]; then additionalPattern="^$"; fi
 	if ! [[ -v prepareOnly ]] || ! [[ "$prepareOnly" == "true" ]]; then prepareOnly=false; fi
-	checkAllArgumentsSet params "" "$TEGONAL_SCRIPTS_VERSION"
+	exitIfNotAllArgumentsSet params "" "$TEGONAL_SCRIPTS_VERSION"
 
 	if ! [[ "$version" =~ $versionRegex ]]; then
 		die "--version should match vX.Y.Z(-RC...), was %s" "$version"

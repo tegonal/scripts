@@ -50,9 +50,9 @@
 #    )
 #
 #    parseArguments params "$examples" "$@"
-#    # in case there are optional parameters, then fill them in here before calling checkAllArgumentsSet
+#    # in case there are optional parameters, then fill them in here before calling exitIfNotAllArgumentsSet
 #    if ! [[ -v directory ]]; then directory="."; fi
-#    checkAllArgumentsSet params "$examples"
+#    exitIfNotAllArgumentsSet params "$examples"
 #
 #    # pass your variables storing the arguments to other scripts
 #    echo "p: $pattern, v: $version, d: $directory"
@@ -277,9 +277,9 @@ function printHelp {
 	printVersion "$version"
 }
 
-function checkAllArgumentsSet {
+function exitIfNotAllArgumentsSet {
 	if ! (($# == 3)); then
-		logError "Three arguments need to be passed to checkAllArgumentsSet, given \033[0;36m%s\033[0m\nFollowing a description of the parameters:" "$#"
+		logError "Three arguments need to be passed to exitIfNotAllArgumentsSet, given \033[0;36m%s\033[0m\nFollowing a description of the parameters:" "$#"
 		echo >&2 '1: params    the name of an array which contains the parameter definitions'
 		echo >&2 '2: examples  a string containing examples (or an empty string)'
 		echo >&2 '3: version    the version which shall be shown if one uses --version'
@@ -288,29 +288,29 @@ function checkAllArgumentsSet {
 	fi
 
 	# using unconventional naming in order to avoid name clashes with the variables we will check further below
-	local -rn checkAllArgumentsSet_paramArr=$1
-	local -r checkAllArgumentsSet_examples=$2
-	local -r checkAllArgumentsSet_version=$3
+	local -rn exitIfNotAllArgumentsSet_paramArr=$1
+	local -r exitIfNotAllArgumentsSet_examples=$2
+	local -r exitIfNotAllArgumentsSet_version=$3
 
-	checkParameterDefinitionIsTriple checkAllArgumentsSet_paramArr
+	checkParameterDefinitionIsTriple exitIfNotAllArgumentsSet_paramArr
 
-	local -r checkAllArgumentsSet_arrLength="${#checkAllArgumentsSet_paramArr[@]}"
-	local -i checkAllArgumentsSet_good=1
-	for ((checkAllArgumentsSet_i = 0; checkAllArgumentsSet_i < checkAllArgumentsSet_arrLength; checkAllArgumentsSet_i += 3)); do
-		local checkAllArgumentsSet_paramName="${checkAllArgumentsSet_paramArr[checkAllArgumentsSet_i]}"
-		local checkAllArgumentsSet_pattern="${checkAllArgumentsSet_paramArr[checkAllArgumentsSet_i + 1]}"
-		if [[ -v "$checkAllArgumentsSet_paramName" ]]; then
-			readonly "$checkAllArgumentsSet_paramName"
+	local -r exitIfNotAllArgumentsSet_arrLength="${#exitIfNotAllArgumentsSet_paramArr[@]}"
+	local -i exitIfNotAllArgumentsSet_good=1
+	for ((exitIfNotAllArgumentsSet_i = 0; exitIfNotAllArgumentsSet_i < exitIfNotAllArgumentsSet_arrLength; exitIfNotAllArgumentsSet_i += 3)); do
+		local exitIfNotAllArgumentsSet_paramName="${exitIfNotAllArgumentsSet_paramArr[exitIfNotAllArgumentsSet_i]}"
+		local exitIfNotAllArgumentsSet_pattern="${exitIfNotAllArgumentsSet_paramArr[exitIfNotAllArgumentsSet_i + 1]}"
+		if [[ -v "$exitIfNotAllArgumentsSet_paramName" ]]; then
+			readonly "$exitIfNotAllArgumentsSet_paramName"
 		else
-			logError "%s not set via %s" "$checkAllArgumentsSet_paramName" "$checkAllArgumentsSet_pattern"
-			checkAllArgumentsSet_good=0
+			logError "%s not set via %s" "$exitIfNotAllArgumentsSet_paramName" "$exitIfNotAllArgumentsSet_pattern"
+			exitIfNotAllArgumentsSet_good=0
 		fi
 	done
-	if ((checkAllArgumentsSet_good == 0)); then
+	if ((exitIfNotAllArgumentsSet_good == 0)); then
 		echo >&2 ""
 		echo >&2 "following the help documentation:"
 		echo >&2 ""
-		printHelp >&2 checkAllArgumentsSet_paramArr "$checkAllArgumentsSet_examples" "$checkAllArgumentsSet_version"
+		printHelp >&2 exitIfNotAllArgumentsSet_paramArr "$exitIfNotAllArgumentsSet_examples" "$exitIfNotAllArgumentsSet_version"
 		if ((${#FUNCNAME} > 1)); then
 			# it is handy to see the stacktrace if it is not a direct call from command line
 			printStackTrace

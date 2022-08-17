@@ -65,7 +65,7 @@ function updateVersionScripts() {
 	parseArguments params "$examples" "$TEGONAL_SCRIPTS_VERSION" "$@"
 	if ! [[ -v directory ]]; then directory="./src"; fi
 	if ! [[ -v additionalPattern ]]; then additionalPattern=""; fi
-	checkAllArgumentsSet params "$examples" "$TEGONAL_SCRIPTS_VERSION"
+	exitIfNotAllArgumentsSet params "$examples" "$TEGONAL_SCRIPTS_VERSION"
 
 	echo "set version $version in bash headers in directory $directory"
 	if [[ -n $additionalPattern ]]; then

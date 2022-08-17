@@ -106,11 +106,11 @@ Describe 'parse_arg.sh'
 		End
 	End
 
-	Describe 'checkAllArgumentsSet'
+	Describe 'exitIfNotAllArgumentsSet'
 			Describe 'happy cases'
 				It 'complains if not all variables are set'
 					declare params=(version -v '')
-					When run checkAllArgumentsSet params '' 'v1.0.0'
+					When run exitIfNotAllArgumentsSet params '' 'v1.0.0'
 					The status should be failure
 					The stderr should include 'version not set'
 					The stderr should include 'Parameters:'
@@ -120,21 +120,21 @@ Describe 'parse_arg.sh'
 			Describe 'errors'
 				It 'not enough arguments passed'
 					declare params=(version -v '')
-					When run checkAllArgumentsSet params
+					When run exitIfNotAllArgumentsSet params
 					The status should be failure
-					The stderr should include 'Three arguments need to be passed to checkAllArgumentsSet'
+					The stderr should include 'Three arguments need to be passed to exitIfNotAllArgumentsSet'
 				End
 				Describe 'wrong number in params'
 					It 'one leftover'
 						declare params=(version -v '' leftOver1)
-						When run checkAllArgumentsSet params '' 'v1.0.0'
+						When run exitIfNotAllArgumentsSet params '' 'v1.0.0'
 						The status should be failure
 						The stderr should include 'leftOver1'
 					End
 					It 'two leftovers'
 						# shellcheck disable=SC2034
 						declare params=(version -v '' leftOver1 leftOver2)
-						When run checkAllArgumentsSet params '' 'v1.0.0'
+						When run exitIfNotAllArgumentsSet params '' 'v1.0.0'
 						The status should be failure
 						The stderr should include 'leftOver1'
 						The stderr should include 'leftOver2'
