@@ -35,6 +35,10 @@
 #    # executes readFile and closes the file descriptors again
 #    withCustomOutputInput 3 4 readFile "my-file.txt"
 #
+#
+#    # First tries to set chmod 777 to the directory and all files within it and then deletes the directory
+#    deleteDirChmod777 ".git"
+#
 ###################################
 set -euo pipefail
 shopt -s inherit_errexit
