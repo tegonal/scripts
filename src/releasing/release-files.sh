@@ -132,7 +132,7 @@ function releaseFiles() {
 	fi
 
 	local branch
-	branch="$(currentGitBranch)"
+	branch="$(currentGitBranch)" || die "could not determine current git branch, see above"
 	local -r expectedDefaultBranch="main" branch
 	if ! [[ $branch == "$expectedDefaultBranch" ]]; then
 		logError "you need to be on the \033[0;36m%s\033[0m branch to release, check that you have merged all changes from your current branch \033[0;36m%s\033[0m." "$expectedDefaultBranch" "$branch"

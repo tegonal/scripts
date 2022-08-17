@@ -64,7 +64,7 @@ function currentGitBranch() {
 
 function hasGitChanges() {
 	local gitStatus
-	gitStatus=$(git status --porcelain) || die "running git status --porcelain failed, see above"
+	gitStatus=$(git status --porcelain) || die "the following command failed (see above): git status --porcelain"
 	! [[ $gitStatus == "" ]]
 }
 
@@ -83,6 +83,7 @@ function countCommits() {
 	# params is required for parseFnArgs thus:
 	# shellcheck disable=SC2034
 	local -ra params=(from to)
+	parseFnArgs params "$@"
 	git rev-list --count "$from..$to" || die "could not count commits for $from..$to, see above"
 }
 
@@ -93,7 +94,9 @@ function localGitIsAhead() {
 	local -r branch=$1
 	local -r remote=${2-"origin"}
 	local -i count
-	count=$(countCommits "$remote/$branch" "$branch")
+	# we know that set -e is disabled for countCommits, that OK
+	# shellcheck disable=SC2310
+	count=$(countCommits "$remote/$branch" "$branch") || die "the following command failed (see above): countCommits \"$remote/$branch\" \"$branch\""
 	! ((count == 0))
 }
 
@@ -104,7 +107,9 @@ function localGitIsBehind() {
 	local -r branch=$1
 	local -r remote=${2-"origin"}
 	local -i count
-	count=$(countCommits "$branch" "$remote/$branch")
+	# we know that set -e is disabled for countCommits, that OK
+	# shellcheck disable=SC2310
+	count=$(countCommits "$branch" "$remote/$branch") || die "the following command failed (see above): countCommits \"$branch\" \"$remote/$branch\""
 	! ((count == 0))
 }
 
@@ -116,6 +121,6 @@ function hasRemoteTag() {
 	local -r remote=${2-"origin"}
 	shift 1
 	local output
-	output=$(git ls-remote -t "$remote") || die "the following command failed: git ls-remote -t $remote"
-	grep "$tag" >/dev/null <<< "$output" || false
+	output=$(git ls-remote -t "$remote") || die "the following command failed (see above): git ls-remote -t \"$remote\""
+	grep "$tag" >/dev/null <<<"$output" || false
 }
