@@ -71,7 +71,7 @@ function prepareFilesNextDevCycle() {
 	parseArguments params "" "$TEGONAL_SCRIPTS_VERSION" "$@"
 	if ! [[ -v projectsRootDir ]]; then projectsRootDir=$(realpath "."); fi
 	if ! [[ -v additionalPattern ]]; then additionalPattern="^$"; fi
-	checkAllArgumentsSet params "" "$TEGONAL_SCRIPTS_VERSION"
+	exitIfNotAllArgumentsSet params "" "$TEGONAL_SCRIPTS_VERSION"
 
 	if ! [[ "$version" =~ ^(v[0-9]+)\.([0-9]+)\.[0-9]+(-RC[0-9]+)?$ ]]; then
 		die "version should match vX.Y.Z(-RC...), was %s" "$version"
