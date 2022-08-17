@@ -37,9 +37,9 @@
 #    sourceOnce "asdf/bar/foo.sh"
 #
 #    declare guard
-#    guard=$(determineSourceOnceGuard "src/b.sh")
-#    # In case you have a cyclic dependency (a.sh sources b.sh and b.sh source a.sh),
-#    # then you can define the guard in file a yourself (before sourcing b.sh) so that b.sh does no longer source file a
+#    guard=$(determineSourceOnceGuard "src/bar.sh")
+#    # In case you don't want that a certain file is sourced, then you can define the guard yourself
+#    # this will prevent that */src/bar.sh is sourced
 #    printf -v "$guard" "%s" "true"
 #
 ###################################
