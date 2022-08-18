@@ -74,7 +74,7 @@ if ! [[ -v dir_of_tegonal_scripts ]]; then
 fi
 sourceOnce "$dir_of_tegonal_scripts/utility/recursive-declare-p.sh"
 
-function describeParameterTriple() {
+function parse_args_describeParameterTriple() {
 	echo >&2 "The array needs to contain parameter definitions where a parameter definition consist of 3 values:"
 	echo >&2 ""
 	echo >&2 "variableName pattern documentation"
@@ -89,40 +89,40 @@ function describeParameterTriple() {
 	EOM
 }
 
-function checkParameterDefinitionIsTriple() {
+function parse_args_checkParameterDefinitionIsTriple() {
 	if ! (($# == 1)); then
-		logError "One parameter needs to be passed to checkParameterDefinitionIsTriple, given \033[0;36m%s\033[0m\nFollowing a description of the parameters:" "$#"
+		logError "One parameter needs to be passed to parse_args_checkParameterDefinitionIsTriple, given \033[0;36m%s\033[0m\nFollowing a description of the parameters:" "$#"
 		echo >&2 '1: params   the name of an array which contains the parameter definitions'
 		printStackTrace
 		exit 9
 	fi
 
-	local -rn checkParameterDefinitionIsTriple_paramArr=$1
-	local -r arrLength=${#checkParameterDefinitionIsTriple_paramArr[@]}
+	local -rn parse_args_checkParameterDefinitionIsTriple_paramArr=$1
+	local -r arrLength=${#parse_args_checkParameterDefinitionIsTriple_paramArr[@]}
 
 	local arrayDefinition
-	arrayDefinition=$(recursiveDeclareP checkParameterDefinitionIsTriple_paramArr) || die "could not get array definition of %s" "${!checkParameterDefinitionIsTriple_paramArr}"
+	arrayDefinition=$(recursiveDeclareP parse_args_checkParameterDefinitionIsTriple_paramArr) || die "could not get array definition of %s" "${!parse_args_checkParameterDefinitionIsTriple_paramArr}"
 	reg='declare -a.*'
 	if ! [[ "$arrayDefinition" =~ $reg ]]; then
-		logError "the passed array \033[0;36m%s\033[0m is broken" "${!checkParameterDefinitionIsTriple_paramArr}"
+		logError "the passed array \033[0;36m%s\033[0m is broken" "${!parse_args_checkParameterDefinitionIsTriple_paramArr}"
 		echo >&2 "the first argument needs to be a non-associative array containing the parameter definitions, given:"
 		echo >&2 "$arrayDefinition"
 		echo >&2 ""
-		describeParameterTriple
+		parse_args_describeParameterTriple
 		printStackTrace
 		exit 9
 	fi
 
 	if ((arrLength == 0)); then
-		logError "the passed array \033[0;36m%s\033[0m with parameter definitions is broken, length was 0\033[0m" "${!checkParameterDefinitionIsTriple_paramArr}"
-		describeParameterTriple
+		logError "the passed array \033[0;36m%s\033[0m with parameter definitions is broken, length was 0\033[0m" "${!parse_args_checkParameterDefinitionIsTriple_paramArr}"
+		parse_args_describeParameterTriple
 		printStackTrace
 		exit 9
 	fi
 
 	if ! ((arrLength % 3 == 0)); then
-		logError "the passed array \033[0;36m%s\033[0m with parameter definitions is broken" "${!checkParameterDefinitionIsTriple_paramArr}"
-		describeParameterTriple
+		logError "the passed array \033[0;36m%s\033[0m with parameter definitions is broken" "${!parse_args_checkParameterDefinitionIsTriple_paramArr}"
+		parse_args_describeParameterTriple
 		echo >&2 ""
 		echo >&2 "given:"
 		echo >&2 "$arrayDefinition"
@@ -131,12 +131,12 @@ function checkParameterDefinitionIsTriple() {
 
 		for ((i = 0; i < arrLength; i += 3)); do
 			if ((i + 2 < arrLength)); then
-				printf >&2 '"%s" "%s" "%s"\n' "${checkParameterDefinitionIsTriple_paramArr[$i]}" "${checkParameterDefinitionIsTriple_paramArr[$i + 1]}" "${checkParameterDefinitionIsTriple_paramArr[$i + 2]}"
+				printf >&2 '"%s" "%s" "%s"\n' "${parse_args_checkParameterDefinitionIsTriple_paramArr[$i]}" "${parse_args_checkParameterDefinitionIsTriple_paramArr[$i + 1]}" "${parse_args_checkParameterDefinitionIsTriple_paramArr[$i + 2]}"
 			else
 				printf >&2 "\033[1;33mleftovers:\033[0m\n"
-				printf >&2 '"%s"' "${checkParameterDefinitionIsTriple_paramArr[$i]}"
+				printf >&2 '"%s"' "${parse_args_checkParameterDefinitionIsTriple_paramArr[$i]}"
 				if ((i + 1 < arrLength)); then
-					printf >&2 ' "%s"' "${checkParameterDefinitionIsTriple_paramArr[$i + 1]}"
+					printf >&2 ' "%s"' "${parse_args_checkParameterDefinitionIsTriple_paramArr[$i + 1]}"
 				fi
 			fi
 		done
@@ -161,7 +161,7 @@ function parseArguments {
 	local -r parseArguments_version=$3
 	shift 3
 
-	checkParameterDefinitionIsTriple parseArguments_paramArr
+	parse_args_checkParameterDefinitionIsTriple parseArguments_paramArr
 
 	local -r parseArguments_arrLength="${#parseArguments_paramArr[@]}"
 
@@ -170,16 +170,16 @@ function parseArguments {
 		parseArguments_argName="$1"
 		if [[ $parseArguments_argName == --help ]]; then
 			if ! ((parseArguments_numOfArgumentsParsed == 0)); then
-				logWarning "there were arguments defined prior to --help, they will all be ignored and instead printHelp will be called"
+				logWarning "there were arguments defined prior to --help, they will all be ignored and instead parse_args_printHelp will be called"
 			fi
-			printHelp parseArguments_paramArr "$parseArguments_examples" "$parseArguments_version"
+			parse_args_printHelp parseArguments_paramArr "$parseArguments_examples" "$parseArguments_version"
 			return 99
 		fi
 		if [[ $parseArguments_argName == --version ]]; then
 			if ! ((parseArguments_numOfArgumentsParsed == 0)); then
-				logWarning "there were arguments defined prior to --version, they will all be ignored and instead printVersion will be called"
+				logWarning "there were arguments defined prior to --version, they will all be ignored and instead parse_args_printVersion will be called"
 			fi
-			printVersion "$parseArguments_version"
+			parse_args_printVersion "$parseArguments_version"
 			return 99
 		fi
 
@@ -193,7 +193,7 @@ function parseArguments {
 					logError "no value defined for parameter \033[1;36m%s\033[0m (pattern %s) in %s" "$parseArguments_paramName" "$parseArguments_pattern" "${BASH_SOURCE[1]}"
 					echo >&2 "following the help documentation:"
 					echo >&2 ""
-					printHelp >&2 parseArguments_paramArr "$parseArguments_examples" "$parseArguments_version"
+					parse_args_printHelp >&2 parseArguments_paramArr "$parseArguments_examples" "$parseArguments_version"
 					printStackTrace
 					exit 9
 				fi
@@ -217,9 +217,9 @@ function parseArguments {
 	done
 }
 
-function printVersion() {
+function parse_args_printVersion() {
 	if ! (($# == 1)); then
-		logError "One argument needs to be passed to printVersion, given \033[0;36m%s\033[0m\nFollowing a description of the parameters:" "$#"
+		logError "One argument needs to be passed to parse_args_printVersion, given \033[0;36m%s\033[0m\nFollowing a description of the parameters:" "$#"
 		echo >&2 '1: version   the version which shall be shown if one uses --version'
 		printStackTrace
 		exit 9
@@ -228,26 +228,26 @@ function printVersion() {
 	logInfo "Version of %s is:\n%s" "$(basename "${BASH_SOURCE[3]:-${BASH_SOURCE[2]}}")" "$version"
 }
 
-function printHelp {
+function parse_args_printHelp {
 	if ! (($# == 3)); then
-		logError "Three arguments need to be passed to printHelp, given \033[0;36m%s\033[0m\nFollowing a description of the parameters:" "$#"
+		logError "Three arguments need to be passed to parse_args_printHelp, given \033[0;36m%s\033[0m\nFollowing a description of the parameters:" "$#"
 		echo >&2 '1: params    the name of an array which contains the parameter definitions'
 		echo >&2 '2: examples  a string containing examples (or an empty string)'
 		echo >&2 '3: version   the version which shall be shown if one uses --version'
 		printStackTrace
 		exit 9
 	fi
-	local -rn printHelp_paramArr=$1
+	local -rn parse_args_printHelp_paramArr=$1
 	local -r examples=$2
 	local -r version=$3
 
-	checkParameterDefinitionIsTriple printHelp_paramArr
+	parse_args_checkParameterDefinitionIsTriple parse_args_printHelp_paramArr
 
-	local arrLength="${#printHelp_paramArr[@]}"
+	local arrLength="${#parse_args_printHelp_paramArr[@]}"
 
 	local maxLength=15
 	for ((i = 0; i < arrLength; i += 3)); do
-		local pattern="${printHelp_paramArr[i + 1]}"
+		local pattern="${parse_args_printHelp_paramArr[i + 1]}"
 		local length=$((${#pattern} + 2))
 		if ((length > maxLength)); then
 			maxLength="$length"
@@ -256,8 +256,8 @@ function printHelp {
 
 	printf "\033[1;33mParameters:\033[0m\n"
 	for ((i = 0; i < arrLength; i += 3)); do
-		local pattern="${printHelp_paramArr[i + 1]}"
-		local help="${printHelp_paramArr[i + 2]}"
+		local pattern="${parse_args_printHelp_paramArr[i + 1]}"
+		local help="${parse_args_printHelp_paramArr[i + 2]}"
 
 		if [[ -n "$help" ]]; then
 			printf "%-${maxLength}s %s\n" "$pattern" "$help"
@@ -274,7 +274,7 @@ function printHelp {
 		echo "$examples"
 	fi
 	echo ""
-	printVersion "$version"
+	parse_args_printVersion "$version"
 }
 
 function exitIfNotAllArgumentsSet {
@@ -292,7 +292,7 @@ function exitIfNotAllArgumentsSet {
 	local -r exitIfNotAllArgumentsSet_examples=$2
 	local -r exitIfNotAllArgumentsSet_version=$3
 
-	checkParameterDefinitionIsTriple exitIfNotAllArgumentsSet_paramArr
+	parse_args_checkParameterDefinitionIsTriple exitIfNotAllArgumentsSet_paramArr
 
 	local -r exitIfNotAllArgumentsSet_arrLength="${#exitIfNotAllArgumentsSet_paramArr[@]}"
 	local -i exitIfNotAllArgumentsSet_good=1
@@ -310,7 +310,7 @@ function exitIfNotAllArgumentsSet {
 		echo >&2 ""
 		echo >&2 "following the help documentation:"
 		echo >&2 ""
-		printHelp >&2 exitIfNotAllArgumentsSet_paramArr "$exitIfNotAllArgumentsSet_examples" "$exitIfNotAllArgumentsSet_version"
+		parse_args_printHelp >&2 exitIfNotAllArgumentsSet_paramArr "$exitIfNotAllArgumentsSet_examples" "$exitIfNotAllArgumentsSet_version"
 		if ((${#FUNCNAME} > 1)); then
 			# it is handy to see the stacktrace if it is not a direct call from command line
 			printStackTrace
