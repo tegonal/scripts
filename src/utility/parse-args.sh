@@ -72,6 +72,7 @@ if ! [[ -v dir_of_tegonal_scripts ]]; then
 	dir_of_tegonal_scripts="$(cd -- "$(dirname -- "${BASH_SOURCE[0]:-$0}")" >/dev/null && pwd 2>/dev/null)/.."
 	source "$dir_of_tegonal_scripts/setup.sh" "$dir_of_tegonal_scripts"
 fi
+sourceOnce "$dir_of_tegonal_scripts/utility/checks.sh"
 sourceOnce "$dir_of_tegonal_scripts/utility/recursive-declare-p.sh"
 
 function parse_args_describeParameterTriple() {
@@ -79,7 +80,8 @@ function parse_args_describeParameterTriple() {
 	echo >&2 ""
 	echo >&2 "variableName pattern documentation"
 	echo >&2 ""
-	echo >&2 "...where documentation can also be an empty string (i.e. is kind of optional). Following an example of such an array:"
+	echo >&2 "...where documentation can also be an empty string (i.e. is kind of optional)."
+	echo >&2 "Following an example of such an array:"
 	echo >&2 ""
 	cat >&2 <<-EOM
 		declare params=(
@@ -97,52 +99,7 @@ function parse_args_checkParameterDefinitionIsTriple() {
 		exit 9
 	fi
 
-	local -rn parse_args_checkParameterDefinitionIsTriple_paramArr=$1
-	local -r arrLength=${#parse_args_checkParameterDefinitionIsTriple_paramArr[@]}
-
-	local arrayDefinition
-	arrayDefinition=$(recursiveDeclareP parse_args_checkParameterDefinitionIsTriple_paramArr) || die "could not get array definition of %s" "${!parse_args_checkParameterDefinitionIsTriple_paramArr}"
-	reg='declare -a.*'
-	if ! [[ "$arrayDefinition" =~ $reg ]]; then
-		logError "the passed array \033[0;36m%s\033[0m is broken" "${!parse_args_checkParameterDefinitionIsTriple_paramArr}"
-		echo >&2 "the first argument needs to be a non-associative array containing the parameter definitions, given:"
-		echo >&2 "$arrayDefinition"
-		echo >&2 ""
-		parse_args_describeParameterTriple
-		printStackTrace
-		exit 9
-	fi
-
-	if ((arrLength == 0)); then
-		logError "the passed array \033[0;36m%s\033[0m with parameter definitions is broken, length was 0\033[0m" "${!parse_args_checkParameterDefinitionIsTriple_paramArr}"
-		parse_args_describeParameterTriple
-		printStackTrace
-		exit 9
-	fi
-
-	if ! ((arrLength % 3 == 0)); then
-		logError "the passed array \033[0;36m%s\033[0m with parameter definitions is broken" "${!parse_args_checkParameterDefinitionIsTriple_paramArr}"
-		parse_args_describeParameterTriple
-		echo >&2 ""
-		echo >&2 "given:"
-		echo >&2 "$arrayDefinition"
-		echo >&2 ""
-		echo >&2 "following how we split this:"
-
-		for ((i = 0; i < arrLength; i += 3)); do
-			if ((i + 2 < arrLength)); then
-				printf >&2 '"%s" "%s" "%s"\n' "${parse_args_checkParameterDefinitionIsTriple_paramArr[$i]}" "${parse_args_checkParameterDefinitionIsTriple_paramArr[$i + 1]}" "${parse_args_checkParameterDefinitionIsTriple_paramArr[$i + 2]}"
-			else
-				printf >&2 "\033[1;33mleftovers:\033[0m\n"
-				printf >&2 '"%s"' "${parse_args_checkParameterDefinitionIsTriple_paramArr[$i]}"
-				if ((i + 1 < arrLength)); then
-					printf >&2 ' "%s"' "${parse_args_checkParameterDefinitionIsTriple_paramArr[$i + 1]}"
-				fi
-			fi
-		done
-		printStackTrace
-		exit 9
-	fi
+	exitIfArgIsNotArrayWithTuples "$1" 3 "parameter definitions" "first" "parse_args_describeParameterTriple"
 }
 
 function parseArguments {
