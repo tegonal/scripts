@@ -32,8 +32,20 @@
 #    	checkArgIsArray arr 1       # same as exitIfArgIsNotArray if set -e has an effect on this line
 #    	checkArgIsFunction "$fn" 2   # same as exitIfArgIsNotFunction if set -e has an effect on this line
 #
+#    	function describeTriple(){
+#    		echo >&2 "array contains 3-tuples with names where the first value is the first-, the second the middle- and the third the lastname"
+#    	}
+#    	# check array with 3-tuples
+#    	checkArgIsArrayWithTuples arr 3 "names" 1 describeTriple
+#
 #    	exitIfArgIsNotArray arr 1
 #    	exitIfArgIsNotFunction "$fn" 2
+#
+#    		function describePair(){
+#      		echo >&2 "array contains 2-tuples with names where the first value is the first-, and the second the lastname"
+#      	}
+#    	# check array with 2-tuples
+#    	exitIfArgIsNotArrayWithTuples arr 2 "names" 1 describePair
 #    }
 #
 #    if checkCommandExists "cat"; then
@@ -201,9 +213,9 @@ function checkCommandExists() {
 	fi
 	local -r name=$1
 	local file
-	file=$(command -v "$name") || return $?
+	file=$(command -v "$name") || returnDying "%s is not installed (or not in PATH) %s" "$name" "${2:-""}" || return $?
 	if ! [[ -x $file ]]; then
-		returnDying "$name is not installed (or not in PATH) ${2:-""}"
+		returnDying "%s is on the system at %s (according to command) but cannot be executed" "$name" "$file" || return $?
 	fi
 }
 

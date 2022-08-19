@@ -902,8 +902,20 @@ function foo() {
 	checkArgIsArray arr 1       # same as exitIfArgIsNotArray if set -e has an effect on this line
 	checkArgIsFunction "$fn" 2   # same as exitIfArgIsNotFunction if set -e has an effect on this line
 
+	function describeTriple(){
+		echo >&2 "array contains 3-tuples with names where the first value is the first-, the second the middle- and the third the lastname"
+	}
+	# check array with 3-tuples
+	checkArgIsArrayWithTuples arr 3 "names" 1 describeTriple
+
 	exitIfArgIsNotArray arr 1
 	exitIfArgIsNotFunction "$fn" 2
+
+		function describePair(){
+  		echo >&2 "array contains 2-tuples with names where the first value is the first-, and the second the lastname"
+  	}
+	# check array with 2-tuples
+	exitIfArgIsNotArrayWithTuples arr 2 "names" 1 describePair
 }
 
 if checkCommandExists "cat"; then
