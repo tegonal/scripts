@@ -74,7 +74,7 @@ function parseFnArgs() {
 
 	# using unconventional naming in order to avoid name clashes with the variables we will initialise further below
 	local -rn parseFnArgs_paramArr1=$1
-	shift 1
+	shift 1 || die "could not shift by 1"
 
 	exitIfArgIsNotArray parseFnArgs_paramArr1 1
 
@@ -134,7 +134,7 @@ function parseFnArgs() {
 		# assign arguments to specified variables
 		printf -v "$parseFnArgs_name" "%s" "$1" || die "could not assign value to $parseFnArgs_name"
 		local -r "$parseFnArgs_name"
-		shift
+		shift || die "could not shift by 1"
 	done
 
 	# assign rest to varargs if used
