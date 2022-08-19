@@ -163,7 +163,7 @@ function parse_commands_printHelp() {
 	local -a commandNames=()
 	arrTakeEveryX parse_commands_printHelp_paramArr commandNames 2 0
 	local -i maxLength=$(($(arrStringEntryMaxLength commandNames) + 2))
-	local -ri arrLength="${#parseCommands_paramArr}"
+	local -ri arrLength="${#parseCommands_paramArr[@]}"
 
 	printf "\033[1;33mCommands:\033[0m\n"
 	local -i i
