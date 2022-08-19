@@ -74,8 +74,12 @@ function checkArgIsArray() {
 	# we are not failing (with || die...) on this line as the if will fail afterwards
 	arrayDefinition="$(recursiveDeclareP checkArgIsArray_arr)"
 	if ! [[ $arrayDefinition =~ $reg ]]; then
+		local funcName=${FUNCNAME[1]}
+		if [[ $funcName == "exitIfArgIsNotArray" ]]; then
+			funcName=${FUNCNAME[2]}
+		fi
 		traceAndReturnDying "the passed array \033[0;36m%s\033[0m is broken.\nThe %s argument to %s needs to be a non-associative array, given:\n%s" \
-			"${!checkArgIsArray_arr}" "$argNumber" "${FUNCNAME[1]}" "$arrayDefinition"
+			"${!checkArgIsArray_arr}" "$argNumber" "$funcName" "$arrayDefinition"
 	fi
 }
 
@@ -108,12 +112,17 @@ function checkArgIsArrayWithTuples() {
 
 	exitIfArgIsNotFunction "$describeTupleFn" "$argNumber"
 
+	local funcName=${FUNCNAME[1]}
+	if [[ $funcName == "exitIfArgIsNotArrayWithTuples" ]]; then
+		funcName=${FUNCNAME[2]}
+	fi
+
 	local arrayDefinition
 	arrayDefinition=$(recursiveDeclareP checkArgIsArrayWithTuples_paramArr) || die "could not get array definition of %s" "${!checkArgIsArrayWithTuples_paramArr}"
 	reg='declare -a.*'
 	if ! [[ "$arrayDefinition" =~ $reg ]]; then
 		logError "the passed array \033[0;36m%s\033[0m is broken" "${!checkArgIsArrayWithTuples_paramArr}"
-		printf >&2 "the %s argument needs to be a non-associative array containing the %s, given:\n" "$argNumber" "$tupleRepresents"
+		printf >&2 "The %s argument to %s needs to be a non-associative array containing %s, given:\n" "$argNumber" "$funcName" "$tupleRepresents"
 		echo >&2 "$arrayDefinition"
 		echo >&2 ""
 		"$describeTupleFn"
@@ -122,14 +131,16 @@ function checkArgIsArrayWithTuples() {
 	fi
 
 	if ((arrLength == 0)); then
-		logError "the passed array \033[0;36m%s\033[0m with %s is broken, length was 0\033[0m" "${!checkArgIsArrayWithTuples_paramArr}" "$tupleRepresents"
+		logError "the passed array \033[0;36m%s\033[0m is broken, length was 0\033[0m" "${!checkArgIsArrayWithTuples_paramArr}"
+		printf >&2 "The %s argument to %s needs to be a non-empty array containing %s, given:\n" "$argNumber" "$funcName" "$tupleRepresents"
 		"$describeTupleFn"
 		printStackTrace
 		exit 9
 	fi
 
 	if ! ((arrLength % tupleNum == 0)); then
-		logError "the passed array \033[0;36m%s\033[0m with %s is broken" "${!checkArgIsArrayWithTuples_paramArr}" "$tupleRepresents"
+		logError "the passed array \033[0;36m%s\033[0m is broken" "${!checkArgIsArrayWithTuples_paramArr}"
+		printf >&2 "The %s argument to %s needs to be an array with %s-tuples containing %s, given:\n" "$argNumber" "$funcName" "$tupleNum" "$tupleRepresents"
 		"$describeTupleFn"
 		echo >&2 ""
 		echo >&2 "given:"
@@ -137,6 +148,7 @@ function checkArgIsArrayWithTuples() {
 		echo >&2 ""
 		echo >&2 "following how we split this:"
 
+		local -i i j
 		for ((i = 0; i < arrLength; i += tupleNum)); do
 			local -r length=$((i + tupleNum - 1 < arrLength ? i + tupleNum : arrLength))
 			if ((i + tupleNum - 1 >= arrLength)); then
@@ -168,8 +180,12 @@ function checkArgIsFunction() {
 	if ! declare -F "$name" >/dev/null; then
 		local declareP
 		declareP=$(declare -p "$name" || echo "failure, is not a variable")
+		local funcName=${FUNCNAME[1]}
+		if [[ $funcName == "exitIfArgIsNotFunction" ]]; then
+			funcName=${FUNCNAME[2]}
+		fi
 		traceAndReturnDying "the %s argument to %s needs to be a function/command, %s isn't one\nMaybe it is a variable storing the name of a function?\nFollowing the output of: declare -p %s\n%s" \
-			"$argNumber" "${FUNCNAME[1]}" "$name" "$name" "$declareP"
+			"$argNumber" "$funcName" "$name" "$name" "$declareP"
 	fi
 }
 
