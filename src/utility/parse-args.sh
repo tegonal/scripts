@@ -72,8 +72,9 @@ if ! [[ -v dir_of_tegonal_scripts ]]; then
 	dir_of_tegonal_scripts="$(cd -- "$(dirname -- "${BASH_SOURCE[0]:-$0}")" >/dev/null && pwd 2>/dev/null)/.."
 	source "$dir_of_tegonal_scripts/setup.sh" "$dir_of_tegonal_scripts"
 fi
+sourceOnce "$dir_of_tegonal_scripts/utility/array-utils.sh"
 sourceOnce "$dir_of_tegonal_scripts/utility/checks.sh"
-sourceOnce "$dir_of_tegonal_scripts/utility/recursive-declare-p.sh"
+sourceOnce "$dir_of_tegonal_scripts/utility/parse-utils.sh"
 
 function parse_args_describeParameterTriple() {
 	echo >&2 "The array needs to contain parameter definitions where a parameter definition consist of 3 values:"
@@ -120,7 +121,7 @@ function parseArguments {
 
 	parse_args_checkParameterDefinitionIsTriple parseArguments_paramArr
 
-	local -r parseArguments_arrLength="${#parseArguments_paramArr[@]}"
+	local -ri parseArguments_arrLength="${#parseArguments_paramArr[@]}"
 
 	local -i parseArguments_numOfArgumentsParsed=0
 	while (($# > 0)); do
@@ -134,13 +135,14 @@ function parseArguments {
 		fi
 		if [[ $parseArguments_argName == --version ]]; then
 			if ! ((parseArguments_numOfArgumentsParsed == 0)); then
-				logWarning "there were arguments defined prior to --version, they will all be ignored and instead parse_args_printVersion will be called"
+				logWarning "there were arguments defined prior to --version, they will all be ignored and instead printVersion will be called"
 			fi
-			parse_args_printVersion "$parseArguments_version"
+			printVersion "$parseArguments_version"
 			return 99
 		fi
 
 		local -i parseArguments_expectedName=0
+		local -i parseArguments_i
 		for ((parseArguments_i = 0; parseArguments_i < parseArguments_arrLength; parseArguments_i += 3)); do
 			local parseArguments_paramName="${parseArguments_paramArr[parseArguments_i]}"
 			local parseArguments_pattern="${parseArguments_paramArr[parseArguments_i + 1]}"
@@ -174,17 +176,6 @@ function parseArguments {
 	done
 }
 
-function parse_args_printVersion() {
-	if ! (($# == 1)); then
-		logError "One argument needs to be passed to parse_args_printVersion, given \033[0;36m%s\033[0m\nFollowing a description of the parameters:" "$#"
-		echo >&2 '1: version   the version which shall be shown if one uses --version'
-		printStackTrace
-		exit 9
-	fi
-	local version=$1
-	logInfo "Version of %s is:\n%s" "$(basename "${BASH_SOURCE[3]:-${BASH_SOURCE[2]}}")" "$version"
-}
-
 function parse_args_printHelp {
 	if ! (($# == 3)); then
 		logError "Three arguments need to be passed to parse_args_printHelp, given \033[0;36m%s\033[0m\nFollowing a description of the parameters:" "$#"
@@ -202,14 +193,11 @@ function parse_args_printHelp {
 
 	local arrLength="${#parse_args_printHelp_paramArr[@]}"
 
-	local maxLength=15
-	for ((i = 0; i < arrLength; i += 3)); do
-		local pattern="${parse_args_printHelp_paramArr[i + 1]}"
-		local length=$((${#pattern} + 2))
-		if ((length > maxLength)); then
-			maxLength="$length"
-		fi
-	done
+	# is used as ref parameter, shellcheck is not able to deduce this
+	# shellcheck disable=SC2034
+	local -a patterns=()
+	arrTakeEveryX parse_args_printHelp_paramArr patterns 3 1
+	local -i maxLength=$(($(arrStringEntryMaxLength patterns) + 2))
 
 	printf "\033[1;33mParameters:\033[0m\n"
 	for ((i = 0; i < arrLength; i += 3)); do
@@ -231,7 +219,7 @@ function parse_args_printHelp {
 		echo "$examples"
 	fi
 	echo ""
-	parse_args_printVersion "$version"
+	printVersion "$version"
 }
 
 function exitIfNotAllArgumentsSet {
@@ -251,8 +239,8 @@ function exitIfNotAllArgumentsSet {
 
 	parse_args_checkParameterDefinitionIsTriple exitIfNotAllArgumentsSet_paramArr
 
-	local -r exitIfNotAllArgumentsSet_arrLength="${#exitIfNotAllArgumentsSet_paramArr[@]}"
-	local -i exitIfNotAllArgumentsSet_good=1
+	local -ri exitIfNotAllArgumentsSet_arrLength="${#exitIfNotAllArgumentsSet_paramArr[@]}"
+	local -i exitIfNotAllArgumentsSet_good=1 exitIfNotAllArgumentsSet_i
 	for ((exitIfNotAllArgumentsSet_i = 0; exitIfNotAllArgumentsSet_i < exitIfNotAllArgumentsSet_arrLength; exitIfNotAllArgumentsSet_i += 3)); do
 		local exitIfNotAllArgumentsSet_paramName="${exitIfNotAllArgumentsSet_paramArr[exitIfNotAllArgumentsSet_i]}"
 		local exitIfNotAllArgumentsSet_pattern="${exitIfNotAllArgumentsSet_paramArr[exitIfNotAllArgumentsSet_i + 1]}"

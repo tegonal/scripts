@@ -26,6 +26,7 @@ body:
         - releasing/release-files.sh
         - releasing/update-version-README.sh
         - releasing/update-version-scripts.sh
+        - utility/array-utils.sh
         - utility/ask.sh
         - utility/checks.sh
         - utility/git-utils.sh
@@ -33,6 +34,7 @@ body:
         - utility/io.sh
         - utility/log.sh
         - utility/parse-args.sh
+        - utility/parse-utils.sh
         - utility/parse-fn-args.sh
         - utility/recursive-declare-p.sh
         - utility/replace-snippet.sh
