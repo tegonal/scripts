@@ -114,7 +114,7 @@ function parseCommands {
 	shift 4 || die "could not shift by 4"
 
 	if (($# < 5 )); then
-		logError "no command passed to %s, following the output of --help"
+		logError "no command passed to %s, following the output of --help" "$(basename "${BASH_SOURCE[2]}")"
 		echo ""
 		parse_commands_printHelp parseCommands_paramArr "$version"
 	fi
