@@ -34,6 +34,7 @@ body:
         - utility/io.sh
         - utility/log.sh
         - utility/parse-args.sh
+        - utility/parse-commands.sh
         - utility/parse-utils.sh
         - utility/parse-fn-args.sh
         - utility/recursive-declare-p.sh

@@ -19,6 +19,8 @@
 #    #!/usr/bin/env bash
 #    set -euo pipefail
 #    shopt -s inherit_errexit
+#    MY_LIB_VERSION="v1.1.0"
+#
 #    # Assumes tegonal's scripts were fetched with gget - adjust location accordingly
 #    dir_of_tegonal_scripts="$(cd -- "$(dirname -- "${BASH_SOURCE[0]:-$0}")" >/dev/null && pwd 2>/dev/null)/../lib/tegonal-scripts/src"
 #    source "$dir_of_tegonal_scripts/setup.sh" "$dir_of_tegonal_scripts"
@@ -49,10 +51,10 @@
 #    EOM
 #    )
 #
-#    parseArguments params "$examples" "$@"
+#    parseArguments params "$examples" "$MY_LIB_VERSION" "$@"
 #    # in case there are optional parameters, then fill them in here before calling exitIfNotAllArgumentsSet
 #    if ! [[ -v directory ]]; then directory="."; fi
-#    exitIfNotAllArgumentsSet params "$examples"
+#    exitIfNotAllArgumentsSet params "$examples" "$MY_LIB_VERSION"
 #
 #    # pass your variables storing the arguments to other scripts
 #    echo "p: $pattern, v: $version, d: $directory"

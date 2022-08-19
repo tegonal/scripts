@@ -840,10 +840,11 @@ printStackTrace
 
 ## Parse arguments
 
-We have two scripts helping in parsing arguments:
+We provide three scripts helping in parsing command line arguments:
 
 - parse-args.sh which expects named arguments
-- parse-fn-args which is supposed to be sourced into a function
+- parse-fn-args which is intended to be used in functions and only supports positional arguments
+- parse-command.sh which simplifies the delegation to corresponding command functions
 
 ### parse-args.sh
 
@@ -856,6 +857,8 @@ Full usage example:
 #!/usr/bin/env bash
 set -euo pipefail
 shopt -s inherit_errexit
+MY_LIB_VERSION="v1.1.0"
+
 # Assumes tegonal's scripts were fetched with gget - adjust location accordingly
 dir_of_tegonal_scripts="$(cd -- "$(dirname -- "${BASH_SOURCE[0]:-$0}")" >/dev/null && pwd 2>/dev/null)/../lib/tegonal-scripts/src"
 source "$dir_of_tegonal_scripts/setup.sh" "$dir_of_tegonal_scripts"
@@ -886,10 +889,10 @@ analysis.sh -p "%{21}" -v v0.1.0
 EOM
 )
 
-parseArguments params "$examples" "$@"
+parseArguments params "$examples" "$MY_LIB_VERSION" "$@"
 # in case there are optional parameters, then fill them in here before calling exitIfNotAllArgumentsSet
 if ! [[ -v directory ]]; then directory="."; fi
-exitIfNotAllArgumentsSet params "$examples"
+exitIfNotAllArgumentsSet params "$examples" "$MY_LIB_VERSION"
 
 # pass your variables storing the arguments to other scripts
 echo "p: $pattern, v: $version, d: $directory"
@@ -943,6 +946,50 @@ function myFunctionWithVarargs() {
 ```
 
 </utility-parse-fn-args>
+
+### parse-commands.sh
+
+Full usage example:
+
+<utility-parse-commands>
+
+<!-- auto-generated, do not modify here but in src/utility/parse-commands.sh -->
+```bash
+#!/usr/bin/env bash
+set -euo pipefail
+shopt -s inherit_errexit
+MY_LIB_VERSION="v1.1.0"
+
+# Assumes tegonal's scripts were fetched with gget - adjust location accordingly
+dir_of_tegonal_scripts="$(cd -- "$(dirname -- "${BASH_SOURCE[0]:-$0}")" >/dev/null && pwd 2>/dev/null)/../"
+source "$dir_of_tegonal_scripts/setup.sh" "$dir_of_tegonal_scripts"
+
+sourceOnce "$dir_of_tegonal_scripts/utility/parse-commands.sh"
+
+# command definitions where each command definition consists of two values (separated via space)
+# COMMAND_NAME HELP_TEXT
+# where the HELP_TEXT is optional in the sense of that you can use an empty string
+# in case you use shellcheck then you need to suppress the warning for the last variable definition of commands
+# as shellcheck doesn't get that we are passing `commands` to parseCommands ¯\_(ツ)_/¯ (an open issue of shellcheck)
+# shellcheck disable=SC2034
+declare commands=(
+	add 'command to add people to your list'
+	config 'manage configuration'
+	login ''
+)
+
+# the function which is responsible to load the corresponding file which contains the function of this particular command
+function sourceCommand() {
+	local -r command=$1
+	shift
+	sourceOnce "my-lib-$command.sh"
+}
+
+parseCommands commands "$MY_LIB_VERSION" sourceCommand my_lib_ "$@"
+```
+
+</utility-parse-commands>
+
 
 ## Parse utils
 
