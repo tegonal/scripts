@@ -79,7 +79,7 @@ function checkArgIsArray() {
 	fi
 	local -rn checkArgIsArray_arr=$1
 	local -r argNumber=$2
-	shift 2
+	shift 2 || die "could not shift by 2"
 
 	reg='^declare -a.*'
 	local arrayDefinition
@@ -118,7 +118,7 @@ function checkArgIsArrayWithTuples() {
 	local -r tupleRepresents=$3
 	local -r argNumber=$4
 	local -r describeTupleFn=$5
-	shift 5
+	shift 5 || die "could not shift by 5"
 
 	local -r arrLength=${#checkArgIsArrayWithTuples_paramArr[@]}
 

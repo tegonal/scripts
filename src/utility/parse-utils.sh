@@ -31,7 +31,7 @@
 #    function myParseFunction() {
 #    	while (($# > 0)); do
 #    		if [[ $1 == "--version" ]]; then
-#    			shift
+#    			shift || die "could not shift by 1"
 #    			printVersion "$MY_LIBRARY_VERSION"
 #    		fi
 #    		#...

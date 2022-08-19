@@ -48,8 +48,8 @@ shopt -s inherit_errexit
 
 function determineSourceOnceGuard() {
 	if ! (($# == 1)); then
-  		traceAndDie "you need to pass the file name, for which we shall calculate the guard, to determineSourceOnceGuard"
-  	fi
+		traceAndDie "you need to pass the file name, for which we shall calculate the guard, to determineSourceOnceGuard"
+	fi
 	local -r file="$1"
 	readlink -m "$file" | perl -0777 -pe "s@(?:.*/([^/]+)/)?([^/]+)\$@sourceOnceGuard_\$1__\$2@;" -pe "s/[-.]/_/g" || die "was not able to determine sourceOnce guard for %s" "$file"
 }
@@ -64,7 +64,7 @@ function sourceOnce() {
 	fi
 
 	local -r sourceOnce_file="$1"
-	shift
+	shift 1 || die "could not shift by 1"
 
 	local sourceOnce_guard
 	sourceOnce_guard=$(determineSourceOnceGuard "$sourceOnce_file")

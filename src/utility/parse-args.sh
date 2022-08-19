@@ -119,7 +119,7 @@ function parseArguments {
 	local -rn parseArguments_paramArr=$1
 	local -r parseArguments_examples=$2
 	local -r parseArguments_version=$3
-	shift 3
+	shift 3 || die "could not shift by 3"
 
 	parse_args_checkParameterDefinitionIsTriple parseArguments_paramArr
 
@@ -162,19 +162,19 @@ function parseArguments {
 				printf -v "$parseArguments_paramName" "%s" "$2" || die "could not assign value to $parseArguments_paramName"
 				parseArguments_expectedName=1
 				((++parseArguments_numOfArgumentsParsed))
-				shift
+				shift || die "could not shift by 1"
 			fi
 		done
 
 		if ((parseArguments_expectedName == 0)); then
 			if [[ $parseArguments_argName =~ ^- ]] && (($# > 1)); then
 				logWarning "ignored argument \033[1;36m%s\033[0m (and its value %s)" "$parseArguments_argName" "$2"
-				shift
+				shift || die "could not shift by 1"
 			else
 				logWarning "ignored argument \033[1;36m%s\033[0m" "$parseArguments_argName"
 			fi
 		fi
-		shift
+		shift || die "could not shift by 1"
 	done
 }
 

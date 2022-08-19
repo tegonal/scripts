@@ -55,6 +55,7 @@ function runShellcheck() {
 	fi
 	local -rn runShellcheck_paths=$1
 	local -r sourcePath=$2
+	shift 2 || die "could not shift by 2"
 
 	exitIfArgIsNotArray runShellcheck_paths 1
 

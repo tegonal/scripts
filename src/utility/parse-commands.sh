@@ -23,7 +23,7 @@
 #    MY_LIB_VERSION="v1.1.0"
 #
 #    # Assumes tegonal's scripts were fetched with gget - adjust location accordingly
-#    dir_of_tegonal_scripts="$(cd -- "$(dirname -- "${BASH_SOURCE[0]:-$0}")" >/dev/null && pwd 2>/dev/null)/../"
+#    dir_of_tegonal_scripts="$(cd -- "$(dirname -- "${BASH_SOURCE[0]:-$0}")" >/dev/null && pwd 2>/dev/null)/../lib/tegonal-scripts/src"
 #    source "$dir_of_tegonal_scripts/setup.sh" "$dir_of_tegonal_scripts"
 #
 #    sourceOnce "$dir_of_tegonal_scripts/utility/parse-commands.sh"
@@ -111,13 +111,13 @@ function parseCommands {
 	local -r version=$2
 	local -r sourceFn=$3
 	local -r fnPrefix=$4
-	shift 4
+	shift 4 || die "could not shift by 4"
 
 	parse_commands_checkParameterDefinitionIsPair parseCommands_paramArr
 	exitIfArgIsNotFunction "$sourceFn" 3
 
 	local -r command=$1
-	shift
+	shift || die "could not shift by 1"
 	local -a commandNames=()
 	arrTakeEveryX parseCommands_paramArr commandNames 2 0
 	local tmpRegex regex

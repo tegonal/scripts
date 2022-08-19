@@ -45,7 +45,7 @@ function askYesOrNo() {
 		exit 9
 	fi
 	local -r question=$1
-	shift
+	shift || die "could not shift by 1"
 
 	# the question itself can have %s thus we use it in the format string
 	# shellcheck disable=SC2059
