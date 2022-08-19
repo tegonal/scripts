@@ -107,17 +107,19 @@ The scripts are ordered by topic:
     - [Releasing Files](#release-files)
 
 - [Script Utilities](#script-utilities)
-    - [Parse arguments](#parse-arguments)
-    - [Log functions](#log-functions)
+    - [array utils](#array-utils)
     - [Ask functions](#ask-functions)
-    - [`source` once](#source-once)
+    - [Checks](#checks) 
     - [git Utils](#git-utils)
     - [GPG Utils](#gpg-utils)
     - [IO functions](#io-functions)
-    - [checks](#checks)
+    - [Log functions](#log-functions)
+    - [Parse arguments](#parse-arguments)
+    - [Parse utils](#parse-utils)
     - [Recursive `declare -p`](#recursive-declare--p)
     - [Replace Snippets](#replace-snippets)
-    - [Update Documentation](#update-bash-documentation)
+    - [`source` once](#source-once)
+	- [Update Documentation](#update-bash-documentation)
 
 # Quality Assurance
 
@@ -181,9 +183,9 @@ Help:
 <!-- auto-generated, do not modify here but in src/releasing/update-version-README.sh -->
 ```text
 Parameters:
--v              the version which shall be used
--f|--file       (optional) the file where search & replace shall be done -- default: ./README.md
--p|--pattern    (optional) pattern which is used in a perl command (separator /) to search & replace additional occurrences. It should define two match groups and the replace operation looks as follows: \${1}$version\${2}
+-v             the version which shall be used
+-f|--file      (optional) the file where search & replace shall be done -- default: ./README.md
+-p|--pattern   (optional) pattern which is used in a perl command (separator /) to search & replace additional occurrences. It should define two match groups and the replace operation looks as follows: \${1}$version\${2}
 
 --help     prints this help
 --version  prints the version of this script
@@ -318,8 +320,8 @@ Help:
 <!-- auto-generated, do not modify here but in src/releasing/toggle-sections.sh -->
 ```text
 Parameters:
--c|--command    either 'main' or 'release'
--f|--file       (optional) the file where search & replace shall be done -- default: ./README.md
+-c|--command   either 'main' or 'release'
+-f|--file      (optional) the file where search & replace shall be done -- default: ./README.md
 
 --help     prints this help
 --version  prints the version of this script
@@ -373,8 +375,8 @@ Help:
 <!-- auto-generated, do not modify here but in src/releasing/sneak-peek-banner.sh -->
 ```text
 Parameters:
--c|--command    either 'show' or 'hide'
--f|--file       (optional) the file where search & replace shall be done -- default: ./README.md
+-c|--command   either 'show' or 'hide'
+-f|--file      (optional) the file where search & replace shall be done -- default: ./README.md
 
 --help     prints this help
 --version  prints the version of this script
@@ -518,188 +520,54 @@ releaseFiles --sign-fn findScripts "$@"
 
 The scripts under this topic (in directory `utility`) are useful for bash programming as such.
 
-## Parse arguments
+## array utils
 
-We have two scripts helping in parsing arguments:
+Utility functions when dealing with arrays.
 
-- parse-args.sh which expects named arguments
-- parse-fn-args which is supposed to be sourced into a function
+<utility-array-utils>
 
-### parse-args.sh
-
-Full usage example:
-
-<utility-parse-args>
-
-<!-- auto-generated, do not modify here but in src/utility/parse-args.sh -->
+<!-- auto-generated, do not modify here but in src/utility/array-utils.sh -->
 ```bash
 #!/usr/bin/env bash
-set -euo pipefail
-shopt -s inherit_errexit
-# Assumes tegonal's scripts were fetched with gget - adjust location accordingly
-dir_of_tegonal_scripts="$(cd -- "$(dirname -- "${BASH_SOURCE[0]:-$0}")" >/dev/null && pwd 2>/dev/null)/../lib/tegonal-scripts/src"
-source "$dir_of_tegonal_scripts/setup.sh" "$dir_of_tegonal_scripts"
-
-sourceOnce "$dir_of_tegonal_scripts/utility/parse-args.sh"
-
-# declare all parameter names here (used as identifier afterwards)
-declare pattern version directory
-
-# parameter definitions where each parameter definition consists of three values (separated via space)
-# VARIABLE_NAME PATTERN HELP_TEXT
-# where the HELP_TEXT is optional in the sense of that you can use an empty string
-# in case you use shellcheck then you need to suppress the warning for the last variable definition of params
-# as shellcheck doesn't get that we are passing `params` to parseArguments ¯\_(ツ)_/¯ (an open issue of shellcheck)
 # shellcheck disable=SC2034
-declare params=(
-	pattern '-p|--pattern' ''
-	version '-v' 'the version'
-	directory '-d|--directory' '(optional) the working directory -- default: .'
-)
-# optional: you can define examples which are included in the help text -- use an empty string for no example
-declare examples
-# `examples` is used implicitly in parse-args, here shellcheck cannot know it and you need to disable the rule
-examples=$(
-	cat <<EOM
-# analyse in the current directory using the specified pattern
-analysis.sh -p "%{21}" -v v0.1.0
-EOM
-)
-
-parseArguments params "$examples" "$@"
-# in case there are optional parameters, then fill them in here before calling exitIfNotAllArgumentsSet
-if ! [[ -v directory ]]; then directory="."; fi
-exitIfNotAllArgumentsSet params "$examples"
-
-# pass your variables storing the arguments to other scripts
-echo "p: $pattern, v: $version, d: $directory"
-```
-
-</utility-parse-args>
-
-### parse-fn-args.sh
-
-Full usage example:
-
-<utility-parse-fn-args>
-
-<!-- auto-generated, do not modify here but in src/utility/parse-fn-args.sh -->
-```bash
-#!/usr/bin/env bash
-set -euo pipefail
-shopt -s inherit_errexit
-
-if ! [[ -v dir_of_tegonal_scripts ]]; then
-	# Assumes tegonal's scripts were fetched with gget - adjust location accordingly
-	dir_of_tegonal_scripts="$(cd -- "$(dirname -- "${BASH_SOURCE[0]:-$0}")" >/dev/null && pwd 2>/dev/null)/../lib/tegonal-scripts/src"
-	source "$dir_of_tegonal_scripts/setup.sh" "$dir_of_tegonal_scripts"
-fi
-sourceOnce "$dir_of_tegonal_scripts/utility/parse-fn-args.sh"
-
-function myFunction() {
-	# declare the variable you want to use and repeat in `declare params`
-	local command dir
-
-	# as shellcheck doesn't get that we are passing `params` to parseFnArgs ¯\_(ツ)_/¯ (an open issue of shellcheck)
-	# shellcheck disable=SC2034
-	local -ra params=(command dir)
-	parseFnArgs params "$@"
-
-	# pass your variables storing the arguments to other scripts
-	echo "command: $command, dir: $dir"
-}
-
-function myFunctionWithVarargs() {
-
-	# in case you want to use a vararg parameter as last parameter then name your last parameter for `params` varargs:
-	local command dir varargs
-	# shellcheck disable=SC2034
-	local -ra params=(command dir varargs)
-	parseFnArgs params "$@"
-
-	# use varargs in another script
-	echo "command: $command, dir: $dir, varargs: ${varargs*}"
-}
-```
-
-</utility-parse-fn-args>
-
-## Log Functions
-
-Utility functions to log messages including a severity level where logError writes to stderr
-
-<utility-log>
-
-<!-- auto-generated, do not modify here but in src/utility/log.sh -->
-```bash
-#!/usr/bin/env bash
 set -euo pipefail
 shopt -s inherit_errexit
 # Assumes tegonal's scripts were fetched with gget - adjust location accordingly
 dir_of_tegonal_scripts="$(cd -- "$(dirname -- "${BASH_SOURCE[0]:-$0}")" >/dev/null && pwd 2>/dev/null)/../lib/tegonal-scripts/src"
 source "$dir_of_tegonal_scripts/setup.sh" "$dir_of_tegonal_scripts"
 
-sourceOnce "$dir_of_tegonal_scripts/utility/log.sh"
+sourceOnce "$dir_of_tegonal_scripts/utility/array-utils.sh"
 
-logInfo "hello %s" "world"
-# INFO: hello world
+declare regex
+regex=$(joinByChar '|' my regex alternatives)
+declare -a commands=(add delete list config)
+regex=$(joinByChar '|' "${commands[@]}")
 
-logInfo "line %s" 1 2 3
-# INFO: line 1
-# INFO: line 2
-# INFO: line 3
+joinByString ', ' a list of strings
+declare -a names=(alwin darius fabian mike mikel robert oliver thomas)
+declare employees
+employees=$(joinByString ", " "${names[@]}")
+echo ""
+echo "Tegonal employees are currently: $employees"
 
-logWarning "oho..."
-# WARNING: oho...
+function startingWithA() {
+	[[ $1 == a* ]]
+}
+declare -a namesStartingWithA=()
+arrFilter names namesStartingWithA startingWithA
+declare -p namesStartingWithA
 
-logError "illegal state..."
-# ERROR: illegal state...
+declare -a everySecondName
+arrTakeEveryX names everySecondName 2 0
+declare -p everySecondName
+declare -a everySecondNameStartingFrom1
+arrTakeEveryX names everySecondNameStartingFrom1 2 1
+declare -p everySecondNameStartingFrom1
 
-seconds=54
-logSuccess "import finished in %s seconds" "$seconds"
-# SUCCESS: import finished in 54 seconds
-
-die "fatal error, shutting down"
-# ERROR: fatal error, shutting down
-# exit 1
-
-returnDying "fatal error, shutting down"
-# ERROR: fatal error, shutting down
-# return 1
-
-# in case you don't want a newline at the end of the message, then use one of
-logInfoWithoutNewline "hello"
-# INFO: hello%
-logWarningWithoutNewline "be careful"
-logErrorWithoutNewline "oho"
-logSuccessWithoutNewline "yay"
-
-traceAndDie "fatal error, shutting down"
-# ERROR: fatal error, shutting down
-#
-# Stacktrace:
-#    foo @ /opt/foo.sh:32:1
-#    bar @ /opt/bar.sh:10:1
-#    ...
-# exit 1
-
-traceAndReturnDying "fatal error, shutting down"
-# ERROR: fatal error, shutting down
-#
-# Stacktrace:
-#    foo @ /opt/foo.sh:32:1
-#    bar @ /opt/bar.sh:10:1
-#    ...
-# return 1
-
-printStackTrace
-# Stacktrace:
-#    foo @ /opt/foo.sh:32:1
-#    bar @ /opt/bar.sh:10:1
-#   main @ /opt/main.sh:4:1
+arrStringEntryMaxLength names # 6
 ```
 
-</utility-log>
+</utility-array-utils>
 
 ## Ask functions
 
@@ -725,13 +593,13 @@ fi
 
 </utility-ask>
 
-## Source once
+## Checks
 
-Establishes a guard by creating a variable based on the file which shall be sourced.
+Utility functions which check some conditions like is passed arg the correct type etc.
 
-<utility-source-once>
+<utility-checks>
 
-<!-- auto-generated, do not modify here but in src/utility/source-once.sh -->
+<!-- auto-generated, do not modify here but in src/utility/checks.sh -->
 ```bash
 #!/usr/bin/env bash
 set -euo pipefail
@@ -740,28 +608,45 @@ shopt -s inherit_errexit
 dir_of_tegonal_scripts="$(cd -- "$(dirname -- "${BASH_SOURCE[0]:-$0}")" >/dev/null && pwd 2>/dev/null)/../lib/tegonal-scripts/src"
 source "$dir_of_tegonal_scripts/setup.sh" "$dir_of_tegonal_scripts"
 
-source "$dir_of_tegonal_scripts/utility/source-once.sh"
+sourceOnce "$dir_of_tegonal_scripts/utility/checks.sh"
 
-sourceOnce "foo.sh"    # creates a variable named sourceOnceGuard_foo__sh which acts as guard and sources foo.sh
-sourceOnce "foo.sh"    # will source nothing as sourceOnceGuard_foo__sh is already defined
-unset sourceOnceGuard_foo__sh          # unsets the guard
-sourceOnce "foo.sh"    # is sourced again and the guard established
+function foo() {
+	# shellcheck disable=SC2034
+	local -rn arr=$1
+	local -r fn=$2
 
-# creates a variable named sourceOnceGuard_bar__foo__sh which acts as guard and sources bar/foo.sh
-sourceOnce "bar/foo.sh"
+	# resolves arr recursively via recursiveDeclareP and check that is a non-associative array
+	checkArgIsArray arr 1       # same as exitIfArgIsNotArray if set -e has an effect on this line
+	checkArgIsFunction "$fn" 2   # same as exitIfArgIsNotFunction if set -e has an effect on this line
 
-# will source nothing, only the parent dir + file is used as identifier
-# i.e. the corresponding guard is sourceOnceGuard_bar__foo__sh and thus this file is not sourced
-sourceOnce "asdf/bar/foo.sh"
+	function describeTriple(){
+		echo >&2 "array contains 3-tuples with names where the first value is the first-, the second the middle- and the third the lastname"
+	}
+	# check array with 3-tuples
+	checkArgIsArrayWithTuples arr 3 "names" 1 describeTriple
 
-declare guard
-guard=$(determineSourceOnceGuard "src/bar.sh")
-# In case you don't want that a certain file is sourced, then you can define the guard yourself
-# this will prevent that */src/bar.sh is sourced
-printf -v "$guard" "%s" "true"
+	exitIfArgIsNotArray arr 1
+	exitIfArgIsNotFunction "$fn" 2
+
+		function describePair(){
+  		echo >&2 "array contains 2-tuples with names where the first value is the first-, and the second the lastname"
+  	}
+	# check array with 2-tuples
+	exitIfArgIsNotArrayWithTuples arr 2 "names" 1 describePair
+}
+
+if checkCommandExists "cat"; then
+	echo "do whatever you want to do..."
+fi
+
+# give a hint how to install the command
+checkCommandExists "git" "please install it via https://git-scm.com/downloads"
+
+# same as checkCommandExists but exits instead of returning non-zero in case command does not exist
+exitIfCommandDoesNotExist "git" "please install it via https://git-scm.com/downloads"
 ```
 
-</utility-source-once>
+</utility-checks>
 
 ## git Utils
 
@@ -876,13 +761,13 @@ deleteDirChmod777 ".git"
 
 </utility-io>
 
-## Checks
+## Log Functions
 
-Utility functions which check some conditions like is passed arg the correct type etc.
+Utility functions to log messages including a severity level where logError writes to stderr
 
-<utility-checks>
+<utility-log>
 
-<!-- auto-generated, do not modify here but in src/utility/checks.sh -->
+<!-- auto-generated, do not modify here but in src/utility/log.sh -->
 ```bash
 #!/usr/bin/env bash
 set -euo pipefail
@@ -891,45 +776,206 @@ shopt -s inherit_errexit
 dir_of_tegonal_scripts="$(cd -- "$(dirname -- "${BASH_SOURCE[0]:-$0}")" >/dev/null && pwd 2>/dev/null)/../lib/tegonal-scripts/src"
 source "$dir_of_tegonal_scripts/setup.sh" "$dir_of_tegonal_scripts"
 
-sourceOnce "$dir_of_tegonal_scripts/utility/checks.sh"
+sourceOnce "$dir_of_tegonal_scripts/utility/log.sh"
 
-function foo() {
-	# shellcheck disable=SC2034
-	local -rn arr=$1
-	local -r fn=$2
+logInfo "hello %s" "world"
+# INFO: hello world
 
-	# resolves arr recursively via recursiveDeclareP and check that is a non-associative array
-	checkArgIsArray arr 1       # same as exitIfArgIsNotArray if set -e has an effect on this line
-	checkArgIsFunction "$fn" 2   # same as exitIfArgIsNotFunction if set -e has an effect on this line
+logInfo "line %s" 1 2 3
+# INFO: line 1
+# INFO: line 2
+# INFO: line 3
 
-	function describeTriple(){
-		echo >&2 "array contains 3-tuples with names where the first value is the first-, the second the middle- and the third the lastname"
-	}
-	# check array with 3-tuples
-	checkArgIsArrayWithTuples arr 3 "names" 1 describeTriple
+logWarning "oho..."
+# WARNING: oho...
 
-	exitIfArgIsNotArray arr 1
-	exitIfArgIsNotFunction "$fn" 2
+logError "illegal state..."
+# ERROR: illegal state...
 
-		function describePair(){
-  		echo >&2 "array contains 2-tuples with names where the first value is the first-, and the second the lastname"
-  	}
-	# check array with 2-tuples
-	exitIfArgIsNotArrayWithTuples arr 2 "names" 1 describePair
-}
+seconds=54
+logSuccess "import finished in %s seconds" "$seconds"
+# SUCCESS: import finished in 54 seconds
 
-if checkCommandExists "cat"; then
-	echo "do whatever you want to do..."
-fi
+die "fatal error, shutting down"
+# ERROR: fatal error, shutting down
+# exit 1
 
-# give a hint how to install the command
-checkCommandExists "git" "please install it via https://git-scm.com/downloads"
+returnDying "fatal error, shutting down"
+# ERROR: fatal error, shutting down
+# return 1
 
-# same as checkCommandExists but exits instead of returning non-zero in case command does not exist
-exitIfCommandDoesNotExist "git" "please install it via https://git-scm.com/downloads"
+# in case you don't want a newline at the end of the message, then use one of
+logInfoWithoutNewline "hello"
+# INFO: hello%
+logWarningWithoutNewline "be careful"
+logErrorWithoutNewline "oho"
+logSuccessWithoutNewline "yay"
+
+traceAndDie "fatal error, shutting down"
+# ERROR: fatal error, shutting down
+#
+# Stacktrace:
+#    foo @ /opt/foo.sh:32:1
+#    bar @ /opt/bar.sh:10:1
+#    ...
+# exit 1
+
+traceAndReturnDying "fatal error, shutting down"
+# ERROR: fatal error, shutting down
+#
+# Stacktrace:
+#    foo @ /opt/foo.sh:32:1
+#    bar @ /opt/bar.sh:10:1
+#    ...
+# return 1
+
+printStackTrace
+# Stacktrace:
+#    foo @ /opt/foo.sh:32:1
+#    bar @ /opt/bar.sh:10:1
+#   main @ /opt/main.sh:4:1
 ```
 
-</utility-checks>
+</utility-log>
+
+## Parse arguments
+
+We have two scripts helping in parsing arguments:
+
+- parse-args.sh which expects named arguments
+- parse-fn-args which is supposed to be sourced into a function
+
+### parse-args.sh
+
+Full usage example:
+
+<utility-parse-args>
+
+<!-- auto-generated, do not modify here but in src/utility/parse-args.sh -->
+```bash
+#!/usr/bin/env bash
+set -euo pipefail
+shopt -s inherit_errexit
+# Assumes tegonal's scripts were fetched with gget - adjust location accordingly
+dir_of_tegonal_scripts="$(cd -- "$(dirname -- "${BASH_SOURCE[0]:-$0}")" >/dev/null && pwd 2>/dev/null)/../lib/tegonal-scripts/src"
+source "$dir_of_tegonal_scripts/setup.sh" "$dir_of_tegonal_scripts"
+
+sourceOnce "$dir_of_tegonal_scripts/utility/parse-args.sh"
+
+# declare all parameter names here (used as identifier afterwards)
+declare pattern version directory
+
+# parameter definitions where each parameter definition consists of three values (separated via space)
+# VARIABLE_NAME PATTERN HELP_TEXT
+# where the HELP_TEXT is optional in the sense of that you can use an empty string
+# in case you use shellcheck then you need to suppress the warning for the last variable definition of params
+# as shellcheck doesn't get that we are passing `params` to parseArguments ¯\_(ツ)_/¯ (an open issue of shellcheck)
+# shellcheck disable=SC2034
+declare params=(
+	pattern '-p|--pattern' ''
+	version '-v' 'the version'
+	directory '-d|--directory' '(optional) the working directory -- default: .'
+)
+# optional: you can define examples which are included in the help text -- use an empty string for no example
+declare examples
+# `examples` is used implicitly in parse-args, here shellcheck cannot know it and you need to disable the rule
+examples=$(
+	cat <<EOM
+# analyse in the current directory using the specified pattern
+analysis.sh -p "%{21}" -v v0.1.0
+EOM
+)
+
+parseArguments params "$examples" "$@"
+# in case there are optional parameters, then fill them in here before calling exitIfNotAllArgumentsSet
+if ! [[ -v directory ]]; then directory="."; fi
+exitIfNotAllArgumentsSet params "$examples"
+
+# pass your variables storing the arguments to other scripts
+echo "p: $pattern, v: $version, d: $directory"
+```
+
+</utility-parse-args>
+
+### parse-fn-args.sh
+
+Full usage example:
+
+<utility-parse-fn-args>
+
+<!-- auto-generated, do not modify here but in src/utility/parse-fn-args.sh -->
+```bash
+#!/usr/bin/env bash
+set -euo pipefail
+shopt -s inherit_errexit
+
+if ! [[ -v dir_of_tegonal_scripts ]]; then
+	# Assumes tegonal's scripts were fetched with gget - adjust location accordingly
+	dir_of_tegonal_scripts="$(cd -- "$(dirname -- "${BASH_SOURCE[0]:-$0}")" >/dev/null && pwd 2>/dev/null)/../lib/tegonal-scripts/src"
+	source "$dir_of_tegonal_scripts/setup.sh" "$dir_of_tegonal_scripts"
+fi
+sourceOnce "$dir_of_tegonal_scripts/utility/parse-fn-args.sh"
+
+function myFunction() {
+	# declare the variable you want to use and repeat in `declare params`
+	local command dir
+
+	# as shellcheck doesn't get that we are passing `params` to parseFnArgs ¯\_(ツ)_/¯ (an open issue of shellcheck)
+	# shellcheck disable=SC2034
+	local -ra params=(command dir)
+	parseFnArgs params "$@"
+
+	# pass your variables storing the arguments to other scripts
+	echo "command: $command, dir: $dir"
+}
+
+function myFunctionWithVarargs() {
+
+	# in case you want to use a vararg parameter as last parameter then name your last parameter for `params` varargs:
+	local command dir varargs
+	# shellcheck disable=SC2034
+	local -ra params=(command dir varargs)
+	parseFnArgs params "$@"
+
+	# use varargs in another script
+	echo "command: $command, dir: $dir, varargs: ${varargs*}"
+}
+```
+
+</utility-parse-fn-args>
+
+## Parse utils
+
+Utility functions when parsing (see also [Parse arguments](#parse-arguments)).
+
+<utility-parse-utils>
+
+<!-- auto-generated, do not modify here but in src/utility/parse-utils.sh -->
+```bash
+#!/usr/bin/env bash
+set -euo pipefail
+shopt -s inherit_errexit
+MY_LIBRARY_VERSION="v1.0.3"
+
+if ! [[ -v dir_of_tegonal_scripts ]]; then
+	# Assumes tegonal's scripts were fetched with gget - adjust location accordingly
+	dir_of_tegonal_scripts="$(cd -- "$(dirname -- "${BASH_SOURCE[0]:-$0}")" >/dev/null && pwd 2>/dev/null)/../lib/tegonal-scripts/src"
+	source "$dir_of_tegonal_scripts/setup.sh" "$dir_of_tegonal_scripts"
+fi
+sourceOnce "$dir_of_tegonal_scripts/utility/parse-utils.sh"
+
+function myParseFunction() {
+	while (($# > 0)); do
+		if [[ $1 == "--version" ]]; then
+			shift
+			printVersion "$MY_LIBRARY_VERSION"
+		fi
+		#...
+	done
+}
+```
+
+</utility-parse-utils>
 
 ## Recursive `declare -p`
 
@@ -1016,6 +1062,44 @@ cat "$file"
 ```
 
 </utility-replace-snippet>
+
+## Source once
+
+Establishes a guard by creating a variable based on the file which shall be sourced.
+
+<utility-source-once>
+
+<!-- auto-generated, do not modify here but in src/utility/source-once.sh -->
+```bash
+#!/usr/bin/env bash
+set -euo pipefail
+shopt -s inherit_errexit
+# Assumes tegonal's scripts were fetched with gget - adjust location accordingly
+dir_of_tegonal_scripts="$(cd -- "$(dirname -- "${BASH_SOURCE[0]:-$0}")" >/dev/null && pwd 2>/dev/null)/../lib/tegonal-scripts/src"
+source "$dir_of_tegonal_scripts/setup.sh" "$dir_of_tegonal_scripts"
+
+source "$dir_of_tegonal_scripts/utility/source-once.sh"
+
+sourceOnce "foo.sh"    # creates a variable named sourceOnceGuard_foo__sh which acts as guard and sources foo.sh
+sourceOnce "foo.sh"    # will source nothing as sourceOnceGuard_foo__sh is already defined
+unset sourceOnceGuard_foo__sh          # unsets the guard
+sourceOnce "foo.sh"    # is sourced again and the guard established
+
+# creates a variable named sourceOnceGuard_bar__foo__sh which acts as guard and sources bar/foo.sh
+sourceOnce "bar/foo.sh"
+
+# will source nothing, only the parent dir + file is used as identifier
+# i.e. the corresponding guard is sourceOnceGuard_bar__foo__sh and thus this file is not sourced
+sourceOnce "asdf/bar/foo.sh"
+
+declare guard
+guard=$(determineSourceOnceGuard "src/bar.sh")
+# In case you don't want that a certain file is sourced, then you can define the guard yourself
+# this will prevent that */src/bar.sh is sourced
+printf -v "$guard" "%s" "true"
+```
+
+</utility-source-once>
 
 ## Update Bash documentation
 
