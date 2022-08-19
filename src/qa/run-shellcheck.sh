@@ -44,6 +44,8 @@ sourceOnce "$dir_of_tegonal_scripts/utility/checks.sh"
 sourceOnce "$dir_of_tegonal_scripts/utility/recursive-declare-p.sh"
 
 function runShellcheck() {
+	exitIfCommandDoesNotExist "shellcheck" "see https://github.com/koalaman/shellcheck#installing"
+
 	if ! (($# == 2)); then
 		logError "Two parameters need to be passed to runShellcheck, given \033[0;36m%s\033[0m\nFollowing a description of the parameters:" "$#"
 		echo >&2 '1: dirs         name of array which contains paths in which *.sh files are searched'
