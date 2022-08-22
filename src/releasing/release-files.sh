@@ -160,7 +160,7 @@ function releaseFiles() {
 		logError "you are behind of origin. I already fetched the changes for you, please check if you still want to release. Following the additional changes in origin/main:"
 		git -P log "${expectedDefaultBranch}..origin/$expectedDefaultBranch"
 		if askYesOrNo "Do you want to git pull?"; then
-			git pull
+			git pull || die "could not pull the changes, have to abort the release, please fix yourself and re-launch the release command"
 			if ! askYesOrNo "Do you want to release now?"; then
 				return 1
 			fi

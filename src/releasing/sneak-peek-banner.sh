@@ -69,7 +69,7 @@ function sneakPeekBanner() {
 		perl -0777 -i -pe 's/((?<!<!)---\n❗ You are taking[\S\s]+?---)/<!$1>/;' "$file"
 	else
 		echo >&2 "only 'show' and 'hide' are supported as command. Following the output of calling --help"
-		printHelp params help "$examples"
+		parse_args_printHelp params "$examples" "$TEGONAL_SCRIPTS_VERSION" --help
 	fi
 }
 ${__SOURCED__:+return}
