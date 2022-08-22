@@ -69,7 +69,7 @@ function prepareFilesNextDevCycle() {
 		additionalPattern '-p|--pattern' '(optional) pattern which is used in a perl command (separator /) to search & replace additional occurrences. It should define two match groups and the replace operation looks as follows: '"\\\${1}\$version\\\${2}"
 	)
 	parseArguments params "" "$TEGONAL_SCRIPTS_VERSION" "$@"
-	if ! [[ -v projectsRootDir ]]; then projectsRootDir=$(realpath "."); fi
+	if ! [[ -v projectsRootDir ]]; then projectsRootDir=$(realpath ".") || die "could not determine realpath of ."; fi
 	if ! [[ -v additionalPattern ]]; then additionalPattern="^$"; fi
 	exitIfNotAllArgumentsSet params "" "$TEGONAL_SCRIPTS_VERSION"
 

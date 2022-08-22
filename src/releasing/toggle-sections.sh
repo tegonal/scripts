@@ -83,7 +83,7 @@ function toggleSections() {
 		toggleSection "$file" "main" "release"
 	else
 		echo >&2 "only 'main' and 'release' are supported as command. Following the output of calling --help"
-		printHelp params
+		parse_args_printHelp params "$examples" "$TEGONAL_SCRIPTS_VERSION" --help
 	fi
 }
 ${__SOURCED__:+return}
