@@ -60,5 +60,5 @@ function askYesOrNo() {
 		printf "\n"
 		logInfo "no user interaction after %s seconds, going to interpret that as a 'no'." "$timeout"
 	fi
-	[[ $answer == y ]]
+	[[ $answer == y ]] || [[ $answer == Y ]]
 }
