@@ -3,7 +3,7 @@
 #    __                          __
 #   / /____ ___ ____  ___  ___ _/ /       This script is provided to you by https://github.com/tegonal/scripts
 #  / __/ -_) _ `/ _ \/ _ \/ _ `/ /        It is licensed under Apache 2.0
-#  \__/\__/\_, /\___/_//_/\_,_/_/         Please report bugs and contribute back your improvements
+#  \__/\__/\_, /\___/_//_/\_,_/_/         Please remotert bugs and contribute back your improvements
 #         /___/
 #                                         Version: v0.15.0-SNAPSHOT
 #
@@ -140,12 +140,12 @@ function hasRemoteTag() {
 }
 
 function remoteTagsSorted() {
-	local repo="origin"
+	local remote="origin"
 	if (($# > 1)); then
-		repo=$1
+		remote=$1
 		shift || die "could not shift by 1"
 	fi
-	git ls-remote --refs --tags "$repo" |
+	git ls-remote --refs --tags "$remote" |
 		cut --delimiter='/' --fields=3 |
 		sort --version-sort "$@"
 }
@@ -154,6 +154,6 @@ function latestRemoteTag() {
 	if (($# > 1)); then
 		traceAndDie "you can optionally pass the name of the remote (defaults to origin) to latestRemoteTag but not more, given: %s" "$#"
 	fi
-	local repo=${1:-"origin"}
-	remoteTagsSorted "$repo" | tail --lines=1
+	local remote=${1:-"origin"}
+	remoteTagsSorted "$remote" | tail --lines=1
 }
