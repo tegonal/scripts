@@ -74,7 +74,7 @@ function runShellcheck() {
 		((++fileCounter))
 		declare output
 		output=$(shellcheck -C -x -o all -P "$sourcePath" "$script" 2>&1 || true)
-		if ! [[ $output == "" ]]; then
+		if [[ $output != "" ]]; then
 			printf "%s\n" "$output"
 			((++fileWithIssuesCounter))
 		fi

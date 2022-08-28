@@ -38,7 +38,7 @@ function checkInBugTemplate() {
 			done
 	) || die "could not determine whether files are missing in %s or not, see above" "$bugReportPath"
 
-	if ! [[ $missingInBugTemplate == "" ]]; then
+	if [[ $missingInBugTemplate != "" ]]; then
 		returnDying "you forgot to add the following files to %s:\n%s" "$bugReportPath" "$missingInBugTemplate"
 	else
 		logSuccess "all scripts are listed in the bug template"
