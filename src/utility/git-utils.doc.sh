@@ -32,3 +32,16 @@ if hasRemoteTag "v0.1.0"; then
 elif hasRemoteTag "v0.1.0" "anotherRemote"; then
 	echo "do whatever you want to do..."
 fi
+
+echo "all existing tags on remote origin, starting from smallest to biggest version number"
+remoteTagsSorted
+
+# if you specify the name of the remote, then all additional arguments are passed to `sort` which is used internally
+echo "all existing tags on remote upstream, starting from smallest to biggest version number"
+remoteTagsSorted upstream -r
+
+declare latestTag
+latestTag=$(latestRemoteTag)
+echo "latest tag on origin: $latestTag"
+latestTag=$(latestRemoteTag upstream)
+echo "latest tag on upstream: $latestTag"
