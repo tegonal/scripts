@@ -49,6 +49,7 @@
 ###################################
 set -euo pipefail
 shopt -s inherit_errexit
+unset CDPATH
 export TEGONAL_SCRIPTS_VERSION='v0.14.0-SNAPSHOT'
 
 if ! [[ -v dir_of_tegonal_scripts ]]; then

@@ -84,6 +84,7 @@
 ###################################
 set -euo pipefail
 shopt -s inherit_errexit
+unset CDPATH
 
 function logInfo() {
 	local msg=$1

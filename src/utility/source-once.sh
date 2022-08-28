@@ -45,6 +45,7 @@
 ###################################
 set -euo pipefail
 shopt -s inherit_errexit
+unset CDPATH
 
 function determineSourceOnceGuard() {
 	if ! (($# == 1)); then
