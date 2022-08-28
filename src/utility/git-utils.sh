@@ -141,7 +141,7 @@ function hasRemoteTag() {
 
 function remoteTagsSorted() {
 	local remote="origin"
-	if (($# > 1)); then
+	if (($# > 0)); then
 		remote=$1
 		shift || die "could not shift by 1"
 	fi
