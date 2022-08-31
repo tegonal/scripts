@@ -35,7 +35,7 @@ function beforePr() {
 		logWarning "shellspec is not installed, skipping running specs.\nConsider to install it https://github.com/shellspec/shellspec#installation"
 	fi
 
-	# using && in case this function is used in one of: if while until or left side of || &&
+	# using && because this function is used on the left side of an || in releaseFiles
 	# this way we still have fail fast behaviour and don't mask/hide a non-zero exit code
 	checkInBugTemplate && \
 	customRunShellcheck && \
