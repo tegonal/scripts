@@ -19,7 +19,7 @@ fi
 
 if ! [[ -v projectDir ]]; then
 	projectDir="$(realpath "$dir_of_tegonal_scripts/../")"
-	declare -r projectDir
+	readonly projectDir
 fi
 
 sourceOnce "$dir_of_tegonal_scripts/utility/replace-help-snippet.sh"
