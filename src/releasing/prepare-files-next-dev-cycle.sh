@@ -85,7 +85,6 @@ function prepareFilesNextDevCycle() {
 	# shellcheck disable=SC2310
 	sourceOnce "$projectsScriptsDir/before-pr.sh" || die "could not source before-pr.sh"
 
-
 	logInfo "prepare next dev cycle for version $version"
 
 	sneakPeekBanner -c show || return $?
@@ -93,15 +92,15 @@ function prepareFilesNextDevCycle() {
 	updateVersionScripts -v "$version-SNAPSHOT" -p "$additionalPattern" || return $?
 	updateVersionScripts -v "$version-SNAPSHOT" -p "$additionalPattern" -d "$projectsScriptsDir" || return $?
 
-	# check if we accidentally have broken something, run formatting or whatever is done in beforePr
-	beforePr || return $?
-
 	local -r additionalSteps="$projectsScriptsDir/additional-prepare-files-next-dev-cycle-steps.sh"
 	if [[ -f $additionalSteps ]]; then
 		# we are aware of that || will disable set -e for sourceOnce
 		# shellcheck disable=SC2310
 		sourceOnce "$additionalSteps" || die "could not source $additionalSteps"
 	fi
+
+	# check if we accidentally have broken something, run formatting or whatever is done in beforePr
+	beforePr || return $?
 
 	git commit -a -m "prepare next dev cycle for $version"
 }
