@@ -185,6 +185,7 @@ function releaseFiles() {
 	updateVersionScripts -v "$version" -p "$additionalPattern" -d "$projectsScriptsDir" || return $?
 	local -r additionalSteps="$projectsScriptsDir/additional-release-files-preparations.sh"
 	if [[ -f $additionalSteps ]]; then
+		logInfo "found $additionalSteps going to source it"
 		# we are aware of that || will disable set -e for sourceOnce
 		# shellcheck disable=SC2310
 		sourceOnce "$additionalSteps" || die "could not source $additionalSteps"
