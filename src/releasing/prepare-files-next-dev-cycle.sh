@@ -80,12 +80,9 @@ function prepareFilesNextDevCycle() {
 
 	exitIfGitHasChanges
 
-	local -r projectsScriptsDir="$projectsRootDir/scripts"
-	# we are aware of that || will disable set -e for sourceOnce
-	# shellcheck disable=SC2310
-	sourceOnce "$projectsScriptsDir/before-pr.sh" || die "could not source before-pr.sh"
-
 	logInfo "prepare next dev cycle for version $version"
+
+	local -r projectsScriptsDir="$projectsRootDir/scripts"
 
 	sneakPeekBanner -c show || return $?
 	toggleSections -c main || return $?
@@ -99,6 +96,10 @@ function prepareFilesNextDevCycle() {
 		# shellcheck disable=SC2310
 		sourceOnce "$additionalSteps" || die "could not source $additionalSteps"
 	fi
+
+	# we are aware of that || will disable set -e for sourceOnce
+	# shellcheck disable=SC2310
+	sourceOnce "$projectsScriptsDir/before-pr.sh" || die "could not source before-pr.sh"
 
 	# check if we accidentally have broken something, run formatting or whatever is done in beforePr
 	beforePr || return $?

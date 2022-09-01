@@ -440,14 +440,19 @@ It then includes the following steps:
 - update version in download badges and sneak-peek banner in README as well as   
   replace additional occurrences defined via `-p|--pattern` (see output of `--help` further below for further details)
 - update version in script headers in /src and /scripts of your project
+- (optional) sources ./scripts/additional-release-files-preparations.sh if it exists
 - `beforePr`
 - sign files via GPG where you define which files via `--sign-fn`
 - commit
 - `prepareNextDevCycle`
+  - (optional) sources ./scripts/additional-prepare-files-next-dev-cycle-steps.sh if it exists
 - push changes
 - tag and push tag
 
 Useful if you want to release e.g. scripts which can then be fetched via [gget](https://github.com/tegonal/gget).
+
+Note, if your beforePr or your additional steps modifies beforePr or a file it depends on, then you need to source
+those files manually in your additional steps.
 
 Help:
 
