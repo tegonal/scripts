@@ -5,7 +5,7 @@
 #  / __/ -_) _ `/ _ \/ _ \/ _ `/ /        It is licensed under Apache 2.0
 #  \__/\__/\_, /\___/_//_/\_,_/_/         Please report bugs and contribute back your improvements
 #         /___/
-#                                         Version: v0.14.6
+#                                         Version: v0.15.0-SNAPSHOT
 #
 #######  Description  #############
 #
@@ -36,7 +36,7 @@
 set -euo pipefail
 shopt -s inherit_errexit
 unset CDPATH
-export TEGONAL_SCRIPTS_VERSION='v0.14.6'
+export TEGONAL_SCRIPTS_VERSION='v0.15.0-SNAPSHOT'
 
 if ! [[ -v dir_of_tegonal_scripts ]]; then
 	dir_of_tegonal_scripts="$(cd -- "$(dirname -- "${BASH_SOURCE[0]:-$0}")" >/dev/null && pwd 2>/dev/null)/.."
