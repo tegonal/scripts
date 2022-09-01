@@ -11,6 +11,8 @@ sourceOnce "foo.sh"    # creates a variable named sourceOnceGuard_foo__sh which 
 sourceOnce "foo.sh"    # will source nothing as sourceOnceGuard_foo__sh is already defined
 unset sourceOnceGuard_foo__sh          # unsets the guard
 sourceOnce "foo.sh"    # is sourced again and the guard established
+# you can also use sourceAlways instead of unsetting and using sourceOnce.
+sourceAlways "foo.sh"
 
 # creates a variable named sourceOnceGuard_bar__foo__sh which acts as guard and sources bar/foo.sh
 sourceOnce "bar/foo.sh"
