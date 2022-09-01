@@ -84,10 +84,12 @@ function prepareFilesNextDevCycle() {
 
 	local -r projectsScriptsDir="$projectsRootDir/scripts"
 
+	local -r devVersion="$version-SNAPSHOT"
+
 	sneakPeekBanner -c show || return $?
 	toggleSections -c main || return $?
-	updateVersionScripts -v "$version-SNAPSHOT" -p "$additionalPattern" || return $?
-	updateVersionScripts -v "$version-SNAPSHOT" -p "$additionalPattern" -d "$projectsScriptsDir" || return $?
+	updateVersionScripts -v "$devVersion" -p "$additionalPattern" || return $?
+	updateVersionScripts -v "$devVersion" -p "$additionalPattern" -d "$projectsScriptsDir" || return $?
 
 	local -r additionalSteps="$projectsScriptsDir/additional-prepare-files-next-dev-cycle-steps.sh"
 	if [[ -f $additionalSteps ]]; then
