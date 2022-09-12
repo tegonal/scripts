@@ -70,7 +70,7 @@ function importGpgKey() {
 			--import "$file"
 	) || die "not able to show the theoretical import of %s, aborting" "$file"
 	local isTrusting='y'
-	if [[ $withConfirmation == "--confirm=true" ]]; then
+	if [[ $withConfirmation != "--confirm=false" ]]; then
 		echo "==========================================================================="
 		echo "$outputKey"
 		if askYesOrNo "The above key(s) will be used to verify the files you will pull from this remote, do you trust them?"; then
