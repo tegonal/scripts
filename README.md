@@ -649,6 +649,9 @@ checkCommandExists "git" "please install it via https://git-scm.com/downloads"
 
 # same as checkCommandExists but exits instead of returning non-zero in case command does not exist
 exitIfCommandDoesNotExist "git" "please install it via https://git-scm.com/downloads"
+
+# meant to be used in a file which is sourced where a contract exists between the file which `source`s and the sourced file
+exitIfVarsNotAlreadySetBySource myVar1 var2 var3
 ```
 
 </utility-checks>

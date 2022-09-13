@@ -58,6 +58,9 @@
 #    # same as checkCommandExists but exits instead of returning non-zero in case command does not exist
 #    exitIfCommandDoesNotExist "git" "please install it via https://git-scm.com/downloads"
 #
+#    # meant to be used in a file which is sourced where a contract exists between the file which `source`s and the sourced file
+#    exitIfVarsNotAlreadySetBySource myVar1 var2 var3
+#
 ###################################
 set -euo pipefail
 shopt -s inherit_errexit
@@ -224,4 +227,12 @@ function exitIfCommandDoesNotExist() {
 	# we are aware of that || will disable set -e for checkCommandExists
 	# shellcheck disable=SC2310
 	checkCommandExists "$@" || exit $?
+}
+
+function exitIfVarsNotAlreadySetBySource() {
+	for varName in "$@"; do
+		if ! [[ -v "$varName" ]] || [[ -z ${!varName} ]]; then
+			die "looks like \$%s was not defined by %s where this file (%s) was sourced" "$varName" "${BASH_SOURCE[2]:-${BASH_SOURCE[1]}}" "${BASH_SOURCE[0]}"
+		fi
+	done
 }
