@@ -9,7 +9,7 @@
 #
 #######  Description  #############
 #
-#  utility function dealling with Input/Ouput
+#  utility function dealing with Input/Ouput
 #
 #######  Usage  ###################
 #
