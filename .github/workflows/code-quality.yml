@@ -1,5 +1,5 @@
 name: "Code Quality"
-on: [push, pull_request]
+on: [ push, pull_request ]
 
 jobs:
   CodeQuality:
@@ -7,26 +7,18 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v3
-      - name: Run ShellCheck
-        uses: ludeeus/action-shellcheck@1.1.0
-        env:
-          SHELLCHECK_OPTS: -C -x -o all -P ./src:./scripts
-
-      - name: check all scripts in bug template
-        run: ./scripts/check-in-bug-template.sh
-
-      - name: check all scripts have documentation
-        run: ./scripts/update-docu.sh
-
-      - name: check for TODOs
-        uses: tegonal/workflow-helper@v0.3.0
-        with:
-          commands: todo-checker
+      - name: install shellcheck 0.8.0
+        run: ./src/ci/install-shellcheck.sh
 
       - name: Install shellspec
         run: |
           echo "${HOME}/.local/bin" >> "$GITHUB_PATH"
           curl -fsSL https://git.io/shellspec | sh -s 0.28.1 -y
 
-      - name: Run shellspec
-        run: shellspec
+      - name: before pr
+        run: ./scripts/before-pr.sh
+
+      - name: check for TODOs
+        uses: tegonal/workflow-helper@v0.3.0
+        with:
+          commands: todo-checker

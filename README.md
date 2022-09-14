@@ -96,7 +96,7 @@ Note that `source "$dir_of_tegonal_scripts/setup.sh"` will automatically source 
 # Documentation
 
 The scripts are ordered by topic:
-
+- [CI](#continuous-integration)
 - [Quality Assurance](#quality-assurance)
 	- [runShellcheck](#runshellcheck)
 - [Releasing](#releasing)
@@ -120,6 +120,34 @@ The scripts are ordered by topic:
     - [Replace Snippets](#replace-snippets)
     - [`source` once](#source-once)
 	- [Update Documentation](#update-bash-documentation)
+
+# Continuous Integration
+The scripts under this topic (in directory `ci`) help out in performing CI steps.
+
+## install-shellcheck.sh
+
+Installs shellcheck v0.8.0.  
+Most likely used together with [runShellcheck](#runshellcheck).
+Following an example:
+  
+<ci-install-shellcheck>
+
+<!-- auto-generated, do not modify here but in src/ci/install-shellcheck.sh -->
+```bash
+# run the install-shellcheck.sh in your github/gitlab workflow
+# for instance, assuming you fetched this file via gget and remote name is tegonal-scripts
+# then in a github workflow you would have
+
+jobs:
+  steps:
+    - name: install shellcheck v0.8.0
+      run: ./lib/tegonal-scripts/src/ci/install-shellcheck.sh
+    # and most likely as well
+    - name: run shellcheck
+      run: ./scripts/run-shellcheck.sh
+```
+
+</ci-install-shellcheck>
 
 # Quality Assurance
 

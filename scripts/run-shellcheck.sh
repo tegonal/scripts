@@ -31,7 +31,7 @@ function customRunShellcheck() {
 		"$dir_of_tegonal_scripts/../spec"
 	)
 	local sourcePath="$dir_of_tegonal_scripts:$scriptsDir"
-	runShellcheck dirs "$sourcePath"
+	runShellcheck dirs "$sourcePath" -not -name "install-shellcheck.doc.sh"
 }
 
 ${__SOURCED__:+return}
