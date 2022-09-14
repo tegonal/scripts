@@ -97,6 +97,8 @@ Note that `source "$dir_of_tegonal_scripts/setup.sh"` will automatically source 
 
 The scripts are ordered by topic:
 - [CI](#continuous-integration)
+  - [install shellcheck](#install-shellcheck)
+  - [install shellspec](#install-shellcheck)
 - [Quality Assurance](#quality-assurance)
 	- [runShellcheck](#runshellcheck)
 - [Releasing](#releasing)
@@ -112,6 +114,7 @@ The scripts are ordered by topic:
     - [Checks](#checks) 
     - [git Utils](#git-utils)
     - [GPG Utils](#gpg-utils)
+    - [Http functions](#http-functions)
     - [IO functions](#io-functions)
     - [Log functions](#log-functions)
     - [Parse arguments](#parse-arguments)
@@ -124,7 +127,7 @@ The scripts are ordered by topic:
 # Continuous Integration
 The scripts under this topic (in directory `ci`) help out in performing CI steps.
 
-## install-shellcheck.sh
+## Install shellcheck
 
 Installs shellcheck v0.8.0.  
 Most likely used together with [runShellcheck](#runshellcheck).
@@ -148,6 +151,27 @@ jobs:
 ```
 
 </ci-install-shellcheck>
+
+## Install shellspec
+
+<ci-install-shellspec>
+
+<!-- auto-generated, do not modify here but in src/ci/install-shellspec.sh -->
+```bash
+# run the install-shellcheck.sh in your github/gitlab workflow
+# for instance, assuming you fetched this file via gget and remote name is tegonal-scripts
+# then in a github workflow you would have
+
+jobs:
+  steps:
+    - name: install shellspec v0.28.1
+      run: ./lib/tegonal-scripts/src/ci/install-shellspec.sh
+    # and most likely as well
+    - name: run shellspec
+      run: shellspec
+```
+
+</ci-install-shellspec>
 
 # Quality Assurance
 

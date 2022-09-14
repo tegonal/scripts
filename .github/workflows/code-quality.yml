@@ -11,9 +11,7 @@ jobs:
         run: ./src/ci/install-shellcheck.sh
 
       - name: Install shellspec
-        run: |
-          echo "${HOME}/.local/bin" >> "$GITHUB_PATH"
-          curl -fsSL https://git.io/shellspec | sh -s 0.28.1 -y
+        run: ./src/ci/install-shellspec.sh
 
       - name: before pr
         run: ./scripts/before-pr.sh
