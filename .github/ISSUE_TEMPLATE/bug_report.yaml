@@ -20,6 +20,7 @@ body:
       label: Script
       options:
         - ci/install-shellcheck.sh
+        - ci/install-shellspec.sh
         - qa/run-shellcheck.sh
         - releasing/sneak-peek-banner.sh
         - releasing/toggle-sections.sh
