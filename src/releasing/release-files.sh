@@ -203,15 +203,15 @@ function releaseFiles() {
 	mkdir "$gpgDir"
 	chmod 700 "$gpgDir"
 
-	gpg --homedir "$gpgDir" --import "$ggetDir/signing-key.public.asc" || die "was not able to import %s" "$ggetDir/signing-key.public.asc"
+	gpg --homedir "$gpgDir" --batch --no-tty --import "$ggetDir/signing-key.public.asc" || die "was not able to import %s" "$ggetDir/signing-key.public.asc"
 	trustGpgKey "$gpgDir" "info@tegonal.com" || logInfo "could not trust key with id info@tegonal.com, you will see warnings due to this during signing the files"
 
 	local script
 	"$findForSigning" -type f -not -name "*.sig" -print0 |
 		while read -r -d $'\0' script; do
 			echo "signing $script"
-			gpg --detach-sign --batch --yes -u "$key" -o "${script}.sig" "$script" || die "was not able to sign %s" "$script"
-			gpg --homedir "$gpgDir" --batch --verify "${script}.sig" "$script" || die "verification via previously imported %s failed" "$ggetDir/signing-key.public.asc"
+			gpg --detach-sign --batch -no-tty --yes -u "$key" -o "${script}.sig" "$script" || die "was not able to sign %s" "$script"
+			gpg --homedir "$gpgDir" --batch --no-tty --verify "${script}.sig" "$script" || die "verification via previously imported %s failed" "$ggetDir/signing-key.public.asc"
 		done || die $?
 
 	if [[ $prepareOnly != true ]]; then
