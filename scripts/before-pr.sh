@@ -24,8 +24,8 @@ fi
 sourceOnce "$dir_of_tegonal_scripts/utility/checks.sh"
 
 sourceOnce "$scriptsDir/check-in-bug-template.sh"
+sourceOnce "$scriptsDir/cleanup-on-push-to-main.sh"
 sourceOnce "$scriptsDir/run-shellcheck.sh"
-sourceOnce "$scriptsDir/update-docu.sh"
 
 function beforePr() {
 	if checkCommandExists "shellspec" 2>/dev/null; then
@@ -39,7 +39,7 @@ function beforePr() {
 	# this way we still have fail fast behaviour and don't mask/hide a non-zero exit code
 	checkInBugTemplate && \
 	customRunShellcheck && \
-	updateDocu
+	cleanupOnPushToMain
 }
 
 ${__SOURCED__:+return}

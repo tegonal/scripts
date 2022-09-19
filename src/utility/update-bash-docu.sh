@@ -30,12 +30,10 @@
 #
 #    find . -name "*.sh" \
 #    	-not -name "*.doc.sh" \
-#    	-not -path "**.history/*" \
-#    	-not -name "update-docu.sh" \
 #    	-print0 |
 #    	while read -r -d $'\0' script; do
 #    		declare script="${script:2}"
-#    		replaceSnippetForScript "$dir_of_tegonal_scripts/$script" "${script////-}" . README.md
+#    		updateBashDocumentation "$dir_of_tegonal_scripts/$script" "${script////-}" . README.md
 #    	done
 #
 ###################################
