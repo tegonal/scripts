@@ -38,6 +38,7 @@ function updateDocu() {
 		done || die "updating bash documentation failed, see above"
 
 	local -ra scriptsWithHelp=(
+		ci/jelastic/deploy
 		releasing/sneak-peek-banner
 		releasing/toggle-sections
 		releasing/release-files

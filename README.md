@@ -98,7 +98,10 @@ Note that `source "$dir_of_tegonal_scripts/setup.sh"` will automatically source 
 The scripts are ordered by topic:
 - [CI](#continuous-integration)
   - [install shellcheck](#install-shellcheck)
-  - [install shellspec](#install-shellcheck)
+  - [install shellspec](#install-shellspec)
+  - [Jelastic](#jelastic)
+    - [deploy](#deploy-to-jelastic)
+    - [utils](#jelastic-utils)
 - [Quality Assurance](#quality-assurance)
 	- [runShellcheck](#runshellcheck)
 - [Releasing](#releasing)
@@ -172,6 +175,110 @@ jobs:
 ```
 
 </ci-install-shellspec>
+
+## Jelastic
+The scripts under this topic (in directory `ci/jelastic`) help out when dealing with jelastic cli
+
+### Deploy to jelastic
+
+Helper function which performs a signin and redeploycontainers
+
+<ci-jelastic-deploy>
+
+<!-- auto-generated, do not modify here but in src/ci/jelastic/deploy.sh -->
+```bash
+#!/usr/bin/env bash
+set -euo pipefail
+shopt -s inherit_errexit
+# Assumes tegonal's scripts were fetched with gget - adjust location accordingly
+dir_of_tegonal_scripts="$(cd -- "$(dirname -- "${BASH_SOURCE[0]:-$0}")" >/dev/null && pwd 2>/dev/null)/../lib/tegonal-scripts/src"
+source "$dir_of_tegonal_scripts/setup.sh" "$dir_of_tegonal_scripts"
+
+# typically you would define those via secrets (GitHub) or Variables (Gitlab)
+JELASTIC_LOGIN='my-user'
+JELASTIC_PASSWORD='access-token'
+JELASTIC_PLATFORM_URL='https://...'
+
+# the label of the docker image as pushed to the docker registry configured for the environment test
+DOCKER_IMAGE_VERSION=bebea131
+
+# executes signin and redeploycontainers via jelastic_cli
+"$dir_of_tegonal_scripts/ci/jelastic/deploy.sh" -l "$JELASTIC_LOGIN" -p "$JELASTIC_PASSWORD" -u "$JELASTIC_PLATFORM_URL" -e "test" -n cp -t "$DOCKER_IMAGE_VERSION"
+
+# you can also source
+sourceOnce "$dir_of_tegonal_scripts/ci/jelastic/deploy.sh"
+jelastic_deploy -l "$JELASTIC_LOGIN" -p "$JELASTIC_PASSWORD" -u "$JELASTIC_PLATFORM_URL" -e "test" -n cp -t "$DOCKER_IMAGE_VERSION"
+```
+
+</ci-jelastic-deploy>
+
+In a GitHub workflow you would use it as follows:
+```yaml
+jobs:
+  steps:
+    - name: deploy shellcheck v0.8.0
+      run: |
+        ./lib/tegonal-scripts/src/ci/jelastic/deploy.sh \
+          -l "$JELASTIC_LOGIN" -p "$JELASTIC_PASSWORD" -u "$JELASTIC_PLATFORM_URL" \
+          -e "test" -n cp \
+          -t "$DOCKER_IMAGE_VERSION"
+```
+
+Help:
+
+<ci-jelastic-deploy-help>
+
+<!-- auto-generated, do not modify here but in src/ci/jelastic/deploy.sh -->
+```text
+Parameters:
+-l|--login       The user who logs in
+-p|--password    The access token of the user
+-u|--url         The platformUrl to the jelastic instance
+-e|--env         The environment to use
+-n|--nodeGroup   The nodeGroup to use
+-t|--tag         The tag which shall be deployed
+
+--help     prints this help
+--version  prints the version of this script
+
+INFO: Version of deploy.sh is:
+v0.18.0-SNAPSHOT
+```
+
+</ci-jelastic-deploy-help>
+
+### Jelastic utils
+
+The most important functions are defined in this file: jelastic_signin which in turn uses the generic jelastic_exec 
+
+<ci-jelastic-utils>
+
+<!-- auto-generated, do not modify here but in src/ci/jelastic/utils.sh -->
+```bash
+#!/usr/bin/env bash
+set -euo pipefail
+shopt -s inherit_errexit
+# Assumes tegonal's scripts were fetched with gget - adjust location accordingly
+dir_of_tegonal_scripts="$(cd -- "$(dirname -- "${BASH_SOURCE[0]:-$0}")" >/dev/null && pwd 2>/dev/null)/../lib/tegonal-scripts/src"
+source "$dir_of_tegonal_scripts/setup.sh" "$dir_of_tegonal_scripts"
+
+sourceOnce "$dir_of_tegonal_scripts/ci/jelastic/jelastic-utils.sh"
+
+# typically you would define those via secrets (GitHub) or Variables (Gitlab)
+JELASTIC_LOGIN='my-user'
+JELASTIC_PASSWORD='access-token'
+JELASTIC_PLATFORM_URL='https://...'
+
+# before doing anything with jelastic cli, you need to signin
+# this is just a helper function you could also use jelastic_exec and pass users/authentication/signin as command
+jelastic_signin "$JELASTIC_PLATFORM_URL" "$JELASTIC_LOGIN" "$JELASTIC_PASSWORD"
+
+# generic utility which executes the jelastic_cli with the corresponding command and args but,
+# in contrast to the cli, it checks whether the response contained `result: 0` or not
+jelastic_exec "environment/control/redeploycontainers" --envName "test" --nodeGroup "cp" --tag "a123e2"
+```
+
+</ci-jelastic-utils>
 
 # Quality Assurance
 

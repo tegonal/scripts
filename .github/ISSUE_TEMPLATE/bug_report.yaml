@@ -21,6 +21,8 @@ body:
       options:
         - ci/install-shellcheck.sh
         - ci/install-shellspec.sh
+        - ci/jelastic/deploy.sh
+        - ci/jelastic/utils.sh
         - qa/run-shellcheck.sh
         - releasing/sneak-peek-banner.sh
         - releasing/toggle-sections.sh

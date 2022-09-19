@@ -82,7 +82,7 @@ Describe 'parse_arg.sh'
 					When run parseArguments params '' 'v1.0.0'--help
 					The status should be failure
 					The stderr should include "$(printf "array \033[0;36mparams\033[0m is broken")"
-					The stderr should include 'The first argument to parse_args_checkParameterDefinitionIsTriple needs to be an array with 3-tuples containing parameter definitions'
+					The stderr should include 'The first argument to parse_args_exitIfParameterDefinitionIsNotTriple needs to be an array with 3-tuples containing parameter definitions'
 					The stderr should include 'The array needs to contain parameter definitions'
 					The stderr should not include 'the first argument needs to be a non-associative array'
 					The stderr should include 'leftOver1'
@@ -92,7 +92,7 @@ Describe 'parse_arg.sh'
 					When run parseArguments params '' 'v1.0.0' --help
 					The status should be failure
 					The stderr should include "$(printf "array \033[0;36mparams\033[0m is broken")"
-					The stderr should include 'The first argument to parse_args_checkParameterDefinitionIsTriple needs to be an array with 3-tuples containing parameter definitions'
+					The stderr should include 'The first argument to parse_args_exitIfParameterDefinitionIsNotTriple needs to be an array with 3-tuples containing parameter definitions'
 					The stderr should include 'The array needs to contain parameter definitions'
 					The stderr should include 'leftOver1'
 					The stderr should include 'leftOver2'
@@ -104,7 +104,7 @@ Describe 'parse_arg.sh'
 				When run parseArguments associativeParams '' 'v1.0.0' --help
 				The status should be failure
 				The stderr should include "$(printf "array \033[0;36massociativeParams\033[0m is broken")"
-				The stderr should include 'The first argument to parse_args_checkParameterDefinitionIsTriple needs to be a non-associative array containing parameter definitions'
+				The stderr should include 'The first argument to parse_args_exitIfParameterDefinitionIsNotTriple needs to be a non-associative array containing parameter definitions'
 			End
 		End
 	End
