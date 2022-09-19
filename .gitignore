@@ -1,4 +1,6 @@
 .history
 .vscode
 .idea
-/.gget/gpg
+.gget/**/repo
+.gget/**/gpg
+
