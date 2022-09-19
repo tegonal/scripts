@@ -210,7 +210,7 @@ function releaseFiles() {
 	"$findForSigning" -type f -not -name "*.sig" -print0 |
 		while read -r -d $'\0' script; do
 			echo "signing $script"
-			gpg --detach-sign --batch -no-tty --yes -u "$key" -o "${script}.sig" "$script" || die "was not able to sign %s" "$script"
+			gpg --detach-sign --batch --no-tty --yes -u "$key" -o "${script}.sig" "$script" || die "was not able to sign %s" "$script"
 			gpg --homedir "$gpgDir" --batch --no-tty --verify "${script}.sig" "$script" || die "verification via previously imported %s failed" "$ggetDir/signing-key.public.asc"
 		done || die $?
 
