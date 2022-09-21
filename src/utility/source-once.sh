@@ -54,7 +54,7 @@ function determineSourceOnceGuard() {
 		traceAndDie "you need to pass the file name, for which we shall calculate the guard, to determineSourceOnceGuard"
 	fi
 	local -r file="$1"
-	readlink -m "$file" | perl -0777 -pe "s@(?:.*/([^/]+)/)?([^/]+)\$@sourceOnceGuard_\$1__\$2@;" -pe "s/[-.]/_/g" || die "was not able to determine sourceOnce guard for %s" "$file"
+	(readlink -f "$file" || realpath "$file") | perl -0777 -pe "s@(?:.*/([^/]+)/)?([^/]+)\$@sourceOnceGuard_\$1__\$2@;" -pe "s/[-.]/_/g" || die "was not able to determine sourceOnce guard for %s" "$file"
 }
 
 function sourceOnce_exitIfNotAtLeastOneArg() {
