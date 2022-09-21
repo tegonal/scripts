@@ -61,6 +61,9 @@ function jelastic_exec() {
 	local -r expected="\"result\": 0"
 	if ! grep -q "$expected" <<<"$response"; then
 		returnDying "could not find \033[0;36m\"%s\033[0m in the response, was:\n%s" "$expected" "$response"
+	else
+		echo "jelastic response:"
+		echo "$response"
 	fi
 }
 
@@ -72,6 +75,6 @@ function jelastic_signin() {
 	parseFnArgs params "$@"
 
 	echo "Signing in..."
-	jelastic_exec "users/authentication/signin" --login "$login" --password "$password" --platformUrl "$url"
+	jelastic_exec "users/authentication/signin" --login "$login" --password "$password" --platformUrl "$url" >/dev/null
 	logSuccess "signed in"
 }
