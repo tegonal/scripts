@@ -158,7 +158,7 @@ function latestRemoteTag() {
 	local tag
 	# we are aware of that || will disable set -e for remoteTagsSorted
 	#shellcheck disable=SC2310
-	tag=$(remoteTagsSorted "$remote" | tail --lines=1) || die "could not get remote tags sorted, see above"
+	tag=$(remoteTagsSorted "$remote" | tail -n 1) || die "could not get remote tags sorted, see above"
 	if [[ -z $tag ]]; then
 		die "looks like remote \033[0;36m%s\033[0m does not have a tag yet." "$remote"
 	fi
