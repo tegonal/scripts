@@ -59,7 +59,7 @@ sourceOnce "$dir_of_tegonal_scripts/utility/parse-fn-args.sh"
 
 function replaceSnippet() {
 	local file id dir pattern snippet
-	# shellcheck disable=SC2034
+	# shellcheck disable=SC2034   # is passed to parseFnArgs by name
 	local -ra params=(file id dir pattern snippet)
 	parseFnArgs params "$@"
 

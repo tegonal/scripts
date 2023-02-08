@@ -1,5 +1,4 @@
 #!/usr/bin/env bash
-# shellcheck disable=SC2034
 set -euo pipefail
 shopt -s inherit_errexit
 # Assumes tegonal's scripts were fetched with gget - adjust location accordingly
@@ -13,7 +12,7 @@ regex=$(joinByChar '|' my regex alternatives)
 declare -a commands=(add delete list config)
 regex=$(joinByChar '|' "${commands[@]}")
 
-joinByString ', ' a list of strings
+joinByString ', ' a list of strings and the previously defined "$regex"
 declare -a names=(alwin darius fabian mike mikel robert oliver thomas)
 declare employees
 employees=$(joinByString ", " "${names[@]}")

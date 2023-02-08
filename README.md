@@ -146,7 +146,7 @@ Following an example:
 
 jobs:
   steps:
-    - name: install shellcheck v0.8.0
+    - name: install shellcheck v0.9.0
       run: ./lib/tegonal-scripts/src/ci/install-shellcheck.sh
     # and most likely as well
     - name: run shellcheck
@@ -303,7 +303,7 @@ source "$dir_of_tegonal_scripts/setup.sh" "$dir_of_tegonal_scripts"
 
 source "$dir_of_tegonal_scripts/qa/run-shellcheck.sh"
 
-# shellcheck disable=SC2034
+# shellcheck disable=SC2034   # is passed to runShellcheck by name
 declare -a dirs=(
 	"$dir_of_tegonal_scripts"
 	"$dir_of_tegonal_scripts/../scripts"
@@ -693,7 +693,6 @@ Utility functions when dealing with arrays.
 <!-- auto-generated, do not modify here but in src/utility/array-utils.sh -->
 ```bash
 #!/usr/bin/env bash
-# shellcheck disable=SC2034
 set -euo pipefail
 shopt -s inherit_errexit
 # Assumes tegonal's scripts were fetched with gget - adjust location accordingly
@@ -707,7 +706,7 @@ regex=$(joinByChar '|' my regex alternatives)
 declare -a commands=(add delete list config)
 regex=$(joinByChar '|' "${commands[@]}")
 
-joinByString ', ' a list of strings
+joinByString ', ' a list of strings and the previously defined "$regex"
 declare -a names=(alwin darius fabian mike mikel robert oliver thomas)
 declare employees
 employees=$(joinByString ", " "${names[@]}")
@@ -775,15 +774,16 @@ source "$dir_of_tegonal_scripts/setup.sh" "$dir_of_tegonal_scripts"
 sourceOnce "$dir_of_tegonal_scripts/utility/checks.sh"
 
 function foo() {
-	# shellcheck disable=SC2034
+	# shellcheck disable=SC2034   # is passed to checkArgIsArray by name
 	local -rn arr=$1
 	local -r fn=$2
 
 	# resolves arr recursively via recursiveDeclareP and check that is a non-associative array
-	checkArgIsArray arr 1       # same as exitIfArgIsNotArray if set -e has an effect on this line
+	checkArgIsArray arr 1        # same as exitIfArgIsNotArray if set -e has an effect on this line
 	checkArgIsFunction "$fn" 2   # same as exitIfArgIsNotFunction if set -e has an effect on this line
 
-	function describeTriple(){
+	# shellcheck disable=SC2317   # is passed to checkArgIsArrayWithTuples by name
+	function describeTriple() {
 		echo >&2 "array contains 3-tuples with names where the first value is the first-, the second the middle- and the third the lastname"
 	}
 	# check array with 3-tuples
@@ -792,9 +792,10 @@ function foo() {
 	exitIfArgIsNotArray arr 1
 	exitIfArgIsNotFunction "$fn" 2
 
-		function describePair(){
-  		echo >&2 "array contains 2-tuples with names where the first value is the first-, and the second the lastname"
-  	}
+	# shellcheck disable=SC2317   # is passed to exitIfArgIsNotArrayWithTuples by name
+	function describePair() {
+		echo >&2 "array contains 2-tuples with names where the first value is the first-, and the second the lastname"
+	}
 	# check array with 2-tuples
 	exitIfArgIsNotArrayWithTuples arr 2 "names" 1 describePair
 }
@@ -1072,9 +1073,7 @@ declare pattern version directory
 # parameter definitions where each parameter definition consists of three values (separated via space)
 # VARIABLE_NAME PATTERN HELP_TEXT
 # where the HELP_TEXT is optional in the sense of that you can use an empty string
-# in case you use shellcheck then you need to suppress the warning for the last variable definition of params
-# as shellcheck doesn't get that we are passing `params` to parseArguments ¯\_(ツ)_/¯ (an open issue of shellcheck)
-# shellcheck disable=SC2034
+# shellcheck disable=SC2034   # is passed to parseArguments by name
 declare params=(
 	pattern '-p|--pattern' ''
 	version '-v' 'the version'
@@ -1124,8 +1123,7 @@ function myFunction() {
 	# declare the variable you want to use and repeat in `declare params`
 	local command dir
 
-	# as shellcheck doesn't get that we are passing `params` to parseFnArgs ¯\_(ツ)_/¯ (an open issue of shellcheck)
-	# shellcheck disable=SC2034
+	# shellcheck disable=SC2034   # is passed to parseFnArgs by name
 	local -ra params=(command dir)
 	parseFnArgs params "$@"
 
@@ -1137,7 +1135,7 @@ function myFunctionWithVarargs() {
 
 	# in case you want to use a vararg parameter as last parameter then name your last parameter for `params` varargs:
 	local command dir varargs
-	# shellcheck disable=SC2034
+	# shellcheck disable=SC2034   # is passed to parseFnArgs by name
 	local -ra params=(command dir varargs)
 	parseFnArgs params "$@"
 
@@ -1170,9 +1168,7 @@ sourceOnce "$dir_of_tegonal_scripts/utility/parse-commands.sh"
 # command definitions where each command definition consists of two values (separated via space)
 # COMMAND_NAME HELP_TEXT
 # where the HELP_TEXT is optional in the sense of that you can use an empty string
-# in case you use shellcheck then you need to suppress the warning for the last variable definition of commands
-# as shellcheck doesn't get that we are passing `commands` to parseCommands ¯\_(ツ)_/¯ (an open issue of shellcheck)
-# shellcheck disable=SC2034
+# shellcheck disable=SC2034   # is passed to parseCommands by name
 declare commands=(
 	add 'command to add people to your list'
 	config 'manage configuration'

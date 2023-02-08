@@ -8,15 +8,16 @@ source "$dir_of_tegonal_scripts/setup.sh" "$dir_of_tegonal_scripts"
 sourceOnce "$dir_of_tegonal_scripts/utility/checks.sh"
 
 function foo() {
-	# shellcheck disable=SC2034
+	# shellcheck disable=SC2034   # is passed to checkArgIsArray by name
 	local -rn arr=$1
 	local -r fn=$2
 
 	# resolves arr recursively via recursiveDeclareP and check that is a non-associative array
-	checkArgIsArray arr 1       # same as exitIfArgIsNotArray if set -e has an effect on this line
+	checkArgIsArray arr 1        # same as exitIfArgIsNotArray if set -e has an effect on this line
 	checkArgIsFunction "$fn" 2   # same as exitIfArgIsNotFunction if set -e has an effect on this line
 
-	function describeTriple(){
+	# shellcheck disable=SC2317   # is passed to checkArgIsArrayWithTuples by name
+	function describeTriple() {
 		echo >&2 "array contains 3-tuples with names where the first value is the first-, the second the middle- and the third the lastname"
 	}
 	# check array with 3-tuples
@@ -25,9 +26,10 @@ function foo() {
 	exitIfArgIsNotArray arr 1
 	exitIfArgIsNotFunction "$fn" 2
 
-		function describePair(){
-  		echo >&2 "array contains 2-tuples with names where the first value is the first-, and the second the lastname"
-  	}
+	# shellcheck disable=SC2317   # is passed to exitIfArgIsNotArrayWithTuples by name
+	function describePair() {
+		echo >&2 "array contains 2-tuples with names where the first value is the first-, and the second the lastname"
+	}
 	# check array with 2-tuples
 	exitIfArgIsNotArrayWithTuples arr 2 "names" 1 describePair
 }

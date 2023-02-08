@@ -42,7 +42,7 @@ sourceOnce "$dir_of_tegonal_scripts/utility/parse-args.sh"
 
 function sneakPeekBanner() {
 	local command file
-	# shellcheck disable=SC2034
+	# shellcheck disable=SC2034   # is passed to parseArguments by name
 	local -ra params=(
 		command '-c|--command' "either 'show' or 'hide'"
 		file '-f|--file' '(optional) the file where search & replace shall be done -- default: ./README.md'

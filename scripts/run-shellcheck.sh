@@ -24,7 +24,7 @@ fi
 sourceOnce "$dir_of_tegonal_scripts/qa/run-shellcheck.sh"
 
 function customRunShellcheck() {
-	# shellcheck disable=SC2034
+	# shellcheck disable=SC2034   # is passed to runShellcheck by name
 	local -ra dirs=(
 		"$dir_of_tegonal_scripts"
 		"$scriptsDir"

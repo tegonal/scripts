@@ -14,7 +14,6 @@
 #######  Usage  ###################
 #
 #    #!/usr/bin/env bash
-#    # shellcheck disable=SC2034
 #    set -euo pipefail
 #    shopt -s inherit_errexit
 #    # Assumes tegonal's scripts were fetched with gget - adjust location accordingly
@@ -28,7 +27,7 @@
 #    declare -a commands=(add delete list config)
 #    regex=$(joinByChar '|' "${commands[@]}")
 #
-#    joinByString ', ' a list of strings
+#    joinByString ', ' a list of strings and the previously defined "$regex"
 #    declare -a names=(alwin darius fabian mike mikel robert oliver thomas)
 #    declare employees
 #    employees=$(joinByString ", " "${names[@]}")
@@ -122,16 +121,15 @@ function arrTakeEveryX() {
 		printStackTrace
 		exit 9
 	fi
-	# pass by referenced is not detected as usage by shellcheck, thus
-	# shellcheck disable=SC2034
+	# shellcheck disable=SC2034   # is passed to arrFilter by name
 	local -rn arrFilterMod_arrIn=$1
-	# pass by referenced is not detected as usage by shellcheck, thus
-	# shellcheck disable=SC2034
+	# shellcheck disable=SC2034   # is passed to arrFilter by name
 	local -rn arrFilterMod_arrOut=$2
 	local -ri modulo=$3
 	local -ri offset=$4
 	shift 4 || die "could not shift by 4"
 
+  # shellcheck disable=SC2317   # is passed to arrFilter by name
 	function arrFilterMod_fn() {
 		local -r index=$2
 		(((index - offset) % modulo == 0))

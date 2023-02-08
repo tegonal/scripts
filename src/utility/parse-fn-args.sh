@@ -28,8 +28,7 @@
 #    	# declare the variable you want to use and repeat in `declare params`
 #    	local command dir
 #
-#    	# as shellcheck doesn't get that we are passing `params` to parseFnArgs ¯\_(ツ)_/¯ (an open issue of shellcheck)
-#    	# shellcheck disable=SC2034
+#    	# shellcheck disable=SC2034   # is passed to parseFnArgs by name
 #    	local -ra params=(command dir)
 #    	parseFnArgs params "$@"
 #
@@ -41,7 +40,7 @@
 #
 #    	# in case you want to use a vararg parameter as last parameter then name your last parameter for `params` varargs:
 #    	local command dir varargs
-#    	# shellcheck disable=SC2034
+#    	# shellcheck disable=SC2034   # is passed to parseFnArgs by name
 #    	local -ra params=(command dir varargs)
 #    	parseFnArgs params "$@"
 #
@@ -140,8 +139,7 @@ function parseFnArgs() {
 
 	# assign rest to varargs if used
 	if [[ $parseFnArgs_withVarArgs == true ]]; then
-		# is used afterwards
-		# shellcheck disable=SC2034
+		# shellcheck disable=SC2034   # varargs is defined in outer scope and will be used there, thus ok
 		varargs=("$@") || die "could not assign the rest of arguments to varargs"
 	fi
 }

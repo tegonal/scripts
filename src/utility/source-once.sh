@@ -86,7 +86,7 @@ function sourceOnce() {
 			traceAndDie "file does not exist, cannot source %s" "$sourceOnce_file"
 		fi
 
-		# shellcheck disable=SC2034
+		# shellcheck disable=SC2034   # is used in the sourced file
 		declare __SOURCED__=true
 		# shellcheck disable=SC1090
 		source "$sourceOnce_file" "$@" || die "there was an error sourcing %s, see above" "$sourceOnce_file"

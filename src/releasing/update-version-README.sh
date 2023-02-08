@@ -42,7 +42,7 @@ sourceOnce "$dir_of_tegonal_scripts/utility/parse-args.sh"
 
 function updateVersionReadme() {
 	local version file additionalPattern
-	# shellcheck disable=SC2034
+	# shellcheck disable=SC2034   # is passed to parseArguments by name
 	local -ra params=(
 		version '-v' 'the version which shall be used'
 		file '-f|--file' '(optional) the file where search & replace shall be done -- default: ./README.md'

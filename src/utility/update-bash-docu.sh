@@ -50,7 +50,7 @@ sourceOnce "$dir_of_tegonal_scripts/utility/replace-snippet.sh"
 
 function updateBashDocumentation() {
 	local script id dir pattern
-	# shellcheck disable=SC2034
+	# shellcheck disable=SC2034   # is passed to parseFnArgs by name
 	local -ra params=(script id dir pattern)
 	parseFnArgs params "$@"
 

@@ -40,7 +40,7 @@ function wgetAndVerify() {
 	exitIfCommandDoesNotExist "wget"
 
 	local url gpgDir
-	# shellcheck disable=SC2034
+	# shellcheck disable=SC2034   # is passed to parseArguments by name
 	local -ar params=(
 		url "-u|--url" "the url which shall be fetched"
 		gpgDir "--gpg-homedir" "(optional) can be used to specify a different home directory for gpg -- default: \$HOME/.gnupg"
@@ -56,7 +56,6 @@ function wgetAndVerify() {
 		EOM
 	)
 	parseArguments params "$examples" "$TEGONAL_SCRIPTS_VERSION" "$@"
-	# shellcheck disable=SC2034
 	if ! [[ -v gpgDir ]]; then gpgDir="$HOME/.gnupg"; fi
 	exitIfNotAllArgumentsSet params "$examples" "$TEGONAL_SCRIPTS_VERSION"
 
