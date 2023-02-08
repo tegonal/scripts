@@ -20,7 +20,7 @@
 #
 #    jobs:
 #      steps:
-#        - name: install shellcheck v0.8.0
+#        - name: install shellcheck v0.9.0
 #          run: ./lib/tegonal-scripts/src/ci/install-shellcheck.sh
 #        # and most likely as well
 #        - name: run shellcheck
@@ -35,12 +35,12 @@ declare currentDir
 currentDir=$(pwd)
 tmpDir=$(mktemp -d -t download-shellcheck-XXXXXXXXXX)
 cd "$tmpDir"
-echo "ab6ee1b178f014d1b86d1e24da20d1139656c8b0ed34d2867fbb834dad02bf0a  shellcheck-v0.8.0.linux.x86_64.tar.xz" >shellcheck-v0.8.0.linux.x86_64.tar.xz.sha256
-wget --no-verbose https://github.com/koalaman/shellcheck/releases/download/v0.8.0/shellcheck-v0.8.0.linux.x86_64.tar.xz
-sha256sum -c shellcheck-v0.8.0.linux.x86_64.tar.xz.sha256
-tar -xf ./shellcheck-v0.8.0.linux.x86_64.tar.xz
-chmod +x ./shellcheck-v0.8.0/shellcheck
+echo "700324c6dd0ebea0117591c6cc9d7350d9c7c5c287acbad7630fa17b1d4d9e2f  ./shellcheck-v0.9.0.linux.x86_64.tar.xz" >shellcheck-v0.9.0.linux.x86_64.tar.xz.sha256
+wget --no-verbose https://github.com/koalaman/shellcheck/releases/download/v0.9.0/shellcheck-v0.9.0.linux.x86_64.tar.xz
+sha256sum -c shellcheck-v0.9.0.linux.x86_64.tar.xz.sha256
+tar -xf ./shellcheck-v0.9.0.linux.x86_64.tar.xz
+chmod +x ./shellcheck-v0.9.0/shellcheck
 mkdir -p "$HOME/.local/bin"
-ln -s "$tmpDir/shellcheck-v0.8.0/shellcheck" "$HOME/.local/bin/shellcheck"
+ln -s "$tmpDir/shellcheck-v0.9.0/shellcheck" "$HOME/.local/bin/shellcheck"
 cd "$currentDir"
 shellcheck --version

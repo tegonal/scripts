@@ -143,7 +143,7 @@ Following an example:
 
 jobs:
   steps:
-    - name: install shellcheck v0.8.0
+    - name: install shellcheck v0.9.0
       run: ./lib/tegonal-scripts/src/ci/install-shellcheck.sh
     # and most likely as well
     - name: run shellcheck
@@ -673,10 +673,11 @@ function foo() {
 	local -r fn=$2
 
 	# resolves arr recursively via recursiveDeclareP and check that is a non-associative array
-	checkArgIsArray arr 1       # same as exitIfArgIsNotArray if set -e has an effect on this line
-	checkArgIsFunction "$fn" 2   # same as exitIfArgIsNotFunction if set -e has an effect on this line
+	checkArgIsArray arr 1      # same as exitIfArgIsNotArray if set -e has an effect on this line
+	checkArgIsFunction "$fn" 2 # same as exitIfArgIsNotFunction if set -e has an effect on this line
 
-	function describeTriple(){
+	# shellcheck disable=SC2317   # is passed to checkArgIsArrayWithTuples by name
+	function describeTriple() {
 		echo >&2 "array contains 3-tuples with names where the first value is the first-, the second the middle- and the third the lastname"
 	}
 	# check array with 3-tuples
@@ -685,9 +686,10 @@ function foo() {
 	exitIfArgIsNotArray arr 1
 	exitIfArgIsNotFunction "$fn" 2
 
-		function describePair(){
-  		echo >&2 "array contains 2-tuples with names where the first value is the first-, and the second the lastname"
-  	}
+	# shellcheck disable=SC2317   # is passed to exitIfArgIsNotArrayWithTuples by name
+	function describePair() {
+		echo >&2 "array contains 2-tuples with names where the first value is the first-, and the second the lastname"
+	}
 	# check array with 2-tuples
 	exitIfArgIsNotArrayWithTuples arr 2 "names" 1 describePair
 }

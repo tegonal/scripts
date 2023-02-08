@@ -4,7 +4,7 @@
 
 jobs:
   steps:
-    - name: install shellcheck v0.8.0
+    - name: install shellcheck v0.9.0
       run: ./lib/tegonal-scripts/src/ci/install-shellcheck.sh
     # and most likely as well
     - name: run shellcheck
