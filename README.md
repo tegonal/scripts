@@ -42,7 +42,7 @@ Alternatively you can
 [![Download](https://img.shields.io/badge/Download-v0.18.1-%23007ec6)](https://github.com/tegonal/scripts/releases/tag/v0.18.1)
 the sources.
 
-Following the commands you need to execute to setup tegonal scripts via [gget](https://github.com/tegonal/gget).
+Following the commands you need to execute to set up tegonal scripts via [gget](https://github.com/tegonal/gget).
 
 ```bash
 gget remote add -r tegonal-scripts -u https://github.com/tegonal/scripts

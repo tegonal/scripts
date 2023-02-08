@@ -27,36 +27,35 @@ if ! [[ -v dir_of_tegonal_scripts ]]; then
 	source "$dir_of_tegonal_scripts/setup.sh" "$dir_of_tegonal_scripts"
 fi
 
-sourceOnce "$dir_of_tegonal_scripts/utility/log.sh"
 sourceOnce "$dir_of_tegonal_scripts/utility/replace-help-snippet.sh"
 sourceOnce "$dir_of_tegonal_scripts/utility/update-bash-docu.sh"
 
 function cleanupOnPushToMain() {
 	local script
-  	find "$dir_of_tegonal_scripts" -name "*.sh" \
-  		-not -name "*.doc.sh" \
-  		-print0 |
-  		while read -r -d $'\0' script; do
-  			local relative
-  			relative="$(realpath --relative-to="$projectDir" "$script")" || return $?
-  			local id="${relative:4:-3}"
-  			updateBashDocumentation "$script" "${id////-}" . README.md || return $?
-  		done || die "updating bash documentation failed, see above"
+	find "$dir_of_tegonal_scripts" -name "*.sh" \
+		-not -name "*.doc.sh" \
+		-print0 |
+		while read -r -d $'\0' script; do
+			local relative
+			relative="$(realpath --relative-to="$projectDir" "$script")" || return $?
+			local id="${relative:4:-3}"
+			updateBashDocumentation "$script" "${id////-}" . README.md || return $?
+		done || die "updating bash documentation failed, see above"
 
-  	local -ra scriptsWithHelp=(
-  		ci/jelastic/deploy
-  		releasing/sneak-peek-banner
-  		releasing/toggle-sections
-  		releasing/release-files
-  		releasing/update-version-README
-  		releasing/update-version-scripts
-  	)
+	local -ra scriptsWithHelp=(
+		ci/jelastic/deploy
+		releasing/sneak-peek-banner
+		releasing/toggle-sections
+		releasing/release-files
+		releasing/update-version-README
+		releasing/update-version-scripts
+	)
 
-  	for script in "${scriptsWithHelp[@]}"; do
-  		replaceHelpSnippet "$dir_of_tegonal_scripts/$script.sh" "${script////-}-help" . README.md
-  	done || die "replacing help snippets failed, see above"
+	for script in "${scriptsWithHelp[@]}"; do
+		replaceHelpSnippet "$dir_of_tegonal_scripts/$script.sh" "${script////-}-help" . README.md
+	done || die "replacing help snippets failed, see above"
 
-  	logSuccess "Updating bash docu and README completed"
+	logSuccess "Updating bash docu and README completed"
 }
 
 ${__SOURCED__:+return}
