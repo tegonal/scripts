@@ -8,7 +8,7 @@ source "$dir_of_tegonal_scripts/setup.sh" "$dir_of_tegonal_scripts"
 sourceOnce "$dir_of_tegonal_scripts/utility/checks.sh"
 
 function foo() {
-	# shellcheck disable=SC2034
+	# shellcheck disable=SC2034   # is passed to checkArgIsArray by name
 	local -rn arr=$1
 	local -r fn=$2
 

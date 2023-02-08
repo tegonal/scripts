@@ -24,13 +24,13 @@
 #    sourceOnce "$dir_of_tegonal_scripts/utility/checks.sh"
 #
 #    function foo() {
-#    	# shellcheck disable=SC2034
+#    	# shellcheck disable=SC2034   # is passed to checkArgIsArray by name
 #    	local -rn arr=$1
 #    	local -r fn=$2
 #
 #    	# resolves arr recursively via recursiveDeclareP and check that is a non-associative array
-#    	checkArgIsArray arr 1      # same as exitIfArgIsNotArray if set -e has an effect on this line
-#    	checkArgIsFunction "$fn" 2 # same as exitIfArgIsNotFunction if set -e has an effect on this line
+#    	checkArgIsArray arr 1        # same as exitIfArgIsNotArray if set -e has an effect on this line
+#    	checkArgIsFunction "$fn" 2   # same as exitIfArgIsNotFunction if set -e has an effect on this line
 #
 #    	# shellcheck disable=SC2317   # is passed to checkArgIsArrayWithTuples by name
 #    	function describeTriple() {
@@ -190,8 +190,7 @@ function exitIfArgIsNotArrayWithTuples() {
 
 function checkArgIsFunction() {
 	local name argNumber
-	# params is required for parseFnArgs thus:
-	# shellcheck disable=SC2034
+	# shellcheck disable=SC2034   # is passed to parseFnArgs by name
 	local -ra params=(name argNumber)
 	parseFnArgs params "$@"
 

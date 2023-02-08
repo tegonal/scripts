@@ -99,7 +99,7 @@ Describe 'parse_arg.sh'
 				End
 			End
 			It 'associative array passed'
-				# shellcheck disable=SC2034
+				# shellcheck disable=SC2034   # is passed to parseArguments by name
 				declare -A associativeParams=([version]=-v)
 				When run parseArguments associativeParams '' 'v1.0.0' --help
 				The status should be failure
@@ -135,7 +135,7 @@ Describe 'parse_arg.sh'
 						The stderr should include 'leftOver1'
 					End
 					It 'two leftovers'
-						# shellcheck disable=SC2034
+						# shellcheck disable=SC2034   # is passed to exitIfNotAllArgumentsSet by name
 						declare params=(version -v '' leftOver1 leftOver2)
 						When run exitIfNotAllArgumentsSet params '' 'v1.0.0'
 						The status should be failure

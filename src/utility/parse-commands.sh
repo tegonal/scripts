@@ -31,9 +31,7 @@
 #    # command definitions where each command definition consists of two values (separated via space)
 #    # COMMAND_NAME HELP_TEXT
 #    # where the HELP_TEXT is optional in the sense of that you can use an empty string
-#    # in case you use shellcheck then you need to suppress the warning for the last variable definition of commands
-#    # as shellcheck doesn't get that we are passing `commands` to parseCommands ¯\_(ツ)_/¯ (an open issue of shellcheck)
-#    # shellcheck disable=SC2034
+#    # shellcheck disable=SC2034   # is passed to parseCommands by name
 #    declare commands=(
 #    	add 'command to add people to your list'
 #    	config 'manage configuration'
@@ -157,8 +155,7 @@ function parse_commands_printHelp() {
 		exit 9
 	fi
 
-	# is used as ref parameter, shellcheck is not able to deduce this
-	# shellcheck disable=SC2034
+	# shellcheck disable=SC2034   # is passed to arrTakeEveryX by name
 	local -rn parse_commands_printHelp_paramArr=$1
 	local -r version=$2
 

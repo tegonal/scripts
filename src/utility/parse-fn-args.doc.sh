@@ -13,8 +13,7 @@ function myFunction() {
 	# declare the variable you want to use and repeat in `declare params`
 	local command dir
 
-	# as shellcheck doesn't get that we are passing `params` to parseFnArgs ¯\_(ツ)_/¯ (an open issue of shellcheck)
-	# shellcheck disable=SC2034
+	# shellcheck disable=SC2034   # is passed to parseFnArgs by name
 	local -ra params=(command dir)
 	parseFnArgs params "$@"
 
@@ -26,7 +25,7 @@ function myFunctionWithVarargs() {
 
 	# in case you want to use a vararg parameter as last parameter then name your last parameter for `params` varargs:
 	local command dir varargs
-	# shellcheck disable=SC2034
+	# shellcheck disable=SC2034   # is passed to parseFnArgs by name
 	local -ra params=(command dir varargs)
 	parseFnArgs params "$@"
 

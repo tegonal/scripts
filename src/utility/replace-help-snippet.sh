@@ -57,7 +57,7 @@ sourceOnce "$dir_of_tegonal_scripts/utility/replace-snippet.sh"
 
 function replaceHelpSnippet() {
 	local script id dir pattern varargs
-	# shellcheck disable=SC2034
+	# shellcheck disable=SC2034   # is passed to parseFnArgs by name
 	local -ra params=(script id dir pattern varargs)
 	parseFnArgs params "$@"
 
