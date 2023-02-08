@@ -68,6 +68,8 @@ function runShellcheck() {
 		fi
 	done
 
+  shellcheck --version
+
 	local -i fileWithIssuesCounter=0
 	local -i fileCounter=0
 	local -i skipped=0
