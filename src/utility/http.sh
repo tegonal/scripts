@@ -16,14 +16,14 @@
 #    #!/usr/bin/env bash
 #    set -euo pipefail
 #    shopt -s inherit_errexit
-#    # Assumes tegonal's scripts were fetched with gget - adjust location accordingly
+#    # Assumes tegonal's scripts were fetched with gt - adjust location accordingly
 #    dir_of_tegonal_scripts="$(cd -- "$(dirname -- "${BASH_SOURCE[0]:-$0}")" >/dev/null && pwd 2>/dev/null)/../lib/tegonal-scripts/src"
 #    source "$dir_of_tegonal_scripts/setup.sh" "$dir_of_tegonal_scripts"
 #
 #    sourceOnce "$dir_of_tegonal_scripts/utility/http.sh"
 #
 #    # downloads https://.../signing-key.public.asc and https://.../signing-key.public.asc.sig and verifies it with gpg
-#    wgetAndVerify "https://github.com/tegonal/gget/.gget/signing-key.public.asc"
+#    wgetAndVerify "https://github.com/tegonal/gt/.gt/signing-key.public.asc"
 #
 ###################################
 set -euo pipefail
@@ -48,11 +48,8 @@ function wgetAndVerify() {
 	local -r examples=$(
 		# shellcheck disable=SC2312
 		cat <<-EOM
-			# updates gget to the latest tag
-			gget self-update
-
-			# updates gget to the latest tag and downloads the sources even if already on the latest
-			gget self-update --force
+			# downloads https://.../signing-key.public.asc and https://.../signing-key.public.asc.sig and verifies it with gpg
+      wgetAndVerify "https://github.com/tegonal/gt/.gt/signing-key.public.asc"
 		EOM
 	)
 	parseArguments params "$examples" "$TEGONAL_SCRIPTS_VERSION" "$@"
