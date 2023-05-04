@@ -33,10 +33,10 @@ function gget_pullHook_tegonal_gh_commons_before() {
 	parseFnArgs params "$@"
 
 	if [[ $source =~ .*/\.github/Contributor[[:space:]]Agreement\.txt ]]; then
-		replacePlaceholdersContributorsAgreement "$source" "gget"
+		replacePlaceholdersContributorsAgreement "$source" "tegonal-scripts"
 	elif [[ $source =~ .*/\.github/PULL_REQUEST_TEMPLATE.md ]]; then
 		# same as in additional-release-files-preparations.sh
-		local -r githubUrl="https://github.com/tegonal/gget"
+		local -r githubUrl="https://github.com/tegonal/scripts"
 		replacePlaceholderPullRequestTemplate "$source" "$githubUrl" "$TEGONAL_SCRIPTS_LATEST_VERSION"
 	fi
 }
