@@ -23,7 +23,7 @@ if ! [[ -v projectDir ]]; then
 fi
 
 if ! [[ -v dir_of_github_commons ]]; then
-	dir_of_github_commons="$projectDir/.gget/remotes/tegonal-gh-commons/lib/src"
+	dir_of_github_commons="$projectDir/.gt/remotes/tegonal-gh-commons/lib/src"
 	readonly dir_of_github_commons
 fi
 
@@ -31,7 +31,7 @@ if ! [[ -v dir_of_tegonal_scripts ]]; then
 	dir_of_tegonal_scripts="$projectDir/src"
 	source "$dir_of_tegonal_scripts/setup.sh" "$dir_of_tegonal_scripts"
 fi
-sourceOnce "$dir_of_github_commons/gget/pull-hook-functions.sh"
+sourceOnce "$dir_of_github_commons/gt/pull-hook-functions.sh"
 sourceOnce "$dir_of_tegonal_scripts/utility/checks.sh"
 sourceOnce "$dir_of_tegonal_scripts/releasing/update-version-scripts.sh"
 
@@ -46,7 +46,7 @@ function additionalReleasePrepareSteps() {
 	replaceTagInPullRequestTemplate "$projectDir/.github/PULL_REQUEST_TEMPLATE.md" "$githubUrl" "$version" || die "could not fill the placeholders in PULL_REQUEST_TEMPLATE.md"
 
 	local -ra additionalScripts=(
-		"$projectDir/.gget/remotes/tegonal-gh-commons/pull-hook.sh"
+		"$projectDir/.gt/remotes/tegonal-gh-commons/pull-hook.sh"
 	)
 	for script in "${additionalScripts[@]}"; do
 		updateVersionScripts -v "$version" -p "$additionalPattern" -d "$script"

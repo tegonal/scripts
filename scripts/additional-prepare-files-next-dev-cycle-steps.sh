@@ -37,6 +37,6 @@ function additionalPrepareNextSteps() {
 	# we only update the version in the header but not the TEGONAL_SCRIPTS_LATEST_VERSION on purpose -- i.e. we omit
 	# -p on purpose (compared to additional-release-files-preparations.sh) -- because we don't want to set the SNAPSHOT
 	# version since this would cause that we set the SNAPSHOT version next time we update files via gget
-	updateVersionScripts -v "$devVersion" -d "$projectDir/.gget/remotes/tegonal-gh-commons/pull-hook.sh"
+	updateVersionScripts -v "$devVersion" -d "$projectDir/.gt/remotes/tegonal-gh-commons/pull-hook.sh"
 }
 additionalPrepareNextSteps

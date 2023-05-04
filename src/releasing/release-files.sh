@@ -15,7 +15,7 @@
 #  - requires you to have a /scripts folder in your project root which contains:
 #    - before-pr.sh which provides a parameterless function beforePr and can be sourced (add ${__SOURCED__:+return} before executing beforePr)
 #    - prepare-next-dev-cycle.sh which provides function prepareNextDevCycle and can be sourced
-#  - there is a public key defined at .gget/signing-key.public.asc which will be used
+#  - there is a public key defined at .gt/signing-key.public.asc which will be used
 #    to verify the signatures which will be created
 #
 #  You can define /scripts/additional-release-files-preparations.sh which is sourced (via sourceOnce) if it exists.
@@ -25,7 +25,7 @@
 #    #!/usr/bin/env bash
 #    set -euo pipefail
 #    shopt -s inherit_errexit
-#    # Assumes tegonal's scripts were fetched with gget - adjust location accordingly
+#    # Assumes tegonal's scripts were fetched with gt - adjust location accordingly
 #    dir_of_tegonal_scripts="$(cd -- "$(dirname -- "${BASH_SOURCE[0]:-$0}")" >/dev/null && pwd 2>/dev/null)/../lib/tegonal-scripts/src"
 #    source "$dir_of_tegonal_scripts/setup.sh" "$dir_of_tegonal_scripts"
 #
@@ -194,8 +194,8 @@ function releaseFiles() {
 	# run again since we made changes
 	beforePr || return $?
 
-	local -r ggetDir="$projectsRootDir/.gget"
-	local -r gpgDir="$ggetDir/gpg"
+	local -r gtDir="$projectsRootDir/.gt"
+	local -r gpgDir="$gtDir/gpg"
 	if ! rm -rf "$gpgDir"; then
 		logError "was not able to remove gpg directory %s\nPlease do this manually and re-run the release command" "$gpgDir"
 		git reset --hard "origin/$expectedDefaultBranch"
@@ -203,7 +203,7 @@ function releaseFiles() {
 	mkdir "$gpgDir"
 	chmod 700 "$gpgDir"
 
-	gpg --homedir "$gpgDir" --batch --no-tty --import "$ggetDir/signing-key.public.asc" || die "was not able to import %s" "$ggetDir/signing-key.public.asc"
+	gpg --homedir "$gpgDir" --batch --no-tty --import "$gtDir/signing-key.public.asc" || die "was not able to import %s" "$gtDir/signing-key.public.asc"
 	trustGpgKey "$gpgDir" "info@tegonal.com" || logInfo "could not trust key with id info@tegonal.com, you will see warnings due to this during signing the files"
 
 	local script
@@ -211,7 +211,7 @@ function releaseFiles() {
 		while read -r -d $'\0' script; do
 			echo "signing $script"
 			gpg --detach-sign --batch --no-tty --yes -u "$key" -o "${script}.sig" "$script" || die "was not able to sign %s" "$script"
-			gpg --homedir "$gpgDir" --batch --no-tty --verify "${script}.sig" "$script" || die "verification via previously imported %s failed" "$ggetDir/signing-key.public.asc"
+			gpg --homedir "$gpgDir" --batch --no-tty --verify "${script}.sig" "$script" || die "verification via previously imported %s failed" "$gtDir/signing-key.public.asc"
 		done || die $?
 
 	if [[ $prepareOnly != true ]]; then
