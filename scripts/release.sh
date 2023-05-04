@@ -38,8 +38,8 @@ function release() {
 		find "$dir_of_tegonal_scripts" -name "*.sh" -not -name "*.doc.sh" "$@"
 	}
 
-	# same as in prepare-next-dev-cycle.sh, update there as well
-	local -r additionalPattern="(TEGONAL_SCRIPTS_VERSION=['\"])[^'\"]+(['\"])"
+	# similar as in prepare-next-dev-cycle.sh, you might need to update it there as well if you change something here
+	local -r additionalPattern="(TEGONAL_SCRIPTS_(?:LATEST_)?VERSION=['\"])[^'\"]+(['\"])"
 
 	releaseFiles --project-dir "$projectDir" -p "$additionalPattern" --sign-fn findScripts "$@"
 }

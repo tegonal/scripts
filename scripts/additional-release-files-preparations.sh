@@ -36,14 +36,14 @@ sourceOnce "$dir_of_tegonal_scripts/utility/checks.sh"
 sourceOnce "$dir_of_tegonal_scripts/releasing/update-version-scripts.sh"
 
 function additionalReleasePrepareSteps() {
-	# keep in sync with local -r
+	# keep in sync with local -r further below (3 lines at the time of writing)
 	exitIfVarsNotAlreadySetBySource version additionalPattern
 	# we help shellcheck to realise that these variables are initialised
 	local -r version="$version" additionalPattern="$additionalPattern"
 
 	# same as in pull-hook.sh
-	local -r githubUrl="https://github.com/tegonal/gget"
-	replaceTagInPullRequestTemplate "$projectDir/.github/PULL_REQUEST_TEMPLATE.md" "$githubUrl" "$version"
+	local -r githubUrl="https://github.com/tegonal/scripts"
+	replaceTagInPullRequestTemplate "$projectDir/.github/PULL_REQUEST_TEMPLATE.md" "$githubUrl" "$version" || die "could not fill the placeholders in PULL_REQUEST_TEMPLATE.md"
 
 	local -ra additionalScripts=(
 		"$projectDir/.gget/remotes/tegonal-gh-commons/pull-hook.sh"
