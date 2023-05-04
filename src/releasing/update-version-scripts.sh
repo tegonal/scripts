@@ -70,7 +70,7 @@ function updateVersionScripts() {
 
 	local where
 	if [[ -f $directory ]]; then
-		where="in file $directory"
+		where="file $directory"
 	else
 		where="directory $directory (and subdirectories)"
 	fi
