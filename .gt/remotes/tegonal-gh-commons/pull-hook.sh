@@ -5,13 +5,13 @@
 #  / __/ -_) _ `/ _ \/ _ \/ _ `/ /        It is licensed under Apache License 2.0
 #  \__/\__/\_, /\___/_//_/\_,_/_/         Please report bugs and contribute back your improvements
 #         /___/
-#                                         Version: v0.20.0-SNAPSHOT
+#                                         Version: v1.0.0
 #
 ###################################
 set -euo pipefail
 shopt -s inherit_errexit
 unset CDPATH
-TEGONAL_SCRIPTS_LATEST_VERSION="v0.17.1"
+TEGONAL_SCRIPTS_LATEST_VERSION="v1.0.0"
 
 if ! [[ -v dir_of_tegonal_scripts ]]; then
 	dir_of_tegonal_scripts="$(cd -- "$(dirname -- "${BASH_SOURCE[0]:-$0}")" >/dev/null && pwd 2>/dev/null)/../../../lib/tegonal-scripts/src"
