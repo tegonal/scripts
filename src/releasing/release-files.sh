@@ -212,7 +212,7 @@ function releaseFiles() {
 			echo "signing $script"
 			gpg --detach-sign --batch --no-tty --yes -u "$key" -o "${script}.sig" "$script" || die "was not able to sign %s" "$script"
 			gpg --homedir "$gpgDir" --batch --no-tty --verify "${script}.sig" "$script" || die "verification via previously imported %s failed" "$gtDir/signing-key.public.asc"
-		done || die $?
+		done || return $?
 
 	if [[ $prepareOnly != true ]]; then
 		git add . || return $?
