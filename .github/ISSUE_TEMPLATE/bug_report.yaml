@@ -1,6 +1,6 @@
 name: 🐛 Bug Report
 description: File a bug report to help us improve
-labels: bug
+labels: [ bug ]
 body:
   - type: markdown
     attributes:
@@ -11,7 +11,7 @@ body:
     attributes:
       label: Affected Version
       description: What version of scripts are you running?
-      placeholder: "v0.1.0"
+      placeholder: "v1.0.0"
     validations:
       required: true
   - type: input
@@ -30,6 +30,7 @@ body:
         - releasing/release-files.sh
         - releasing/update-version-README.sh
         - releasing/update-version-scripts.sh
+        - releasing/update-version-issue-templates.sh
         - utility/array-utils.sh
         - utility/ask.sh
         - utility/checks.sh
