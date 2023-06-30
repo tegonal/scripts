@@ -107,6 +107,7 @@ The scripts are ordered by topic:
 - [Releasing](#releasing)
     - [Update Version in README](#update-version-in-readme)
     - [Update Version in bash scripts](#update-version-in-bash-scripts)
+    - [Update Version in issue templates](#update-version-in-issue-templates)
     - [Toggle main/release sections](#toggle-mainrelease-sections)
     - [Hide/Show sneak-peek banner](#hideshow-sneak-peek-banner)
     - [Releasing Files](#release-files)
@@ -441,13 +442,72 @@ source "$dir_of_tegonal_scripts/setup.sh" "$dir_of_tegonal_scripts"
 "$dir_of_tegonal_scripts/releasing/update-version-scripts.sh" -v 0.1.0
 
 # if you use it in combination with other tegonal-scripts files, then you might want to source it instead
-sourceOnce "$dir_of_tegonal_scripts/releasing/update-version-README.sh"
+sourceOnce "$dir_of_tegonal_scripts/releasing/update-version-scripts.sh"
 
 # and then call the function
 updateVersionReadme -v 0.2.0
 ```
 
 </releasing-update-version-scripts>
+
+## Update Version in issue templates
+
+Replaces the `placeholder` of the `Affected Version` field in the given y(a)ml files
+
+Help:
+
+<releasing-update-version-issue-templates-help>
+
+<!-- auto-generated, do not modify here but in src/releasing/update-version-issue-templates.sh -->
+```text
+Parameters:
+-v               the version which shall be used
+-d|--directory   (optional) the working directory in which *.y(a)ml are searched (also in subdirectories) / you can also specify a file -- default: ./.github/ISSUE_TEMPLATE
+-p|--pattern     (optional) pattern which is used in a perl command (separator /) to search & replace additional occurrences. It should define two match groups and the replace operation looks as follows: \${1}$version\${2}
+
+--help     prints this help
+--version  prints the version of this script
+
+Examples:
+# update version to v0.1.0 for all *.y(a)ml in ./.github/ISSUE_TEMPLATE and subdirectories
+update-version-issue-templates.sh -v v0.1.0
+
+# update version to v0.1.0 for all *.y(a)ml in ./tpls and subdirectories
+update-version-issue-templates.sh -v v0.1.0 -d ./tpls
+
+# update version to v0.1.0 for all *.y(a)ml in ./.github/ISSUE_TEMPLATE and subdirectories
+# also replace occurrences of the defined pattern
+update-version-issue-templates.sh -v v0.1.0 -p "(VERSION=['\"])[^'\"]+(['\"])"
+
+INFO: Version of update-version-issue-templates.sh is:
+v1.1.0-SNAPSHOT
+```
+
+</releasing-update-version-issue-templates-help>
+
+Full usage example:
+
+<releasing-update-version-issue-templates>
+
+<!-- auto-generated, do not modify here but in src/releasing/update-version-issue-templates.sh -->
+```bash
+#!/usr/bin/env bash
+set -euo pipefail
+shopt -s inherit_errexit
+# Assumes tegonal's scripts were fetched with gt - adjust location accordingly
+dir_of_tegonal_scripts="$(cd -- "$(dirname -- "${BASH_SOURCE[0]:-$0}")" >/dev/null && pwd 2>/dev/null)/../lib/tegonal-scripts/src"
+source "$dir_of_tegonal_scripts/setup.sh" "$dir_of_tegonal_scripts"
+
+"$dir_of_tegonal_scripts/releasing/update-issue-templates.sh" -v 0.1.0
+
+# if you use it in combination with other tegonal-scripts files, then you might want to source it instead
+sourceOnce "$dir_of_tegonal_scripts/releasing/update-issue-templates.sh"
+
+# and then call the function
+updateVersionIssueTemplate -v 0.2.0
+```
+
+</releasing-update-version-issue-templates>
 
 ## Toggle main/release sections
 

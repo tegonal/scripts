@@ -20,13 +20,13 @@
 #    dir_of_tegonal_scripts="$(cd -- "$(dirname -- "${BASH_SOURCE[0]:-$0}")" >/dev/null && pwd 2>/dev/null)/../lib/tegonal-scripts/src"
 #    source "$dir_of_tegonal_scripts/setup.sh" "$dir_of_tegonal_scripts"
 #
-#    "$dir_of_tegonal_scripts/releasing/update-version-scripts.sh" -v 0.1.0
+#    "$dir_of_tegonal_scripts/releasing/update-issue-templates.sh" -v 0.1.0
 #
 #    # if you use it in combination with other tegonal-scripts files, then you might want to source it instead
-#    sourceOnce "$dir_of_tegonal_scripts/releasing/update-version-scripts.sh"
+#    sourceOnce "$dir_of_tegonal_scripts/releasing/update-issue-templates.sh"
 #
 #    # and then call the function
-#    updateVersionReadme -v 0.2.0
+#    updateVersionIssueTemplate -v 0.2.0
 #
 ###################################
 set -euo pipefail
@@ -40,31 +40,31 @@ if ! [[ -v dir_of_tegonal_scripts ]]; then
 fi
 sourceOnce "$dir_of_tegonal_scripts/utility/parse-args.sh"
 
-function updateVersionScripts() {
+function updateVersionIssueTemplates() {
 	local version directory additionalPattern
 	# shellcheck disable=SC2034   # is passed to parseArguments by name
 	local -ra params=(
 		version '-v' 'the version which shall be used'
-		directory '-d|--directory' '(optional) the working directory in which *.sh are searched (also in subdirectories) / you can also specify a file -- default: ./src'
+		directory '-d|--directory' '(optional) the working directory in which *.y(a)ml are searched (also in subdirectories) / you can also specify a file -- default: ./.github/ISSUE_TEMPLATE'
 		additionalPattern '-p|--pattern' '(optional) pattern which is used in a perl command (separator /) to search & replace additional occurrences. It should define two match groups and the replace operation looks as follows: '"\\\${1}\$version\\\${2}"
 	)
 	local -r examples=$(
 		# shellcheck disable=SC2312
 		cat <<-EOM
-			# update version to v0.1.0 for all *.sh in ./src and subdirectories
-			update-version-scripts.sh -v v0.1.0
+			# update version to v0.1.0 for all *.y(a)ml in ./.github/ISSUE_TEMPLATE and subdirectories
+			update-version-issue-templates.sh -v v0.1.0
 
-			# update version to v0.1.0 for all *.sh in ./scripts and subdirectories
-			update-version-scripts.sh -v v0.1.0 -d ./scripts
+			# update version to v0.1.0 for all *.y(a)ml in ./tpls and subdirectories
+			update-version-issue-templates.sh -v v0.1.0 -d ./tpls
 
-			# update version to v0.1.0 for all *.sh in ./src and subdirectories
+			# update version to v0.1.0 for all *.y(a)ml in ./.github/ISSUE_TEMPLATE and subdirectories
 			# also replace occurrences of the defined pattern
-			update-version-scripts.sh -v v0.1.0 -p "(VERSION=['\"])[^'\"]+(['\"])"
+			update-version-issue-templates.sh -v v0.1.0 -p "(VERSION=['\"])[^'\"]+(['\"])"
 		EOM
 	)
 
 	parseArguments params "$examples" "$TEGONAL_SCRIPTS_VERSION" "$@"
-	if ! [[ -v directory ]]; then directory="./src"; fi
+	if ! [[ -v directory ]]; then directory="./.github/ISSUE_TEMPLATE"; fi
 	if ! [[ -v additionalPattern ]]; then additionalPattern=""; fi
 	exitIfNotAllArgumentsSet params "$examples" "$TEGONAL_SCRIPTS_VERSION"
 
@@ -74,17 +74,17 @@ function updateVersionScripts() {
 	else
 		where="directory $directory (and subdirectories)"
 	fi
-	echo "set version $version in bash headers in $where"
+	echo "set version $version in issue templates in $where"
 	if [[ -n $additionalPattern ]]; then
 		echo "also going to search for $additionalPattern and replace with \${1}$version\${2}"
 	fi
 
 	local script
-	find "$directory" -name "*.sh" -print0 |
+	find "$directory" '(' -name "*.yml" -o -name "*.yaml" ')' -print0 |
 		while read -r -d $'\0' script; do
 			perl -0777 -i \
-				-pe "s/Version:.+(\n[\S\s]+?###)/Version: $version\${1}/g;" \
-				"$script" || returnDying "was not able to update the version in the header of bash files" || return $?
+				-pe "s/(label:\s*Affected Version[\S\s]+placeholder:\s*)\"[^\"]+\"/\${1}\"$version\"/g;" \
+				"$script" || returnDying "was not able to update the version in the issue templates" || return $?
 
 			if [[ -n $additionalPattern ]]; then
 				perl -0777 -i \
@@ -94,4 +94,4 @@ function updateVersionScripts() {
 		done
 }
 ${__SOURCED__:+return}
-updateVersionScripts "$@"
+updateVersionIssueTemplates "$@"

@@ -49,6 +49,7 @@ function cleanupOnPushToMain() {
 		releasing/release-files
 		releasing/update-version-README
 		releasing/update-version-scripts
+		releasing/update-version-issue-templates
 	)
 
 	for script in "${scriptsWithHelp[@]}"; do

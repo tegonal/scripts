@@ -5,10 +5,10 @@ shopt -s inherit_errexit
 dir_of_tegonal_scripts="$(cd -- "$(dirname -- "${BASH_SOURCE[0]:-$0}")" >/dev/null && pwd 2>/dev/null)/../lib/tegonal-scripts/src"
 source "$dir_of_tegonal_scripts/setup.sh" "$dir_of_tegonal_scripts"
 
-"$dir_of_tegonal_scripts/releasing/update-version-scripts.sh" -v 0.1.0
+"$dir_of_tegonal_scripts/releasing/update-issue-templates.sh" -v 0.1.0
 
 # if you use it in combination with other tegonal-scripts files, then you might want to source it instead
-sourceOnce "$dir_of_tegonal_scripts/releasing/update-version-scripts.sh"
+sourceOnce "$dir_of_tegonal_scripts/releasing/update-issue-templates.sh"
 
 # and then call the function
-updateVersionReadme -v 0.2.0
+updateVersionIssueTemplate -v 0.2.0
