@@ -9,7 +9,7 @@
 #
 #######  Description  #############
 #
-#  Updates the version which is placed before the `Description` section in bash files (line 8 in this file).
+#  Updates the placeholder of all labels named `Affected Version` in issue templates.
 #
 #######  Usage  ###################
 #
