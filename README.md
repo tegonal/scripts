@@ -1,17 +1,17 @@
 <!-- for main -->
-
-[![Download](https://img.shields.io/badge/Download-v1.0.0-%23007ec6)](https://github.com/tegonal/scripts/releases/tag/v1.0.0)
+<!--
+[![Download](https://img.shields.io/badge/Download-v1.1.0-%23007ec6)](https://github.com/tegonal/scripts/releases/tag/v1.1.0)
 [![Apache 2.0](https://img.shields.io/badge/%E2%9A%96-Apache%202.0-%230b45a6)](http://opensource.org/licenses/Apache2.0 "License")
 [![Code Quality](https://github.com/tegonal/scripts/workflows/Code%20Quality/badge.svg?event=push&branch=main)](https://github.com/tegonal/scripts/actions/workflows/code-quality.yml?query=branch%3Amain)
 [![Newcomers Welcome](https://img.shields.io/badge/%F0%9F%91%8B-Newcomers%20Welcome-blueviolet)](https://github.com/tegonal/scripts/issues?q=is%3Aissue+is%3Aopen+label%3A%22good+first+issue%22 "Ask in discussions for help")
-
+-->
 <!-- for main end -->
 <!-- for release -->
-<!--
-[![Download](https://img.shields.io/badge/Download-v1.0.0-%23007ec6)](https://github.com/tegonal/scripts/releases/tag/v1.0.0)
+
+[![Download](https://img.shields.io/badge/Download-v1.1.0-%23007ec6)](https://github.com/tegonal/scripts/releases/tag/v1.1.0)
 [![Apache 2.0](https://img.shields.io/badge/%E2%9A%96-Apache%202.0-%230b45a6)](http://opensource.org/licenses/Apache2.0 "License")
 [![Newcomers Welcome](https://img.shields.io/badge/%F0%9F%91%8B-Newcomers%20Welcome-blueviolet)](https://github.com/tegonal/scripts/issues?q=is%3Aissue+is%3Aopen+label%3A%22good+first+issue%22 "Ask in discussions for help")
--->
+
 <!-- for release end -->
 
 # Scripts of Tegonal
@@ -20,13 +20,13 @@ There are scripts which we use over and over again in different projects.
 As they might be usable for you as well, we are publishing them here.
 Feel free to use it and report bugs if you should find one.
 
----
+<!---
 ❗ You are taking a _sneak peek_ at the next version.
 Please have a look at the README of the git tag in case you are looking for the documentation of the corresponding
 version.
-For instance, the [README of v1.0.0](https://github.com/tegonal/scripts/tree/v1.0.0/README.md).
+For instance, the [README of v1.1.0](https://github.com/tegonal/scripts/tree/v1.1.0/README.md).
 
----
+--->
 
 **Table of Content**
 
@@ -39,7 +39,7 @@ For instance, the [README of v1.0.0](https://github.com/tegonal/scripts/tree/v1.
 
 We recommend you pull the scripts with the help of [gt](https://github.com/tegonal/gt).  
 Alternatively you can
-[![Download](https://img.shields.io/badge/Download-v1.0.0-%23007ec6)](https://github.com/tegonal/scripts/releases/tag/v1.0.0)
+[![Download](https://img.shields.io/badge/Download-v1.1.0-%23007ec6)](https://github.com/tegonal/scripts/releases/tag/v1.1.0)
 the sources.
 
 Following the commands you need to execute to set up tegonal scripts via [gt](https://github.com/tegonal/gt).
@@ -51,7 +51,7 @@ gt remote add -r tegonal-scripts -u https://github.com/tegonal/scripts
 Now you can pull the scripts you want via:
 
 ```bash
-export TEGONAL_SCRIPTS_VERSION="v1.0.0"
+export TEGONAL_SCRIPTS_VERSION="v1.1.0"
 gt pull -r tegonal-scripts -t "$TEGONAL_SCRIPTS_VERSION" -p ...
 ```
 
@@ -61,7 +61,7 @@ Many of the scripts depend on further scripts located in `src/utility`.
 Therefore, for simplicity reasons, we recommend you pull `src/setup.sh` all files of `src/utility` in addition:
 
 ```
-export TEGONAL_SCRIPTS_VERSION="v1.0.0" 
+export TEGONAL_SCRIPTS_VERSION="v1.1.0" 
 gt pull -r tegonal-scripts -t "$TEGONAL_SCRIPTS_VERSION" -p src/setup.sh
 gt pull -r tegonal-scripts -t "$TEGONAL_SCRIPTS_VERSION" -p src/utility/
 ```
@@ -243,7 +243,7 @@ Parameters:
 --version  prints the version of this script
 
 INFO: Version of deploy.sh is:
-v1.1.0-SNAPSHOT
+v1.1.0
 ```
 
 </ci-jelastic-deploy-help>
@@ -362,7 +362,7 @@ update-version-README.sh -v v0.1.0 -f ./docs/index.md
 update-version-README.sh -v v0.1.0 -p "(VERSION=['\"])[^'\"]+(['\"])"
 
 INFO: Version of update-version-README.sh is:
-v1.1.0-SNAPSHOT
+v1.1.0
 ```
 
 </releasing-update-version-README-help>
@@ -421,7 +421,7 @@ update-version-scripts.sh -v v0.1.0 -d ./scripts
 update-version-scripts.sh -v v0.1.0 -p "(VERSION=['\"])[^'\"]+(['\"])"
 
 INFO: Version of update-version-scripts.sh is:
-v1.1.0-SNAPSHOT
+v1.1.0
 ```
 
 </releasing-update-version-scripts-help>
@@ -480,7 +480,7 @@ update-version-issue-templates.sh -v v0.1.0 -d ./tpls
 update-version-issue-templates.sh -v v0.1.0 -p "(VERSION=['\"])[^'\"]+(['\"])"
 
 INFO: Version of update-version-issue-templates.sh is:
-v1.1.0-SNAPSHOT
+v1.1.0
 ```
 
 </releasing-update-version-issue-templates-help>
@@ -553,7 +553,7 @@ toggle-sections.sh -c main
 toggle-sections.sh -c release -f ./docs/index.md
 
 INFO: Version of toggle-sections.sh is:
-v1.1.0-SNAPSHOT
+v1.1.0
 ```
 
 </releasing-toggle-sections-help>
@@ -608,7 +608,7 @@ sneak-peek-banner.sh -c hide
 sneak-peek-banner.sh -c show -f ./docs/index.md
 
 INFO: Version of sneak-peek-banner.sh is:
-v1.1.0-SNAPSHOT
+v1.1.0
 ```
 
 </releasing-sneak-peek-banner-help>
@@ -692,7 +692,7 @@ Parameters:
 --version  prints the version of this script
 
 INFO: Version of release-files.sh is:
-v1.1.0-SNAPSHOT
+v1.1.0
 ```
 
 </releasing-release-files-help>
