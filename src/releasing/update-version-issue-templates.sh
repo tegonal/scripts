@@ -49,7 +49,7 @@ function updateVersionIssueTemplates() {
 		additionalPattern '-p|--pattern' '(optional) pattern which is used in a perl command (separator /) to search & replace additional occurrences. It should define two match groups and the replace operation looks as follows: '"\\\${1}\$version\\\${2}"
 	)
 	local -r examples=$(
-		# shellcheck disable=SC2312
+		# shellcheck disable=SC2312		# cat shouldn't fail for a constant string hence fine to ignore exit code
 		cat <<-EOM
 			# update version to v0.1.0 for all *.y(a)ml in ./.github/ISSUE_TEMPLATE and subdirectories
 			update-version-issue-templates.sh -v v0.1.0

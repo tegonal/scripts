@@ -171,8 +171,7 @@ function releaseFiles() {
 	done
 
 	local -r projectsScriptsDir="$projectsRootDir/scripts"
-	# we are aware of that || will disable set -e for sourceOnce
-	# shellcheck disable=SC2310
+	# shellcheck disable=SC2310			# we are aware of that || will disable set -e for sourceOnce
 	sourceOnce "$projectsScriptsDir/before-pr.sh" || die "could not source before-pr.sh"
 
 	# make sure everything is up-to-date and works as it should
@@ -186,8 +185,7 @@ function releaseFiles() {
 	local -r additionalSteps="$projectsScriptsDir/additional-release-files-preparations.sh"
 	if [[ -f $additionalSteps ]]; then
 		logInfo "found $additionalSteps going to source it"
-		# we are aware of that || will disable set -e for sourceOnce
-		# shellcheck disable=SC2310
+		# shellcheck disable=SC2310				# we are aware of that || will disable set -e for sourceOnce
 		sourceOnce "$additionalSteps" || die "could not source $additionalSteps"
 	fi
 
@@ -219,8 +217,7 @@ function releaseFiles() {
 		git commit -m "$version" || return $?
 		git tag "$version" || return $?
 
-		# we are aware of that || will disable set -e for sourceOnce
-		# shellcheck disable=SC2310
+		# shellcheck disable=SC2310				# we are aware of that || will disable set -e for sourceOnce
 		sourceOnce "$projectsScriptsDir/prepare-next-dev-cycle.sh" || die "could not source prepare-next-dev-cycle.sh"
 		prepareNextDevCycle -v "$nextVersion" -p "$additionalPattern" || die "could not prepare next dev cycle for version %s" "$nextVersion"
 

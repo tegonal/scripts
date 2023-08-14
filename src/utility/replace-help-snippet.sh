@@ -75,8 +75,7 @@ function replaceHelpSnippet() {
 		varargs=("--help")
 	fi
 
-	# we want array expansion in string
-	# shellcheck disable=SC2145
+	# shellcheck disable=SC2145		# we want array expansion in string
 	echo "capturing output of calling: $script ${varargs[@]}"
 
 	local snippet quotedSnippet markdownSnippet

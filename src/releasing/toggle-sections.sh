@@ -52,7 +52,7 @@ function toggleSections() {
 		file '-f|--file' '(optional) the file where search & replace shall be done -- default: ./README.md'
 	)
 	local -r examples=$(
-		# shellcheck disable=SC2312
+		# shellcheck disable=SC2312		# cat shouldn't fail for a constant string hence fine to ignore exit code
 		cat <<-EOM
 			# comment the release sections in ./README.md and uncomment the main sections
 			toggle-sections.sh -c main

@@ -46,7 +46,7 @@ function wgetAndVerify() {
 		gpgDir "--gpg-homedir" "(optional) can be used to specify a different home directory for gpg -- default: \$HOME/.gnupg"
 	)
 	local -r examples=$(
-		# shellcheck disable=SC2312
+		# shellcheck disable=SC2312		# cat shouldn't fail for a constant string hence fine to ignore exit code
 		cat <<-EOM
 			# downloads https://.../signing-key.public.asc and https://.../signing-key.public.asc.sig and verifies it with gpg
       wgetAndVerify "https://github.com/tegonal/gt/.gt/signing-key.public.asc"
