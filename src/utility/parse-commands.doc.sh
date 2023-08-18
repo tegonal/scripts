@@ -12,7 +12,7 @@ sourceOnce "$dir_of_tegonal_scripts/utility/parse-commands.sh"
 # command definitions where each command definition consists of two values (separated via space)
 # COMMAND_NAME HELP_TEXT
 # where the HELP_TEXT is optional in the sense of that you can use an empty string
-# shellcheck disable=SC2034   # is passed to parseCommands by name
+# shellcheck disable=SC2034   # is passed by name to parseCommands
 declare commands=(
 	add 'command to add people to your list'
 	config 'manage configuration'

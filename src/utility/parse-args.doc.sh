@@ -15,7 +15,7 @@ declare pattern version directory
 # parameter definitions where each parameter definition consists of three values (separated via space)
 # VARIABLE_NAME PATTERN HELP_TEXT
 # where the HELP_TEXT is optional in the sense of that you can use an empty string
-# shellcheck disable=SC2034   # is passed to parseArguments by name
+# shellcheck disable=SC2034   # is passed by name to parseArguments
 declare params=(
 	pattern '-p|--pattern' ''
 	version '-v' 'the version'

@@ -304,7 +304,7 @@ source "$dir_of_tegonal_scripts/setup.sh" "$dir_of_tegonal_scripts"
 
 source "$dir_of_tegonal_scripts/qa/run-shellcheck.sh"
 
-# shellcheck disable=SC2034   # is passed to runShellcheck by name
+# shellcheck disable=SC2034   # is passed by name to runShellcheck
 declare -a dirs=(
 	"$dir_of_tegonal_scripts"
 	"$dir_of_tegonal_scripts/../scripts"
@@ -834,7 +834,7 @@ source "$dir_of_tegonal_scripts/setup.sh" "$dir_of_tegonal_scripts"
 sourceOnce "$dir_of_tegonal_scripts/utility/checks.sh"
 
 function foo() {
-	# shellcheck disable=SC2034   # is passed to checkArgIsArray by name
+	# shellcheck disable=SC2034   # is passed by name to checkArgIsArray
 	local -rn arr=$1
 	local -r fn=$2
 
@@ -842,7 +842,7 @@ function foo() {
 	checkArgIsArray arr 1        # same as exitIfArgIsNotArray if set -e has an effect on this line
 	checkArgIsFunction "$fn" 2   # same as exitIfArgIsNotFunction if set -e has an effect on this line
 
-	# shellcheck disable=SC2317   # is passed to checkArgIsArrayWithTuples by name
+	# shellcheck disable=SC2317   # is passed by name to checkArgIsArrayWithTuples
 	function describeTriple() {
 		echo >&2 "array contains 3-tuples with names where the first value is the first-, the second the middle- and the third the lastname"
 	}
@@ -852,7 +852,7 @@ function foo() {
 	exitIfArgIsNotArray arr 1
 	exitIfArgIsNotFunction "$fn" 2
 
-	# shellcheck disable=SC2317   # is passed to exitIfArgIsNotArrayWithTuples by name
+	# shellcheck disable=SC2317   # is passed by name to exitIfArgIsNotArrayWithTuples
 	function describePair() {
 		echo >&2 "array contains 2-tuples with names where the first value is the first-, and the second the lastname"
 	}
@@ -1133,7 +1133,7 @@ declare pattern version directory
 # parameter definitions where each parameter definition consists of three values (separated via space)
 # VARIABLE_NAME PATTERN HELP_TEXT
 # where the HELP_TEXT is optional in the sense of that you can use an empty string
-# shellcheck disable=SC2034   # is passed to parseArguments by name
+# shellcheck disable=SC2034   # is passed by name to parseArguments
 declare params=(
 	pattern '-p|--pattern' ''
 	version '-v' 'the version'
@@ -1183,7 +1183,7 @@ function myFunction() {
 	# declare the variable you want to use and repeat in `declare params`
 	local command dir
 
-	# shellcheck disable=SC2034   # is passed to parseFnArgs by name
+	# shellcheck disable=SC2034   # is passed by name to parseFnArgs
 	local -ra params=(command dir)
 	parseFnArgs params "$@"
 
@@ -1195,7 +1195,7 @@ function myFunctionWithVarargs() {
 
 	# in case you want to use a vararg parameter as last parameter then name your last parameter for `params` varargs:
 	local command dir varargs
-	# shellcheck disable=SC2034   # is passed to parseFnArgs by name
+	# shellcheck disable=SC2034   # is passed by name to parseFnArgs
 	local -ra params=(command dir varargs)
 	parseFnArgs params "$@"
 
@@ -1228,7 +1228,7 @@ sourceOnce "$dir_of_tegonal_scripts/utility/parse-commands.sh"
 # command definitions where each command definition consists of two values (separated via space)
 # COMMAND_NAME HELP_TEXT
 # where the HELP_TEXT is optional in the sense of that you can use an empty string
-# shellcheck disable=SC2034   # is passed to parseCommands by name
+# shellcheck disable=SC2034   # is passed by name to parseCommands
 declare commands=(
 	add 'command to add people to your list'
 	config 'manage configuration'

@@ -40,7 +40,7 @@ function wgetAndVerify() {
 	exitIfCommandDoesNotExist "wget"
 
 	local url gpgDir
-	# shellcheck disable=SC2034   # is passed to parseArguments by name
+	# shellcheck disable=SC2034   # is passed by name to parseArguments
 	local -ar params=(
 		url "-u|--url" "the url which shall be fetched"
 		gpgDir "--gpg-homedir" "(optional) can be used to specify a different home directory for gpg -- default: \$HOME/.gnupg"
