@@ -60,5 +60,12 @@ function askYesOrNo() {
 		printf "\n"
 		logInfo "no user interaction after %s seconds, going to interpret that as a 'no'." "$timeout"
 	fi
-	[[ $answer == y ]] || [[ $answer == Y ]]
+	if [[ $answer == y ]] || [[ $answer == Y ]]; then
+		return 0
+	elif [[ $answer == n ]] || [[ $answer == N ]]; then
+		return 1
+	else
+		logWarning "got \033[0;36m%s\033[0m as answer (instead of y for yes or n for no), interpreting it as a n, i.e. as a no" "$answer"
+		return 1
+	fi
 }
