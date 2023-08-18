@@ -1455,6 +1455,10 @@ You are more than welcome to contribute as well:
   the [help wanted issues](https://github.com/tegonal/scripts/issues?q=is%3Aissue+is%3Aopen+label%3A%22help+wanted%22)
   if you would like to code.
 
+Please have a look at
+[CONTRIBUTING.md](https://github.com/tegonal/gt/tree/main/.github/CONTRIBUTING.md)
+for further suggestions and guidelines.
+
 # License
 
 The provided scripts are licensed under [Apache 2.0](http://opensource.org/licenses/Apache2.0).
