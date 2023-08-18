@@ -31,8 +31,8 @@
 #    # import public-key.asc into gpg store located at .gt/.gpg and trust automatically
 #    importGpgKey .gt/.gpg ./public-key.asc --confirmation=false
 #
-#    # trust key which is identified via info.com in gpg store located at ~/.gpg
-#    trustGpgKey ~/.gpg info.com
+#    # trust key which is identified via info@tegonal.com in gpg store located at ~/.gpg
+#    trustGpgKey ~/.gpg info@tegonal.com
 #
 ###################################
 set -euo pipefail

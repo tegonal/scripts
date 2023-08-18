@@ -78,11 +78,11 @@ function replaceHelpSnippet() {
 	# shellcheck disable=SC2145		# we want array expansion in string
 	echo "capturing output of calling: $script ${varargs[@]}"
 
-	local snippet quotedSnippet markdownSnippet
+	local snippet cleanedUpSnippet markdownSnippet
 	snippet=$("$script" "${varargs[@]}") || true
 	# remove ansi colour codes form snippet
-	quotedSnippet=$(perl -0777 -pe "s/\033\[([01];\d{2}|0)m//g" <<<"$snippet") || die "could not quote snippet for %s" "$script"
-	markdownSnippet=$(printf "\`\`\`text\n%s\n\`\`\`" "$quotedSnippet") || die "could not create markdownSnippet for %s" "$script"
+	cleanedUpSnippet=$(perl -0777 -pe "s/\033\[([01];\d{2}|0)m//g" <<<"$snippet") || die "could not quote snippet for %s" "$script"
+	markdownSnippet=$(printf "\`\`\`text\n%s\n\`\`\`" "$cleanedUpSnippet") || die "could not create markdownSnippet for %s" "$script"
 
 	replaceSnippet "$script" "$id" "$dir" "$pattern" "$markdownSnippet"
 }
