@@ -104,7 +104,7 @@ Finally, when you think your PR (short for pull request) is ready, then please:
 ## Coding Conventions
 So far we do not try to enforce too much. We will review your pull requests and comment if necessary.
 However, here a few hints in order that your pull request is merged quickly.
-1. Make sure the shellcheck does not generate warnings.
+1. Make sure shellcheck does not generate warnings.
 2. Try to write code in a similar style as the existing 
    (We suggest you copy something existing and modify it).
 3. Write readable code and express comments with code rather than comments.
