@@ -63,12 +63,9 @@ function replaceSnippet() {
 	local -ra params=(file id dir pattern snippet)
 	parseFnArgs params "$@"
 
-	local quotedSnippet
-	quotedSnippet=$(perl -0777 -pe 's/(@|\$|\\)/\\$1/g;' <<< "$snippet" ) || die "could not quote snippet for file \033[1;36m%s\033[0m and id %s" "$file" "$id"
-
 	find "$dir" -name "$pattern" \
 		-exec echo "updating $id in {} " \; \
-		-exec perl -0777 -i \
-		-pe "s@<${id}>[\S\s]+</${id}>@<${id}>\n\n<!-- auto-generated, do not modify here but in $(realpath --relative-to "$PWD" "$file") -->\n$quotedSnippet\n\n</${id}>@g;" \
+		-exec SNIPPET="$snippet" perl -0777 -i \
+		-pe "s@<${id}>[\S\s]+</${id}>@<${id}>\n\n<!-- auto-generated, do not modify here but in $(realpath --relative-to "$PWD" "$file") -->\n\$ENV{SNIPPET}\n\n</${id}>@g;" \
 		{} \; 2>/dev/null || true
 }
