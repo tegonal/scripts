@@ -66,5 +66,5 @@ function updateBashDocumentation() {
 		-pe "s/(###+\s+Usage\s+###+\n#\n)[\S\s]+?(\n#\n###+)/\$1${quotedSnippet}\$2/g;" \
 		"$script" || die "could not replace the Usage section for %s" "$script"
 
-	replaceSnippet "$script" "$id" "$dir" "$pattern" "$markdownSnippet"
+	replaceSnippet "$script.doc" "$id" "$dir" "$pattern" "$markdownSnippet"
 }

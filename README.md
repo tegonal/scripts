@@ -73,7 +73,7 @@ We recommend you use the following code at the beginning of your script in case 
 
 <setup>
 
-<!-- auto-generated, do not modify here but in src/setup.sh -->
+<!-- auto-generated, do not modify here but in src/setup.sh.doc -->
 ```bash
 #!/usr/bin/env bash
 set -euo pipefail
@@ -139,7 +139,7 @@ Following an example:
   
 <ci-install-shellcheck>
 
-<!-- auto-generated, do not modify here but in src/ci/install-shellcheck.sh -->
+<!-- auto-generated, do not modify here but in src/ci/install-shellcheck.sh.doc -->
 ```bash
 # run the install-shellcheck.sh in your github/gitlab workflow
 # for instance, assuming you fetched this file via gt and remote name is tegonal-scripts
@@ -160,7 +160,7 @@ jobs:
 
 <ci-install-shellspec>
 
-<!-- auto-generated, do not modify here but in src/ci/install-shellspec.sh -->
+<!-- auto-generated, do not modify here but in src/ci/install-shellspec.sh.doc -->
 ```bash
 # run the install-shellcheck.sh in your github/gitlab workflow
 # for instance, assuming you fetched this file via gt and remote name is tegonal-scripts
@@ -186,7 +186,7 @@ Helper function which performs a signin and redeploycontainers
 
 <ci-jelastic-deploy>
 
-<!-- auto-generated, do not modify here but in src/ci/jelastic/deploy.sh -->
+<!-- auto-generated, do not modify here but in src/ci/jelastic/deploy.sh.doc -->
 ```bash
 #!/usr/bin/env bash
 set -euo pipefail
@@ -254,7 +254,7 @@ The most important functions are defined in this file: jelastic_signin which in 
 
 <ci-jelastic-utils>
 
-<!-- auto-generated, do not modify here but in src/ci/jelastic/utils.sh -->
+<!-- auto-generated, do not modify here but in src/ci/jelastic/utils.sh.doc -->
 ```bash
 #!/usr/bin/env bash
 set -euo pipefail
@@ -293,7 +293,7 @@ settings for shellcheck.
 
 <qa-run-shellcheck>
 
-<!-- auto-generated, do not modify here but in src/qa/run-shellcheck.sh -->
+<!-- auto-generated, do not modify here but in src/qa/run-shellcheck.sh.doc -->
 ```bash
 #!/usr/bin/env bash
 set -euo pipefail
@@ -371,7 +371,7 @@ Full usage example:
 
 <releasing-update-version-README>
 
-<!-- auto-generated, do not modify here but in src/releasing/update-version-README.sh -->
+<!-- auto-generated, do not modify here but in src/releasing/update-version-README.sh.doc -->
 ```bash
 #!/usr/bin/env bash
 set -euo pipefail
@@ -430,7 +430,7 @@ Full usage example:
 
 <releasing-update-version-scripts>
 
-<!-- auto-generated, do not modify here but in src/releasing/update-version-scripts.sh -->
+<!-- auto-generated, do not modify here but in src/releasing/update-version-scripts.sh.doc -->
 ```bash
 #!/usr/bin/env bash
 set -euo pipefail
@@ -489,7 +489,7 @@ Full usage example:
 
 <releasing-update-version-issue-templates>
 
-<!-- auto-generated, do not modify here but in src/releasing/update-version-issue-templates.sh -->
+<!-- auto-generated, do not modify here but in src/releasing/update-version-issue-templates.sh.doc -->
 ```bash
 #!/usr/bin/env bash
 set -euo pipefail
@@ -562,7 +562,7 @@ Full usage example:
 
 <releasing-toggle-sections>
 
-<!-- auto-generated, do not modify here but in src/releasing/toggle-sections.sh -->
+<!-- auto-generated, do not modify here but in src/releasing/toggle-sections.sh.doc -->
 ```bash
 #!/usr/bin/env bash
 set -euo pipefail
@@ -617,7 +617,7 @@ Full usage example:
 
 <releasing-sneak-peek-banner>
 
-<!-- auto-generated, do not modify here but in src/releasing/sneak-peek-banner.sh -->
+<!-- auto-generated, do not modify here but in src/releasing/sneak-peek-banner.sh.doc -->
 ```bash
 #!/usr/bin/env bash
 set -euo pipefail
@@ -701,7 +701,7 @@ Full usage example:
 
 <releasing-release-files>
 
-<!-- auto-generated, do not modify here but in src/releasing/release-files.sh -->
+<!-- auto-generated, do not modify here but in src/releasing/release-files.sh.doc -->
 ```bash
 #!/usr/bin/env bash
 set -euo pipefail
@@ -750,7 +750,7 @@ Utility functions when dealing with arrays.
 
 <utility-array-utils>
 
-<!-- auto-generated, do not modify here but in src/utility/array-utils.sh -->
+<!-- auto-generated, do not modify here but in src/utility/array-utils.sh.doc -->
 ```bash
 #!/usr/bin/env bash
 set -euo pipefail
@@ -798,7 +798,7 @@ Utility functions to interact with the user.
 
 <utility-ask>
 
-<!-- auto-generated, do not modify here but in src/utility/ask.sh -->
+<!-- auto-generated, do not modify here but in src/utility/ask.sh.doc -->
 ```bash
 #!/usr/bin/env bash
 set -euo pipefail
@@ -822,7 +822,7 @@ Utility functions which check some conditions like is passed arg the correct typ
 
 <utility-checks>
 
-<!-- auto-generated, do not modify here but in src/utility/checks.sh -->
+<!-- auto-generated, do not modify here but in src/utility/checks.sh.doc -->
 ```bash
 #!/usr/bin/env bash
 set -euo pipefail
@@ -882,7 +882,7 @@ Utility functions around git.
 
 <utility-git-utils>
 
-<!-- auto-generated, do not modify here but in src/utility/git-utils.sh -->
+<!-- auto-generated, do not modify here but in src/utility/git-utils.sh.doc -->
 ```bash
 #!/usr/bin/env bash
 set -euo pipefail
@@ -941,7 +941,7 @@ Utility functions which hopefully make it easier for you to deal with gpg
 
 <utility-gpg-utils>
 
-<!-- auto-generated, do not modify here but in src/utility/gpg-utils.sh -->
+<!-- auto-generated, do not modify here but in src/utility/gpg-utils.sh.doc -->
 ```bash
 #!/usr/bin/env bash
 set -euo pipefail
@@ -971,7 +971,7 @@ trustGpgKey ~/.gpg info.com
 
 <utility-http>
 
-<!-- auto-generated, do not modify here but in src/utility/http.sh -->
+<!-- auto-generated, do not modify here but in src/utility/http.sh.doc -->
 ```bash
 #!/usr/bin/env bash
 set -euo pipefail
@@ -992,7 +992,7 @@ wgetAndVerify "https://github.com/tegonal/gt/.gt/signing-key.public.asc"
 
 <utility-io>
 
-<!-- auto-generated, do not modify here but in src/utility/io.sh -->
+<!-- auto-generated, do not modify here but in src/utility/io.sh.doc -->
 ```bash
 #!/usr/bin/env bash
 set -euo pipefail
@@ -1029,7 +1029,7 @@ Utility functions to log messages including a severity level where logError writ
 
 <utility-log>
 
-<!-- auto-generated, do not modify here but in src/utility/log.sh -->
+<!-- auto-generated, do not modify here but in src/utility/log.sh.doc -->
 ```bash
 #!/usr/bin/env bash
 set -euo pipefail
@@ -1114,7 +1114,7 @@ Full usage example:
 
 <utility-parse-args>
 
-<!-- auto-generated, do not modify here but in src/utility/parse-args.sh -->
+<!-- auto-generated, do not modify here but in src/utility/parse-args.sh.doc -->
 ```bash
 #!/usr/bin/env bash
 set -euo pipefail
@@ -1166,7 +1166,7 @@ Full usage example:
 
 <utility-parse-fn-args>
 
-<!-- auto-generated, do not modify here but in src/utility/parse-fn-args.sh -->
+<!-- auto-generated, do not modify here but in src/utility/parse-fn-args.sh.doc -->
 ```bash
 #!/usr/bin/env bash
 set -euo pipefail
@@ -1212,7 +1212,7 @@ Full usage example:
 
 <utility-parse-commands>
 
-<!-- auto-generated, do not modify here but in src/utility/parse-commands.sh -->
+<!-- auto-generated, do not modify here but in src/utility/parse-commands.sh.doc -->
 ```bash
 #!/usr/bin/env bash
 set -euo pipefail
@@ -1254,7 +1254,7 @@ Utility functions when parsing (see also [Parse arguments](#parse-arguments)).
 
 <utility-parse-utils>
 
-<!-- auto-generated, do not modify here but in src/utility/parse-utils.sh -->
+<!-- auto-generated, do not modify here but in src/utility/parse-utils.sh.doc -->
 ```bash
 #!/usr/bin/env bash
 set -euo pipefail
@@ -1287,7 +1287,7 @@ Utility function to find out the initial `declare` statement after following `de
 
 <utility-recursive-declare-p>
 
-<!-- auto-generated, do not modify here but in src/utility/recursive-declare-p.sh -->
+<!-- auto-generated, do not modify here but in src/utility/recursive-declare-p.sh.doc -->
 ```bash
 #!/usr/bin/env bash
 # shellcheck disable=SC2034
@@ -1329,7 +1329,7 @@ Full usage example:
 
 <utility-replace-snippet>
 
-<!-- auto-generated, do not modify here but in src/utility/replace-snippet.sh -->
+<!-- auto-generated, do not modify here but in src/utility/replace-snippet.sh.doc -->
 ```bash
 #!/usr/bin/env bash
 set -euo pipefail
@@ -1373,7 +1373,7 @@ Establishes a guard by creating a variable based on the file which shall be sour
 
 <utility-source-once>
 
-<!-- auto-generated, do not modify here but in src/utility/source-once.sh -->
+<!-- auto-generated, do not modify here but in src/utility/source-once.sh.doc -->
 ```bash
 #!/usr/bin/env bash
 set -euo pipefail
@@ -1416,7 +1416,7 @@ Full usage example:
 
 <utility-update-bash-docu>
 
-<!-- auto-generated, do not modify here but in src/utility/update-bash-docu.sh -->
+<!-- auto-generated, do not modify here but in src/utility/update-bash-docu.sh.doc -->
 ```bash
 #!/usr/bin/env bash
 set -euo pipefail
