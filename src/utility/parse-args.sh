@@ -128,10 +128,12 @@ function parseArguments {
 	while (($# > 0)); do
 		parseArguments_argName="$1"
 		if [[ $parseArguments_argName == --help ]]; then
-			if ! ((parseArguments_numOfArgumentsParsed == 0)); then
-				logWarning "there were arguments defined prior to --help, they will all be ignored and instead parse_args_printHelp will be called"
-			fi
 			parse_args_printHelp parseArguments_paramArr "$parseArguments_examples" "$parseArguments_version"
+			if ! ((parseArguments_numOfArgumentsParsed == 0)); then
+				logWarning "there were arguments defined prior to --help, they were all ignored and instead the help is shown"
+			elif (($# > 1)); then
+				logWarning "there were arguments defined after --help, they were all be ignored, you might want to remove --help"
+			fi
 			return 99
 		fi
 		if [[ $parseArguments_argName == --version ]]; then
