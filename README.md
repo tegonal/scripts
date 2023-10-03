@@ -111,6 +111,7 @@ The scripts are ordered by topic:
     - [Toggle main/release sections](#toggle-mainrelease-sections)
     - [Hide/Show sneak-peek banner](#hideshow-sneak-peek-banner)
     - [Releasing Files](#release-files)
+    - [Prepare Files next dev cycle](#prepare-files-next-dev-cycle)
 
 - [Script Utilities](#script-utilities)
     - [array utils](#array-utils)
@@ -243,7 +244,7 @@ Parameters:
 --version  prints the version of this script
 
 INFO: Version of deploy.sh is:
-v1.2.0-SNAPSHOT
+v1.3.0-SNAPSHOT
 ```
 
 </ci-jelastic-deploy-help>
@@ -362,7 +363,7 @@ update-version-README.sh -v v0.1.0 -f ./docs/index.md
 update-version-README.sh -v v0.1.0 -p "(VERSION=['\"])[^'\"]+(['\"])"
 
 INFO: Version of update-version-README.sh is:
-v1.2.0-SNAPSHOT
+v1.3.0-SNAPSHOT
 ```
 
 </releasing-update-version-README-help>
@@ -421,7 +422,7 @@ update-version-scripts.sh -v v0.1.0 -d ./scripts
 update-version-scripts.sh -v v0.1.0 -p "(VERSION=['\"])[^'\"]+(['\"])"
 
 INFO: Version of update-version-scripts.sh is:
-v1.2.0-SNAPSHOT
+v1.3.0-SNAPSHOT
 ```
 
 </releasing-update-version-scripts-help>
@@ -480,7 +481,7 @@ update-version-issue-templates.sh -v v0.1.0 -d ./tpls
 update-version-issue-templates.sh -v v0.1.0 -p "(VERSION=['\"])[^'\"]+(['\"])"
 
 INFO: Version of update-version-issue-templates.sh is:
-v1.2.0-SNAPSHOT
+v1.3.0-SNAPSHOT
 ```
 
 </releasing-update-version-issue-templates-help>
@@ -553,7 +554,7 @@ toggle-sections.sh -c main
 toggle-sections.sh -c release -f ./docs/index.md
 
 INFO: Version of toggle-sections.sh is:
-v1.2.0-SNAPSHOT
+v1.3.0-SNAPSHOT
 ```
 
 </releasing-toggle-sections-help>
@@ -608,7 +609,7 @@ sneak-peek-banner.sh -c hide
 sneak-peek-banner.sh -c show -f ./docs/index.md
 
 INFO: Version of sneak-peek-banner.sh is:
-v1.2.0-SNAPSHOT
+v1.3.0-SNAPSHOT
 ```
 
 </releasing-sneak-peek-banner-help>
@@ -647,7 +648,9 @@ It is based on some conventions (see src/releasing/release-files.sh for more det
 - requires you to have a /scripts folder in your project root which contains:
   - before-pr.sh which provides a parameterless function `beforePr` and can be sourced (add `${__SOURCED__:+return}` before executing `beforePr`)
   - prepare-next-dev-cycle.sh which provides function `prepareNextDevCycle` with parameters `-v` for version
-    and `-p` for additionalPattern (see source for more detail). Also this file needs to be sourcable.
+    and `-p` for additionalPattern (see source for more detail). Also, this file needs to be sourceable.
+    Typically, you will use [Prepare Files next dev cycle](#prepare-files-next-dev-cycle) inside which deals with things
+    like update to SNAPSHOT version in header files etc.
 - there is a public key defined at .gt/signing-key.public.asc which will be used
   to verify the signatures which will be created
 
@@ -692,7 +695,7 @@ Parameters:
 --version  prints the version of this script
 
 INFO: Version of release-files.sh is:
-v1.2.0-SNAPSHOT
+v1.3.0-SNAPSHOT
 ```
 
 </releasing-release-files-help>
@@ -739,6 +742,65 @@ releaseFiles --sign-fn findScripts "$@"
 ```
 
 </releasing-release-files>
+
+## Prepare Files next dev Cycle
+
+Script which prepares files for a next development cycle.
+It is based on some conventions (see src/releasing/prepare-files-next-dev-cycle.sh for more details)
+
+<releasing-prepare-files-next-dev-cycle-help>
+
+<!-- auto-generated, do not modify here but in src/releasing/prepare-files-next-dev-cycle.sh -->
+```text
+Parameters:
+-v              the version for which we prepare the dev cycle
+--project-dir   (optional) The projects directory -- default: .
+-p|--pattern    (optional) pattern which is used in a perl command (separator /) to search & replace additional occurrences. It should define two match groups and the replace operation looks as follows: \${1}$version\${2}
+
+--help     prints this help
+--version  prints the version of this script
+
+INFO: Version of prepare-files-next-dev-cycle.sh is:
+v1.3.0-SNAPSHOT
+```
+
+</releasing-prepare-files-next-dev-cycle-help>
+
+Full usage example:
+
+<releasing-prepare-files-next-dev-cycle>
+
+<!-- auto-generated, do not modify here but in src/releasing/prepare-files-next-dev-cycle.sh.doc -->
+```bash
+#!/usr/bin/env bash
+set -euo pipefail
+shopt -s inherit_errexit
+# Assumes tegonal's scripts were fetched with gt - adjust location accordingly
+dir_of_tegonal_scripts="$(cd -- "$(dirname -- "${BASH_SOURCE[0]:-$0}")" >/dev/null && pwd 2>/dev/null)/../lib/tegonal-scripts/src"
+source "$dir_of_tegonal_scripts/setup.sh" "$dir_of_tegonal_scripts"
+
+# prepare dev cycle for version v0.2.0
+"$dir_of_tegonal_scripts/releasing/prepare-files-next-dev-cycle.sh" -v v0.2.0
+
+# prepare dev cycle for version v0.2.0 and
+# searches for additional occurrences where the version should be replaced via the specified pattern in:
+# - script files in ./src and ./scripts
+# - ./README.md
+"$dir_of_tegonal_scripts/releasing/prepare-files-next-dev-cycle.sh" -v v0.2.0 \
+	-p "(TEGONAL_SCRIPTS_VERSION=['\"])[^'\"]+(['\"])"
+
+# in case you want to provide your own release.sh and only want to do some pre-configuration
+# then you might want to source it instead
+sourceOnce "$dir_of_tegonal_scripts/releasing/prepare-files-next-dev-cycle.sh"
+
+# and then call the function with your pre-configuration settings:
+# here we define the pattern which shall be used to replace further version occurrences
+# since "$@" follows afterwards, one could still override it via command line arguments.
+# put "$@" first, if you don't want that a user can override your pre-configuration
+prepareNextDevCycle -p "(TEGONAL_SCRIPTS_VERSION=['\"])[^'\"]+(['\"])" "$@"
+```
+
+</releasing-prepare-files-next-dev-cycle>
 
 # Script Utilities
 
@@ -961,8 +1023,8 @@ importGpgKey ~/.gpg ./public-key.asc --confirmation=false
 # import public-key.asc into gpg store located at .gt/.gpg and trust automatically
 importGpgKey .gt/.gpg ./public-key.asc --confirmation=false
 
-# trust key which is identified via info.com in gpg store located at ~/.gpg
-trustGpgKey ~/.gpg info.com
+# trust key which is identified via info@tegonal.com in gpg store located at ~/.gpg
+trustGpgKey ~/.gpg info@tegonal.com
 ```
 
 </utility-gpg-utils>
