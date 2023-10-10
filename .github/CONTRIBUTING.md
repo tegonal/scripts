@@ -11,7 +11,7 @@ Following a few guidelines so that others can quickly benefit from your contribu
 ## Code of Conduct
 This project and everyone participating in it is governed by this project's 
 [Code of Conduct](https://github.com/tegonal/scripts/tree/main/.github/CODE_OF_CONDUCT.md). 
-By participating, you are expected to uphold this code. Please report unacceptable behaviour to info@tutteli.ch
+By participating, you are expected to uphold this code. Please report unacceptable behaviour to info@tegonal.com
 
 ## How to Contribute
 - Star scripts if you like it.
