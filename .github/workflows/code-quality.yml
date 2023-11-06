@@ -6,7 +6,7 @@ jobs:
     name: Code Quality
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v3
+      - uses: actions/checkout@v4
       - name: install shellcheck 0.9.0
         run: ./src/ci/install-shellcheck.sh
 
