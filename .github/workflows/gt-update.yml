@@ -1,10 +1,10 @@
 #
 #    __                          __
 #   / /____ ___ ____  ___  ___ _/ /       This script is provided to you by https://github.com/tegonal/gt
-#  / __/ -_) _ `/ _ \/ _ \/ _ `/ /        It is licensed under Apache License 2.0
+#  / __/ -_) _ `/ _ \/ _ \/ _ `/ /        It is licensed under European Union Public License 1.2
 #  \__/\__/\_, /\___/_//_/\_,_/_/         Please report bugs and contribute back your improvements
 #         /___/
-#                                         Version: v0.12.0
+#                                         Version: v0.13.3
 #
 ###################################
 name: "gt update"
@@ -25,7 +25,7 @@ jobs:
           false || gpg --import - <<< "${{ secrets.PUBLIC_GPG_KEYS_WE_TRUST }}" && success=true \
             || (echo "could not import GPG keys via secrets.PUBLIC_GPG_KEYS_WE_TRUST -- maybe it's not defined"; exit 1) && \
           false || "${success:-false}" && echo "was able to import GPGs either via vars or secrets (or via both -- see above)"
-      - uses: actions/checkout@v3
+      - uses: actions/checkout@v4
       - name: Install gt
         run: |
           set -e
@@ -38,8 +38,8 @@ jobs:
           echo "public key trusted" && \
           mkdir ./gpg && \
           gpg --homedir ./gpg --import ./signing-key.public.asc && \
-          wget "https://raw.githubusercontent.com/tegonal/gt/main/install.sh" && \
-          wget "https://raw.githubusercontent.com/tegonal/gt/main/install.sh.sig" && \
+          wget "https://raw.githubusercontent.com/tegonal/gt/v0.13.3/install.sh" && \
+          wget "https://raw.githubusercontent.com/tegonal/gt/v0.13.3/install.sh.sig" && \
           gpg --homedir ./gpg --verify ./install.sh.sig ./install.sh && \
           chmod +x ./install.sh && \
           echo "verification successful" || (echo "!! verification failed, don't continue !!"; exit 1) && \
@@ -53,7 +53,7 @@ jobs:
       - name: git status
         run: git status
       - name: Create pull request if necessary
-        uses: peter-evans/create-pull-request@v4
+        uses: peter-evans/create-pull-request@v5
         with:
           branch: gt/update
           base: main
