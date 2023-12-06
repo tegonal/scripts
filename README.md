@@ -58,7 +58,7 @@ gt pull -r tegonal-scripts -t "$TEGONAL_SCRIPTS_VERSION" -p ...
 Note that dependencies have to be pulled manually and almost all scripts depend on `src/setup.sh`
 which in turn depends on `src/utility/source-once.sh` and this one depends on `src/utility/log.sh`.
 Many of the scripts depend on further scripts located in `src/utility`.
-Therefore, for simplicity reasons, we recommend you pull `src/setup.sh` all files of `src/utility` in addition:
+Therefore, for simplicity reasons, we recommend you pull `src/setup.sh` and all files in `src/utility` in addition:
 
 ```
 export TEGONAL_SCRIPTS_VERSION="v1.2.1" 
