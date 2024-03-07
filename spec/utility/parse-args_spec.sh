@@ -8,7 +8,7 @@
 #
 #
 
-Describe 'parse_arg.sh'
+Describe 'parse-arg.sh'
 	Include src/utility/parse-args.sh
 
 	Describe 'parseArguments'
