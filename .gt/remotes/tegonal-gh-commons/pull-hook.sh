@@ -33,15 +33,7 @@ function gt_pullHook_tegonal_gh_commons_before() {
 	local -ra params=(_tag source _target)
 	parseFnArgs params "$@"
 
-	if [[ $source =~ .*/\.github/Contributor[[:space:]]Agreement\.txt ]]; then
-		replacePlaceholdersContributorsAgreement_Tegonal "$source" "tegonal-scripts"
-	elif [[ $source =~ .*/\.github/CODE_OF_CONDUCT.md ]]; then
-		replacePlaceholdersCodeOfConduct_Tegonal "$source"
-	elif [[ $source =~ .*/\.github/PULL_REQUEST_TEMPLATE.md ]]; then
-		# same as in additional-release-files-preparations.sh
-		local -r githubUrl="https://github.com/tegonal/scripts"
-		replacePlaceholdersPullRequestTemplate "$source" "$githubUrl" "$TEGONAL_SCRIPTS_LATEST_VERSION"
-	fi
+	replaceTegonalGhCommonsPlaceholders_Tegonal "$source" "tegonal-scripts" "$TEGONAL_SCRIPTS_LATEST_VERSION" "scripts"
 }
 
 function gt_pullHook_tegonal_gh_commons_after() {
