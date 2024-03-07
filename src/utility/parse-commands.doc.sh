@@ -26,5 +26,12 @@ function sourceCommand() {
 	sourceOnce "my-lib-$command.sh"
 }
 
-parseCommands commands "$MY_LIB_VERSION" sourceCommand my_lib_ "$@"
+# pass:
+# 1. supported commands
+# 2. version which shall be shown in --version and --help
+# 3. source command, responsible to load the files
+# 4. the prefix used for the commands. e.g. command show with prefix my_lib_ results in calling a
+#    function my_lib_show if the users wants to execute command show
+# 5. arguments passed to the corresponding function
+parseCommands commands "$MY_LIB_VERSION" sourceCommand "my_lib_" "$@"
 
