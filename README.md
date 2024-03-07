@@ -912,6 +912,7 @@ function foo() {
 	checkArgIsArrayWithTuples arr 3 "names" 1 describeTriple
 
 	exitIfArgIsNotArray arr 1
+	exitIfArgIsNotArrayOrIsEmpty arr 1
 	exitIfArgIsNotFunction "$fn" 2
 
 	# shellcheck disable=SC2317   # is passed by name to exitIfArgIsNotArrayWithTuples
