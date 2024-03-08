@@ -34,6 +34,7 @@ function cleanupOnPushToMain() {
 	local script
 	find "$dir_of_tegonal_scripts" -name "*.sh" \
 		-not -name "*.doc.sh" \
+		-not -name "*.source.sh" \
 		-print0 |
 		while read -r -d $'\0' script; do
 			local relative
@@ -44,10 +45,13 @@ function cleanupOnPushToMain() {
 
 	local -ra scriptsWithHelp=(
 		ci/jelastic/deploy
+		releasing/pre-release-checks-git
 		releasing/prepare-files-next-dev-cycle
 		releasing/release-files
+		releasing/release-tag-prepare-next-push
 		releasing/sneak-peek-banner
 		releasing/toggle-sections
+		releasing/update-version-common-steps
 		releasing/update-version-README
 		releasing/update-version-scripts
 		releasing/update-version-issue-templates

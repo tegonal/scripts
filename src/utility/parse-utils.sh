@@ -38,6 +38,12 @@
 #    	done
 #    }
 #
+#    function myVersionPrinter() {
+#    	# 3 defines that printVersion shall skip 3 stack frames to deduce the name of the script
+#    	# makes only sense if we already know that this method is called indirectly
+#    	printVersion "$MY_LIBRARY_VERSION" 3
+#    }
+#
 #######	Limitations	#############
 #
 #	1. Does not support repeating arguments (last wins and overrides previous definitions)
@@ -56,12 +62,14 @@ if ! [[ -v dir_of_tegonal_scripts ]]; then
 fi
 
 function printVersion() {
-	if ! (($# == 1)); then
+	if ! (($# == 1)) && ! (($# == 2)); then
 		logError "One argument needs to be passed to printVersion, given \033[0;36m%s\033[0m\nFollowing a description of the parameters:" "$#"
-		echo >&2 '1: version   the version which shall be shown if one uses --version'
+		echo >&2 '1: version   		the version which shall be shown if one uses --version'
+		echo >&2 '1: stackFrame   numberthe version which shall be shown if one uses --version'
 		printStackTrace
 		exit 9
 	fi
 	local version=$1
-	logInfo "Version of %s is:\n%s" "$(basename "${BASH_SOURCE[3]:-${BASH_SOURCE[2]}}")" "$version"
+	local stackFrame=${2:-3}
+	logInfo "Version of %s is:\n%s" "$(basename "${BASH_SOURCE[stackFrame]:-${BASH_SOURCE[((stackFrame-1))]}}")" "$version"
 }

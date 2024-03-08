@@ -41,12 +41,14 @@ fi
 sourceOnce "$dir_of_tegonal_scripts/utility/parse-args.sh"
 
 function updateVersionScripts() {
+	source "$dir_of_tegonal_scripts/releasing/shared-patterns.source.sh" || die "could not source shared-patterns.source.sh"
+
 	local version directory additionalPattern
 	# shellcheck disable=SC2034   # is passed by name to parseArguments
 	local -ra params=(
-		version '-v' 'the version which shall be used'
+		version "$versionParamPattern" "$versionParamDocu"
 		directory '-d|--directory' '(optional) the working directory in which *.sh are searched (also in subdirectories) / you can also specify a file -- default: ./src'
-		additionalPattern '-p|--pattern' '(optional) pattern which is used in a perl command (separator /) to search & replace additional occurrences. It should define two match groups and the replace operation looks as follows: '"\\\${1}\$version\\\${2}"
+		additionalPattern "$additionalPatternParamPattern" "$additionalPatternParamDocu"
 	)
 	local -r examples=$(
 		# shellcheck disable=SC2312		# cat shouldn't fail for a constant string hence fine to ignore exit code

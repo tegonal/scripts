@@ -105,13 +105,16 @@ The scripts are ordered by topic:
 - [Quality Assurance](#quality-assurance)
 	- [runShellcheck](#runshellcheck)
 - [Releasing](#releasing)
+    - [Releasing Files](#release-files)
+    - [Prepare Files next dev cycle](#prepare-files-next-dev-cycle)
+    - [git Pre-Release checks](#git-pre-release-checks)
+    - [Update Version common steps](#update-version-common-release-steps)
     - [Update Version in README](#update-version-in-readme)
     - [Update Version in bash scripts](#update-version-in-bash-scripts)
     - [Update Version in issue templates](#update-version-in-issue-templates)
     - [Toggle main/release sections](#toggle-mainrelease-sections)
     - [Hide/Show sneak-peek banner](#hideshow-sneak-peek-banner)
-    - [Releasing Files](#release-files)
-    - [Prepare Files next dev cycle](#prepare-files-next-dev-cycle)
+    - [Create tag, prepare-next, push](#create-tag-prepare-next-dev-cycle-and-push-tag-and-changes) 
 
 - [Script Utilities](#script-utilities)
     - [array utils](#array-utils)
@@ -321,6 +324,287 @@ runShellcheck dirs "$sourcePath"
 
 The scripts under this topic (in directory `releasing`) perform some steps of your release process.
 
+
+## Release Files
+
+Script which releases a version for a repository containing files which don't need to be compiled or packaged.
+It is based on some conventions (see src/releasing/release-files.sh for more details):
+
+- expects a version in format vX.Y.Z(-RC...)
+- requires you to have a /scripts folder in your project root which contains:
+	- before-pr.sh which provides a parameterless function `beforePr` and can be sourced (add `${__SOURCED__:+return}` before executing `beforePr`)
+	- prepare-next-dev-cycle.sh which provides function `prepareNextDevCycle` with parameters `-v` for version
+	  and `-p` for additionalPattern (see source for more detail). Also, this file needs to be sourceable.
+	  Typically, you will use [Prepare Files next dev cycle](#prepare-files-next-dev-cycle) inside which deals with things
+	  like update to SNAPSHOT version in header files etc.
+- there is a public key defined at .gt/signing-key.public.asc which will be used
+  to verify the signatures which will be created
+
+It then includes the following steps:
+- [git pre-release checks](#git-pre-release-checks)
+- `beforePr`
+- [update version common release steps](#update-version-common-release-steps)
+- (optional) sources ./scripts/additional-release-files-preparations.sh if it exists
+- `beforePr`
+- sign files via GPG where you define which files via `--sign-fn`
+- [Create tag, prepare next dev Cycle](#create-tag-prepare-next-dev-cycle-and-push-tag-and-changes)
+  - in case you use [Prepare Files next dev cycle](#prepare-files-next-dev-cycle) in your `prepareNextDevCycle`
+      - (optional) sources ./scripts/additional-prepare-files-next-dev-cycle-steps.sh if it exists
+- push tag and changes
+
+Useful if you want to release e.g. scripts which can then be fetched via [gt](https://github.com/tegonal/gt).
+
+Note, if your beforePr or your additional steps modifies beforePr or a file it depends on, then you need to source
+those files manually in your additional steps.
+
+Help:
+
+<releasing-release-files-help>
+
+<!-- auto-generated, do not modify here but in src/releasing/release-files.sh -->
+```text
+Parameters:
+-v                   The version to release in the format vX.Y.Z(-RC...)
+-k|key               The GPG private key which shall be used to sign the files
+--sign-fn            Function which is called to determine what files should be signed. It should be based find and allow to pass further arguments (we will i.a. pass -print0)
+-b|--branch          (optional) The expected branch which is currently checked out -- default: main
+--project-dir        (optional) The projects directory -- default: .
+-p|--pattern         (optional) pattern which is used in a perl command (separator /) to search & replace additional occurrences. It should define two match groups and the replace operation looks as follows: \${1}$version\${2}
+-nv|--next-version   (optional) the version to use for prepare-next-dev-cycle -- default: is next minor based on version
+--prepare-only       (optional) defines whether the release shall only be prepared (i.e. no push, no tag, no prepare-next-dev-cycle) -- default: false
+
+--help     prints this help
+--version  prints the version of this script
+
+INFO: Version of release-files.sh is:
+v1.4.0-SNAPSHOT
+```
+
+</releasing-release-files-help>
+
+Full usage example:
+
+<releasing-release-files>
+
+<!-- auto-generated, do not modify here but in src/releasing/release-files.sh.doc -->
+```bash
+#!/usr/bin/env bash
+set -euo pipefail
+shopt -s inherit_errexit
+# Assumes tegonal's scripts were fetched with gt - adjust location accordingly
+dir_of_tegonal_scripts="$(cd -- "$(dirname -- "${BASH_SOURCE[0]:-$0}")" >/dev/null && pwd 2>/dev/null)/../lib/tegonal-scripts/src"
+source "$dir_of_tegonal_scripts/setup.sh" "$dir_of_tegonal_scripts"
+
+function findScripts() {
+	find "src" -name "*.sh" -not -name "*.doc.sh" "$@"
+}
+# make the function visible to release-files.sh / not necessary if you source release-files.sh, see further below
+declare -fx findScripts
+
+# releases version v0.1.0 using the key 0x945FE615904E5C85 for signing
+"$dir_of_tegonal_scripts/releasing/release-files.sh" -v v0.1.0 -k "0x945FE615904E5C85" --sign-fn findScripts
+
+# releases version v0.1.0 using the key 0x945FE615904E5C85 for signing and
+# searches for additional occurrences where the version should be replaced via the specified pattern in:
+# - script files in ./src and ./scripts
+# - ./README.md
+"$dir_of_tegonal_scripts/releasing/release-files.sh" \
+	-v v0.1.0 -k "0x945FE615904E5C85" --sign-fn findScripts \
+	-p "(TEGONAL_SCRIPTS_VERSION=['\"])[^'\"]+(['\"])"
+
+# in case you want to provide your own release.sh and only want to do some pre-configuration
+# then you might want to source it instead
+sourceOnce "$dir_of_tegonal_scripts/releasing/release-files.sh"
+
+# and then call the function with your pre-configuration settings:
+# here we define the function which shall be used to find the files to be signed
+# since "$@" follows afterwards, one could still override it via command line arguments.
+# put "$@" first, if you don't want that a user can override your pre-configuration
+releaseFiles --sign-fn findScripts "$@"
+```
+
+</releasing-release-files>
+
+
+## Prepare Files next dev Cycle
+
+Script which prepares files for a next development cycle.
+It is based on some conventions (see src/releasing/prepare-files-next-dev-cycle.sh for more details)
+
+<releasing-prepare-files-next-dev-cycle-help>
+
+<!-- auto-generated, do not modify here but in src/releasing/prepare-files-next-dev-cycle.sh -->
+```text
+Parameters:
+-v              the version for which we prepare the dev cycle
+--project-dir   (optional) The projects directory -- default: .
+-p|--pattern    (optional) pattern which is used in a perl command (separator /) to search & replace additional occurrences. It should define two match groups and the replace operation looks as follows: \${1}$version\${2}
+
+--help     prints this help
+--version  prints the version of this script
+
+INFO: Version of prepare-files-next-dev-cycle.sh is:
+v1.4.0-SNAPSHOT
+```
+
+</releasing-prepare-files-next-dev-cycle-help>
+
+Full usage example:
+
+<releasing-prepare-files-next-dev-cycle>
+
+<!-- auto-generated, do not modify here but in src/releasing/prepare-files-next-dev-cycle.sh.doc -->
+```bash
+#!/usr/bin/env bash
+set -euo pipefail
+shopt -s inherit_errexit
+# Assumes tegonal's scripts were fetched with gt - adjust location accordingly
+dir_of_tegonal_scripts="$(cd -- "$(dirname -- "${BASH_SOURCE[0]:-$0}")" >/dev/null && pwd 2>/dev/null)/../lib/tegonal-scripts/src"
+source "$dir_of_tegonal_scripts/setup.sh" "$dir_of_tegonal_scripts"
+
+# prepare dev cycle for version v0.2.0
+"$dir_of_tegonal_scripts/releasing/prepare-files-next-dev-cycle.sh" -v v0.2.0
+
+# prepare dev cycle for version v0.2.0 and
+# searches for additional occurrences where the version should be replaced via the specified pattern in:
+# - script files in ./src and ./scripts
+# - ./README.md
+"$dir_of_tegonal_scripts/releasing/prepare-files-next-dev-cycle.sh" -v v0.2.0 \
+	-p "(TEGONAL_SCRIPTS_VERSION=['\"])[^'\"]+(['\"])"
+
+# in case you want to provide your own release.sh and only want to do some pre-configuration
+# then you might want to source it instead
+sourceOnce "$dir_of_tegonal_scripts/releasing/prepare-files-next-dev-cycle.sh"
+
+# and then call the function with your pre-configuration settings:
+# here we define the pattern which shall be used to replace further version occurrences
+# since "$@" follows afterwards, one could still override it via command line arguments.
+# put "$@" first, if you don't want that a user can override your pre-configuration
+prepareNextDevCycle -p "(TEGONAL_SCRIPTS_VERSION=['\"])[^'\"]+(['\"])" "$@"
+```
+
+</releasing-prepare-files-next-dev-cycle>
+
+## git Pre-Release checks
+
+checks if the repo is ready to be released for a given version
+
+- expects a version in format vX.Y.Z(-RC...)
+- you are currently on `main` (or use `--branch` to define a different expected branch)
+- your branch is up-to-date with `origin`
+
+it assists you in pulling/rebasing etc. in case you are on the wrong branch or behind origin.
+
+Help:
+
+<releasing-pre-release-checks-git-help>
+
+<!-- auto-generated, do not modify here but in src/releasing/pre-release-checks-git.sh -->
+```text
+Parameters:
+-v            The version to release in the format vX.Y.Z(-RC...)
+-b|--branch   (optional) The expected branch which is currently checked out -- default: main
+
+--help     prints this help
+--version  prints the version of this script
+
+INFO: Version of pre-release-checks-git.sh is:
+v1.4.0-SNAPSHOT
+```
+
+</releasing-pre-release-checks-git-help>
+
+Full usage example:
+
+<releasing-pre-release-checks-git>
+
+<!-- auto-generated, do not modify here but in src/releasing/pre-release-checks-git.sh.doc -->
+```bash
+#!/usr/bin/env bash
+set -euo pipefail
+shopt -s inherit_errexit
+# Assumes tegonal's scripts were fetched with gt - adjust location accordingly
+dir_of_tegonal_scripts="$(cd -- "$(dirname -- "${BASH_SOURCE[0]:-$0}")" >/dev/null && pwd 2>/dev/null)/../lib/tegonal-scripts/src"
+source "$dir_of_tegonal_scripts/setup.sh" "$dir_of_tegonal_scripts"
+
+# checks releasing v0.1.0 makes sense and the current branch is main
+"$dir_of_tegonal_scripts/releasing/pre-release-checks-git.sh" -v v0.1.0
+
+# checks releasing v0.1.0 makes sense and the current branch is hotfix-1.0
+"$dir_of_tegonal_scripts/releasing/pre-release-checks-git.sh" -v v0.1.0 -b hotfix-1.0
+```
+
+</releasing-pre-release-checks-git>
+
+## Update Version Common Release Steps
+
+Performs several `releasing` scripts defined in the following sections:
+- Updates the version in *.sh (see [Update Version in bash scripts](#update-version-in-bash-scripts))
+  defined in /scripts and .gt/**/pull-hook.sh
+- Updates the version in .github/ISSUE_TEMPLATE/**.y(a)ml files (see [Update Version in issue templates](#update-version-in-issue-templates))
+- Updates the version in the README.md (see next section [Update Version in README](#update-version-in-readme)).
+- [activates the release section](#toggle-mainrelease-sections)
+- [hides the sneak-peek banner](#hideshow-sneak-peek-banner)
+
+Help:
+
+<releasing-update-version-common-steps-help>
+
+<!-- auto-generated, do not modify here but in src/releasing/update-version-common-steps.sh -->
+```text
+Parameters:
+-v              The version to release in the format vX.Y.Z(-RC...)
+--project-dir   (optional) The projects directory -- default: .
+-p|--pattern    (optional) pattern which is used in a perl command (separator /) to search & replace additional occurrences. It should define two match groups and the replace operation looks as follows: \${1}$version\${2}
+
+--help     prints this help
+--version  prints the version of this script
+
+INFO: Version of update-version-common-steps.sh is:
+v1.4.0-SNAPSHOT
+```
+
+</releasing-update-version-common-steps-help>
+
+Full usage example:
+
+<releasing-update-version-common-steps>
+
+<!-- auto-generated, do not modify here but in src/releasing/update-version-common-steps.sh.doc -->
+```bash
+#!/usr/bin/env bash
+set -euo pipefail
+shopt -s inherit_errexit
+# Assumes tegonal's scripts were fetched with gt - adjust location accordingly
+dir_of_tegonal_scripts="$(cd -- "$(dirname -- "${BASH_SOURCE[0]:-$0}")" >/dev/null && pwd 2>/dev/null)/../lib/tegonal-scripts/src"
+source "$dir_of_tegonal_scripts/setup.sh" "$dir_of_tegonal_scripts"
+
+# updates the version in headers of different files
+"$dir_of_tegonal_scripts/releasing/update-version-common-steps.sh" -v v0.1.0
+
+# 1. searches for additional occurrences where the version should be replaced via the specified pattern
+# 2. git commit all changes and create a tag for v0.1.0
+# 3. call scripts/prepare-next-dev-cycle.sh with nextVersion deduced from the specified version (in this case 0.2.0-SNAPSHOT)
+# 4. git commit all changes as prepare v0.2.0 dev cycle
+# 5. push tag and commits
+# 6. releases version v0.1.0 using the key 0x945FE615904E5C85 for signing and
+"$dir_of_tegonal_scripts/releasing/update-version-common-steps.sh" \
+	-v v0.1.0 -k "0x945FE615904E5C85" \
+	-p "(TEGONAL_SCRIPTS_VERSION=['\"])[^'\"]+(['\"])"
+
+# in case you want to provide your own release.sh and only want to do some pre-configuration
+# then you might want to source it instead
+sourceOnce "$dir_of_tegonal_scripts/releasing/update-version-common-steps.sh"
+
+# and then call the function with your pre-configuration settings:
+# here we pre-define the additional pattern which shall be used in the search to replace the version
+# since "$@" follows afterwards, one could still override it via command line arguments.
+# put "$@" first, if you don't want that a user can override your pre-configuration
+updateVersionCommonSteps -p "(TEGONAL_SCRIPTS_VERSION=['\"])[^'\"]+(['\"])" "$@"
+```
+
+</releasing-update-version-common-steps>
+
 ## Update Version in README
 
 Updates the version used in download badges and in the sneak peek banner.
@@ -344,7 +628,7 @@ Help:
 <!-- auto-generated, do not modify here but in src/releasing/update-version-README.sh -->
 ```text
 Parameters:
--v             the version which shall be used
+-v             The version to release in the format vX.Y.Z(-RC...)
 -f|--file      (optional) the file where search & replace shall be done -- default: ./README.md
 -p|--pattern   (optional) pattern which is used in a perl command (separator /) to search & replace additional occurrences. It should define two match groups and the replace operation looks as follows: \${1}$version\${2}
 
@@ -403,7 +687,7 @@ Help:
 <!-- auto-generated, do not modify here but in src/releasing/update-version-scripts.sh -->
 ```text
 Parameters:
--v               the version which shall be used
+-v               The version to release in the format vX.Y.Z(-RC...)
 -d|--directory   (optional) the working directory in which *.sh are searched (also in subdirectories) / you can also specify a file -- default: ./src
 -p|--pattern     (optional) pattern which is used in a perl command (separator /) to search & replace additional occurrences. It should define two match groups and the replace operation looks as follows: \${1}$version\${2}
 
@@ -462,7 +746,7 @@ Help:
 <!-- auto-generated, do not modify here but in src/releasing/update-version-issue-templates.sh -->
 ```text
 Parameters:
--v               the version which shall be used
+-v               The version to release in the format vX.Y.Z(-RC...)
 -d|--directory   (optional) the working directory in which *.y(a)ml are searched (also in subdirectories) / you can also specify a file -- default: ./.github/ISSUE_TEMPLATE
 -p|--pattern     (optional) pattern which is used in a perl command (separator /) to search & replace additional occurrences. It should define two match groups and the replace operation looks as follows: \${1}$version\${2}
 
@@ -638,73 +922,40 @@ sneakPeekBanner -c show
 
 </releasing-sneak-peek-banner>
 
-## Release Files
 
-Script which releases a version for a repository containing files which don't need to be compiled or packaged.
-It is based on some conventions (see src/releasing/release-files.sh for more details):
+## Create tag, prepare next dev Cycle and push tag and changes
 
-- expects a version in format vX.Y.Z(-RC...)
-- main is your default branch
-- requires you to have a /scripts folder in your project root which contains:
-  - before-pr.sh which provides a parameterless function `beforePr` and can be sourced (add `${__SOURCED__:+return}` before executing `beforePr`)
-  - prepare-next-dev-cycle.sh which provides function `prepareNextDevCycle` with parameters `-v` for version
-    and `-p` for additionalPattern (see source for more detail). Also, this file needs to be sourceable.
-    Typically, you will use [Prepare Files next dev cycle](#prepare-files-next-dev-cycle) inside which deals with things
-    like update to SNAPSHOT version in header files etc.
-- there is a public key defined at .gt/signing-key.public.asc which will be used
-  to verify the signatures which will be created
-
-It then includes the following steps:
-- some checks regarding git status 
-- `beforePr`
-- rewrite sneak-peek banner
-- toggle main/release sections in README
-- update version in download badges and sneak-peek banner in README as well as   
-  replace additional occurrences defined via `-p|--pattern` (see output of `--help` further below for further details)
-- update version in script headers in /src and /scripts of your project
-- (optional) sources ./scripts/additional-release-files-preparations.sh if it exists
-- `beforePr`
-- sign files via GPG where you define which files via `--sign-fn`
-- commit
-- `prepareNextDevCycle`
-  - (optional) sources ./scripts/additional-prepare-files-next-dev-cycle-steps.sh if it exists
-- push changes
-- tag and push tag
-
-Useful if you want to release e.g. scripts which can then be fetched via [gt](https://github.com/tegonal/gt).
-
-Note, if your beforePr or your additional steps modifies beforePr or a file it depends on, then you need to source
-those files manually in your additional steps.
+commits all changes (staged and unstaged), creates a tag for the given version and then
+calls script/prepare-next-dev-cycle.sh (i.e. this file needs to exist)
+if successful, it pushes the tag and commits to origin 
 
 Help:
 
-<releasing-release-files-help>
+<releasing-release-tag-prepare-next-push-help>
 
-<!-- auto-generated, do not modify here but in src/releasing/release-files.sh -->
+<!-- auto-generated, do not modify here but in src/releasing/release-tag-prepare-next-push.sh -->
 ```text
 Parameters:
 -v                   The version to release in the format vX.Y.Z(-RC...)
--k|--key             The GPG private key which shall be used to sign the files
---sign-fn            Function which is called to determine what files should be signed. It should be based find and allow to pass further arguments (we will i.a. pass -print0)
+-b|--branch          (optional) The expected branch which is currently checked out -- default: main
 --project-dir        (optional) The projects directory -- default: .
 -p|--pattern         (optional) pattern which is used in a perl command (separator /) to search & replace additional occurrences. It should define two match groups and the replace operation looks as follows: \${1}$version\${2}
 -nv|--next-version   (optional) the version to use for prepare-next-dev-cycle -- default: is next minor based on version
---prepare-only       (optional) defines whether the release shall only be prepared (i.e. no push, no tag, no prepare-next-dev-cycle) -- default: false
 
 --help     prints this help
 --version  prints the version of this script
 
-INFO: Version of release-files.sh is:
+INFO: Version of release-tag-prepare-next-push.sh is:
 v1.4.0-SNAPSHOT
 ```
 
-</releasing-release-files-help>
+</releasing-release-tag-prepare-next-push-help>
 
 Full usage example:
 
-<releasing-release-files>
+<releasing-release-tag-prepare-next-push>
 
-<!-- auto-generated, do not modify here but in src/releasing/release-files.sh.doc -->
+<!-- auto-generated, do not modify here but in src/releasing/release-tag-prepare-next-push.sh.doc -->
 ```bash
 #!/usr/bin/env bash
 set -euo pipefail
@@ -713,94 +964,33 @@ shopt -s inherit_errexit
 dir_of_tegonal_scripts="$(cd -- "$(dirname -- "${BASH_SOURCE[0]:-$0}")" >/dev/null && pwd 2>/dev/null)/../lib/tegonal-scripts/src"
 source "$dir_of_tegonal_scripts/setup.sh" "$dir_of_tegonal_scripts"
 
-function findScripts() {
-	find "src" -name "*.sh" -not -name "*.doc.sh" "$@"
-}
-# make the function visible to release-files.sh / not necessary if you source release-files.sh, see further below
-declare -fx findScripts
+# 1. git commit all changes and create a tag for v0.1.0
+# 2. call scripts/prepare-next-dev-cycle.sh with nextVersion deduced from the specified version (in this case 0.2.0-SNAPSHOT)
+# 3. git commit all changes as prepare v0.2.0 dev cycle
+# 4. push tag and commits
+"$dir_of_tegonal_scripts/releasing/release-tag-push-prepare-next.sh" -v v0.1.0
 
-# releases version v0.1.0 using the key 0x945FE615904E5C85 for signing
-"$dir_of_tegonal_scripts/releasing/release-files.sh" -v v0.1.0 -k "0x945FE615904E5C85" --sign-fn findScripts
-
-# releases version v0.1.0 using the key 0x945FE615904E5C85 for signing and
-# searches for additional occurrences where the version should be replaced via the specified pattern in:
-# - script files in ./src and ./scripts
-# - ./README.md
-"$dir_of_tegonal_scripts/releasing/release-files.sh" \
-	-v v0.1.0 -k "0x945FE615904E5C85" --sign-fn findScripts \
+# 1. searches for additional occurrences where the version should be replaced via the specified pattern
+# 2. git commit all changes and create a tag for v0.1.0
+# 3. call scripts/prepare-next-dev-cycle.sh with nextVersion deduced from the specified version (in this case 0.2.0-SNAPSHOT)
+# 4. git commit all changes as prepare v0.2.0 dev cycle
+# 4. push tag and commits
+"$dir_of_tegonal_scripts/releasing/release-tag-push-prepare-next.sh" \
+	-v v0.1.0 -k "0x945FE615904E5C85" \
 	-p "(TEGONAL_SCRIPTS_VERSION=['\"])[^'\"]+(['\"])"
 
 # in case you want to provide your own release.sh and only want to do some pre-configuration
 # then you might want to source it instead
-sourceOnce "$dir_of_tegonal_scripts/releasing/release-files.sh"
+sourceOnce "$dir_of_tegonal_scripts/releasing/release-tag-push-prepare-next.sh"
 
 # and then call the function with your pre-configuration settings:
-# here we define the function which shall be used to find the files to be signed
+# here we pre-define the additional pattern which shall be used in the search to replace the version
 # since "$@" follows afterwards, one could still override it via command line arguments.
 # put "$@" first, if you don't want that a user can override your pre-configuration
-releaseFiles --sign-fn findScripts "$@"
+releaseTagPushAndPrepareNext -p "(TEGONAL_SCRIPTS_VERSION=['\"])[^'\"]+(['\"])" "$@"
 ```
 
-</releasing-release-files>
-
-## Prepare Files next dev Cycle
-
-Script which prepares files for a next development cycle.
-It is based on some conventions (see src/releasing/prepare-files-next-dev-cycle.sh for more details)
-
-<releasing-prepare-files-next-dev-cycle-help>
-
-<!-- auto-generated, do not modify here but in src/releasing/prepare-files-next-dev-cycle.sh -->
-```text
-Parameters:
--v              the version for which we prepare the dev cycle
---project-dir   (optional) The projects directory -- default: .
--p|--pattern    (optional) pattern which is used in a perl command (separator /) to search & replace additional occurrences. It should define two match groups and the replace operation looks as follows: \${1}$version\${2}
-
---help     prints this help
---version  prints the version of this script
-
-INFO: Version of prepare-files-next-dev-cycle.sh is:
-v1.4.0-SNAPSHOT
-```
-
-</releasing-prepare-files-next-dev-cycle-help>
-
-Full usage example:
-
-<releasing-prepare-files-next-dev-cycle>
-
-<!-- auto-generated, do not modify here but in src/releasing/prepare-files-next-dev-cycle.sh.doc -->
-```bash
-#!/usr/bin/env bash
-set -euo pipefail
-shopt -s inherit_errexit
-# Assumes tegonal's scripts were fetched with gt - adjust location accordingly
-dir_of_tegonal_scripts="$(cd -- "$(dirname -- "${BASH_SOURCE[0]:-$0}")" >/dev/null && pwd 2>/dev/null)/../lib/tegonal-scripts/src"
-source "$dir_of_tegonal_scripts/setup.sh" "$dir_of_tegonal_scripts"
-
-# prepare dev cycle for version v0.2.0
-"$dir_of_tegonal_scripts/releasing/prepare-files-next-dev-cycle.sh" -v v0.2.0
-
-# prepare dev cycle for version v0.2.0 and
-# searches for additional occurrences where the version should be replaced via the specified pattern in:
-# - script files in ./src and ./scripts
-# - ./README.md
-"$dir_of_tegonal_scripts/releasing/prepare-files-next-dev-cycle.sh" -v v0.2.0 \
-	-p "(TEGONAL_SCRIPTS_VERSION=['\"])[^'\"]+(['\"])"
-
-# in case you want to provide your own release.sh and only want to do some pre-configuration
-# then you might want to source it instead
-sourceOnce "$dir_of_tegonal_scripts/releasing/prepare-files-next-dev-cycle.sh"
-
-# and then call the function with your pre-configuration settings:
-# here we define the pattern which shall be used to replace further version occurrences
-# since "$@" follows afterwards, one could still override it via command line arguments.
-# put "$@" first, if you don't want that a user can override your pre-configuration
-prepareNextDevCycle -p "(TEGONAL_SCRIPTS_VERSION=['\"])[^'\"]+(['\"])" "$@"
-```
-
-</releasing-prepare-files-next-dev-cycle>
+</releasing-release-tag-prepare-next-push>
 
 # Script Utilities
 
@@ -1346,6 +1536,12 @@ function myParseFunction() {
 		fi
 		#...
 	done
+}
+
+function myVersionPrinter() {
+	# 3 defines that printVersion shall skip 3 stack frames to deduce the name of the script
+	# makes only sense if we already know that this method is called indirectly
+	printVersion "$MY_LIBRARY_VERSION" 3
 }
 ```
 

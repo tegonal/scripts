@@ -19,3 +19,9 @@ function myParseFunction() {
 		#...
 	done
 }
+
+function myVersionPrinter() {
+	# 3 defines that printVersion shall skip 3 stack frames to deduce the name of the script
+	# makes only sense if we already know that this method is called indirectly
+	printVersion "$MY_LIBRARY_VERSION" 3
+}
