@@ -71,6 +71,7 @@ sourceOnce "$dir_of_tegonal_scripts/utility/gpg-utils.sh"
 sourceOnce "$dir_of_tegonal_scripts/utility/ask.sh"
 sourceOnce "$dir_of_tegonal_scripts/utility/parse-args.sh"
 sourceOnce "$dir_of_tegonal_scripts/releasing/pre-release-checks-git.sh"
+sourceOnce "$dir_of_tegonal_scripts/releasing/release-tag-prepare-next-push.sh"
 sourceOnce "$dir_of_tegonal_scripts/releasing/sneak-peek-banner.sh"
 sourceOnce "$dir_of_tegonal_scripts/releasing/toggle-sections.sh"
 sourceOnce "$dir_of_tegonal_scripts/releasing/update-version-common-steps.sh"
@@ -152,7 +153,7 @@ function releaseFiles() {
 		done || return $?
 
 	if [[ $prepareOnly != true ]]; then
-		releaseTagPushAndPrepareNext \
+		releaseTagPrepareNextAndPush \
 			"$versionParamPatternLong" "$version" \
 			"$branchParamPatternLong" "$branch" \
 			"$projectsRootDirParamPatternLong" "$projectsRootDir" \
