@@ -21,10 +21,8 @@ As they might be usable for you as well, we are publishing them here.
 Feel free to use it and report bugs if you should find one.
 
 ---
-❗ You are taking a _sneak peek_ at the next version.
-Please have a look at the README of the git tag in case you are looking for the documentation of the corresponding
-version.
-For instance, the [README of v1.3.1](https://github.com/tegonal/scripts/tree/v1.3.1/README.md).
+❗ You are taking a *sneak peek* at the next version. It could be that some features you find on this page are not released yet.  
+Please have a look at the README of the corresponding release/git tag. Latest version: [README of v1.3.1](https://github.com/tegonal/scripts/tree/v1.3.1/README.md).
 
 ---
 
