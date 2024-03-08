@@ -45,14 +45,5 @@ function additionalReleasePrepareSteps() {
 	# same as in pull-hook.sh
 	local -r githubUrl="https://github.com/tegonal/scripts"
 	replaceTagInPullRequestTemplate "$projectDir/.github/PULL_REQUEST_TEMPLATE.md" "$githubUrl" "$version" || die "could not fill the placeholders in PULL_REQUEST_TEMPLATE.md"
-
-	updateVersionIssueTemplates -v "$version"
-
-	local -ra additionalScripts=(
-		"$projectDir/.gt/remotes/tegonal-gh-commons/pull-hook.sh"
-	)
-	for script in "${additionalScripts[@]}"; do
-		updateVersionScripts -v "$version" -p "$additionalPattern" -d "$script"
-	done
 }
 additionalReleasePrepareSteps

@@ -24,11 +24,15 @@ body:
         - ci/jelastic/deploy.sh
         - ci/jelastic/utils.sh
         - qa/run-shellcheck.sh
+        - releasing/deduce-next-version.source.sh
         - releasing/pre-release-checks-git.sh
         - releasing/prepare-files-next-dev-cycle.sh
         - releasing/release-files.sh
+        - releasing/release-tag-prepare-next-push.sh
+        - releasing/shared-patterns.source.sh
         - releasing/sneak-peek-banner.sh
         - releasing/toggle-sections.sh
+        - releasing/update-version-common-steps.sh
         - releasing/update-version-README.sh
         - releasing/update-version-scripts.sh
         - releasing/update-version-issue-templates.sh
