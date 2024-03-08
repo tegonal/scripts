@@ -2,11 +2,11 @@
 #
 #    __                          __
 #   / /____ ___ ____  ___  ___ _/ /       This script is provided to you by https://github.com/tegonal/scripts
-#  / __/ -_) _ `/ _ \/ _ \/ _ `/ /        It is licensed under Apache License 2.0
-#  \__/\__/\_, /\___/_//_/\_,_/_/         Please report bugs and contribute back your improvements
-#         /___/
-#                                         Version: v1.4.0-SNAPSHOT
+#  / __/ -_) _ `/ _ \/ _ \/ _ `/ /        Copyright 2022 Tegonal Genossenschaft <info@tegonal.com>
+#  \__/\__/\_, /\___/_//_/\_,_/_/         It is licensed under Apache License 2.0
+#         /___/                           Please report bugs and contribute back your improvements
 #
+#                                         Version: v1.4.0-SNAPSHOT
 #######  Description  #############
 #
 #  Shows or hides the sneak peek banner
