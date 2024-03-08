@@ -6,7 +6,7 @@
 #  \__/\__/\_, /\___/_//_/\_,_/_/         It is licensed under Apache License 2.0
 #         /___/                           Please report bugs and contribute back your improvements
 #
-#                                         Version: v1.4.0-SNAPSHOT
+#                                         Version: v2.0.0
 #######  Description  #############
 #
 #  Releasing files based on conventions:
@@ -52,13 +52,13 @@
 #    # here we pre-define the additional pattern which shall be used in the search to replace the version
 #    # since "$@" follows afterwards, one could still override it via command line arguments.
 #    # put "$@" first, if you don't want that a user can override your pre-configuration
-#    releaseTagPushAndPrepareNext -p "(TEGONAL_SCRIPTS_VERSION=['\"])[^'\"]+(['\"])" "$@"
+#    releaseTagPrepareNextAndPush -p "(TEGONAL_SCRIPTS_VERSION=['\"])[^'\"]+(['\"])" "$@"
 #
 ###################################
 set -euo pipefail
 shopt -s inherit_errexit
 unset CDPATH
-export TEGONAL_SCRIPTS_VERSION='v1.4.0-SNAPSHOT'
+export TEGONAL_SCRIPTS_VERSION='v2.0.0'
 
 if ! [[ -v dir_of_tegonal_scripts ]]; then
 	dir_of_tegonal_scripts="$(cd -- "$(dirname -- "${BASH_SOURCE[0]:-$0}")" >/dev/null && pwd 2>/dev/null)/.."
