@@ -11,11 +11,10 @@
 #######  Description  #############
 #
 #  intended to be sourced into a function which expects params version and nextVersion
-#	 Requires that $workingDirAbsolute is defined beforehand
 #
 ###################################
 
-local -r versionRegex="$workingDirAbsolute/remotes"
+local -r versionRegex="^(v[0-9]+)\.([0-9]+)\.[0-9]+(-RC[0-9]+)?$"
 
 if [[ -v version ]]; then
 	if ! [[ -v nextVersion ]] && [[ "$version" =~ $versionRegex ]]; then
