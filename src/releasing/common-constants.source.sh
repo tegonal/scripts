@@ -13,6 +13,8 @@
 #
 ###################################
 
+local -r versionRegex="^(v[0-9]+)\.([0-9]+)\.[0-9]+(-RC[0-9]+)?$"
+
 local -r versionParamPatternLong='-v'
 local -r versionParamPattern="$versionParamPatternLong"
 local -r versionParamDocu='The version to release in the format vX.Y.Z(-RC...)'
@@ -45,3 +47,7 @@ local -r nextVersionParamDocu='(optional) the version to use for prepare-next-de
 local -r prepareOnlyParamPatternLong='--prepare-only'
 local -r prepareOnlyParamPattern="$prepareOnlyParamPatternLong"
 local -r prepareOnlyParamDocu='(optional) defines whether the release shall only be prepared (i.e. no push, no tag, no prepare-next-dev-cycle) -- default: false'
+
+local -r forReleaseParamPatternLong='--for-release'
+local -r forReleaseParamPattern="$forReleaseParamPatternLong"
+local -r forReleaseParamDocu='true if update is for release in which case we hide the sneak-peek banner and toggle sections for release, if false then we show the sneak-peek banner and toggle the section for development'

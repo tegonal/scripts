@@ -11,10 +11,12 @@ function foo() {
 	# shellcheck disable=SC2034   # is passed by name to checkArgIsArray
 	local -rn arr=$1
 	local -r fn=$2
+	local -r bool=$3
 
 	# resolves arr recursively via recursiveDeclareP and check that is a non-associative array
 	checkArgIsArray arr 1        # same as exitIfArgIsNotArray if set -e has an effect on this line
 	checkArgIsFunction "$fn" 2   # same as exitIfArgIsNotFunction if set -e has an effect on this line
+	checkArgIsBoolean "$bool" 3   # same as exitIfArgIsNotBoolean if set -e has an effect on this line
 
 	# shellcheck disable=SC2317   # is passed by name to checkArgIsArrayWithTuples
 	function describeTriple() {
@@ -26,6 +28,7 @@ function foo() {
 	exitIfArgIsNotArray arr 1
 	exitIfArgIsNotArrayOrIsEmpty arr 1
 	exitIfArgIsNotFunction "$fn" 2
+	exitIfArgIsNotBoolean "$bool" 2
 
 	# shellcheck disable=SC2317   # is passed by name to exitIfArgIsNotArrayWithTuples
 	function describePair() {

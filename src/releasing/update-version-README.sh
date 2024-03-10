@@ -41,7 +41,7 @@ fi
 sourceOnce "$dir_of_tegonal_scripts/utility/parse-args.sh"
 
 function updateVersionReadme() {
-	source "$dir_of_tegonal_scripts/releasing/shared-patterns.source.sh" || die "could not source shared-patterns.source.sh"
+	source "$dir_of_tegonal_scripts/releasing/common-constants.source.sh" || die "could not source common-constants.source.sh"
 
 	local version file additionalPattern
 	# shellcheck disable=SC2034   # is passed by name to parseArguments

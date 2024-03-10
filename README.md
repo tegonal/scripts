@@ -551,6 +551,7 @@ Help:
 <!-- auto-generated, do not modify here but in src/releasing/update-version-common-steps.sh -->
 ```text
 Parameters:
+--for-release   true if update is for release in which case we hide the sneak-peek banner and toggle sections for release, if false then we show the sneak-peek banner and toggle the section for development
 -v              The version to release in the format vX.Y.Z(-RC...)
 --project-dir   (optional) The projects directory -- default: .
 -p|--pattern    (optional) pattern which is used in a perl command (separator /) to search & replace additional occurrences. It should define two match groups and the replace operation looks as follows: \${1}$version\${2}
@@ -577,8 +578,9 @@ shopt -s inherit_errexit
 dir_of_tegonal_scripts="$(cd -- "$(dirname -- "${BASH_SOURCE[0]:-$0}")" >/dev/null && pwd 2>/dev/null)/../lib/tegonal-scripts/src"
 source "$dir_of_tegonal_scripts/setup.sh" "$dir_of_tegonal_scripts"
 
-# updates the version in headers of different files
-"$dir_of_tegonal_scripts/releasing/update-version-common-steps.sh" -v v0.1.0
+# updates the version in headers of different files, hides the sneak-peek banner and
+# toggles sections in README.md for release
+"$dir_of_tegonal_scripts/releasing/update-version-common-steps.sh" --for-release true -v v0.1.0
 
 # 1. searches for additional occurrences where the version should be replaced via the specified pattern
 # 2. git commit all changes and create a tag for v0.1.0
@@ -587,6 +589,7 @@ source "$dir_of_tegonal_scripts/setup.sh" "$dir_of_tegonal_scripts"
 # 5. push tag and commits
 # 6. releases version v0.1.0 using the key 0x945FE615904E5C85 for signing and
 "$dir_of_tegonal_scripts/releasing/update-version-common-steps.sh" \
+	--for-release true \
 	-v v0.1.0 -k "0x945FE615904E5C85" \
 	-p "(TEGONAL_SCRIPTS_VERSION=['\"])[^'\"]+(['\"])"
 
@@ -1087,10 +1090,12 @@ function foo() {
 	# shellcheck disable=SC2034   # is passed by name to checkArgIsArray
 	local -rn arr=$1
 	local -r fn=$2
+	local -r bool=$3
 
 	# resolves arr recursively via recursiveDeclareP and check that is a non-associative array
 	checkArgIsArray arr 1        # same as exitIfArgIsNotArray if set -e has an effect on this line
 	checkArgIsFunction "$fn" 2   # same as exitIfArgIsNotFunction if set -e has an effect on this line
+	checkArgIsBoolean "$bool" 3   # same as exitIfArgIsNotBoolean if set -e has an effect on this line
 
 	# shellcheck disable=SC2317   # is passed by name to checkArgIsArrayWithTuples
 	function describeTriple() {
@@ -1102,6 +1107,7 @@ function foo() {
 	exitIfArgIsNotArray arr 1
 	exitIfArgIsNotArrayOrIsEmpty arr 1
 	exitIfArgIsNotFunction "$fn" 2
+	exitIfArgIsNotBoolean "$bool" 2
 
 	# shellcheck disable=SC2317   # is passed by name to exitIfArgIsNotArrayWithTuples
 	function describePair() {

@@ -74,7 +74,7 @@ sourceOnce "$dir_of_tegonal_scripts/releasing/toggle-sections.sh"
 sourceOnce "$dir_of_tegonal_scripts/releasing/update-version-common-steps.sh"
 
 function releaseTagPrepareNextAndPush() {
-	source "$dir_of_tegonal_scripts/releasing/shared-patterns.source.sh" || die "could not source shared-patterns.source.sh"
+	source "$dir_of_tegonal_scripts/releasing/common-constants.source.sh" || die "could not source common-constants.source.sh"
 
 	local version branch projectsRootDir additionalPattern nextVersion
 	# shellcheck disable=SC2034   # is passed by name to parseArguments
