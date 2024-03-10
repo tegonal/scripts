@@ -30,4 +30,4 @@ jobs:
           body: Looks like someone forgot to run ./scripts/cleanup-on-push-to-main.sh before committing. I did it for them :)
           delete-branch: true
           token: ${{ secrets.AUTO_PR_TOKEN }}
-          push-to-fork: ${{ secrets.AUTO_PR_FORK_NAME }}
+          push-to-fork: ${{ vars.AUTO_PR_FORK_NAME }}
