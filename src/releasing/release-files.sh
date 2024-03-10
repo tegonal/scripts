@@ -72,14 +72,13 @@ sourceOnce "$dir_of_tegonal_scripts/utility/ask.sh"
 sourceOnce "$dir_of_tegonal_scripts/utility/parse-args.sh"
 sourceOnce "$dir_of_tegonal_scripts/releasing/pre-release-checks-git.sh"
 sourceOnce "$dir_of_tegonal_scripts/releasing/release-tag-prepare-next-push.sh"
-sourceOnce "$dir_of_tegonal_scripts/releasing/sneak-peek-banner.sh"
-sourceOnce "$dir_of_tegonal_scripts/releasing/toggle-sections.sh"
 sourceOnce "$dir_of_tegonal_scripts/releasing/update-version-common-steps.sh"
 
 function releaseFiles() {
-	local versionParamPatternLong branchParamPatternLong projectsRootDirParamPatternLong
+	local versionParamPatternLong findForSigningParamPatternLong branchParamPatternLong  projectsRootDirParamPatternLong
 	local additionalPatternParamPatternLong nextVersionParamPatternLong prepareOnlyParamPatternLong
-	source "$dir_of_tegonal_scripts/releasing/shared-patterns.source.sh" || die "could not source shared-patterns.source.sh"
+	local forReleaseParamPatternLong
+	source "$dir_of_tegonal_scripts/releasing/common-constants.source.sh" || die "could not source common-constants.source.sh"
 
 	local version branch key findForSigning projectsRootDir additionalPattern nextVersion prepareOnly
 	# shellcheck disable=SC2034   # is passed by name to parseArguments
@@ -104,7 +103,7 @@ function releaseFiles() {
 	if ! [[ -v prepareOnly ]] || [[ $prepareOnly != "true" ]]; then prepareOnly=false; fi
 	exitIfNotAllArgumentsSet params "" "$TEGONAL_SCRIPTS_VERSION"
 
-	exitIfArgIsNotFunction "$findForSigning" "--sign-fn"
+	exitIfArgIsNotFunction "$findForSigning" "$findForSigningParamPatternLong"
 
 	preReleaseCheckGit \
 		"$versionParamPatternLong" "$version" \
@@ -118,6 +117,7 @@ function releaseFiles() {
 	beforePr || return $?
 
 	updateVersionCommonSteps \
+		"$forReleaseParamPatternLong" true \
 		"$versionParamPatternLong" "$version" \
 		"$projectsRootDirParamPatternLong" "$projectsRootDir" \
 		"$additionalPatternParamPatternLong" "$additionalPattern"

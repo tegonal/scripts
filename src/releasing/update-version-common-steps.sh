@@ -29,8 +29,9 @@
 #    dir_of_tegonal_scripts="$(cd -- "$(dirname -- "${BASH_SOURCE[0]:-$0}")" >/dev/null && pwd 2>/dev/null)/../lib/tegonal-scripts/src"
 #    source "$dir_of_tegonal_scripts/setup.sh" "$dir_of_tegonal_scripts"
 #
-#    # updates the version in headers of different files
-#    "$dir_of_tegonal_scripts/releasing/update-version-common-steps.sh" -v v0.1.0
+#    # updates the version in headers of different files, hides the sneak-peek banner and
+#    # toggles sections in README.md for release
+#    "$dir_of_tegonal_scripts/releasing/update-version-common-steps.sh" --for-release true -v v0.1.0
 #
 #    # 1. searches for additional occurrences where the version should be replaced via the specified pattern
 #    # 2. git commit all changes and create a tag for v0.1.0
@@ -39,6 +40,7 @@
 #    # 5. push tag and commits
 #    # 6. releases version v0.1.0 using the key 0x945FE615904E5C85 for signing and
 #    "$dir_of_tegonal_scripts/releasing/update-version-common-steps.sh" \
+#    	--for-release true \
 #    	-v v0.1.0 -k "0x945FE615904E5C85" \
 #    	-p "(TEGONAL_SCRIPTS_VERSION=['\"])[^'\"]+(['\"])"
 #
@@ -70,12 +72,13 @@ sourceOnce "$dir_of_tegonal_scripts/releasing/update-version-README.sh"
 sourceOnce "$dir_of_tegonal_scripts/releasing/update-version-scripts.sh"
 
 function updateVersionCommonSteps() {
-	local versionParamPatternLong additionalPatternParamPatternLong
-	source "$dir_of_tegonal_scripts/releasing/shared-patterns.source.sh" || die "could not source shared-patterns.source.sh"
+	local forReleaseParamPatternLong versionParamPatternLong additionalPatternParamPatternLong
+	source "$dir_of_tegonal_scripts/releasing/common-constants.source.sh" || die "could not source common-constants.source.sh"
 
-	local version projectsRootDir additionalPattern
+	local forRelease version projectsRootDir additionalPattern
 	# shellcheck disable=SC2034   # is passed by name to parseArguments
 	local -ra params=(
+		forRelease "$forReleaseParamPattern" "$forReleaseParamDocu"
 		version "$versionParamPattern" "$versionParamDocu"
 		projectsRootDir "$projectsRootDirParamPattern" "$projectsRootDirParamDocu"
 		additionalPattern "$additionalPatternParamPattern" "$additionalPatternParamDocu"
@@ -85,11 +88,17 @@ function updateVersionCommonSteps() {
 	if ! [[ -v projectsRootDir ]]; then projectsRootDir=$(realpath "."); fi
 	if ! [[ -v additionalPattern ]]; then additionalPattern="^$"; fi
 	exitIfNotAllArgumentsSet params "" "$TEGONAL_SCRIPTS_VERSION"
+	exitIfArgIsNotBoolean "$forRelease" "$forReleaseParamPatternLong"
 
 	local -r projectsScriptsDir="$projectsRootDir/scripts"
 
-	sneakPeekBanner -c hide || return $?
-	toggleSections -c release || return $?
+	if [[ $forRelease = true ]]; then
+		sneakPeekBanner -c hide || return $?
+		toggleSections -c release || return $?
+	else
+		sneakPeekBanner -c show || return $?
+		toggleSections -c main || return $?
+	fi
 
 	updateVersionReadme "$versionParamPatternLong" "$version" \
 		"$additionalPatternParamPatternLong" "$additionalPattern" || return $?

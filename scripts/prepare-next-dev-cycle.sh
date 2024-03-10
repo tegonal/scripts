@@ -32,7 +32,7 @@ function prepareNextDevCycle() {
 	# similar as in release.sh, you might need to update it there as well if you change something here
 	local -r additionalPattern="(TEGONAL_SCRIPTS_VERSION=['\"])[^'\"]+(['\"])"
 
-	prepareFilesNextDevCycle --project-dir "$projectDir" -p "$additionalPattern" "$@"
+	prepareFilesNextDevCycle --project-dir "$projectDir" "$@" -p "$additionalPattern"
 }
 
 ${__SOURCED__:+return}

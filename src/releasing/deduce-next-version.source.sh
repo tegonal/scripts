@@ -11,10 +11,9 @@
 #######  Description  #############
 #
 #  intended to be sourced into a function which expects params version and nextVersion
+#  Expects a variable `versionRegex` to be defined, specifying the semver regex.
 #
 ###################################
-
-local -r versionRegex="^(v[0-9]+)\.([0-9]+)\.[0-9]+(-RC[0-9]+)?$"
 
 if [[ -v version ]]; then
 	if ! [[ -v nextVersion ]] && [[ "$version" =~ $versionRegex ]]; then

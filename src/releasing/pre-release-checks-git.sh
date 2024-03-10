@@ -45,7 +45,8 @@ sourceOnce "$dir_of_tegonal_scripts/utility/ask.sh"
 sourceOnce "$dir_of_tegonal_scripts/utility/parse-args.sh"
 
 function preReleaseCheckGit() {
-	source "$dir_of_tegonal_scripts/releasing/shared-patterns.source.sh" || die "could not source shared-patterns.source.sh"
+	local versionRegex versionParamPatternLong
+	source "$dir_of_tegonal_scripts/releasing/common-constants.source.sh" || die "could not source common-constants.source.sh"
 
 	local version branch
 	# shellcheck disable=SC2034   # is passed by name to parseArguments
@@ -56,12 +57,11 @@ function preReleaseCheckGit() {
 
 	parseArguments params "" "$TEGONAL_SCRIPTS_VERSION" "$@"
 
-	local -r versionRegex="^(v[0-9]+)\.([0-9]+)\.[0-9]+(-RC[0-9]+)?$"
 	if ! [[ -v branch ]]; then branch="main"; fi
 	exitIfNotAllArgumentsSet params "" "$TEGONAL_SCRIPTS_VERSION"
 
 	if ! [[ "$version" =~ $versionRegex ]]; then
-		die "-v should match vX.Y.Z(-RC...), was %s" "$version"
+		die "%s should match vX.Y.Z(-RC...), was %s" "$versionParamPatternLong" "$version"
 	fi
 
 	exitIfGitHasChanges
