@@ -6,14 +6,14 @@ dir_of_tegonal_scripts="$(cd -- "$(dirname -- "${BASH_SOURCE[0]:-$0}")" >/dev/nu
 source "$dir_of_tegonal_scripts/setup.sh" "$dir_of_tegonal_scripts"
 
 # 1. git commit all changes and create a tag for v0.1.0
-# 2. call scripts/prepare-next-dev-cycle.sh with nextVersion deduced from the specified version (in this case 0.2.0-SNAPSHOT)
+# 2. call prepareNextDevCycle with nextVersion deduced from the specified version (in this case 0.2.0-SNAPSHOT)
 # 3. git commit all changes as prepare v0.2.0 dev cycle
 # 4. push tag and commits
 "$dir_of_tegonal_scripts/releasing/release-tag-prepare-next-push.sh" -v v0.1.0
 
 # 1. searches for additional occurrences where the version should be replaced via the specified pattern
 # 2. git commit all changes and create a tag for v0.1.0
-# 3. call scripts/prepare-next-dev-cycle.sh with nextVersion deduced from the specified version (in this case 0.2.0-SNAPSHOT)
+# 3. call prepareNextDevCycle with nextVersion deduced from the specified version (in this case 0.2.0-SNAPSHOT)
 # 4. git commit all changes as prepare v0.2.0 dev cycle
 # 4. push tag and commits
 "$dir_of_tegonal_scripts/releasing/release-tag-prepare-next-push.sh" \

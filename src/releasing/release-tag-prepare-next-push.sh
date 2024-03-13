@@ -30,14 +30,14 @@
 #    source "$dir_of_tegonal_scripts/setup.sh" "$dir_of_tegonal_scripts"
 #
 #    # 1. git commit all changes and create a tag for v0.1.0
-#    # 2. call scripts/prepare-next-dev-cycle.sh with nextVersion deduced from the specified version (in this case 0.2.0-SNAPSHOT)
+#    # 2. call prepareNextDevCycle with nextVersion deduced from the specified version (in this case 0.2.0-SNAPSHOT)
 #    # 3. git commit all changes as prepare v0.2.0 dev cycle
 #    # 4. push tag and commits
 #    "$dir_of_tegonal_scripts/releasing/release-tag-prepare-next-push.sh" -v v0.1.0
 #
 #    # 1. searches for additional occurrences where the version should be replaced via the specified pattern
 #    # 2. git commit all changes and create a tag for v0.1.0
-#    # 3. call scripts/prepare-next-dev-cycle.sh with nextVersion deduced from the specified version (in this case 0.2.0-SNAPSHOT)
+#    # 3. call prepareNextDevCycle with nextVersion deduced from the specified version (in this case 0.2.0-SNAPSHOT)
 #    # 4. git commit all changes as prepare v0.2.0 dev cycle
 #    # 4. push tag and commits
 #    "$dir_of_tegonal_scripts/releasing/release-tag-prepare-next-push.sh" \
@@ -76,12 +76,10 @@ sourceOnce "$dir_of_tegonal_scripts/releasing/update-version-common-steps.sh"
 function releaseTagPrepareNextAndPush() {
 	source "$dir_of_tegonal_scripts/releasing/common-constants.source.sh" || die "could not source common-constants.source.sh"
 
-	local version branch projectsRootDir additionalPattern nextVersion
+	local version additionalPattern nextVersion
 	# shellcheck disable=SC2034   # is passed by name to parseArguments
 	local -ra params=(
 		version "$versionParamPattern" "$versionParamDocu"
-		branch "$branchParamPattern" "$branchParamDocu"
-		projectsRootDir "$projectsRootDirParamPattern" "$projectsRootDirParamDocu"
 		additionalPattern "$additionalPatternParamPattern" "$additionalPatternParamDocu"
 		nextVersion "$nextVersionParamPattern" "$nextVersionParamDocu"
 	)
@@ -90,8 +88,6 @@ function releaseTagPrepareNextAndPush() {
 
 	# deduces nextVersion based on version if not already set (and if version set)
 	source "$dir_of_tegonal_scripts/releasing/deduce-next-version.source.sh"
-	if ! [[ -v branch ]]; then branch="main"; fi
-	if ! [[ -v projectsRootDir ]]; then projectsRootDir=$(realpath "."); fi
 	if ! [[ -v additionalPattern ]]; then additionalPattern="^$"; fi
 	exitIfNotAllArgumentsSet params "" "$TEGONAL_SCRIPTS_VERSION"
 
@@ -99,14 +95,10 @@ function releaseTagPrepareNextAndPush() {
 	git commit -m "$version" || return $?
 	git tag "$version" || return $?
 
-	local -r projectsScriptsDir="$projectsRootDir/scripts"
-
-	# shellcheck disable=SC2310				# we are aware of that || will disable set -e for sourceOnce
-	sourceOnce "$projectsScriptsDir/prepare-next-dev-cycle.sh" || die "could not source prepare-next-dev-cycle.sh"
 	prepareNextDevCycle -v "$nextVersion" -p "$additionalPattern" || die "could not prepare next dev cycle for version %s" "$nextVersion"
 
-	git push origin "$version" || die "could not push tag to origin"
-	git push || die "could not push commits on %s to origin" "$branch"
+	git push origin "$version" || die "could not push tag %s to origin" "$version"
+	git push || die "could not push commits"
 }
 
 ${__SOURCED__:+return}
