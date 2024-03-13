@@ -100,9 +100,6 @@ function updateVersionCommonSteps() {
 		toggleSections -c main || return $?
 	fi
 
-	updateVersionReadme "$versionParamPatternLong" "$version" \
-		"$additionalPatternParamPatternLong" "$additionalPattern" || return $?
-
 	updateVersionScripts "$versionParamPatternLong" "$version" \
 		"$additionalPatternParamPatternLong" "$additionalPattern" || return $?
 	updateVersionScripts "$versionParamPatternLong" "$version" \
@@ -116,6 +113,9 @@ function updateVersionCommonSteps() {
 				-d "$script"
 		done
 	if [[ $forRelease = true ]]; then
+		updateVersionReadme "$versionParamPatternLong" "$version" \
+			"$additionalPatternParamPatternLong" "$additionalPattern" || return $?
+
 		local -r templateDir="$projectsRootDir/./.github/ISSUE_TEMPLATE"
 		if [[ -d "$templateDir" ]]; then
 			updateVersionIssueTemplates "$versionParamPatternLong" "$version" -d "$templateDir"
