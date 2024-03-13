@@ -115,10 +115,11 @@ function updateVersionCommonSteps() {
 				"$additionalPatternParamPatternLong" "$additionalPattern" \
 				-d "$script"
 		done
-
-	local -r templateDir="$projectsRootDir/./.github/ISSUE_TEMPLATE"
-	if [[ -d "$templateDir" ]]; then
-		updateVersionIssueTemplates "$versionParamPatternLong" "$version" -d "$templateDir"
+	if [[ $forRelease = true ]]; then
+		local -r templateDir="$projectsRootDir/./.github/ISSUE_TEMPLATE"
+		if [[ -d "$templateDir" ]]; then
+			updateVersionIssueTemplates "$versionParamPatternLong" "$version" -d "$templateDir"
+		fi
 	fi
 }
 
