@@ -22,7 +22,7 @@ Feel free to use it and report bugs if you should find one.
 
 ---
 ❗ You are taking a *sneak peek* at the next version. It could be that some features you find on this page are not released yet.  
-Please have a look at the README of the corresponding release/git tag. Latest version: [README of v1.3.1](https://github.com/tegonal/scripts/tree/v1.3.1/README.md).
+Please have a look at the README of the corresponding release/git tag. Latest version: [README of v2.0.0](https://github.com/tegonal/scripts/tree/v2.0.0/README.md).
 
 ---
 
