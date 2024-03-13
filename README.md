@@ -331,8 +331,8 @@ It is based on some conventions (see src/releasing/release-files.sh for more det
 - expects a version in format vX.Y.Z(-RC...)
 - requires you to have a /scripts folder in your project root which contains:
 	- before-pr.sh which provides a parameterless function `beforePr` and can be sourced (add `${__SOURCED__:+return}` before executing `beforePr`)
-	- prepare-next-dev-cycle.sh which provides function `prepareNextDevCycle` with parameters `-v` for version
-	  and `-p` for additionalPattern (see source for more detail). Also, this file needs to be sourceable.
+	- expects that a function `prepareNextDevCycle` with parameters `-v` for version
+	  and `-p` for additionalPattern (see source for more detail) is defined.
 	  Typically, you will use [Prepare Files next dev cycle](#prepare-files-next-dev-cycle) inside which deals with things
 	  like update to SNAPSHOT version in header files etc.
 - there is a public key defined at .gt/signing-key.public.asc which will be used
@@ -938,8 +938,6 @@ Help:
 ```text
 Parameters:
 -v                   The version to release in the format vX.Y.Z(-RC...)
--b|--branch          (optional) The expected branch which is currently checked out -- default: main
---project-dir        (optional) The projects directory -- default: .
 -p|--pattern         (optional) pattern which is used in a perl command (separator /) to search & replace additional occurrences. It should define two match groups and the replace operation looks as follows: \${1}$version\${2}
 -nv|--next-version   (optional) the version to use for prepare-next-dev-cycle -- default: is next minor based on version
 
@@ -966,14 +964,14 @@ dir_of_tegonal_scripts="$(cd -- "$(dirname -- "${BASH_SOURCE[0]:-$0}")" >/dev/nu
 source "$dir_of_tegonal_scripts/setup.sh" "$dir_of_tegonal_scripts"
 
 # 1. git commit all changes and create a tag for v0.1.0
-# 2. call scripts/prepare-next-dev-cycle.sh with nextVersion deduced from the specified version (in this case 0.2.0-SNAPSHOT)
+# 2. call prepareNextDevCycle with nextVersion deduced from the specified version (in this case 0.2.0-SNAPSHOT)
 # 3. git commit all changes as prepare v0.2.0 dev cycle
 # 4. push tag and commits
 "$dir_of_tegonal_scripts/releasing/release-tag-prepare-next-push.sh" -v v0.1.0
 
 # 1. searches for additional occurrences where the version should be replaced via the specified pattern
 # 2. git commit all changes and create a tag for v0.1.0
-# 3. call scripts/prepare-next-dev-cycle.sh with nextVersion deduced from the specified version (in this case 0.2.0-SNAPSHOT)
+# 3. call prepareNextDevCycle with nextVersion deduced from the specified version (in this case 0.2.0-SNAPSHOT)
 # 4. git commit all changes as prepare v0.2.0 dev cycle
 # 4. push tag and commits
 "$dir_of_tegonal_scripts/releasing/release-tag-prepare-next-push.sh" \

@@ -28,6 +28,7 @@ if ! [[ -v dir_of_tegonal_scripts ]]; then
 fi
 sourceOnce "$dir_of_tegonal_scripts/releasing/release-files.sh"
 sourceOnce "$dir_of_tegonal_scripts/utility/checks.sh"
+sourceOnce "$scriptsDir/prepare-next-dev-cycle.sh"
 
 function release() {
 	if ! checkCommandExists "shellspec" "please install https://github.com/shellspec/shellspec#installation"; then

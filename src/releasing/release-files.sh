@@ -155,8 +155,6 @@ function releaseFiles() {
 	if [[ $prepareOnly != true ]]; then
 		releaseTagPrepareNextAndPush \
 			"$versionParamPatternLong" "$version" \
-			"$branchParamPatternLong" "$branch" \
-			"$projectsRootDirParamPatternLong" "$projectsRootDir" \
 			"$additionalPatternParamPatternLong" "$additionalPattern" \
 			"$nextVersionParamPatternLong" "$nextVersion"
 	else
