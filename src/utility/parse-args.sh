@@ -181,11 +181,14 @@ function parseArgumentsInternal {
 		done
 
 		if [[ $parseArguments_unknownBehaviour = 'error' ]] && ((parseArguments_expectedName == 0)); then
+			parse_args_printHelp >&2 parseArguments_paramArr "$parseArguments_examples" "$parseArguments_version"
 			if [[ $parseArguments_argName =~ ^- ]] && (($# > 1)); then
-				die "unknown argument \033[1;36m%s\033[0m (and value %s)" "$parseArguments_argName" "$2"
+				logError "unknown argument \033[1;36m%s\033[0m (and value %s)" "$parseArguments_argName" "$2"
 			else
-				die "unknown argument \033[1;36m%s\033[0m" "$parseArguments_argName"
+				logError "unknown argument \033[1;36m%s\033[0m" "$parseArguments_argName"
 			fi
+			echo >&2 "consult the output of --help shown further above for valid names"
+			exit 9
 		fi
 		shift || die "could not shift by 1"
 	done
