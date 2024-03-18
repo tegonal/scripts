@@ -329,31 +329,30 @@ Script which releases a version for a repository containing files which don't ne
 It is based on some conventions (see src/releasing/release-files.sh for more details):
 
 - expects a version in format vX.Y.Z(-RC...)
-- requires you to have a /scripts folder in your project root which contains:
-	- before-pr.sh which provides a parameterless function `beforePr` and can be sourced (add `${__SOURCED__:+return}` before executing `beforePr`)
-	- expects that a function `prepareNextDevCycle` with parameters `-v` for version
-	  and `-p` for additionalPattern (see source for more detail) is defined.
-	  Typically, you will use [Prepare Files next dev cycle](#prepare-files-next-dev-cycle) inside which deals with things
-	  like update to SNAPSHOT version in header files etc.
+- main is your default branch (or you use --branch to define another)
+- requires you to have a function beforePr in scope (or you define another one via --before-pr-fn) which doesn't expect
+  any parameter
+- requires you to have a function prepareNextDevCycle in scope (or you define another one via --prepare-next-dev-cycle-fn).
+  Typically, you will use [Prepare Files next dev cycle](#prepare-files-next-dev-cycle) inside which deals with things  
+  like update to SNAPSHOT version in header files etc.
+  The following arguments are passed:
+  - --version the next version
+  - --pattern a regex pattern which is used in release-files.sh to replace other version occurrences
+  - --before-pr-fn according to what is passed to release-files (or the default beforePr)
 - there is a public key defined at .gt/signing-key.public.asc which will be used
   to verify the signatures which will be created
 
 It then includes the following steps:
 - [git pre-release checks](#git-pre-release-checks)
-- `beforePr`
+- `beforePrFn`
+- 
 - [update version common release steps](#update-version-common-release-steps)
-- (optional) sources ./scripts/additional-release-files-preparations.sh if it exists
 - `beforePr`
 - sign files via GPG where you define which files via `--sign-fn`
-- [Create tag, prepare next dev Cycle](#create-tag-prepare-next-dev-cycle-and-push-tag-and-changes)
-  - in case you use [Prepare Files next dev cycle](#prepare-files-next-dev-cycle) in your `prepareNextDevCycle`
-      - (optional) sources ./scripts/additional-prepare-files-next-dev-cycle-steps.sh if it exists
-- push tag and changes
+- commit changes, create tag, execute `prepareNextDevCycleFn` (which typically creates a commit as well)
+- push tag and commits
 
 Useful if you want to release e.g. scripts which can then be fetched via [gt](https://github.com/tegonal/gt).
-
-Note, if your beforePr or your additional steps modifies beforePr or a file it depends on, then you need to source
-those files manually in your additional steps.
 
 Help:
 
@@ -362,14 +361,17 @@ Help:
 <!-- auto-generated, do not modify here but in src/releasing/release-files.sh -->
 ```text
 Parameters:
--v                   The version to release in the format vX.Y.Z(-RC...)
--k|key               The GPG private key which shall be used to sign the files
---sign-fn            Function which is called to determine what files should be signed. It should be based find and allow to pass further arguments (we will i.a. pass -print0)
--b|--branch          (optional) The expected branch which is currently checked out -- default: main
---project-dir        (optional) The projects directory -- default: .
--p|--pattern         (optional) pattern which is used in a perl command (separator /) to search & replace additional occurrences. It should define two match groups and the replace operation looks as follows: \${1}$version\${2}
--nv|--next-version   (optional) the version to use for prepare-next-dev-cycle -- default: is next minor based on version
---prepare-only       (optional) defines whether the release shall only be prepared (i.e. no push, no tag, no prepare-next-dev-cycle) -- default: false
+-v                            The version to release in the format vX.Y.Z(-RC...)
+-k|key                        The GPG private key which shall be used to sign the files
+--sign-fn                     Function which is called to determine what files should be signed. It should be based find and allow to pass further arguments (we will i.a. pass -print0)
+-b|--branch                   (optional) The expected branch which is currently checked out -- default: main
+--project-dir                 (optional) The projects directory -- default: .
+-p|--pattern                  (optional) pattern which is used in a perl command (separator /) to search & replace additional occurrences. It should define two match groups and the replace operation looks as follows: \${1}$version\${2}
+-nv|--next-version            (optional) the version to use for prepare-next-dev-cycle -- default: is next minor based on version
+--prepare-only                (optional) defines whether the release shall only be prepared (i.e. no push, no tag, no prepare-next-dev-cycle) -- default: false
+--before-pr-fn                (optional) defines the function which is executed before preparing the release (to see if we should release) and after preparing the release -- default: beforePr (per convention defined in scripts/before-pr.sh)
+--prepare-next-dev-cycle-fn   (optional) defines the function which is executed to prepare the next dev cycle, taking the nextVersion via -v -- default: perpareNextDevCycle (per convention defined in scripts/prepareNextDevCycle)
+--after-version-update-hook   (optional) if defined, then this function is called (passing version, projectsRootDir and additionalPattern) after versions were updated and before calling beforePr
 
 --help     prints this help
 --version  prints the version of this script
@@ -393,22 +395,37 @@ shopt -s inherit_errexit
 dir_of_tegonal_scripts="$(cd -- "$(dirname -- "${BASH_SOURCE[0]:-$0}")" >/dev/null && pwd 2>/dev/null)/../lib/tegonal-scripts/src"
 source "$dir_of_tegonal_scripts/setup.sh" "$dir_of_tegonal_scripts"
 
+scriptsDir="$(cd -- "$(dirname -- "${BASH_SOURCE[0]:-$0}")" >/dev/null && pwd 2>/dev/null)"
+sourceOnce "$scriptsDir/before-pr.sh"
+
 function findScripts() {
 	find "src" -name "*.sh" -not -name "*.doc.sh" "$@"
 }
 # make the function visible to release-files.sh / not necessary if you source release-files.sh, see further below
 declare -fx findScripts
 
-# releases version v0.1.0 using the key 0x945FE615904E5C85 for signing
+# releases version v0.1.0 using the key 0x945FE615904E5C85 for signing and function findScripts to find the files which
+# should be signed (and thus released). Assumes that a function named beforePr is in scope (which we sourced above)
 "$dir_of_tegonal_scripts/releasing/release-files.sh" -v v0.1.0 -k "0x945FE615904E5C85" --sign-fn findScripts
 
-# releases version v0.1.0 using the key 0x945FE615904E5C85 for signing and
-# searches for additional occurrences where the version should be replaced via the specified pattern in:
-# - script files in ./src and ./scripts
-# - ./README.md
+# releases version v0.1.0 using the key 0x945FE615904E5C85 for signing and function findScripts to find the files which
+ ## should be signed (and thus released). Moreover, searches for additional occurrences where the version should be
+# replaced via the specified pattern
 "$dir_of_tegonal_scripts/releasing/release-files.sh" \
 	-v v0.1.0 -k "0x945FE615904E5C85" --sign-fn findScripts \
 	-p "(TEGONAL_SCRIPTS_VERSION=['\"])[^'\"]+(['\"])"
+
+function specialBeforePr(){
+	beforePr && echo "imagine some additional work"
+}
+# make the function visible to release-files.sh / not necessary if you sourcerepare-files-next-dev-cycle.sh, see further below
+declare -fx specialBeforePr
+
+# releases version v0.1.0 using the key 0x945FE615904E5C85 for signing and
+"$dir_of_tegonal_scripts/releasing/release-files.sh" \
+	-v v0.1.0 -k "0x945FE615904E5C85" --sign-fn findScripts \
+	--before-pr-fn specialBeforePr
+
 
 # in case you want to provide your own release.sh and only want to do some pre-configuration
 # then you might want to source it instead
@@ -419,6 +436,9 @@ sourceOnce "$dir_of_tegonal_scripts/releasing/release-files.sh"
 # since "$@" follows afterwards, one could still override it via command line arguments.
 # put "$@" first, if you don't want that a user can override your pre-configuration
 releaseFiles --sign-fn findScripts "$@"
+
+# call the function define --before-pr-fn, don't allow to override via command line arguments
+releaseFiles "$@" --before-pr-fn specialBeforePr
 ```
 
 </releasing-release-files>
@@ -434,9 +454,11 @@ It is based on some conventions (see src/releasing/prepare-files-next-dev-cycle.
 <!-- auto-generated, do not modify here but in src/releasing/prepare-files-next-dev-cycle.sh -->
 ```text
 Parameters:
--v              the version for which we prepare the dev cycle
---project-dir   (optional) The projects directory -- default: .
--p|--pattern    (optional) pattern which is used in a perl command (separator /) to search & replace additional occurrences. It should define two match groups and the replace operation looks as follows: \${1}$version\${2}
+-v                            the version for which we prepare the dev cycle
+--project-dir                 (optional) The projects directory -- default: .
+-p|--pattern                  (optional) pattern which is used in a perl command (separator /) to search & replace additional occurrences. It should define two match groups and the replace operation looks as follows: \${1}$version\${2}
+--before-pr-fn                (optional) defines the function which is executed before preparing the release (to see if we should release) and after preparing the release -- default: beforePr (per convention defined in scripts/before-pr.sh)
+--after-version-update-hook   (optional) if defined, then this function is called (passing version, projectsRootDir and additionalPattern) after versions were updated and before calling beforePr
 
 --help     prints this help
 --version  prints the version of this script
@@ -460,15 +482,26 @@ shopt -s inherit_errexit
 dir_of_tegonal_scripts="$(cd -- "$(dirname -- "${BASH_SOURCE[0]:-$0}")" >/dev/null && pwd 2>/dev/null)/../lib/tegonal-scripts/src"
 source "$dir_of_tegonal_scripts/setup.sh" "$dir_of_tegonal_scripts"
 
-# prepare dev cycle for version v0.2.0
+scriptsDir="$(cd -- "$(dirname -- "${BASH_SOURCE[0]:-$0}")" >/dev/null && pwd 2>/dev/null)"
+sourceOnce "$scriptsDir/before-pr.sh"
+
+# prepare dev cycle for version v0.2.0, assumes a function beforePr is in scope which we sourced above
 "$dir_of_tegonal_scripts/releasing/prepare-files-next-dev-cycle.sh" -v v0.2.0
+
+function specialBeforePr(){
+	beforePr && echo "imagine some additional work"
+}
+# make the function visible to release-files.sh / not necessary if you source prepare-files-next-dev-cycle.sh, see further below
+declare -fx specialBeforePr
 
 # prepare dev cycle for version v0.2.0 and
 # searches for additional occurrences where the version should be replaced via the specified pattern in:
 # - script files in ./src and ./scripts
 # - ./README.md
+# uses specialBeforePr instead of beforePr
 "$dir_of_tegonal_scripts/releasing/prepare-files-next-dev-cycle.sh" -v v0.2.0 \
-	-p "(TEGONAL_SCRIPTS_VERSION=['\"])[^'\"]+(['\"])"
+	-p "(TEGONAL_SCRIPTS_VERSION=['\"])[^'\"]+(['\"])" \
+	--before-pr-fn specialBeforePr
 
 # in case you want to provide your own release.sh and only want to do some pre-configuration
 # then you might want to source it instead
@@ -479,6 +512,9 @@ sourceOnce "$dir_of_tegonal_scripts/releasing/prepare-files-next-dev-cycle.sh"
 # since "$@" follows afterwards, one could still override it via command line arguments.
 # put "$@" first, if you don't want that a user can override your pre-configuration
 prepareNextDevCycle -p "(TEGONAL_SCRIPTS_VERSION=['\"])[^'\"]+(['\"])" "$@"
+
+# call the function define --before-pr-fn, don't allow to override via command line arguments
+prepareNextDevCycle "$@" --before-pr-fn specialBeforePr
 ```
 
 </releasing-prepare-files-next-dev-cycle>
@@ -922,74 +958,6 @@ sneakPeekBanner -c show
 ```
 
 </releasing-sneak-peek-banner>
-
-
-## Create tag, prepare next dev Cycle and push tag and changes
-
-commits all changes (staged and unstaged), creates a tag for the given version and then
-calls script/prepare-next-dev-cycle.sh (i.e. this file needs to exist)
-if successful, it pushes the tag and commits to origin 
-
-Help:
-
-<releasing-release-tag-prepare-next-push-help>
-
-<!-- auto-generated, do not modify here but in src/releasing/release-tag-prepare-next-push.sh -->
-```text
-Parameters:
--v                   The version to release in the format vX.Y.Z(-RC...)
--p|--pattern         (optional) pattern which is used in a perl command (separator /) to search & replace additional occurrences. It should define two match groups and the replace operation looks as follows: \${1}$version\${2}
--nv|--next-version   (optional) the version to use for prepare-next-dev-cycle -- default: is next minor based on version
-
---help     prints this help
---version  prints the version of this script
-
-INFO: Version of release-tag-prepare-next-push.sh is:
-v2.1.0-SNAPSHOT
-```
-
-</releasing-release-tag-prepare-next-push-help>
-
-Full usage example:
-
-<releasing-release-tag-prepare-next-push>
-
-<!-- auto-generated, do not modify here but in src/releasing/release-tag-prepare-next-push.sh.doc -->
-```bash
-#!/usr/bin/env bash
-set -euo pipefail
-shopt -s inherit_errexit
-# Assumes tegonal's scripts were fetched with gt - adjust location accordingly
-dir_of_tegonal_scripts="$(cd -- "$(dirname -- "${BASH_SOURCE[0]:-$0}")" >/dev/null && pwd 2>/dev/null)/../lib/tegonal-scripts/src"
-source "$dir_of_tegonal_scripts/setup.sh" "$dir_of_tegonal_scripts"
-
-# 1. git commit all changes and create a tag for v0.1.0
-# 2. call prepareNextDevCycle with nextVersion deduced from the specified version (in this case 0.2.0-SNAPSHOT)
-# 3. git commit all changes as prepare v0.2.0 dev cycle
-# 4. push tag and commits
-"$dir_of_tegonal_scripts/releasing/release-tag-prepare-next-push.sh" -v v0.1.0
-
-# 1. searches for additional occurrences where the version should be replaced via the specified pattern
-# 2. git commit all changes and create a tag for v0.1.0
-# 3. call prepareNextDevCycle with nextVersion deduced from the specified version (in this case 0.2.0-SNAPSHOT)
-# 4. git commit all changes as prepare v0.2.0 dev cycle
-# 4. push tag and commits
-"$dir_of_tegonal_scripts/releasing/release-tag-prepare-next-push.sh" \
-	-v v0.1.0 -k "0x945FE615904E5C85" \
-	-p "(TEGONAL_SCRIPTS_VERSION=['\"])[^'\"]+(['\"])"
-
-# in case you want to provide your own release.sh and only want to do some pre-configuration
-# then you might want to source it instead
-sourceOnce "$dir_of_tegonal_scripts/releasing/release-tag-prepare-next-push.sh"
-
-# and then call the function with your pre-configuration settings:
-# here we pre-define the additional pattern which shall be used in the search to replace the version
-# since "$@" follows afterwards, one could still override it via command line arguments.
-# put "$@" first, if you don't want that a user can override your pre-configuration
-releaseTagPrepareNextAndPush -p "(TEGONAL_SCRIPTS_VERSION=['\"])[^'\"]+(['\"])" "$@"
-```
-
-</releasing-release-tag-prepare-next-push>
 
 # Script Utilities
 

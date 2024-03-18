@@ -100,20 +100,26 @@ function updateVersionCommonSteps() {
 		toggleSections -c main || return $?
 	fi
 
-	updateVersionScripts "$versionParamPatternLong" "$version" \
+	updateVersionScripts \
+		"$versionParamPatternLong" "$version" \
 		"$additionalPatternParamPatternLong" "$additionalPattern" || return $?
-	updateVersionScripts "$versionParamPatternLong" "$version" \
+
+	updateVersionScripts \
+		"$versionParamPatternLong" "$version" \
 		"$additionalPatternParamPatternLong" "$additionalPattern" \
 		-d "$projectsScriptsDir" || return $?
 
 	find "$projectsRootDir/.gt" -name "pull-hook.sh" -print0 |
 		while read -r -d $'\0' script; do
-			updateVersionScripts "$versionParamPatternLong" "$version" \
+			updateVersionScripts \
+				"$versionParamPatternLong" "$version" \
 				"$additionalPatternParamPatternLong" "$additionalPattern" \
-				-d "$script"
+				-d "$script" || return $?
 		done
+
 	if [[ $forRelease = true ]]; then
-		updateVersionReadme "$versionParamPatternLong" "$version" \
+		updateVersionReadme \
+			"$versionParamPatternLong" "$version" \
 			"$additionalPatternParamPatternLong" "$additionalPattern" || return $?
 
 		local -r templateDir="$projectsRootDir/./.github/ISSUE_TEMPLATE"

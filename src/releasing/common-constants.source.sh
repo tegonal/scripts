@@ -51,3 +51,15 @@ local -r prepareOnlyParamDocu='(optional) defines whether the release shall only
 local -r forReleaseParamPatternLong='--for-release'
 local -r forReleaseParamPattern="$forReleaseParamPatternLong"
 local -r forReleaseParamDocu='true if update is for release in which case we hide the sneak-peek banner and toggle sections for release, if false then we show the sneak-peek banner and toggle the section for development'
+
+local -r beforePrFnParamPatternLong='--before-pr-fn'
+local -r beforePrFnParamPattern="$beforePrFnParamPatternLong"
+local -r beforePrFnParamDocu="(optional) defines the function which is executed before preparing the release (to see if we should release) and after preparing the release -- default: beforePr (per convention defined in scripts/before-pr.sh)"
+
+local -r prepareNextDevCycleFnParamPatternLong='--prepare-next-dev-cycle-fn'
+local -r prepareNextDevCycleFnParamPattern="$prepareNextDevCycleFnParamPatternLong"
+local -r prepareNextDevCycleFnParamDocu="(optional) defines the function which is executed to prepare the next dev cycle, taking the nextVersion via $versionParamPattern -- default: perpareNextDevCycle (per convention defined in scripts/prepareNextDevCycle)"
+
+local -r afterVersionUpdateHookParamPatternLong='--after-version-update-hook'
+local -r afterVersionUpdateHookParamPattern="$afterVersionUpdateHookParamPatternLong"
+local -r afterVersionUpdateHookParamDocu="(optional) if defined, then this function is called (passing version, projectsRootDir and additionalPattern) after versions were updated and before calling beforePr"
