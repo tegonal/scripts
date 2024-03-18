@@ -11,6 +11,7 @@
 set -euo pipefail
 shopt -s inherit_errexit
 unset CDPATH
+export TEGONAL_SCRIPTS_VERSION='v2.1.0-SNAPSHOT'
 
 if ! [[ -v scriptsDir ]]; then
 	scriptsDir="$(cd -- "$(dirname -- "${BASH_SOURCE[0]:-$0}")" >/dev/null && pwd 2>/dev/null)"
@@ -30,6 +31,16 @@ sourceOnce "$dir_of_tegonal_scripts/releasing/prepare-files-next-dev-cycle.sh"
 sourceOnce "$scriptsDir/before-pr.sh"
 
 function prepareNextDevCycle() {
+	source "$dir_of_tegonal_scripts/releasing/common-constants.source.sh" || die "could not source common-constants.source.sh"
+
+	# shellcheck disable=SC2034   # is passed by name to parseArguments
+	local -ra params=(
+		version "$versionParamPattern" 'the version for which we prepare the dev cycle'
+		projectsRootDir "$projectsRootDirParamPattern" "$projectsRootDirParamDocu"
+		additionalPattern "$additionalPatternParamPattern" "is ignored as additional pattern is specified internally, still here as release-files uses this argument"
+	)
+	parseArguments params "" "$TEGONAL_SCRIPTS_VERSION" "$@"
+
 	# similar as in release.sh, you might need to update it there as well if you change something here
 	local -r additionalPattern="(TEGONAL_SCRIPTS_VERSION=['\"])[^'\"]+(['\"])"
 

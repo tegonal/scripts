@@ -51,8 +51,12 @@ function release() {
 	# shellcheck disable=SC2034   # is passed by name to parseArguments
 	local -ra params=(
 		version "$versionParamPattern" "$versionParamDocu"
+		key "$keyParamPattern" "$keyParamDocu"
+		branch "$branchParamPattern" "$branchParamDocu"
+		nextVersion "$nextVersionParamPattern" "$nextVersionParamDocu"
+		prepareOnly "$prepareOnlyParamPattern" "$prepareOnlyParamDocu"
 	)
-	parseArgumentsIgnoreUnknown params "" "$TEGONAL_SCRIPTS_VERSION" "$@"
+	parseArguments params "" "$TEGONAL_SCRIPTS_VERSION" "$@"
 
 	function findScripts() {
 		find "$dir_of_tegonal_scripts" -name "*.sh" -not -name "*.doc.sh" "$@"
