@@ -48,7 +48,6 @@ function cleanupOnPushToMain() {
 		releasing/pre-release-checks-git
 		releasing/prepare-files-next-dev-cycle
 		releasing/release-files
-		releasing/release-tag-prepare-next-push
 		releasing/sneak-peek-banner
 		releasing/toggle-sections
 		releasing/update-version-common-steps
@@ -58,7 +57,7 @@ function cleanupOnPushToMain() {
 	)
 
 	for script in "${scriptsWithHelp[@]}"; do
-		replaceHelpSnippet "$dir_of_tegonal_scripts/$script.sh" "${script////-}-help" . README.md
+		replaceHelpSnippet "$dir_of_tegonal_scripts/$script.sh" "${script////-}-help" . README.md || return $?
 	done || die "replacing help snippets failed, see above"
 
 	logSuccess "Updating bash docu and README completed"

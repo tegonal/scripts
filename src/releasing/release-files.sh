@@ -11,14 +11,11 @@
 #
 #  Releasing files based on conventions:
 #  - expects a version in format vX.Y.Z(-RC...)
-#  - main is your default branch
-#  - requires you to have a /scripts folder in your project root which contains:
-#    - before-pr.sh which provides a parameterless function beforePr and can be sourced (add ${__SOURCED__:+return} before executing beforePr)
-#    - prepare-next-dev-cycle.sh which provides function prepareNextDevCycle and can be sourced
+#  - main is your default branch (or you use --branch to define another)
+#  - requires you to have a function beforePr in scope (or you define another one via --before-pr-fn)
+#  - requires you to have a function prepareNextDevCycle in scope (or you define another one via --prepare-next-dev-cycle-fn)
 #  - there is a public key defined at .gt/signing-key.public.asc which will be used
 #    to verify the signatures which will be created
-#
-#  You can define /scripts/additional-release-files-preparations.sh which is sourced (via sourceOnce) if it exists.
 #
 #######  Usage  ###################
 #
@@ -29,22 +26,37 @@
 #    dir_of_tegonal_scripts="$(cd -- "$(dirname -- "${BASH_SOURCE[0]:-$0}")" >/dev/null && pwd 2>/dev/null)/../lib/tegonal-scripts/src"
 #    source "$dir_of_tegonal_scripts/setup.sh" "$dir_of_tegonal_scripts"
 #
+#    scriptsDir="$(cd -- "$(dirname -- "${BASH_SOURCE[0]:-$0}")" >/dev/null && pwd 2>/dev/null)"
+#    sourceOnce "$scriptsDir/before-pr.sh"
+#
 #    function findScripts() {
 #    	find "src" -name "*.sh" -not -name "*.doc.sh" "$@"
 #    }
 #    # make the function visible to release-files.sh / not necessary if you source release-files.sh, see further below
 #    declare -fx findScripts
 #
-#    # releases version v0.1.0 using the key 0x945FE615904E5C85 for signing
+#    # releases version v0.1.0 using the key 0x945FE615904E5C85 for signing and function findScripts to find the files which
+#    # should be signed (and thus released). Assumes that a function named beforePr is in scope (which we sourced above)
 #    "$dir_of_tegonal_scripts/releasing/release-files.sh" -v v0.1.0 -k "0x945FE615904E5C85" --sign-fn findScripts
 #
-#    # releases version v0.1.0 using the key 0x945FE615904E5C85 for signing and
-#    # searches for additional occurrences where the version should be replaced via the specified pattern in:
-#    # - script files in ./src and ./scripts
-#    # - ./README.md
+#    # releases version v0.1.0 using the key 0x945FE615904E5C85 for signing and function findScripts to find the files which
+#     ## should be signed (and thus released). Moreover, searches for additional occurrences where the version should be
+#    # replaced via the specified pattern
 #    "$dir_of_tegonal_scripts/releasing/release-files.sh" \
 #    	-v v0.1.0 -k "0x945FE615904E5C85" --sign-fn findScripts \
 #    	-p "(TEGONAL_SCRIPTS_VERSION=['\"])[^'\"]+(['\"])"
+#
+#    function specialBeforePr(){
+#    	beforePr && echo "imagine some additional work"
+#    }
+#    # make the function visible to release-files.sh / not necessary if you sourcerepare-files-next-dev-cycle.sh, see further below
+#    declare -fx specialBeforePr
+#
+#    # releases version v0.1.0 using the key 0x945FE615904E5C85 for signing and
+#    "$dir_of_tegonal_scripts/releasing/release-files.sh" \
+#    	-v v0.1.0 -k "0x945FE615904E5C85" --sign-fn findScripts \
+#    	--before-pr-fn specialBeforePr
+#
 #
 #    # in case you want to provide your own release.sh and only want to do some pre-configuration
 #    # then you might want to source it instead
@@ -55,6 +67,9 @@
 #    # since "$@" follows afterwards, one could still override it via command line arguments.
 #    # put "$@" first, if you don't want that a user can override your pre-configuration
 #    releaseFiles --sign-fn findScripts "$@"
+#
+#    # call the function define --before-pr-fn, don't allow to override via command line arguments
+#    releaseFiles "$@" --before-pr-fn specialBeforePr
 #
 ###################################
 set -euo pipefail
@@ -71,16 +86,17 @@ sourceOnce "$dir_of_tegonal_scripts/utility/gpg-utils.sh"
 sourceOnce "$dir_of_tegonal_scripts/utility/ask.sh"
 sourceOnce "$dir_of_tegonal_scripts/utility/parse-args.sh"
 sourceOnce "$dir_of_tegonal_scripts/releasing/pre-release-checks-git.sh"
-sourceOnce "$dir_of_tegonal_scripts/releasing/release-tag-prepare-next-push.sh"
 sourceOnce "$dir_of_tegonal_scripts/releasing/update-version-common-steps.sh"
 
 function releaseFiles() {
-	local versionParamPatternLong findForSigningParamPatternLong branchParamPatternLong  projectsRootDirParamPatternLong
-	local additionalPatternParamPatternLong nextVersionParamPatternLong prepareOnlyParamPatternLong
+	local versionParamPatternLong findForSigningParamPatternLong branchParamPatternLong projectsRootDirParamPatternLong
+	local additionalPatternParamPatternLong prepareOnlyParamPatternLong
+	local beforePrFnParamPatternLong prepareNextDevCycleFnParamPatternLong afterVersionUpdateHookParamPatternLong
 	local forReleaseParamPatternLong
 	source "$dir_of_tegonal_scripts/releasing/common-constants.source.sh" || die "could not source common-constants.source.sh"
 
 	local version branch key findForSigning projectsRootDir additionalPattern nextVersion prepareOnly
+	local beforePrFn prepareNextDevCycleFn afterVersionUpdateHook
 	# shellcheck disable=SC2034   # is passed by name to parseArguments
 	local -ra params=(
 		version "$versionParamPattern" "$versionParamDocu"
@@ -91,6 +107,9 @@ function releaseFiles() {
 		additionalPattern "$additionalPatternParamPattern" "$additionalPatternParamDocu"
 		nextVersion "$nextVersionParamPattern" "$nextVersionParamDocu"
 		prepareOnly "$prepareOnlyParamPattern" "$prepareOnlyParamDocu"
+		beforePrFn "$beforePrFnParamPattern" "$beforePrFnParamDocu"
+		prepareNextDevCycleFn "$prepareNextDevCycleFnParamPattern" "$prepareNextDevCycleFnParamDocu"
+		afterVersionUpdateHook "$afterVersionUpdateHookParamPattern" "$afterVersionUpdateHookParamDocu"
 	)
 
 	parseArguments params "" "$TEGONAL_SCRIPTS_VERSION" "$@"
@@ -101,20 +120,22 @@ function releaseFiles() {
 	if ! [[ -v projectsRootDir ]]; then projectsRootDir=$(realpath "."); fi
 	if ! [[ -v additionalPattern ]]; then additionalPattern="^$"; fi
 	if ! [[ -v prepareOnly ]] || [[ $prepareOnly != "true" ]]; then prepareOnly=false; fi
+	if ! [[ -v beforePrFn ]]; then beforePrFn='beforePr'; fi
+	if ! [[ -v prepareNextDevCycleFn ]]; then prepareNextDevCycleFn='prepareNextDevCycle'; fi
+	if ! [[ -v afterVersionUpdateHook ]]; then afterVersionUpdateHook=''; fi
+
 	exitIfNotAllArgumentsSet params "" "$TEGONAL_SCRIPTS_VERSION"
 
 	exitIfArgIsNotFunction "$findForSigning" "$findForSigningParamPatternLong"
+	exitIfArgIsNotFunction "$beforePrFn" "$beforePrFnParamPatternLong"
+	exitIfArgIsNotFunction "$prepareNextDevCycleFn" "$prepareNextDevCycleFnParamPatternLong"
 
 	preReleaseCheckGit \
 		"$versionParamPatternLong" "$version" \
 		"$branchParamPatternLong" "$branch"
 
-	local -r projectsScriptsDir="$projectsRootDir/scripts"
-	# shellcheck disable=SC2310			# we are aware of that || will disable set -e for sourceOnce
-	sourceOnce "$projectsScriptsDir/before-pr.sh" || die "could not source before-pr.sh"
-
 	# make sure everything is up-to-date and works as it should
-	beforePr || return $?
+	"$beforePrFn" || return $?
 
 	updateVersionCommonSteps \
 		"$forReleaseParamPatternLong" true \
@@ -122,15 +143,17 @@ function releaseFiles() {
 		"$projectsRootDirParamPatternLong" "$projectsRootDir" \
 		"$additionalPatternParamPatternLong" "$additionalPattern"
 
-	local -r additionalSteps="$projectsScriptsDir/additional-release-files-preparations.sh"
-	if [[ -f $additionalSteps ]]; then
-		logInfo "found $additionalSteps going to source it"
-		# shellcheck disable=SC2310				# we are aware of that || will disable set -e for sourceOnce
-		sourceOnce "$additionalSteps" || die "could not source $additionalSteps"
+	if [[ -n $afterVersionUpdateHook ]]; then
+		exitIfArgIsNotFunction "$afterVersionUpdateHook" "$afterVersionUpdateHookParamPatternLong"
+		logInfo "afterVersionUpdateHook defined, going to call %s" "$afterVersionUpdateHook"
+		"$afterVersionUpdateHook" \
+			"$versionParamPatternLong" "$version" \
+			"$projectsRootDirParamPatternLong" "$projectsRootDir" \
+			"$additionalPatternParamPatternLong" "$additionalPattern"
 	fi
 
 	# run again since we made changes
-	beforePr || return $?
+	"$beforePrFn" || return $?
 
 	local -r gtDir="$projectsRootDir/.gt"
 	local -r gpgDir="$gtDir/gpg"
@@ -153,10 +176,18 @@ function releaseFiles() {
 		done || return $?
 
 	if [[ $prepareOnly != true ]]; then
-		releaseTagPrepareNextAndPush \
-			"$versionParamPatternLong" "$version" \
+		git add . || return $?
+		git commit -m "$version" || return $?
+		git tag "$version" || return $?
+
+		"$prepareNextDevCycleFn" \
+			"$versionParamPatternLong" "$nextVersion" \
 			"$additionalPatternParamPatternLong" "$additionalPattern" \
-			"$nextVersionParamPatternLong" "$nextVersion"
+			"$projectsRootDirParamPatternLong" "$projectsRootDir" \
+			"$beforePrFnParamPatternLong" "$beforePrFn" || die "could not prepare next dev cycle for version %s" "$nextVersion"
+
+		git push origin "$version" || die "could not push tag %s to origin" "$version"
+		git push || die "could not push commits"
 	else
 		printf "\033[1;33mskipping commit, creating tag and prepare-next-dev-cycle due to %s\033[0m\n" "$prepareOnlyParamPatternLong"
 	fi

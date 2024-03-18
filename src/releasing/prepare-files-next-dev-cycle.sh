@@ -9,13 +9,9 @@
 #                                         Version: v2.1.0-SNAPSHOT
 #######  Description  #############
 #
-#  prepare the next dev cycle for files based on conventions:
+#  Prepare the next dev cycle for files based on conventions:
 #  - expects a version in format vX.Y.Z(-RC...)
-#  - main is your default branch
-#  - requires you to have a /scripts folder in your project root which contains:
-#    - before-pr.sh which provides function beforePr and updateDocu and can be sourced (add ${__SOURCED__:+return} before executing beforePr)
-#
-#  You can define a /scripts/additional-prepare-files-next-dev-cycle-steps.sh which is sourced (via sourceOnce) if it exists
+#  - main is your default branch (or you specify --branch)
 #
 #######  Usage  ###################
 #
@@ -26,15 +22,26 @@
 #    dir_of_tegonal_scripts="$(cd -- "$(dirname -- "${BASH_SOURCE[0]:-$0}")" >/dev/null && pwd 2>/dev/null)/../lib/tegonal-scripts/src"
 #    source "$dir_of_tegonal_scripts/setup.sh" "$dir_of_tegonal_scripts"
 #
-#    # prepare dev cycle for version v0.2.0
+#    scriptsDir="$(cd -- "$(dirname -- "${BASH_SOURCE[0]:-$0}")" >/dev/null && pwd 2>/dev/null)"
+#    sourceOnce "$scriptsDir/before-pr.sh"
+#
+#    # prepare dev cycle for version v0.2.0, assumes a function beforePr is in scope which we sourced above
 #    "$dir_of_tegonal_scripts/releasing/prepare-files-next-dev-cycle.sh" -v v0.2.0
+#
+#    function specialBeforePr(){
+#    	beforePr && echo "imagine some additional work"
+#    }
+#    # make the function visible to release-files.sh / not necessary if you source prepare-files-next-dev-cycle.sh, see further below
+#    declare -fx specialBeforePr
 #
 #    # prepare dev cycle for version v0.2.0 and
 #    # searches for additional occurrences where the version should be replaced via the specified pattern in:
 #    # - script files in ./src and ./scripts
 #    # - ./README.md
+#    # uses specialBeforePr instead of beforePr
 #    "$dir_of_tegonal_scripts/releasing/prepare-files-next-dev-cycle.sh" -v v0.2.0 \
-#    	-p "(TEGONAL_SCRIPTS_VERSION=['\"])[^'\"]+(['\"])"
+#    	-p "(TEGONAL_SCRIPTS_VERSION=['\"])[^'\"]+(['\"])" \
+#    	--before-pr-fn specialBeforePr
 #
 #    # in case you want to provide your own release.sh and only want to do some pre-configuration
 #    # then you might want to source it instead
@@ -45,6 +52,9 @@
 #    # since "$@" follows afterwards, one could still override it via command line arguments.
 #    # put "$@" first, if you don't want that a user can override your pre-configuration
 #    prepareNextDevCycle -p "(TEGONAL_SCRIPTS_VERSION=['\"])[^'\"]+(['\"])" "$@"
+#
+#    # call the function define --before-pr-fn, don't allow to override via command line arguments
+#    prepareNextDevCycle "$@" --before-pr-fn specialBeforePr
 #
 ###################################
 set -euo pipefail
@@ -62,23 +72,30 @@ sourceOnce "$dir_of_tegonal_scripts/releasing/update-version-common-steps.sh"
 function prepareFilesNextDevCycle() {
 	local versionRegex versionParamPatternLong projectsRootDirParamPatternLong
 	local additionalPatternParamPatternLong forReleaseParamPatternLong
+	local beforePrFnParamPatternLong afterVersionUpdateHookParamPatternLong
 	source "$dir_of_tegonal_scripts/releasing/common-constants.source.sh" || die "could not source common-constants.source.sh"
 
-	local version projectsRootDir additionalPattern
+	local version projectsRootDir additionalPattern beforePrFn afterVersionUpdateHook
 	# shellcheck disable=SC2034   # is passed by name to parseArguments
 	local -ra params=(
 		version "$versionParamPattern" 'the version for which we prepare the dev cycle'
 		projectsRootDir "$projectsRootDirParamPattern" "$projectsRootDirParamDocu"
 		additionalPattern "$additionalPatternParamPattern" "$additionalPatternParamDocu"
+		beforePrFn "$beforePrFnParamPattern" "$beforePrFnParamDocu"
+		afterVersionUpdateHook "$afterVersionUpdateHookParamPattern" "$afterVersionUpdateHookParamDocu"
 	)
 	parseArguments params "" "$TEGONAL_SCRIPTS_VERSION" "$@"
 	if ! [[ -v projectsRootDir ]]; then projectsRootDir=$(realpath ".") || die "could not determine realpath of ."; fi
 	if ! [[ -v additionalPattern ]]; then additionalPattern="^$"; fi
+	if ! [[ -v beforePrFn ]]; then beforePrFn="beforePr"; fi
+	if ! [[ -v afterVersionUpdateHook ]]; then afterVersionUpdateHook=''; fi
 	exitIfNotAllArgumentsSet params "" "$TEGONAL_SCRIPTS_VERSION"
 
 	if ! [[ "$version" =~ $versionRegex ]]; then
 		die "version should match vX.Y.Z(-RC...), was %s" "$version"
 	fi
+
+	exitIfArgIsNotFunction "$beforePrFn" "$beforePrFnParamPatternLong"
 
 	exitIfGitHasChanges
 
@@ -93,6 +110,15 @@ function prepareFilesNextDevCycle() {
 		"$projectsRootDirParamPatternLong" "$projectsRootDir" \
 		"$additionalPatternParamPatternLong" "$additionalPattern"
 
+	if [[ -n $afterVersionUpdateHook ]]; then
+		exitIfArgIsNotFunction "$afterVersionUpdateHook" "$afterVersionUpdateHookParamPatternLong"
+		logInfo "afterVersionUpdateHook defined, going to call %s" "$afterVersionUpdateHook"
+		"$afterVersionUpdateHook" \
+			"$versionParamPatternLong" "$version" \
+			"$projectsRootDirParamPatternLong" "$projectsRootDir" \
+			"$additionalPatternParamPatternLong" "$additionalPattern"
+	fi
+
 	local -r additionalSteps="$projectsScriptsDir/additional-prepare-files-next-dev-cycle-steps.sh"
 	if [[ -f $additionalSteps ]]; then
 		logInfo "found $additionalSteps going to source it"
@@ -100,11 +126,8 @@ function prepareFilesNextDevCycle() {
 		sourceOnce "$additionalSteps" || die "could not source $additionalSteps"
 	fi
 
-	# shellcheck disable=SC2310			# we are aware of that || will disable set -e for sourceOnce
-	sourceOnce "$projectsScriptsDir/before-pr.sh" || die "could not source before-pr.sh"
-
 	# check if we accidentally have broken something, run formatting or whatever is done in beforePr
-	beforePr || return $?
+	"$beforePrFn" || return $?
 
 	git commit -a -m "prepare next dev cycle for $version"
 }
