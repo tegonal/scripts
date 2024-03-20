@@ -9,16 +9,14 @@
 #                                         Version: v2.1.0-SNAPSHOT
 #######  Description  #############
 #
-#  Releasing files based on conventions:
-#  - expects a version in format vX.Y.Z(-RC...)
-#  - main is your default branch
-#  - requires you to have a /scripts folder in your project root which contains:
-#    - before-pr.sh which provides a parameterless function beforePr and can be sourced (add ${__SOURCED__:+return} before executing beforePr)
-#    - prepare-next-dev-cycle.sh which provides function prepareNextDevCycle and can be sourced
-#  - there is a public key defined at .gt/signing-key.public.asc which will be used
-#    to verify the signatures which will be created
+#  Carry out some common update version steps either during releasing or in preparing the next dev cycle (indicated via
+#  --for-release true/false
 #
-#  You can define /scripts/additional-release-files-preparations.sh which is sourced (via sourceOnce) if it exists.
+#  It carries out the following steps
+#  - hide/show the sneak peek banner
+#  - show release section and hide main section (or the opposite in case --for-release false)
+#  - update version in script headers
+#  - update links and version in README.md (see update-version-README.sh)
 #
 #######  Usage  ###################
 #
@@ -99,10 +97,6 @@ function updateVersionCommonSteps() {
 		sneakPeekBanner -c show || return $?
 		toggleSections -c main || return $?
 	fi
-
-	updateVersionScripts \
-		"$versionParamPatternLong" "$version" \
-		"$additionalPatternParamPatternLong" "$additionalPattern" || return $?
 
 	updateVersionScripts \
 		"$versionParamPatternLong" "$version" \

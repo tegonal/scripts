@@ -31,7 +31,6 @@ local -r branchParamPatternLong='--branch'
 local -r branchParamPattern="-b|$branchParamPatternLong"
 local -r branchParamDocu='(optional) The expected branch which is currently checked out -- default: main'
 
-
 local -r projectsRootDirParamPatternLong='--project-dir'
 local -r projectsRootDirParamPattern="$projectsRootDirParamPatternLong"
 local -r projectsRootDirParamDocu='(optional) The projects directory -- default: .'
@@ -54,12 +53,18 @@ local -r forReleaseParamDocu='true if update is for release in which case we hid
 
 local -r beforePrFnParamPatternLong='--before-pr-fn'
 local -r beforePrFnParamPattern="$beforePrFnParamPatternLong"
-local -r beforePrFnParamDocu="(optional) defines the function which is executed before preparing the release (to see if we should release) and after preparing the release -- default: beforePr (per convention defined in scripts/before-pr.sh)"
+local -r beforePrFnParamDocu="(optional) defines the function which is executed before preparing the release (to see if we should release) and after preparing the release -- default: beforePr (per convention defined in scripts/before-pr.sh). No arguments are passed"
 
 local -r prepareNextDevCycleFnParamPatternLong='--prepare-next-dev-cycle-fn'
 local -r prepareNextDevCycleFnParamPattern="$prepareNextDevCycleFnParamPatternLong"
-local -r prepareNextDevCycleFnParamDocu="(optional) defines the function which is executed to prepare the next dev cycle, taking the nextVersion via $versionParamPattern -- default: perpareNextDevCycle (per convention defined in scripts/prepareNextDevCycle)"
+local -r prepareNextDevCycleFnParamDocu="(optional) defines the function which is executed to prepare the next dev cycle -- default: perpareNextDevCycle (per convention defined in scripts/prepareNextDevCycle). \
+The following arguments are passed: $versionParamPattern nextVersion $additionalPatternParamPatternLong additionalPattern $projectsRootDirParamPatternLong projectsRootDir $beforePrFnParamPatternLong beforePrFn"
+
+local -r releaseHookParamPatternLong='--release-hook'
+local -r releaseHookParamPattern="$releaseHookParamPatternLong"
+local -r releaseHookParamDocu="performs the main release task such as (run tests) create artifacts, deploy artifacts"
 
 local -r afterVersionUpdateHookParamPatternLong='--after-version-update-hook'
 local -r afterVersionUpdateHookParamPattern="$afterVersionUpdateHookParamPatternLong"
-local -r afterVersionUpdateHookParamDocu="(optional) if defined, then this function is called (passing version, projectsRootDir and additionalPattern) after versions were updated and before calling beforePr"
+local -r afterVersionUpdateHookParamDocu="(optional) if defined, then this function is called after versions were updated and before calling beforePr. \
+The following arguments are passed: $versionParamPatternLong version $projectsRootDirParamPatternLong projectsRootDir and $additionalPatternParamPatternLong additionalPattern"

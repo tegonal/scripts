@@ -81,22 +81,18 @@ if ! [[ -v dir_of_tegonal_scripts ]]; then
 	dir_of_tegonal_scripts="$(cd -- "$(dirname -- "${BASH_SOURCE[0]:-$0}")" >/dev/null && pwd 2>/dev/null)/.."
 	source "$dir_of_tegonal_scripts/setup.sh" "$dir_of_tegonal_scripts"
 fi
-sourceOnce "$dir_of_tegonal_scripts/utility/git-utils.sh"
+sourceOnce "$dir_of_tegonal_scripts/utility/execute-if-defined.sh"
 sourceOnce "$dir_of_tegonal_scripts/utility/gpg-utils.sh"
-sourceOnce "$dir_of_tegonal_scripts/utility/ask.sh"
 sourceOnce "$dir_of_tegonal_scripts/utility/parse-args.sh"
-sourceOnce "$dir_of_tegonal_scripts/releasing/pre-release-checks-git.sh"
-sourceOnce "$dir_of_tegonal_scripts/releasing/update-version-common-steps.sh"
+sourceOnce "$dir_of_tegonal_scripts/releasing/release-template.sh"
+sourceOnce "$dir_of_tegonal_scripts/releasing/update-version-scripts.sh"
 
 function releaseFiles() {
-	local versionParamPatternLong findForSigningParamPatternLong branchParamPatternLong projectsRootDirParamPatternLong
-	local additionalPatternParamPatternLong prepareOnlyParamPatternLong
-	local beforePrFnParamPatternLong prepareNextDevCycleFnParamPatternLong afterVersionUpdateHookParamPatternLong
-	local forReleaseParamPatternLong
+	local versionParamPatternLong projectsRootDirParamPatternLong
+	local additionalPatternParamPatternLong afterVersionUpdateHookParamPatternLong releaseHookParamPatternLong
 	source "$dir_of_tegonal_scripts/releasing/common-constants.source.sh" || die "could not source common-constants.source.sh"
 
-	local version branch key findForSigning projectsRootDir additionalPattern nextVersion prepareOnly
-	local beforePrFn prepareNextDevCycleFn afterVersionUpdateHook
+	local key findForSigning branch afterVersionUpdateHook
 	# shellcheck disable=SC2034   # is passed by name to parseArguments
 	local -ra params=(
 		version "$versionParamPattern" "$versionParamDocu"
@@ -111,86 +107,56 @@ function releaseFiles() {
 		prepareNextDevCycleFn "$prepareNextDevCycleFnParamPattern" "$prepareNextDevCycleFnParamDocu"
 		afterVersionUpdateHook "$afterVersionUpdateHookParamPattern" "$afterVersionUpdateHookParamDocu"
 	)
-
 	parseArguments params "" "$TEGONAL_SCRIPTS_VERSION" "$@"
 
-	# deduces nextVersion based on version if not already set (and if version set)
-	source "$dir_of_tegonal_scripts/releasing/deduce-next-version.source.sh"
-	if ! [[ -v branch ]]; then branch="main"; fi
-	if ! [[ -v projectsRootDir ]]; then projectsRootDir=$(realpath "."); fi
-	if ! [[ -v additionalPattern ]]; then additionalPattern="^$"; fi
-	if ! [[ -v prepareOnly ]] || [[ $prepareOnly != "true" ]]; then prepareOnly=false; fi
-	if ! [[ -v beforePrFn ]]; then beforePrFn='beforePr'; fi
-	if ! [[ -v prepareNextDevCycleFn ]]; then prepareNextDevCycleFn='prepareNextDevCycle'; fi
-	if ! [[ -v afterVersionUpdateHook ]]; then afterVersionUpdateHook=''; fi
+	# we let releaseTemplate validate the args, we mainly have them here so that the --help is correct
 
-	exitIfNotAllArgumentsSet params "" "$TEGONAL_SCRIPTS_VERSION"
+	function releaseFiles_afterVersionHook() {
+		local version projectsRootDir additionalPattern
+		# shellcheck disable=SC2034   # is passed by name to parseArguments
+		local -ra params=(
+			version "$versionParamPattern" 'the version for which we prepare the dev cycle'
+			projectsRootDir "$projectsRootDirParamPattern" "$projectsRootDirParamDocu"
+			additionalPattern "$additionalPatternParamPattern" "$additionalPatternParamDocu"
+		)
 
-	exitIfArgIsNotFunction "$findForSigning" "$findForSigningParamPatternLong"
-	exitIfArgIsNotFunction "$beforePrFn" "$beforePrFnParamPatternLong"
-	exitIfArgIsNotFunction "$prepareNextDevCycleFn" "$prepareNextDevCycleFnParamPatternLong"
+		updateVersionScripts \
+			"$versionParamPatternLong" "$version" \
+			"$additionalPatternParamPatternLong" "$additionalPattern" \
+			-d "$projectsRootDir/src" || return $?
 
-	preReleaseCheckGit \
-		"$versionParamPatternLong" "$version" \
-		"$branchParamPatternLong" "$branch"
-
-	# make sure everything is up-to-date and works as it should
-	"$beforePrFn" || return $?
-
-	updateVersionCommonSteps \
-		"$forReleaseParamPatternLong" true \
-		"$versionParamPatternLong" "$version" \
-		"$projectsRootDirParamPatternLong" "$projectsRootDir" \
-		"$additionalPatternParamPatternLong" "$additionalPattern"
-
-	if [[ -n $afterVersionUpdateHook ]]; then
-		exitIfArgIsNotFunction "$afterVersionUpdateHook" "$afterVersionUpdateHookParamPatternLong"
-		logInfo "afterVersionUpdateHook defined, going to call %s" "$afterVersionUpdateHook"
-		"$afterVersionUpdateHook" \
+		executeIfFunctionNameDefined "$afterVersionUpdateHook" "$afterVersionUpdateHookParamPatternLong" \
 			"$versionParamPatternLong" "$version" \
 			"$projectsRootDirParamPatternLong" "$projectsRootDir" \
 			"$additionalPatternParamPatternLong" "$additionalPattern"
-	fi
+	}
 
-	# run again since we made changes
-	"$beforePrFn" || return $?
+	function releaseFiles_releaseHook() {
+		local -r gtDir="$projectsRootDir/.gt"
+		local -r gpgDir="$gtDir/gpg"
+		if ! rm -rf "$gpgDir"; then
+			logError "was not able to remove gpg directory %s\nPlease do this manually and re-run the release command" "$gpgDir"
+			git reset --hard "origin/$branch"
+		fi
+		mkdir "$gpgDir"
+		chmod 700 "$gpgDir"
 
-	local -r gtDir="$projectsRootDir/.gt"
-	local -r gpgDir="$gtDir/gpg"
-	if ! rm -rf "$gpgDir"; then
-		logError "was not able to remove gpg directory %s\nPlease do this manually and re-run the release command" "$gpgDir"
-		git reset --hard "origin/$branch"
-	fi
-	mkdir "$gpgDir"
-	chmod 700 "$gpgDir"
+		gpg --homedir "$gpgDir" --batch --no-tty --import "$gtDir/signing-key.public.asc" || die "was not able to import %s" "$gtDir/signing-key.public.asc"
+		trustGpgKey "$gpgDir" "info@tegonal.com" || logInfo "could not trust key with id info@tegonal.com, you will see warnings due to this during signing the files"
 
-	gpg --homedir "$gpgDir" --batch --no-tty --import "$gtDir/signing-key.public.asc" || die "was not able to import %s" "$gtDir/signing-key.public.asc"
-	trustGpgKey "$gpgDir" "info@tegonal.com" || logInfo "could not trust key with id info@tegonal.com, you will see warnings due to this during signing the files"
+		local script
+		"$findForSigning" -type f -not -name "*.sig" -print0 |
+			while read -r -d $'\0' script; do
+				echo "signing $script"
+				gpg --detach-sign --batch --no-tty --yes -u "$key" -o "${script}.sig" "$script" || die "was not able to sign %s" "$script"
+				gpg --homedir "$gpgDir" --batch --no-tty --verify "${script}.sig" "$script" || die "verification via previously imported %s failed" "$gtDir/signing-key.public.asc"
+			done || return $?
+	}
 
-	local script
-	"$findForSigning" -type f -not -name "*.sig" -print0 |
-		while read -r -d $'\0' script; do
-			echo "signing $script"
-			gpg --detach-sign --batch --no-tty --yes -u "$key" -o "${script}.sig" "$script" || die "was not able to sign %s" "$script"
-			gpg --homedir "$gpgDir" --batch --no-tty --verify "${script}.sig" "$script" || die "verification via previously imported %s failed" "$gtDir/signing-key.public.asc"
-		done || return $?
-
-	if [[ $prepareOnly != true ]]; then
-		git add . || return $?
-		git commit -m "$version" || return $?
-		git tag "$version" || return $?
-
-		"$prepareNextDevCycleFn" \
-			"$versionParamPatternLong" "$nextVersion" \
-			"$additionalPatternParamPatternLong" "$additionalPattern" \
-			"$projectsRootDirParamPatternLong" "$projectsRootDir" \
-			"$beforePrFnParamPatternLong" "$beforePrFn" || die "could not prepare next dev cycle for version %s" "$nextVersion"
-
-		git push origin "$version" || die "could not push tag %s to origin" "$version"
-		git push || die "could not push commits"
-	else
-		printf "\033[1;33mskipping commit, creating tag and prepare-next-dev-cycle due to %s\033[0m\n" "$prepareOnlyParamPatternLong"
-	fi
+	releaseTemplate \
+		"$@" \
+		"$releaseHookParamPatternLong" releaseFiles_releaseHook \
+		"$afterVersionUpdateHookParamPatternLong" releaseFiles_afterVersionHook
 }
 
 ${__SOURCED__:+return}

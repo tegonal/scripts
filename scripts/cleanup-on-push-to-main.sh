@@ -47,7 +47,9 @@ function cleanupOnPushToMain() {
 		ci/jelastic/deploy
 		releasing/pre-release-checks-git
 		releasing/prepare-files-next-dev-cycle
+		releasing/prepare-next-dev-cycle-template
 		releasing/release-files
+		releasing/release-template
 		releasing/sneak-peek-banner
 		releasing/toggle-sections
 		releasing/update-version-common-steps

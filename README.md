@@ -21,8 +21,10 @@ As they might be usable for you as well, we are publishing them here.
 Feel free to use it and report bugs if you should find one.
 
 ---
-❗ You are taking a *sneak peek* at the next version. It could be that some features you find on this page are not released yet.  
-Please have a look at the README of the corresponding release/git tag. Latest version: [README of v2.0.0](https://github.com/tegonal/scripts/tree/v2.0.0/README.md).
+❗ You are taking a *sneak peek* at the next version. It could be that some features you find on this page are not
+released yet.  
+Please have a look at the README of the corresponding release/git tag. Latest
+version: [README of v2.0.0](https://github.com/tegonal/scripts/tree/v2.0.0/README.md).
 
 ---
 
@@ -89,48 +91,53 @@ sourceOnce "$dir_of_tegonal_scripts/utility/io.sh"
 
 </setup>
 
-Note that `source "$dir_of_tegonal_scripts/setup.sh"` will automatically source `utility/source-once.sh` and `utility/log.sh`
+Note that `source "$dir_of_tegonal_scripts/setup.sh"` will automatically source `utility/source-once.sh`
+and `utility/log.sh`
 
 # Documentation
 
 The scripts are ordered by topic:
+
 - [CI](#continuous-integration)
-  - [install shellcheck](#install-shellcheck)
-  - [install shellspec](#install-shellspec)
-  - [Jelastic](#jelastic)
-    - [deploy](#deploy-to-jelastic)
-    - [utils](#jelastic-utils)
+	- [install shellcheck](#install-shellcheck)
+	- [install shellspec](#install-shellspec)
+	- [Jelastic](#jelastic)
+		- [deploy](#deploy-to-jelastic)
+		- [utils](#jelastic-utils)
 - [Quality Assurance](#quality-assurance)
 	- [runShellcheck](#runshellcheck)
 - [Releasing](#releasing)
-    - [Releasing Files](#release-files)
-    - [Prepare Files next dev cycle](#prepare-files-next-dev-cycle)
-    - [git Pre-Release checks](#git-pre-release-checks)
-    - [Update Version common steps](#update-version-common-release-steps)
-    - [Update Version in README](#update-version-in-readme)
-    - [Update Version in bash scripts](#update-version-in-bash-scripts)
-    - [Update Version in issue templates](#update-version-in-issue-templates)
-    - [Toggle main/release sections](#toggle-mainrelease-sections)
-    - [Hide/Show sneak-peek banner](#hideshow-sneak-peek-banner)
-    - [Create tag, prepare-next, push](#create-tag-prepare-next-dev-cycle-and-push-tag-and-changes) 
+	- [Releasing Files](#release-files)
+	- [Prepare Files Next Dev Cycle](#prepare-files-next-dev-cycle)
+	- [Release Template](#release-template)
+    - [Prepare Next Dev Cycle Template]
+	- [git Pre-Release checks](#git-pre-release-checks)
+	- [Update Version common steps](#update-version-common-release-steps)
+	- [Update Version in README](#update-version-in-readme)
+	- [Update Version in bash scripts](#update-version-in-bash-scripts)
+	- [Update Version in issue templates](#update-version-in-issue-templates)
+	- [Toggle main/release sections](#toggle-mainrelease-sections)
+	- [Hide/Show sneak-peek banner](#hideshow-sneak-peek-banner)
+	- [Create tag, prepare-next, push](#create-tag-prepare-next-dev-cycle-and-push-tag-and-changes)
 
 - [Script Utilities](#script-utilities)
-    - [array utils](#array-utils)
-    - [Ask functions](#ask-functions)
-    - [Checks](#checks) 
-    - [git Utils](#git-utils)
-    - [GPG Utils](#gpg-utils)
-    - [Http functions](#http-functions)
-    - [IO functions](#io-functions)
-    - [Log functions](#log-functions)
-    - [Parse arguments](#parse-arguments)
-    - [Parse utils](#parse-utils)
-    - [Recursive `declare -p`](#recursive-declare--p)
-    - [Replace Snippets](#replace-snippets)
-    - [`source` once](#source-once)
+	- [array utils](#array-utils)
+	- [Ask functions](#ask-functions)
+	- [Checks](#checks)
+	- [git Utils](#git-utils)
+	- [GPG Utils](#gpg-utils)
+	- [Http functions](#http-functions)
+	- [IO functions](#io-functions)
+	- [Log functions](#log-functions)
+	- [Parse arguments](#parse-arguments)
+	- [Parse utils](#parse-utils)
+	- [Recursive `declare -p`](#recursive-declare--p)
+	- [Replace Snippets](#replace-snippets)
+	- [`source` once](#source-once)
 	- [Update Documentation](#update-bash-documentation)
 
 # Continuous Integration
+
 The scripts under this topic (in directory `ci`) help out in performing CI steps.
 
 ## Install shellcheck
@@ -138,7 +145,7 @@ The scripts under this topic (in directory `ci`) help out in performing CI steps
 Installs shellcheck v0.8.0.  
 Most likely used together with [runShellcheck](#runshellcheck).
 Following an example:
-  
+
 <ci-install-shellcheck>
 
 <!-- auto-generated, do not modify here but in src/ci/install-shellcheck.sh.doc -->
@@ -180,6 +187,7 @@ jobs:
 </ci-install-shellspec>
 
 ## Jelastic
+
 The scripts under this topic (in directory `ci/jelastic`) help out when dealing with jelastic cli
 
 ### Deploy to jelastic
@@ -216,15 +224,16 @@ jelastic_deploy -l "$JELASTIC_LOGIN" -p "$JELASTIC_PASSWORD" -u "$JELASTIC_PLATF
 </ci-jelastic-deploy>
 
 In a GitHub workflow you would use it as follows:
+
 ```yaml
 jobs:
-  steps:
-    - name: deploy shellcheck v0.8.0
-      run: |
-        ./lib/tegonal-scripts/src/ci/jelastic/deploy.sh \
-          -l "$JELASTIC_LOGIN" -p "$JELASTIC_PASSWORD" -u "$JELASTIC_PLATFORM_URL" \
-          -e "test" -n cp \
-          -t "$DOCKER_IMAGE_VERSION"
+	steps:
+		-   name: deploy shellcheck v0.8.0
+			run: |
+				./lib/tegonal-scripts/src/ci/jelastic/deploy.sh \
+				  -l "$JELASTIC_LOGIN" -p "$JELASTIC_PASSWORD" -u "$JELASTIC_PLATFORM_URL" \
+				  -e "test" -n cp \
+				  -t "$DOCKER_IMAGE_VERSION"
 ```
 
 Help:
@@ -252,7 +261,7 @@ v2.1.0-SNAPSHOT
 
 ### Jelastic utils
 
-The most important functions are defined in this file: jelastic_signin which in turn uses the generic jelastic_exec 
+The most important functions are defined in this file: jelastic_signin which in turn uses the generic jelastic_exec
 
 <ci-jelastic-utils>
 
@@ -322,37 +331,21 @@ runShellcheck dirs "$sourcePath"
 
 The scripts under this topic (in directory `releasing`) perform some steps of your release process.
 
-
 ## Release Files
 
 Script which releases a version for a repository containing files which don't need to be compiled or packaged.
-It is based on some conventions (see src/releasing/release-files.sh for more details):
+Instead, they will be signed by a specified gpg key where its public key, defined in .gt/signing-key.public.asc,
+will be used to verify the signatures.
 
-- expects a version in format vX.Y.Z(-RC...)
-- main is your default branch (or you use --branch to define another)
-- requires you to have a function beforePr in scope (or you define another one via --before-pr-fn) which doesn't expect
-  any parameter
-- requires you to have a function prepareNextDevCycle in scope (or you define another one via --prepare-next-dev-cycle-fn).
-  Typically, you will use [Prepare Files next dev cycle](#prepare-files-next-dev-cycle) inside which deals with things  
-  like update to SNAPSHOT version in header files etc.
-  The following arguments are passed:
-  - --version the next version
-  - --pattern a regex pattern which is used in release-files.sh to replace other version occurrences
-  - --before-pr-fn according to what is passed to release-files (or the default beforePr)
-- there is a public key defined at .gt/signing-key.public.asc which will be used
-  to verify the signatures which will be created
+This script is useful if you want to release e.g. scripts which can then be fetched
+via [gt](https://github.com/tegonal/gt).
 
-It then includes the following steps:
-- [git pre-release checks](#git-pre-release-checks)
-- `beforePrFn`
-- 
-- [update version common release steps](#update-version-common-release-steps)
-- `beforePr`
-- sign files via GPG where you define which files via `--sign-fn`
-- commit changes, create tag, execute `prepareNextDevCycleFn` (which typically creates a commit as well)
-- push tag and commits
+It uses [release-template](#release-template) internally and thus applies the same conventions + the mentioned public
+key
+which needs to be defined in .gt/signing-key.public.asc
 
-Useful if you want to release e.g. scripts which can then be fetched via [gt](https://github.com/tegonal/gt).
+It executes the same steps as in release-template where scripts located in projectRootDir/src are also updated
+regarding the version and as explained, in the releaseHook, it signs the files the given --sign-fn finds.
 
 Help:
 
@@ -369,9 +362,9 @@ Parameters:
 -p|--pattern                  (optional) pattern which is used in a perl command (separator /) to search & replace additional occurrences. It should define two match groups and the replace operation looks as follows: \${1}$version\${2}
 -nv|--next-version            (optional) the version to use for prepare-next-dev-cycle -- default: is next minor based on version
 --prepare-only                (optional) defines whether the release shall only be prepared (i.e. no push, no tag, no prepare-next-dev-cycle) -- default: false
---before-pr-fn                (optional) defines the function which is executed before preparing the release (to see if we should release) and after preparing the release -- default: beforePr (per convention defined in scripts/before-pr.sh)
---prepare-next-dev-cycle-fn   (optional) defines the function which is executed to prepare the next dev cycle, taking the nextVersion via -v -- default: perpareNextDevCycle (per convention defined in scripts/prepareNextDevCycle)
---after-version-update-hook   (optional) if defined, then this function is called (passing version, projectsRootDir and additionalPattern) after versions were updated and before calling beforePr
+--before-pr-fn                (optional) defines the function which is executed before preparing the release (to see if we should release) and after preparing the release -- default: beforePr (per convention defined in scripts/before-pr.sh). No arguments are passed
+--prepare-next-dev-cycle-fn   (optional) defines the function which is executed to prepare the next dev cycle -- default: perpareNextDevCycle (per convention defined in scripts/prepareNextDevCycle). The following arguments are passed: -v nextVersion --pattern additionalPattern --project-dir projectsRootDir --before-pr-fn beforePrFn
+--after-version-update-hook   (optional) if defined, then this function is called after versions were updated and before calling beforePr. The following arguments are passed: -v version --project-dir projectsRootDir and --pattern additionalPattern
 
 --help     prints this help
 --version  prints the version of this script
@@ -443,11 +436,10 @@ releaseFiles "$@" --before-pr-fn specialBeforePr
 
 </releasing-release-files>
 
+## Prepare Files Next Dev Cycle
 
-## Prepare Files next dev Cycle
-
-Script which prepares files for a next development cycle.
-It is based on some conventions (see src/releasing/prepare-files-next-dev-cycle.sh for more details)
+Script which prepares files for a next development cycle (typically used together with [release files](#release-files)).
+it uses the [prepare next dev cycle template](#prepare-next-dev-cycle-template) and thus is based on the same conventions.
 
 <releasing-prepare-files-next-dev-cycle-help>
 
@@ -457,8 +449,8 @@ Parameters:
 -v                            the version for which we prepare the dev cycle
 --project-dir                 (optional) The projects directory -- default: .
 -p|--pattern                  (optional) pattern which is used in a perl command (separator /) to search & replace additional occurrences. It should define two match groups and the replace operation looks as follows: \${1}$version\${2}
---before-pr-fn                (optional) defines the function which is executed before preparing the release (to see if we should release) and after preparing the release -- default: beforePr (per convention defined in scripts/before-pr.sh)
---after-version-update-hook   (optional) if defined, then this function is called (passing version, projectsRootDir and additionalPattern) after versions were updated and before calling beforePr
+--before-pr-fn                (optional) defines the function which is executed before preparing the release (to see if we should release) and after preparing the release -- default: beforePr (per convention defined in scripts/before-pr.sh). No arguments are passed
+--after-version-update-hook   (optional) if defined, then this function is called after versions were updated and before calling beforePr. The following arguments are passed: -v version --project-dir projectsRootDir and --pattern additionalPattern
 
 --help     prints this help
 --version  prints the version of this script
@@ -519,6 +511,186 @@ prepareNextDevCycle "$@" --before-pr-fn specialBeforePr
 
 </releasing-prepare-files-next-dev-cycle>
 
+## Release Template
+
+Defines a release process template where some conventions are defined:
+
+- expects a version in format vX.Y.Z(-RC...)
+- main is your default branch (or you use --branch to define another)
+- requires you to have a function beforePr in scope (or you define another one via --before-pr-fn)
+- requires you to have a function prepareNextDevCycle in scope (or you define another one via
+  --prepare-next-dev-cycle-fn)
+
+It then executes the following steps:
+
+
+- [git pre-release checks](#git-pre-release-checks)
+- check `beforePrFn` can be executed without problems
+- [update version common release steps](#update-version-common-release-steps)
+- call the afterVersionUpdateHook if defined
+-  check again `beforePrFn`  is not broken
+- call the releaseHook
+- commit changes, create tag
+- execute `prepareNextDevCycleFn` (which typically creates a commit as well)
+- push tag and commits
+
+
+Help:
+
+<releasing-release-template-help>
+
+<!-- auto-generated, do not modify here but in src/releasing/release-template.sh -->
+```text
+Parameters:
+-v                            The version to release in the format vX.Y.Z(-RC...)
+--release-hook                performs the main release task such as (run tests) create artifacts, deploy artifacts
+-b|--branch                   (optional) The expected branch which is currently checked out -- default: main
+--project-dir                 (optional) The projects directory -- default: .
+-p|--pattern                  (optional) pattern which is used in a perl command (separator /) to search & replace additional occurrences. It should define two match groups and the replace operation looks as follows: \${1}$version\${2}
+-nv|--next-version            (optional) the version to use for prepare-next-dev-cycle -- default: is next minor based on version
+--prepare-only                (optional) defines whether the release shall only be prepared (i.e. no push, no tag, no prepare-next-dev-cycle) -- default: false
+--before-pr-fn                (optional) defines the function which is executed before preparing the release (to see if we should release) and after preparing the release -- default: beforePr (per convention defined in scripts/before-pr.sh). No arguments are passed
+--prepare-next-dev-cycle-fn   (optional) defines the function which is executed to prepare the next dev cycle -- default: perpareNextDevCycle (per convention defined in scripts/prepareNextDevCycle). The following arguments are passed: -v nextVersion --pattern additionalPattern --project-dir projectsRootDir --before-pr-fn beforePrFn
+--after-version-update-hook   (optional) if defined, then this function is called after versions were updated and before calling beforePr. The following arguments are passed: -v version --project-dir projectsRootDir and --pattern additionalPattern
+
+--help     prints this help
+--version  prints the version of this script
+
+INFO: Version of release-template.sh is:
+v2.1.0-SNAPSHOT
+```
+
+</releasing-release-template-help>
+
+Full example:
+
+<releasing-release-template>
+
+<!-- auto-generated, do not modify here but in src/releasing/release-template.sh.doc -->
+```bash
+#!/usr/bin/env bash
+set -euo pipefail
+shopt -s inherit_errexit
+# Assumes tegonal's scripts were fetched with gt - adjust location accordingly
+dir_of_tegonal_scripts="$(cd -- "$(dirname -- "${BASH_SOURCE[0]:-$0}")" >/dev/null && pwd 2>/dev/null)/../lib/tegonal-scripts/src"
+source "$dir_of_tegonal_scripts/setup.sh" "$dir_of_tegonal_scripts"
+
+function releaseScalaLib() {
+	sbt publishSigned
+	# or
+	sbt test publishedSigned
+}
+# make the function visible to release-templates.sh / not necessary if you source release-templates.sh, see further below
+declare -fx releaseScalaLib
+
+# releases version v0.1.0 using releaseScalaLib as hook
+"$dir_of_tegonal_scripts/releasing/release-template.sh" \
+	-v v0.1.0 -k "0x945FE615904E5C85" --release-hook releaseScalaLib
+
+# releases version v0.1.0 using releaseScalaLib as hook and
+# searches for additional occurrences where the version should be replaced via the specified pattern in:
+# - script files in ./src and ./scripts
+# - ./README.md
+"$dir_of_tegonal_scripts/releasing/release-template.sh" \
+	-v v0.1.0 -k "0x945FE615904E5C85" --release-hook releaseScalaLib \
+	-p "(TEGONAL_SCRIPTS_VERSION=['\"])[^'\"]+(['\"])"
+
+# in case you want to provide your own release.sh and only want to do some pre-configuration
+# (such as specify the release-hook) then you might want to source it instead
+sourceOnce "$dir_of_tegonal_scripts/releasing/release-template.sh"
+
+# and then call the function with your pre-configuration settings:
+# here we define the function which shall be used as release-hook after "$@" this way one cannot override it.
+# put --release-hook before "$@" if you want to define only a default
+releaseTemplates "$@" --release-hook releaseScalaLib
+
+function releaseScalaLib_afterVersionUpdateHook() {
+	# some additional version bumps (assuming version is in scope)
+	local version
+	perl -0777 -i -pe "s/.../$version/g" "build.sbt"
+}
+
+# and then call the function with your pre-configuration settings:
+# here we define the function which shall be used as release-hook after "$@" this way one cannot override it.
+# put --release-hook before "$@" if you want to define only a default
+releaseTemplate "$@" --release-hook releaseScalaLib \
+	--after-version-update-hook releaseScalaLib_afterVersionUpdateHook
+```
+
+</releasing-release-template>
+
+## Prepare next dev cycle template
+
+
+
+Help:
+
+<releasing-prepare-next-dev-cycle-template-help>
+
+<!-- auto-generated, do not modify here but in src/releasing/prepare-next-dev-cycle-template.sh -->
+```text
+Parameters:
+-v                            the version for which we prepare the dev cycle
+--project-dir                 (optional) The projects directory -- default: .
+-p|--pattern                  (optional) pattern which is used in a perl command (separator /) to search & replace additional occurrences. It should define two match groups and the replace operation looks as follows: \${1}$version\${2}
+--before-pr-fn                (optional) defines the function which is executed before preparing the release (to see if we should release) and after preparing the release -- default: beforePr (per convention defined in scripts/before-pr.sh). No arguments are passed
+--after-version-update-hook   (optional) if defined, then this function is called after versions were updated and before calling beforePr. The following arguments are passed: -v version --project-dir projectsRootDir and --pattern additionalPattern
+
+--help     prints this help
+--version  prints the version of this script
+
+INFO: Version of prepare-next-dev-cycle-template.sh is:
+v2.1.0-SNAPSHOT
+```
+
+</releasing-prepare-next-dev-cycle-template-help>
+
+
+Full example:
+
+<releasing-prepare-next-dev-cycle-template>
+
+<!-- auto-generated, do not modify here but in src/releasing/prepare-next-dev-cycle-template.sh.doc -->
+```bash
+#!/usr/bin/env bash
+set -euo pipefail
+shopt -s inherit_errexit
+# Assumes tegonal's scripts were fetched with gt - adjust location accordingly
+dir_of_tegonal_scripts="$(cd -- "$(dirname -- "${BASH_SOURCE[0]:-$0}")" >/dev/null && pwd 2>/dev/null)/../lib/tegonal-scripts/src"
+source "$dir_of_tegonal_scripts/setup.sh" "$dir_of_tegonal_scripts"
+
+
+function prepareNextAfterVersionUpdateHook() {
+	# some additional version bumps e.g. using perl
+	perl -0777 -i #...
+}
+# make the function visible to release-templates.sh / not necessary if you source release-templates.sh, see further below
+declare -fx releaseScalaLib
+
+# releases version v0.1.0 using releaseScalaLib as hook
+"$dir_of_tegonal_scripts/releasing/release-template.sh" \
+	-v v0.1.0 -k "0x945FE615904E5C85" --release-hook releaseScalaLib
+
+# releases version v0.1.0 using releaseScalaLib as hook and
+# searches for additional occurrences where the version should be replaced via the specified pattern in:
+# - script files in ./src and ./scripts
+# - ./README.md
+"$dir_of_tegonal_scripts/releasing/release-files.sh" \
+	-v v0.1.0 -k "0x945FE615904E5C85" --release-hook releaseScalaLib \
+	-p "(TEGONAL_SCRIPTS_VERSION=['\"])[^'\"]+(['\"])"
+
+# in case you want to provide your own release.sh and only want to do some pre-configuration
+# (such as specify the release-hook) then you might want to source it instead
+sourceOnce "$dir_of_tegonal_scripts/releasing/release-template.sh"
+
+# and then call the function with your pre-configuration settings:
+# here we define the function which shall be used as release-hook after "$@" this way one cannot override it.
+# put --release-hook before "$@" if you want to define only a default
+releaseTemplates "$@" --release-hook releaseScalaLib
+```
+
+</releasing-prepare-next-dev-cycle-template>
+
 ## git Pre-Release checks
 
 checks if the repo is ready to be released for a given version
@@ -573,9 +745,11 @@ source "$dir_of_tegonal_scripts/setup.sh" "$dir_of_tegonal_scripts"
 ## Update Version Common Release Steps
 
 Performs several `releasing` scripts defined in the following sections:
+
 - Updates the version in *.sh (see [Update Version in bash scripts](#update-version-in-bash-scripts))
   defined in /scripts and .gt/**/pull-hook.sh
-- Updates the version in .github/ISSUE_TEMPLATE/**.y(a)ml files (see [Update Version in issue templates](#update-version-in-issue-templates))
+- Updates the version in .github/ISSUE_TEMPLATE/**.y(a)ml files (
+  see [Update Version in issue templates](#update-version-in-issue-templates))
 - Updates the version in the README.md (see next section [Update Version in README](#update-version-in-readme)).
 - [activates the release section](#toggle-mainrelease-sections)
 - [hides the sneak-peek banner](#hideshow-sneak-peek-banner)
@@ -1476,7 +1650,6 @@ parseCommands commands "$MY_LIB_VERSION" sourceCommand "my_lib_" "$@"
 ```
 
 </utility-parse-commands>
-
 
 ## Parse utils
 
