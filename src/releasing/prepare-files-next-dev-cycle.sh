@@ -66,16 +66,16 @@ if ! [[ -v dir_of_tegonal_scripts ]]; then
 	dir_of_tegonal_scripts="$(cd -- "$(dirname -- "${BASH_SOURCE[0]:-$0}")" >/dev/null && pwd 2>/dev/null)/.."
 	source "$dir_of_tegonal_scripts/setup.sh" "$dir_of_tegonal_scripts"
 fi
+sourceOnce "$dir_of_tegonal_scripts/utility/execute-if-defined.sh"
 sourceOnce "$dir_of_tegonal_scripts/utility/parse-args.sh"
-sourceOnce "$dir_of_tegonal_scripts/releasing/update-version-common-steps.sh"
+sourceOnce "$dir_of_tegonal_scripts/releasing/prepare-next-dev-cycle-template.sh"
 
 function prepareFilesNextDevCycle() {
-	local versionRegex versionParamPatternLong projectsRootDirParamPatternLong
-	local additionalPatternParamPatternLong forReleaseParamPatternLong
-	local beforePrFnParamPatternLong afterVersionUpdateHookParamPatternLong
+	local versionParamPatternLong projectsRootDirParamPatternLong
+	local additionalPatternParamPatternLong afterVersionUpdateHookParamPatternLong
 	source "$dir_of_tegonal_scripts/releasing/common-constants.source.sh" || die "could not source common-constants.source.sh"
 
-	local version projectsRootDir additionalPattern beforePrFn afterVersionUpdateHook
+	local afterVersionUpdateHook
 	# shellcheck disable=SC2034   # is passed by name to parseArguments
 	local -ra params=(
 		version "$versionParamPattern" 'the version for which we prepare the dev cycle'
@@ -85,51 +85,32 @@ function prepareFilesNextDevCycle() {
 		afterVersionUpdateHook "$afterVersionUpdateHookParamPattern" "$afterVersionUpdateHookParamDocu"
 	)
 	parseArguments params "" "$TEGONAL_SCRIPTS_VERSION" "$@"
-	if ! [[ -v projectsRootDir ]]; then projectsRootDir=$(realpath ".") || die "could not determine realpath of ."; fi
-	if ! [[ -v additionalPattern ]]; then additionalPattern="^$"; fi
-	if ! [[ -v beforePrFn ]]; then beforePrFn="beforePr"; fi
-	if ! [[ -v afterVersionUpdateHook ]]; then afterVersionUpdateHook=''; fi
-	exitIfNotAllArgumentsSet params "" "$TEGONAL_SCRIPTS_VERSION"
 
-	if ! [[ "$version" =~ $versionRegex ]]; then
-		die "version should match vX.Y.Z(-RC...), was %s" "$version"
-	fi
+	# we let prepareNextDevCycleTemplate validate the args, we mainly have them here so that the --help is correct
 
-	exitIfArgIsNotFunction "$beforePrFn" "$beforePrFnParamPatternLong"
+	function prepareFilesNextDevCycle_afterVersionHook() {
+		local version projectsRootDir additionalPattern
+		# shellcheck disable=SC2034   # is passed by name to parseArguments
+		local -ra params=(
+			version "$versionParamPattern" 'the version for which we prepare the dev cycle'
+			projectsRootDir "$projectsRootDirParamPattern" "$projectsRootDirParamDocu"
+			additionalPattern "$additionalPatternParamPattern" "$additionalPatternParamDocu"
+		)
 
-	exitIfGitHasChanges
+		updateVersionScripts \
+			"$versionParamPatternLong" "$version" \
+			"$additionalPatternParamPatternLong" "$additionalPattern" \
+			-d "$projectsRootDir/src" || return $?
 
-	logInfo "prepare next dev cycle for version $version"
-
-	local -r projectsScriptsDir="$projectsRootDir/scripts"
-	local -r devVersion="$version-SNAPSHOT"
-
-	updateVersionCommonSteps \
-		"$forReleaseParamPatternLong" false \
-		"$versionParamPatternLong" "$devVersion" \
-		"$projectsRootDirParamPatternLong" "$projectsRootDir" \
-		"$additionalPatternParamPatternLong" "$additionalPattern"
-
-	if [[ -n $afterVersionUpdateHook ]]; then
-		exitIfArgIsNotFunction "$afterVersionUpdateHook" "$afterVersionUpdateHookParamPatternLong"
-		logInfo "afterVersionUpdateHook defined, going to call %s" "$afterVersionUpdateHook"
-		"$afterVersionUpdateHook" \
+		executeIfFunctionNameDefined "$afterVersionUpdateHook" "$afterVersionUpdateHookParamPatternLong" \
 			"$versionParamPatternLong" "$version" \
 			"$projectsRootDirParamPatternLong" "$projectsRootDir" \
 			"$additionalPatternParamPatternLong" "$additionalPattern"
-	fi
+	}
 
-	local -r additionalSteps="$projectsScriptsDir/additional-prepare-files-next-dev-cycle-steps.sh"
-	if [[ -f $additionalSteps ]]; then
-		logInfo "found $additionalSteps going to source it"
-		# shellcheck disable=SC2310			# we are aware of that || will disable set -e for sourceOnce
-		sourceOnce "$additionalSteps" || die "could not source $additionalSteps"
-	fi
-
-	# check if we accidentally have broken something, run formatting or whatever is done in beforePr
-	"$beforePrFn" || return $?
-
-	git commit -a -m "prepare next dev cycle for $version"
+	prepareNextDevCycleTemplate \
+		"$@" \
+		"$afterVersionUpdateHookParamPatternLong" prepareFilesNextDevCycle_afterVersionHook
 }
 
 ${__SOURCED__:+return}
