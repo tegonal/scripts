@@ -98,6 +98,7 @@ function prepareFilesNextDevCycle() {
 			projectsRootDir "$projectsRootDirParamPattern" "$projectsRootDirParamDocu"
 			additionalPattern "$additionalPatternParamPattern" "$additionalPatternParamDocu"
 		)
+		parseArguments params "" "$TEGONAL_SCRIPTS_VERSION" "$@"
 
 		updateVersionScripts \
 			"$versionParamPatternLong" "$version" \
