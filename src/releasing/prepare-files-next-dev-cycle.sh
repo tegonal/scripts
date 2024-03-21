@@ -90,6 +90,11 @@ function prepareFilesNextDevCycle() {
 
 	# we let prepareNextDevCycleTemplate validate the args, we mainly have them here so that the --help is correct
 
+	# those variables are used in local functions further below which will be called from releaseTemplate.
+	# The problem: in case releaseTemplate defines a variable with the same name, then we would use those
+	# variables instead of the one we define here, hence we prefix them to avoid this problem
+	local prepare_files_next_dev_afterVersionUpdateHook="$afterVersionUpdateHook"
+
 	function prepareFilesNextDevCycle_afterVersionHook() {
 		local version projectsRootDir additionalPattern
 		# shellcheck disable=SC2034   # is passed by name to parseArguments
@@ -105,7 +110,7 @@ function prepareFilesNextDevCycle() {
 			"$additionalPatternParamPatternLong" "$additionalPattern" \
 			-d "$projectsRootDir/src" || return $?
 
-		executeIfFunctionNameDefined "$afterVersionUpdateHook" "$afterVersionUpdateHookParamPatternLong" \
+		executeIfFunctionNameDefined "$prepare_files_next_dev_afterVersionUpdateHook" "$afterVersionUpdateHookParamPatternLong" \
 			"$versionParamPatternLong" "$version" \
 			"$projectsRootDirParamPatternLong" "$projectsRootDir" \
 			"$additionalPatternParamPatternLong" "$additionalPattern"

@@ -113,6 +113,14 @@ function releaseFiles() {
 
 	# we let releaseTemplate validate the args, we mainly have them here so that the --help is correct
 
+	# those variables are used in local functions further below which will be called from releaseTemplate.
+	# The problem: in case releaseTemplate defines a variable with the same name, then we would use those
+	# variables instead of the one we define here, hence we prefix them to avoid this problem
+	local release_files_findForSigning="$findForSigning"
+	local release_files_branch="$branch"
+	local release_files_projectsRootDir="$projectsRootDir"
+	local release_files_afterVersionUpdateHook="$afterVersionUpdateHook"
+
 	function releaseFiles_afterVersionHook() {
 		local version projectsRootDir additionalPattern
 		# shellcheck disable=SC2034   # is passed by name to parseArguments
@@ -128,32 +136,10 @@ function releaseFiles() {
 			"$additionalPatternParamPatternLong" "$additionalPattern" \
 			-d "$projectsRootDir/src" || return $?
 
-		executeIfFunctionNameDefined "$afterVersionUpdateHook" "$afterVersionUpdateHookParamPatternLong" \
+		executeIfFunctionNameDefined "$release_files_afterVersionUpdateHook" "$afterVersionUpdateHookParamPatternLong" \
 			"$versionParamPatternLong" "$version" \
 			"$projectsRootDirParamPatternLong" "$projectsRootDir" \
 			"$additionalPatternParamPatternLong" "$additionalPattern"
-	}
-
-	function releaseFiles_releaseHook() {
-		local -r gtDir="$projectsRootDir/.gt"
-		local -r gpgDir="$gtDir/gpg"
-		if ! rm -rf "$gpgDir"; then
-			logError "was not able to remove gpg directory %s\nPlease do this manually and re-run the release command" "$gpgDir"
-			git reset --hard "origin/$branch"
-		fi
-		mkdir "$gpgDir"
-		chmod 700 "$gpgDir"
-
-		gpg --homedir "$gpgDir" --batch --no-tty --import "$gtDir/signing-key.public.asc" || die "was not able to import %s" "$gtDir/signing-key.public.asc"
-		trustGpgKey "$gpgDir" "info@tegonal.com" || logInfo "could not trust key with id info@tegonal.com, you will see warnings due to this during signing the files"
-
-		local script
-		"$findForSigning" -type f -not -name "*.sig" -print0 |
-			while read -r -d $'\0' script; do
-				echo "signing $script"
-				gpg --detach-sign --batch --no-tty --yes -u "$key" -o "${script}.sig" "$script" || die "was not able to sign %s" "$script"
-				gpg --homedir "$gpgDir" --batch --no-tty --verify "${script}.sig" "$script" || die "verification via previously imported %s failed" "$gtDir/signing-key.public.asc"
-			done || return $?
 	}
 
 	releaseTemplate \
@@ -164,3 +150,25 @@ function releaseFiles() {
 
 ${__SOURCED__:+return}
 releaseFiles "$@"
+
+	function releaseFiles_releaseHook() {
+		local -r gtDir="$release_files_projectsRootDir/.gt"
+		local -r gpgDir="$gtDir/gpg"
+		if ! rm -rf "$gpgDir"; then
+			logError "was not able to remove gpg directory %s\nPlease do this manually and re-run the release command" "$gpgDir"
+			git reset --hard "origin/$release_files_branch"
+		fi
+		mkdir "$gpgDir"
+		chmod 700 "$gpgDir"
+
+		gpg --homedir "$gpgDir" --batch --no-tty --import "$gtDir/signing-key.public.asc" || die "was not able to import %s" "$gtDir/signing-key.public.asc"
+		trustGpgKey "$gpgDir" "info@tegonal.com" || logInfo "could not trust key with id info@tegonal.com, you will see warnings due to this during signing the files"
+
+		local script
+		"$release_files_findForSigning" -type f -not -name "*.sig" -print0 |
+			while read -r -d $'\0' script; do
+				echo "signing $script"
+				gpg --detach-sign --batch --no-tty --yes -u "$key" -o "${script}.sig" "$script" || die "was not able to sign %s" "$script"
+				gpg --homedir "$gpgDir" --batch --no-tty --verify "${script}.sig" "$script" || die "verification via previously imported %s failed" "$gtDir/signing-key.public.asc"
+			done || return $?
+	}
