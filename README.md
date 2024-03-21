@@ -110,7 +110,7 @@ The scripts are ordered by topic:
 	- [Releasing Files](#release-files)
 	- [Prepare Files Next Dev Cycle](#prepare-files-next-dev-cycle)
 	- [Release Template](#release-template)
-    - [Prepare Next Dev Cycle Template]
+    - [Prepare Next Dev Cycle Template](#prepare-next-dev-cycle-template)
 	- [git Pre-Release checks](#git-pre-release-checks)
 	- [Update Version common steps](#update-version-common-release-steps)
 	- [Update Version in README](#update-version-in-readme)
@@ -621,7 +621,7 @@ releaseTemplate "$@" --release-hook releaseScalaLib \
 
 ## Prepare next dev cycle template
 
-
+template to prepare a next releases, updating version and such using [update-version-common-steps.sh](#update-version-common-release-steps)
 
 Help:
 
@@ -742,7 +742,7 @@ source "$dir_of_tegonal_scripts/setup.sh" "$dir_of_tegonal_scripts"
 
 </releasing-pre-release-checks-git>
 
-## Update Version Common Release Steps
+## Update Version Common Steps
 
 Performs several `releasing` scripts defined in the following sections:
 
@@ -751,8 +751,8 @@ Performs several `releasing` scripts defined in the following sections:
 - Updates the version in .github/ISSUE_TEMPLATE/**.y(a)ml files (
   see [Update Version in issue templates](#update-version-in-issue-templates))
 - Updates the version in the README.md (see next section [Update Version in README](#update-version-in-readme)).
-- [activates the release section](#toggle-mainrelease-sections)
-- [hides the sneak-peek banner](#hideshow-sneak-peek-banner)
+- [activates the release section and hides the main section](#toggle-mainrelease-sections) if `-for-release` is `true` (the opposite otherwise)
+- [hides the sneak-peek banner](#hideshow-sneak-peek-banner) (or shows it if `--for-release` is `false`)
 
 Help:
 
