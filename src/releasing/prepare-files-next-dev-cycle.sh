@@ -72,7 +72,7 @@ sourceOnce "$dir_of_tegonal_scripts/releasing/prepare-next-dev-cycle-template.sh
 
 function prepareFilesNextDevCycle() {
 	local versionParamPatternLong projectsRootDirParamPatternLong
-	local additionalPatternParamPatternLong afterVersionUpdateHookParamPatternLong
+	local additionalPatternParamPatternLong beforePrFnParamPatternLong afterVersionUpdateHookParamPatternLong
 	source "$dir_of_tegonal_scripts/releasing/common-constants.source.sh" || die "could not source common-constants.source.sh"
 
 	local version afterVersionUpdateHook projectsRootDir additionalPattern afterVersionUpdateHook
@@ -87,8 +87,13 @@ function prepareFilesNextDevCycle() {
 		afterVersionUpdateHook "$afterVersionUpdateHookParamPattern" "$afterVersionUpdateHookParamDocu"
 	)
 	parseArguments params "" "$TEGONAL_SCRIPTS_VERSION" "$@"
+	if ! [[ -v projectsRootDir ]]; then projectsRootDir=$(realpath ".") || die "could not determine realpath of ."; fi
+	if ! [[ -v additionalPattern ]]; then additionalPattern="^$"; fi
+	if ! [[ -v beforePrFn ]]; then beforePrFn="beforePr"; fi
+	if ! [[ -v afterVersionUpdateHook ]]; then afterVersionUpdateHook=''; fi
+	exitIfNotAllArgumentsSet params "" "$TEGONAL_SCRIPTS_VERSION"
 
-	# we let prepareNextDevCycleTemplate validate the args, we mainly have them here so that the --help is correct
+	exitIfArgIsNotFunction "$beforePrFn" "$beforePrFnParamPatternLong"
 
 	# those variables are used in local functions further below which will be called from releaseTemplate.
 	# The problem: in case releaseTemplate defines a variable with the same name, then we would use those

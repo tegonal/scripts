@@ -90,6 +90,7 @@ sourceOnce "$dir_of_tegonal_scripts/releasing/update-version-scripts.sh"
 function releaseFiles() {
 	local versionParamPatternLong projectsRootDirParamPatternLong
 	local additionalPatternParamPatternLong afterVersionUpdateHookParamPatternLong releaseHookParamPatternLong
+	local findForSigningParamPatternLong beforePrFnParamPatternLong prepareNextDevCycleFnParamPatternLong
 	source "$dir_of_tegonal_scripts/releasing/common-constants.source.sh" || die "could not source common-constants.source.sh"
 
 	local version key findForSigning branch projectsRootDir additionalPattern afterVersionUpdateHook
@@ -111,7 +112,20 @@ function releaseFiles() {
 	)
 	parseArguments params "" "$TEGONAL_SCRIPTS_VERSION" "$@"
 
-	# we let releaseTemplate validate the args, we mainly have them here so that the --help is correct
+	# deduces nextVersion based on version if not already set (and if version set)
+	source "$dir_of_tegonal_scripts/releasing/deduce-next-version.source.sh"
+	if ! [[ -v branch ]]; then branch="main"; fi
+	if ! [[ -v projectsRootDir ]]; then projectsRootDir=$(realpath "."); fi
+	if ! [[ -v additionalPattern ]]; then additionalPattern="^$"; fi
+	if ! [[ -v prepareOnly ]] || [[ $prepareOnly != "true" ]]; then prepareOnly=false; fi
+	if ! [[ -v beforePrFn ]]; then beforePrFn='beforePr'; fi
+	if ! [[ -v prepareNextDevCycleFn ]]; then prepareNextDevCycleFn='prepareNextDevCycle'; fi
+	if ! [[ -v afterVersionUpdateHook ]]; then afterVersionUpdateHook=''; fi
+	exitIfNotAllArgumentsSet params "" "$TEGONAL_SCRIPTS_VERSION"
+
+	exitIfArgIsNotFunction "$findForSigning" "$findForSigningParamPatternLong"
+	exitIfArgIsNotFunction "$beforePrFn" "$beforePrFnParamPatternLong"
+	exitIfArgIsNotFunction "$prepareNextDevCycleFn" "$prepareNextDevCycleFnParamPatternLong"
 
 	# those variables are used in local functions further below which will be called from releaseTemplate.
 	# The problem: in case releaseTemplate defines a variable with the same name, then we would use those
@@ -151,24 +165,24 @@ function releaseFiles() {
 ${__SOURCED__:+return}
 releaseFiles "$@"
 
-	function releaseFiles_releaseHook() {
-		local -r gtDir="$release_files_projectsRootDir/.gt"
-		local -r gpgDir="$gtDir/gpg"
-		if ! rm -rf "$gpgDir"; then
-			logError "was not able to remove gpg directory %s\nPlease do this manually and re-run the release command" "$gpgDir"
-			git reset --hard "origin/$release_files_branch"
-		fi
-		mkdir "$gpgDir"
-		chmod 700 "$gpgDir"
+function releaseFiles_releaseHook() {
+	local -r gtDir="$release_files_projectsRootDir/.gt"
+	local -r gpgDir="$gtDir/gpg"
+	if ! rm -rf "$gpgDir"; then
+		logError "was not able to remove gpg directory %s\nPlease do this manually and re-run the release command" "$gpgDir"
+		git reset --hard "origin/$release_files_branch"
+	fi
+	mkdir "$gpgDir"
+	chmod 700 "$gpgDir"
 
-		gpg --homedir "$gpgDir" --batch --no-tty --import "$gtDir/signing-key.public.asc" || die "was not able to import %s" "$gtDir/signing-key.public.asc"
-		trustGpgKey "$gpgDir" "info@tegonal.com" || logInfo "could not trust key with id info@tegonal.com, you will see warnings due to this during signing the files"
+	gpg --homedir "$gpgDir" --batch --no-tty --import "$gtDir/signing-key.public.asc" || die "was not able to import %s" "$gtDir/signing-key.public.asc"
+	trustGpgKey "$gpgDir" "info@tegonal.com" || logInfo "could not trust key with id info@tegonal.com, you will see warnings due to this during signing the files"
 
-		local script
-		"$release_files_findForSigning" -type f -not -name "*.sig" -print0 |
-			while read -r -d $'\0' script; do
-				echo "signing $script"
-				gpg --detach-sign --batch --no-tty --yes -u "$key" -o "${script}.sig" "$script" || die "was not able to sign %s" "$script"
-				gpg --homedir "$gpgDir" --batch --no-tty --verify "${script}.sig" "$script" || die "verification via previously imported %s failed" "$gtDir/signing-key.public.asc"
-			done || return $?
-	}
+	local script
+	"$release_files_findForSigning" -type f -not -name "*.sig" -print0 |
+		while read -r -d $'\0' script; do
+			echo "signing $script"
+			gpg --detach-sign --batch --no-tty --yes -u "$key" -o "${script}.sig" "$script" || die "was not able to sign %s" "$script"
+			gpg --homedir "$gpgDir" --batch --no-tty --verify "${script}.sig" "$script" || die "verification via previously imported %s failed" "$gtDir/signing-key.public.asc"
+		done || return $?
+}
