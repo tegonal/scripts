@@ -93,9 +93,10 @@ function releaseFiles() {
 	local findForSigningParamPatternLong beforePrFnParamPatternLong prepareNextDevCycleFnParamPatternLong
 	source "$dir_of_tegonal_scripts/releasing/common-constants.source.sh" || die "could not source common-constants.source.sh"
 
-	local version key findForSigning branch projectsRootDir additionalPattern afterVersionUpdateHook
-	# shellcheck disable=SC2034   # they seem unused but are necessary in order that parseArguments doesn't create global readonly vars
-	local nextVersion prepareOnly beforePrFn prepareNextDevCycle
+	local version key findForSigning branch projectsRootDir additionalPattern
+	# shellcheck disable=SC2034   # seems unused but is set in deduce-next-version
+	local nextVersion
+	local prepareOnly beforePrFn prepareNextDevCycleFn afterVersionUpdateHook
 	# shellcheck disable=SC2034   # is passed by name to parseArguments
 	local -ra params=(
 		version "$versionParamPattern" "$versionParamDocu"
