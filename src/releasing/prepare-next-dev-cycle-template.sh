@@ -87,7 +87,7 @@ function prepareNextDevCycleTemplate() {
 		beforePrFn "$beforePrFnParamPattern" "$beforePrFnParamDocu"
 		afterVersionUpdateHook "$afterVersionUpdateHookParamPattern" "$afterVersionUpdateHookParamDocu"
 	)
-	parseArguments params "" "$TEGONAL_SCRIPTS_VERSION" "$@"
+	parseArgumentsIgnoreUnknown params "" "$TEGONAL_SCRIPTS_VERSION" "$@"
 	if ! [[ -v projectsRootDir ]]; then projectsRootDir=$(realpath ".") || die "could not determine realpath of ."; fi
 	if ! [[ -v additionalPattern ]]; then additionalPattern="^$"; fi
 	if ! [[ -v beforePrFn ]]; then beforePrFn="beforePr"; fi

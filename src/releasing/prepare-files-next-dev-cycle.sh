@@ -75,7 +75,9 @@ function prepareFilesNextDevCycle() {
 	local additionalPatternParamPatternLong afterVersionUpdateHookParamPatternLong
 	source "$dir_of_tegonal_scripts/releasing/common-constants.source.sh" || die "could not source common-constants.source.sh"
 
-	local afterVersionUpdateHook
+	local version afterVersionUpdateHook projectsRootDir additionalPattern afterVersionUpdateHook
+	# shellcheck disable=SC2034   # they seem unused but are necessary in order that parseArguments doesn't create global readonly vars
+	local beforePrFn
 	# shellcheck disable=SC2034   # is passed by name to parseArguments
 	local -ra params=(
 		version "$versionParamPattern" 'the version for which we prepare the dev cycle'

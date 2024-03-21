@@ -33,6 +33,8 @@ sourceOnce "$scriptsDir/before-pr.sh"
 function prepareNextDevCycle() {
 	source "$dir_of_tegonal_scripts/releasing/common-constants.source.sh" || die "could not source common-constants.source.sh"
 
+	# shellcheck disable=SC2034   # they seem unused but are necessary in order that parseArguments doesn't create global readonly vars
+	local version projectsRootDir additionalPattern
 	# shellcheck disable=SC2034   # is passed by name to parseArguments
 	local -ra params=(
 		version "$versionParamPattern" 'the version for which we prepare the dev cycle'

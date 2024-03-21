@@ -114,7 +114,7 @@ function releaseTemplate() {
 		afterVersionUpdateHook "$afterVersionUpdateHookParamPattern" "$afterVersionUpdateHookParamDocu"
 	)
 
-	parseArguments params "" "$TEGONAL_SCRIPTS_VERSION" "$@"
+	parseArgumentsIgnoreUnknown params "" "$TEGONAL_SCRIPTS_VERSION" "$@"
 
 	# deduces nextVersion based on version if not already set (and if version set)
 	source "$dir_of_tegonal_scripts/releasing/deduce-next-version.source.sh"
