@@ -68,3 +68,9 @@ local -r afterVersionUpdateHookParamPatternLong='--after-version-update-hook'
 local -r afterVersionUpdateHookParamPattern="$afterVersionUpdateHookParamPatternLong"
 local -r afterVersionUpdateHookParamDocu="(optional) if defined, then this function is called after versions were updated and before calling beforePr. \
 The following arguments are passed: $versionParamPatternLong version $projectsRootDirParamPatternLong projectsRootDir and $additionalPatternParamPatternLong additionalPattern"
+
+local -ra afterVersionHookParams=(
+	version "$versionParamPattern" "$versionParamDocu"
+	projectsRootDir "$projectsRootDirParamPattern" "$projectsRootDirParamDocu"
+	additionalPattern "$additionalPatternParamPattern" "$additionalPatternParamDocu"
+)

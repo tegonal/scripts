@@ -138,13 +138,7 @@ function releaseFiles() {
 
 	function releaseFiles_afterVersionHook() {
 		local version projectsRootDir additionalPattern
-		# shellcheck disable=SC2034   # is passed by name to parseArguments
-		local -ra params=(
-			version "$versionParamPattern" 'the version for which we prepare the dev cycle'
-			projectsRootDir "$projectsRootDirParamPattern" "$projectsRootDirParamDocu"
-			additionalPattern "$additionalPatternParamPattern" "$additionalPatternParamDocu"
-		)
-		parseArguments params "" "$TEGONAL_SCRIPTS_VERSION" "$@"
+		parseArguments afterVersionHookParams "" "$TEGONAL_SCRIPTS_VERSION" "$@"
 
 		updateVersionScripts \
 			"$versionParamPatternLong" "$version" \

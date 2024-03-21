@@ -40,6 +40,7 @@ function prepareNextDevCycle() {
 		version "$versionParamPattern" 'the version for which we prepare the dev cycle'
 		projectsRootDir "$projectsRootDirParamPattern" "$projectsRootDirParamDocu"
 		additionalPattern "$additionalPatternParamPattern" "is ignored as additional pattern is specified internally, still here as release-files uses this argument"
+		beforePrFn "$beforePrFnParamPattern" "$beforePrFnParamDocu"
 	)
 	parseArguments params "" "$TEGONAL_SCRIPTS_VERSION" "$@"
 

@@ -48,8 +48,8 @@ function release() {
 	source "$dir_of_tegonal_scripts/releasing/common-constants.source.sh" || die "could not source common-constants.source.sh"
 
 	local version
-  # shellcheck disable=SC2034   # they seem unused but are necessary in order that parseArguments doesn't create global readonly vars
-  local key branch nextVersion prepareOnly
+	# shellcheck disable=SC2034   # they seem unused but are necessary in order that parseArguments doesn't create global readonly vars
+	local key branch nextVersion prepareOnly
 	# shellcheck disable=SC2034   # is passed by name to parseArguments
 	local -ra params=(
 		version "$versionParamPattern" "$versionParamDocu"
@@ -60,14 +60,20 @@ function release() {
 	)
 	parseArguments params "" "$TEGONAL_SCRIPTS_VERSION" "$@"
 
+	# we don't check if all args are set (and neither set default values) as we currently don't use
+	# any param in here but just delegate to releaseFiles.
+
 	function findScripts() {
 		find "$dir_of_tegonal_scripts" -name "*.sh" -not -name "*.doc.sh" "$@"
 	}
 
 	function release_afterVersionHook() {
+		local version projectsRootDir additionalPattern
+		parseArguments afterVersionHookParams "" "$TEGONAL_SCRIPTS_VERSION" "$@"
+
 		# same as in pull-hook.sh
 		local -r githubUrl="https://github.com/tegonal/scripts"
-		replaceTagInPullRequestTemplate "$projectDir/.github/PULL_REQUEST_TEMPLATE.md" "$githubUrl" "$version" || die "could not fill the placeholders in PULL_REQUEST_TEMPLATE.md"
+		replaceTagInPullRequestTemplate "$projectsRootDir/.github/PULL_REQUEST_TEMPLATE.md" "$githubUrl" "$version" || die "could not fill the placeholders in PULL_REQUEST_TEMPLATE.md"
 	}
 
 	# similar as in prepare-next-dev-cycle.sh, you might need to update it there as well if you change something here
