@@ -103,7 +103,7 @@ function prepareFilesNextDevCycle() {
 		parseArguments afterVersionHookParams "" "$TEGONAL_SCRIPTS_VERSION" "$@"
 
 		updateVersionScripts \
-			"$versionParamPatternLong" "$version" \
+			"$versionParamPatternLong" "$version-SNAPSHOT" \
 			"$additionalPatternParamPatternLong" "$additionalPattern" \
 			-d "$projectsRootDir/src" || return $?
 

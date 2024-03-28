@@ -82,9 +82,9 @@ function release() {
 	releaseFiles \
 		"$projectsRootDirParamPatternLong" "$projectDir" \
 		"$additionalPatternParamPatternLong" "$additionalPattern" \
+		"$@" \
 		"$findForSigningParamPatternLong" findScripts \
-		"$afterVersionUpdateHookParamPatternLong" release_afterVersionHook \
-		"$@"
+		"$afterVersionUpdateHookParamPatternLong" release_afterVersionHook
 }
 
 ${__SOURCED__:+return}
