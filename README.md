@@ -254,7 +254,7 @@ Parameters:
 --version  prints the version of this script
 
 INFO: Version of deploy.sh is:
-v3.1.0
+v3.1.0-SNAPSHOT
 ```
 
 </ci-jelastic-deploy-help>
@@ -370,7 +370,7 @@ Parameters:
 --version  prints the version of this script
 
 INFO: Version of release-files.sh is:
-v3.1.0
+v3.1.0-SNAPSHOT
 ```
 
 </releasing-release-files-help>
@@ -456,7 +456,7 @@ Parameters:
 --version  prints the version of this script
 
 INFO: Version of prepare-files-next-dev-cycle.sh is:
-v3.1.0
+v3.1.0-SNAPSHOT
 ```
 
 </releasing-prepare-files-next-dev-cycle-help>
@@ -557,7 +557,7 @@ Parameters:
 --version  prints the version of this script
 
 INFO: Version of release-template.sh is:
-v3.1.0
+v3.1.0-SNAPSHOT
 ```
 
 </releasing-release-template-help>
@@ -640,7 +640,7 @@ Parameters:
 --version  prints the version of this script
 
 INFO: Version of prepare-next-dev-cycle-template.sh is:
-v3.1.0
+v3.1.0-SNAPSHOT
 ```
 
 </releasing-prepare-next-dev-cycle-template-help>
@@ -715,7 +715,7 @@ Parameters:
 --version  prints the version of this script
 
 INFO: Version of pre-release-checks-git.sh is:
-v3.1.0
+v3.1.0-SNAPSHOT
 ```
 
 </releasing-pre-release-checks-git-help>
@@ -770,7 +770,7 @@ Parameters:
 --version  prints the version of this script
 
 INFO: Version of update-version-common-steps.sh is:
-v3.1.0
+v3.1.0-SNAPSHOT
 ```
 
 </releasing-update-version-common-steps-help>
@@ -858,7 +858,7 @@ update-version-README.sh -v v0.1.0 -f ./docs/index.md
 update-version-README.sh -v v0.1.0 -p "(VERSION=['\"])[^'\"]+(['\"])"
 
 INFO: Version of update-version-README.sh is:
-v3.1.0
+v3.1.0-SNAPSHOT
 ```
 
 </releasing-update-version-README-help>
@@ -917,7 +917,7 @@ update-version-scripts.sh -v v0.1.0 -d ./scripts
 update-version-scripts.sh -v v0.1.0 -p "(VERSION=['\"])[^'\"]+(['\"])"
 
 INFO: Version of update-version-scripts.sh is:
-v3.1.0
+v3.1.0-SNAPSHOT
 ```
 
 </releasing-update-version-scripts-help>
@@ -976,7 +976,7 @@ update-version-issue-templates.sh -v v0.1.0 -d ./tpls
 update-version-issue-templates.sh -v v0.1.0 -p "(VERSION=['\"])[^'\"]+(['\"])"
 
 INFO: Version of update-version-issue-templates.sh is:
-v3.1.0
+v3.1.0-SNAPSHOT
 ```
 
 </releasing-update-version-issue-templates-help>
@@ -1049,7 +1049,7 @@ toggle-sections.sh -c main
 toggle-sections.sh -c release -f ./docs/index.md
 
 INFO: Version of toggle-sections.sh is:
-v3.1.0
+v3.1.0-SNAPSHOT
 ```
 
 </releasing-toggle-sections-help>
@@ -1104,7 +1104,7 @@ sneak-peek-banner.sh -c hide
 sneak-peek-banner.sh -c show -f ./docs/index.md
 
 INFO: Version of sneak-peek-banner.sh is:
-v3.1.0
+v3.1.0-SNAPSHOT
 ```
 
 </releasing-sneak-peek-banner-help>
