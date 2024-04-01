@@ -100,15 +100,13 @@ function parseFnArgs() {
 
 		for ((parseFnArgs_i = 0; parseFnArgs_i < parseFnArgs_minExpected; ++parseFnArgs_i)); do
 			local parseFnArgs_name=${parseFnArgs_paramArr1[parseFnArgs_i]}
-			printf "\033[0m"
 			if ((parseFnArgs_i < $#)); then
-				printf "\033[0;32m"
+				printf >&2 "\033[0;32m"
 			else
-				printf "\033[0;31m"
+				printf >&2 "\033[0;31m"
 			fi
-			printf >&2 "%2s: %s\n" "$((parseFnArgs_i + 1))" "$parseFnArgs_name"
+			printf >&2 "%2s: %s\033[0m\n" "$((parseFnArgs_i + 1))" "$parseFnArgs_name"
 		done
-		printf "\033[0m"
 		if [[ $parseFnArgs_withVarArgs == true ]]; then
 			printf >&2 "%2s: %s\n" "$((parseFnArgs_i + 1))" "varargs"
 		fi
