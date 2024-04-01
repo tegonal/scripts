@@ -41,6 +41,7 @@ body:
         - utility/array-utils.sh
         - utility/ask.sh
         - utility/checks.sh
+        - utility/cleanups.sh
         - utility/execute-if-defined.sh
         - utility/git-utils.sh
         - utility/gpg-utils.sh
