@@ -123,6 +123,7 @@ The scripts are ordered by topic:
 - [Script Utilities](#script-utilities)
 	- [array utils](#array-utils)
 	- [Ask functions](#ask-functions)
+    - [cleanups](#cleanups)
 	- [Checks](#checks)
 	- [git Utils](#git-utils)
 	- [GPG Utils](#gpg-utils)
@@ -1208,6 +1209,35 @@ fi
 ```
 
 </utility-ask>
+
+## cleanups
+
+Utility functions which shall help to keep your repo clean and tidy.
+
+<utility-cleanups>
+
+<!-- auto-generated, do not modify here but in src/utility/cleanups.sh.doc -->
+```bash
+#!/usr/bin/env bash
+set -euo pipefail
+shopt -s inherit_errexit
+
+projectDir="$(cd -- "$(dirname -- "${BASH_SOURCE[0]:-$0}")" >/dev/null && pwd 2>/dev/null)/.."
+
+# Assumes tegonal's scripts were fetched with gt - adjust location accordingly
+dir_of_tegonal_scripts="$projectDir/lib/tegonal-scripts/src"
+source "$dir_of_tegonal_scripts/setup.sh" "$dir_of_tegonal_scripts"
+
+sourceOnce "$dir_of_tegonal_scripts/utility/cleanups.sh"
+
+# e.g. in scripts/cleanup-on-push-to-main.sh
+function cleanupOnPushToMain() {
+	removeUnusedSignatures "$projectDir"
+	logSuccess "cleanup done"
+}
+```
+
+</utility-cleanups>
 
 ## Checks
 

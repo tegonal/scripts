@@ -11,7 +11,7 @@ source "$dir_of_tegonal_scripts/setup.sh" "$dir_of_tegonal_scripts"
 sourceOnce "$dir_of_tegonal_scripts/utility/cleanups.sh"
 
 # e.g. in scripts/cleanup-on-push-to-main.sh
-function foo() {
+function cleanupOnPushToMain() {
 	removeUnusedSignatures "$projectDir"
 	logSuccess "cleanup done"
 }
