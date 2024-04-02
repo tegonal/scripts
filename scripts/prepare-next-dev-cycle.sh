@@ -43,6 +43,8 @@ function prepareNextDevCycle() {
 		beforePrFn "$beforePrFnParamPattern" "$beforePrFnParamDocu"
 	)
 	parseArguments params "" "$TEGONAL_SCRIPTS_VERSION" "$@"
+	# we don't check if all args are set (and neither set default values) as we currently don't use
+	# any param in here but just delegate to prepareFilesNextDevCycle.
 
 	# similar as in release.sh, you might need to update it there as well if you change something here
 	local -r additionalPattern="(TEGONAL_SCRIPTS_VERSION=['\"])[^'\"]+(['\"])"

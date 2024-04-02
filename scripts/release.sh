@@ -43,8 +43,6 @@ function release() {
 		die "You need to have shellspec installed if you want to create a release."
 	fi
 
-	local projectsRootDirParamPatternLong additionalPatternParamPatternLong findForSigningParamPatternLong
-	local afterVersionUpdateHookParamPatternLong
 	source "$dir_of_tegonal_scripts/releasing/common-constants.source.sh" || die "could not source common-constants.source.sh"
 
 	local version
@@ -59,7 +57,6 @@ function release() {
 		prepareOnly "$prepareOnlyParamPattern" "$prepareOnlyParamDocu"
 	)
 	parseArguments params "" "$TEGONAL_SCRIPTS_VERSION" "$@"
-
 	# we don't check if all args are set (and neither set default values) as we currently don't use
 	# any param in here but just delegate to releaseFiles.
 
@@ -80,11 +77,11 @@ function release() {
 	local -r additionalPattern="(TEGONAL_SCRIPTS_(?:LATEST_)?VERSION=['\"])[^'\"]+(['\"])"
 
 	releaseFiles \
-		"$projectsRootDirParamPatternLong" "$projectDir" \
-		"$additionalPatternParamPatternLong" "$additionalPattern" \
+		--project-dir "$projectDir" \
+		--pattern "$additionalPattern" \
 		"$@" \
-		"$findForSigningParamPatternLong" findScripts \
-		"$afterVersionUpdateHookParamPatternLong" release_afterVersionHook
+		--sign-fn findScripts \
+		--after-version-update-hook release_afterVersionHook
 }
 
 ${__SOURCED__:+return}
