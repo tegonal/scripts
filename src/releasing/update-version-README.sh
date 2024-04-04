@@ -72,8 +72,11 @@ function updateVersionReadme() {
 
 	echo "set version $version for Download badges and sneak peek banner in $file"
 
+	local -r versionWithoutLeadingV="${version:1}"
+
 	perl -0777 -i \
-		-pe "s@(\[!\[Download\]\(https://img.shields.io/badge/Download-).*(-%23[0-9a-f]+\)\]\([^\)]+(?:=|/))[^\)]+\)@\${1}$version\${2}$version\)@g;" \
+		-pe "s@(\[!\[Download\]\(https://img.shields.io/badge/Download-).*(-%23[0-9a-f]+\)\]\([^\)]+(?:=|/))v[^\)]+\)@\${1}$version\${2}$version\)@g;" \
+		-pe "s@(\[!\[Download\]\(https://img.shields.io/badge/Download-).*(-%23[0-9a-f]+\)\]\([^\)]+(?:=|/))[0-9][^\)]+\)@\${1}$version\${2}$versionWithoutLeadingV\)@g;" \
 		-pe "s@(\[README of )[^\]]+(\].*/tree/)[^/]+/@\${1}$version\${2}$version/@;" \
 		"$file" || returnDying "was not able to update the version in download badges and in the sneak peek banner" || return $?
 
