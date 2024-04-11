@@ -208,12 +208,12 @@ function checkArgIsFunction() {
 
 	if ! declare -F "$name" >/dev/null; then
 		local declareP
-		declareP=$(declare -p "$name" || echo "failure, is not a variable")
+		declareP=$(declare -p "$name" || printf "failure: \033[0;36m%s\033[0m is not a variable\n" "$name")
 		local funcName=${FUNCNAME[1]}
 		if [[ $funcName == "exitIfArgIsNotFunction" ]]; then
 			funcName=${FUNCNAME[2]}
 		fi
-		traceAndReturnDying "the %s argument to %s needs to be a function/command, %s isn't one\nMaybe it is a variable storing the name of a function?\nFollowing the output of: declare -p %s\n%s" \
+		traceAndReturnDying "the %s argument to %s needs to be a function/command, \033[0;36m%s\033[0m isn't one\nMaybe it is the name of a variable storing the name of a function?\nFollowing the output of: declare -p %s\n%s" \
 			"$argNumberOrName" "$funcName" "$name" "$name" "$declareP"
 	fi
 }
