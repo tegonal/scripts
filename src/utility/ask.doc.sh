@@ -10,3 +10,12 @@ sourceOnce "$dir_of_tegonal_scripts/utility/ask.sh"
 if askYesOrNo "shall I say hello"; then
 	echo "hello"
 fi
+
+function noAnswerCallback {
+	echo "hm... no answer, I am sad :("
+}
+timeoutInSeconds=30
+readArgs='' # i.e. no additional args passed to read
+answer='default value used if there is no answer'
+askWithTimeout "some question" "$timeoutInSeconds" noAnswerCallback answer "$readArgs"
+echo "$answer"

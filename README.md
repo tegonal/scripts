@@ -112,7 +112,8 @@ The scripts are ordered by topic:
 	- [Release Template](#release-template)
     - [Prepare Next Dev Cycle Template](#prepare-next-dev-cycle-template)
 	- [git Pre-Release checks](#git-pre-release-checks)
-	- [Update Version common steps](#update-version-common-release-steps)
+    - [sbt sonatype publish](#sbt-publish-to-sonatype)
+	- [Update Version common steps](#update-version-common-steps)
 	- [Update Version in README](#update-version-in-readme)
 	- [Update Version in bash scripts](#update-version-in-bash-scripts)
 	- [Update Version in issue templates](#update-version-in-issue-templates)
@@ -178,7 +179,7 @@ jobs:
 
 jobs:
   steps:
-    - name: install shellspec v0.28.1
+    - name: install shellspec
       run: ./lib/tegonal-scripts/src/ci/install-shellspec.sh
     # and most likely as well
     - name: run shellspec
@@ -743,6 +744,52 @@ source "$dir_of_tegonal_scripts/setup.sh" "$dir_of_tegonal_scripts"
 
 </releasing-pre-release-checks-git>
 
+## SBT Sonatype publish
+
+Assumes you have configured your sbt project to publish to sonatype (or any other repo) where you have defined to 
+use SONATYPE_USER and SONATYPE_PW as env vars for your credentials. I.e. your build.sbt file will contain something like:
+```sbt
+credentials += Credentials(
+  "Sonatype Nexus Repository Manager",
+  "oss.sonatype.org",
+  sys.env.getOrElse("SONATYPE_USER", ""),
+  sys.env.getOrElse("SONATYPE_PW", "")
+)
+```
+
+This script asks to fill in those to env vars if not already given an calls `sbt publishSigned` afterwards passing
+them in without exporting them.
+
+Full example:
+
+<releasing-sbt-publish-to-sonatype>
+
+<!-- auto-generated, do not modify here but in src/releasing/sbt-publish-to-sonatype.sh.doc -->
+```bash
+#!/usr/bin/env bash
+set -euo pipefail
+shopt -s inherit_errexit
+# Assumes tegonal's scripts were fetched with gt - adjust location accordingly
+dir_of_tegonal_scripts="$(cd -- "$(dirname -- "${BASH_SOURCE[0]:-$0}")" >/dev/null && pwd 2>/dev/null)/../lib/tegonal-scripts/src"
+source "$dir_of_tegonal_scripts/setup.sh" "$dir_of_tegonal_scripts"
+
+# ask for SONATYPE_USER and SONATYPE_PW (unless already exported beforehand) and calls sbt publishSigned
+"$dir_of_tegonal_scripts/releasing/sbt-publish-to-sonatype.sh"
+
+# predefine SONATYPE_USER, asks for SONATYPE_PW (unless already exported beforehand) and calls sbt publishSigned
+SONATYPE_USER="kshjwo2" "$dir_of_tegonal_scripts/releasing/sbt-publish-to-sonatype.sh"
+
+# if you use it in combination with other files, then you might want to source it instead
+sourceOnce "$dir_of_tegonal_scripts/releasing/sbt-publish-to-sonatype.sh"
+
+# and then call the function
+sbtPublishToSonatype
+SONATYPE_USER="kshjwo2" sbtPublishToSonatype
+```
+
+</releasing-sbt-publish-to-sonatype>
+
+
 ## Update Version Common Steps
 
 Performs several `releasing` scripts defined in the following sections:
@@ -1206,6 +1253,15 @@ sourceOnce "$dir_of_tegonal_scripts/utility/ask.sh"
 if askYesOrNo "shall I say hello"; then
 	echo "hello"
 fi
+
+function noAnswerCallback {
+	echo "hm... no answer, I am sad :("
+}
+timeoutInSeconds=30
+readArgs='' # i.e. no additional args passed to read
+answer='default value used if there is no answer'
+askWithTimeout "some question" "$timeoutInSeconds" noAnswerCallback answer "$readArgs"
+echo "$answer"
 ```
 
 </utility-ask>
