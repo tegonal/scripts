@@ -20,7 +20,7 @@
 #
 #    jobs:
 #      steps:
-#        - name: install shellspec v0.28.1
+#        - name: install shellspec
 #          run: ./lib/tegonal-scripts/src/ci/install-shellspec.sh
 #        # and most likely as well
 #        - name: run shellspec
