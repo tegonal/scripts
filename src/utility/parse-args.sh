@@ -172,7 +172,7 @@ function parseArgumentsInternal {
 					printStackTrace
 					exit 9
 				fi
-				# that's where the black magic happens, we are assigning to global variables here
+				# that's where the black magic happens, we are assigning to global (not local to this function) variables here
 				printf -v "$parseArguments_paramName" "%s" "$2" || die "could not assign value to $parseArguments_paramName"
 				parseArguments_expectedName=1
 				((++parseArguments_numOfArgumentsParsed))
