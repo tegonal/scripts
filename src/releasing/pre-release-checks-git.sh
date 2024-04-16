@@ -56,13 +56,9 @@ function preReleaseCheckGit() {
 	)
 
 	parseArguments params "" "$TEGONAL_SCRIPTS_VERSION" "$@"
-
 	if ! [[ -v branch ]]; then branch="main"; fi
 	exitIfNotAllArgumentsSet params "" "$TEGONAL_SCRIPTS_VERSION"
-
-	if ! [[ "$version" =~ $versionRegex ]]; then
-		die "%s should match vX.Y.Z(-RC...), was %s" "$versionParamPatternLong" "$version"
-	fi
+	exitIfArgIsNotVersion "$version" "$versionParamPatternLong"
 
 	exitIfGitHasChanges
 

@@ -93,10 +93,7 @@ function prepareNextDevCycleTemplate() {
 	if ! [[ -v beforePrFn ]]; then beforePrFn="beforePr"; fi
 	if ! [[ -v afterVersionUpdateHook ]]; then afterVersionUpdateHook=''; fi
 	exitIfNotAllArgumentsSet params "" "$TEGONAL_SCRIPTS_VERSION"
-
-	if ! [[ "$version" =~ $versionRegex ]]; then
-		die "version should match vX.Y.Z(-RC...), was %s" "$version"
-	fi
+	exitIfArgIsNotVersion "$version" "$versionParamPatternLong"
 	exitIfArgIsNotFunction "$beforePrFn" "$beforePrFnParamPatternLong"
 
 	exitIfGitHasChanges
