@@ -28,11 +28,13 @@
 #    	local -rn arr=$1
 #    	local -r fn=$2
 #    	local -r bool=$3
+#    	local -r version=$4
 #
 #    	# resolves arr recursively via recursiveDeclareP and check that is a non-associative array
-#    	checkArgIsArray arr 1        # same as exitIfArgIsNotArray if set -e has an effect on this line
-#    	checkArgIsFunction "$fn" 2   # same as exitIfArgIsNotFunction if set -e has an effect on this line
-#    	checkArgIsBoolean "$bool" 3   # same as exitIfArgIsNotBoolean if set -e has an effect on this line
+#    	checkArgIsArray arr 1        		# same as exitIfArgIsNotArray if set -e has an effect on this line
+#    	checkArgIsFunction "$fn" 2   		# same as exitIfArgIsNotFunction if set -e has an effect on this line
+#    	checkArgIsBoolean "$bool" 3   	# same as exitIfArgIsNotBoolean if set -e has an effect on this line
+#    	checkArgIsVersion "$version" 4  # same as exitIfArgIsNotVersion if set -e has an effect on this line
 #
 #    	# shellcheck disable=SC2317   # is passed by name to checkArgIsArrayWithTuples
 #    	function describeTriple() {
@@ -44,7 +46,8 @@
 #    	exitIfArgIsNotArray arr 1
 #    	exitIfArgIsNotArrayOrIsEmpty arr 1
 #    	exitIfArgIsNotFunction "$fn" 2
-#    	exitIfArgIsNotBoolean "$bool" 2
+#    	exitIfArgIsNotBoolean "$bool" 3
+#    	exitIfArgIsNotVersion "$version" 4
 #
 #    	# shellcheck disable=SC2317   # is passed by name to exitIfArgIsNotArrayWithTuples
 #    	function describePair() {
@@ -112,12 +115,12 @@ function exitIfArgIsNotArray() {
 
 function exitIfArgIsNotArrayOrIsEmpty() {
 	exitIfArgIsNotArray "$@"
-		local -rn exitIfArgIsNotArrayOrIsEmpty_arr=$1
-		local -r argNumberOrName=$2
-		shift 2 || die "could not shift by 2"
-		if [[ ${#exitIfArgIsNotArrayOrIsEmpty_arr[@]} -lt 1 ]]; then
-			die "the passed argument \033[0;36m%s\033[0m is an empty array" "${!checkArgIsArray_arr}"
-		fi
+	local -rn exitIfArgIsNotArrayOrIsEmpty_arr=$1
+	local -r argNumberOrName=$2
+	shift 2 || die "could not shift by 2"
+	if [[ ${#exitIfArgIsNotArrayOrIsEmpty_arr[@]} -lt 1 ]]; then
+		die "the passed argument \033[0;36m%s\033[0m is an empty array" "${!checkArgIsArray_arr}"
+	fi
 }
 
 function checkArgIsArrayWithTuples() {
@@ -243,6 +246,31 @@ function exitIfArgIsNotBoolean() {
 	# shellcheck disable=SC2310			# we are aware of that || will disable set -e for checkArgIsBoolean
 	checkArgIsBoolean "$@" || exit $?
 }
+
+function exitIfArgIsNotVersion() {
+	# shellcheck disable=SC2310			# we are aware of that || will disable set -e for checkArgIsVersion
+	checkArgIsVersion "$@" || exit $?
+}
+
+function checkArgIsVersion() {
+	local versionRegex
+	source "$dir_of_tegonal_scripts/releasing/common-constants.source.sh" || die "could not source common-constants.source.sh"
+
+	local value argNumberOrName
+	# shellcheck disable=SC2034   # is passed by name to parseFnArgs
+	local -ra params=(value argNumberOrName)
+	parseFnArgs params "$@"
+
+	if ! [[ "$value" =~ $versionRegex ]]; then
+		local funcName=${FUNCNAME[1]}
+		if [[ $funcName == "exitIfArgIsNotVersion" ]]; then
+			funcName=${FUNCNAME[2]}
+		fi
+		traceAndReturnDying "the %s argument to %s needs to match vX.Y.Z(-RC...) was %s" \
+			"$argNumberOrName" "$funcName" "$value"
+	fi
+}
+
 function checkCommandExists() {
 	if ! (($# == 1 || $# == 2)); then
 		traceAndDie "you need to pass the name of the command to check to checkCommandExists and optionally an additional hint (e.g. install via...)"
