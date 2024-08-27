@@ -73,26 +73,20 @@ sourceOnce "$dir_of_tegonal_scripts/utility/parse-args.sh"
 sourceOnce "$dir_of_tegonal_scripts/releasing/update-version-common-steps.sh"
 
 function prepareNextDevCycleTemplate() {
-	local versionRegex versionParamPatternLong projectsRootDirParamPatternLong
+	local versionParamPatternLong projectsRootDirParamPatternLong
 	local additionalPatternParamPatternLong beforePrFnParamPatternLong afterVersionUpdateHookParamPatternLong
 	local forReleaseParamPatternLong
 	source "$dir_of_tegonal_scripts/releasing/common-constants.source.sh" || die "could not source common-constants.source.sh"
 
 	local version projectsRootDir additionalPattern beforePrFn afterVersionUpdateHook
-	# shellcheck disable=SC2034   # is passed by name to parseArguments
-	local -ra params=(
-		version "$versionParamPattern" 'the version for which we prepare the dev cycle'
-		projectsRootDir "$projectsRootDirParamPattern" "$projectsRootDirParamDocu"
-		additionalPattern "$additionalPatternParamPattern" "$additionalPatternParamDocu"
-		beforePrFn "$beforePrFnParamPattern" "$beforePrFnParamDocu"
-		afterVersionUpdateHook "$afterVersionUpdateHookParamPattern" "$afterVersionUpdateHookParamDocu"
-	)
-	parseArgumentsIgnoreUnknown params "" "$TEGONAL_SCRIPTS_VERSION" "$@"
+	parseArgumentsIgnoreUnknown prepareNextDevCycleTemplateParams "" "$TEGONAL_SCRIPTS_VERSION" "$@"
+	source "$dir_of_tegonal_scripts/releasing/prepare-next-dev-cycle-template.default-args.source.sh"
+	if ! [[ -v branch ]]; then branch="main"; fi
 	if ! [[ -v projectsRootDir ]]; then projectsRootDir=$(realpath ".") || die "could not determine realpath of ."; fi
 	if ! [[ -v additionalPattern ]]; then additionalPattern="^$"; fi
 	if ! [[ -v beforePrFn ]]; then beforePrFn="beforePr"; fi
 	if ! [[ -v afterVersionUpdateHook ]]; then afterVersionUpdateHook=''; fi
-	exitIfNotAllArgumentsSet params "" "$TEGONAL_SCRIPTS_VERSION"
+	exitIfNotAllArgumentsSet prepareNextDevCycleTemplateParams "" "$TEGONAL_SCRIPTS_VERSION"
 	exitIfArgIsNotVersion "$version" "$versionParamPatternLong"
 	exitIfArgIsNotFunction "$beforePrFn" "$beforePrFnParamPatternLong"
 

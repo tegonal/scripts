@@ -69,8 +69,5 @@ local -r afterVersionUpdateHookParamPattern="$afterVersionUpdateHookParamPattern
 local -r afterVersionUpdateHookParamDocu="(optional) if defined, then this function is called after versions were updated and before calling beforePr. \
 The following arguments are passed: $versionParamPatternLong version $projectsRootDirParamPatternLong projectsRootDir and $additionalPatternParamPatternLong additionalPattern"
 
-local -ra afterVersionHookParams=(
-	version "$versionParamPattern" "$versionParamDocu"
-	projectsRootDir "$projectsRootDirParamPattern" "$projectsRootDirParamDocu"
-	additionalPattern "$additionalPatternParamPattern" "$additionalPatternParamDocu"
-)
+# shellcheck disable=SC2154   # it is assumed dir_of_tegonal_scripts is defined where this file is sourced
+source "$dir_of_tegonal_scripts/releasing/prepare-files-next-dev-cycle.params-definition.source.sh"

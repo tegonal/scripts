@@ -29,6 +29,7 @@ function checkInBugTemplate() {
 	missingInBugTemplate=$(
 		find "$dir_of_tegonal_scripts" -name "*.sh" \
 			-not -name "*.doc.sh" \
+			-not -name "*.source.sh" \
 			-print0 |
 			while read -r -d $'\0' script; do
 				declare path=${script:(${#dir_of_tegonal_scripts} + 1)}

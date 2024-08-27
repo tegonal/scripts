@@ -357,8 +357,7 @@ Help:
 ```text
 Parameters:
 -v                            The version to release in the format vX.Y.Z(-RC...)
--k|key                        The GPG private key which shall be used to sign the files
---sign-fn                     Function which is called to determine what files should be signed. It should be based find and allow to pass further arguments (we will i.a. pass -print0)
+--release-hook                performs the main release task such as (run tests) create artifacts, deploy artifacts
 -b|--branch                   (optional) The expected branch which is currently checked out -- default: main
 --project-dir                 (optional) The projects directory -- default: .
 -p|--pattern                  (optional) pattern which is used in a perl command (separator /) to search & replace additional occurrences. It should define two match groups and the replace operation looks as follows: \${1}$version\${2}
@@ -632,7 +631,8 @@ Help:
 <!-- auto-generated, do not modify here but in src/releasing/prepare-next-dev-cycle-template.sh -->
 ```text
 Parameters:
--v                            the version for which we prepare the dev cycle
+-v                            The version for which we prepare the dev cycle
+-b|--branch                   (optional) The branch on which we develop the next version
 --project-dir                 (optional) The projects directory -- default: .
 -p|--pattern                  (optional) pattern which is used in a perl command (separator /) to search & replace additional occurrences. It should define two match groups and the replace operation looks as follows: \${1}$version\${2}
 --before-pr-fn                (optional) defines the function which is executed before preparing the release (to see if we should release) and after preparing the release -- default: beforePr (per convention defined in scripts/before-pr.sh). No arguments are passed

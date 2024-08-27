@@ -93,25 +93,9 @@ function releaseFiles() {
 	local findForSigningParamPatternLong beforePrFnParamPatternLong prepareNextDevCycleFnParamPatternLong
 	source "$dir_of_tegonal_scripts/releasing/common-constants.source.sh" || die "could not source common-constants.source.sh"
 
-	local version key findForSigning branch projectsRootDir additionalPattern
-	# shellcheck disable=SC2034   # seems unused but is set in deduce-next-version
-	local nextVersion
-	local prepareOnly beforePrFn prepareNextDevCycleFn afterVersionUpdateHook
-	# shellcheck disable=SC2034   # is passed by name to parseArguments
-	local -ra params=(
-		version "$versionParamPattern" "$versionParamDocu"
-		key "$keyParamPattern" "$keyParamDocu"
-		findForSigning "$findForSigningParamPattern" "$findForSigningParamDocu"
-		branch "$branchParamPattern" "$branchParamDocu"
-		projectsRootDir "$projectsRootDirParamPattern" "$projectsRootDirParamDocu"
-		additionalPattern "$additionalPatternParamPattern" "$additionalPatternParamDocu"
-		nextVersion "$nextVersionParamPattern" "$nextVersionParamDocu"
-		prepareOnly "$prepareOnlyParamPattern" "$prepareOnlyParamDocu"
-		beforePrFn "$beforePrFnParamPattern" "$beforePrFnParamDocu"
-		prepareNextDevCycleFn "$prepareNextDevCycleFnParamPattern" "$prepareNextDevCycleFnParamDocu"
-		afterVersionUpdateHook "$afterVersionUpdateHookParamPattern" "$afterVersionUpdateHookParamDocu"
-	)
-	parseArguments params "" "$TEGONAL_SCRIPTS_VERSION" "$@"
+	source "$dir_of_tegonal_scripts/releasing/release-files.params.source.sh" || die "could not source /release-files.params.source.sh"
+	parseArguments releaseFilesParams "" "$TEGONAL_SCRIPTS_VERSION" "$@"
+	source "$dir_of_tegonal_scripts/releasing/release-files.default-args.source.sh" || die "could not source /release-files.params.source.sh"
 
 	# deduces nextVersion based on version if not already set (and if version set)
 	source "$dir_of_tegonal_scripts/releasing/deduce-next-version.source.sh"
