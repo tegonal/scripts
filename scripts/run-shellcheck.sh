@@ -21,7 +21,7 @@ if ! [[ -v dir_of_tegonal_scripts ]]; then
 	dir_of_tegonal_scripts="$scriptsDir/../src"
 	source "$dir_of_tegonal_scripts/setup.sh" "$dir_of_tegonal_scripts"
 fi
-sourceOnce "$dir_of_tegonal_scripts/qa/run-shellcheck.sh"
+sourceOnce "$dir_of_tegonal_scripts/qa/run-shellcheck-pull-hooks.sh"
 
 function customRunShellcheck() {
 	# shellcheck disable=SC2034   # is passed by name to runShellcheck
@@ -33,12 +33,7 @@ function customRunShellcheck() {
 	local sourcePath="$dir_of_tegonal_scripts:$scriptsDir"
 	runShellcheck dirs "$sourcePath" -not -name "install-*.doc.sh"
 
-	local -r gh_commons_dir="$scriptsDir/../.gt/remotes/tegonal-gh-commons"
-	logInfo "analysing $gh_commons_dir/pull-hook.sh"
-
-	# shellcheck disable=SC2034   # is passed by name to runShellcheck
-	local -ra dirs2=("$gh_commons_dir")
-	runShellcheck dirs2 "$sourcePath" -name "pull-hook.sh"
+	runShellcheckPullHooks "$scriptsDir/../.gt"
 }
 
 ${__SOURCED__:+return}

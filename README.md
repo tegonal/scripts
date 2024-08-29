@@ -106,6 +106,7 @@ The scripts are ordered by topic:
 		- [utils](#jelastic-utils)
 - [Quality Assurance](#quality-assurance)
 	- [runShellcheck](#runshellcheck)
+    - [runShellcheckPullHooks](#runshellcheck-on-pull-hookssh)
 - [Releasing](#releasing)
 	- [Releasing Files](#release-files)
 	- [Prepare Files Next Dev Cycle](#prepare-files-next-dev-cycle)
@@ -328,6 +329,32 @@ runShellcheck dirs "$sourcePath"
 ```
 
 </qa-run-shellcheck>
+
+## runShellCheck on pull-hooks.sh
+
+If you are using [gt](https://github.com/tegonal/gt) then you most likely want to be sure that your pull-hook.sh files 
+don't contain shell issues, you can use the function `runShellCheckPullHooks` which analyses all pull-hook.sh files
+in the remotes dir of gt using the $dir_of_tegonal_scripts as source path.
+
+<qa-run-shellcheck-pull-hooks>
+
+<!-- auto-generated, do not modify here but in src/qa/run-shellcheck-pull-hooks.sh.doc -->
+```bash
+#!/usr/bin/env bash
+set -euo pipefail
+shopt -s inherit_errexit
+# Assumes tegonal's scripts were fetched with gt - adjust location accordingly
+dir_of_tegonal_scripts="$(cd -- "$(dirname -- "${BASH_SOURCE[0]:-$0}")" >/dev/null && pwd 2>/dev/null)/../lib/tegonal-scripts/src"
+source "$dir_of_tegonal_scripts/setup.sh" "$dir_of_tegonal_scripts"
+
+source "$dir_of_tegonal_scripts/qa/run-shellcheck-pull-hooks.sh"
+
+# pass the working directory of gt which usually is .gt in the root of your repository
+runShellcheckPullHooks ".gt"
+```
+
+</qa-run-shellcheck-pull-hooks>
+
 
 # Releasing
 
