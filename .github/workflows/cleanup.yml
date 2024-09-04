@@ -5,7 +5,7 @@
 #  \__/\__/\_, /\___/_//_/\_,_/_/         It is licensed under Creative Commons Zero v1.0 Universal
 #         /___/                           Please report bugs and contribute back your improvements
 #
-#                                         Version: v2.7.0
+#                                         Version: v2.7.1
 ###################################
 name: Cleanup
 
@@ -22,7 +22,7 @@ jobs:
       - name: Cleanup Sources
         run: ./scripts/cleanup-on-push-to-main.sh
       - name: Create Pull Request if necessary
-        uses: peter-evans/create-pull-request@v6
+        uses: peter-evans/create-pull-request@v7
         with:
           branch: auto-cleanup
           title: Auto Cleanup
