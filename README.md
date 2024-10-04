@@ -1367,7 +1367,7 @@ function foo() {
 
 	# shellcheck disable=SC2317   # is passed by name to exitIfArgIsNotArrayWithTuples
 	function describePair() {
-		echo >&2 "array contains 2-tuples with names where the first value is the first-, and the second the lastname"
+		echo >&2 "array contains 2-tuples with names where the first value is the first-, and the second the last name"
 	}
 	# check array with 2-tuples
 	exitIfArgIsNotArrayWithTuples arr 2 "names" 1 describePair
