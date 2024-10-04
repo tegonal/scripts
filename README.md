@@ -230,13 +230,13 @@ In a GitHub workflow you would use it as follows:
 
 ```yaml
 jobs:
-	steps:
-		-   name: deploy shellcheck v0.8.0
-			run: |
-				./lib/tegonal-scripts/src/ci/jelastic/deploy.sh \
-				  -l "$JELASTIC_LOGIN" -p "$JELASTIC_PASSWORD" -u "$JELASTIC_PLATFORM_URL" \
-				  -e "test" -n cp \
-				  -t "$DOCKER_IMAGE_VERSION"
+  steps:
+    - name: deploy shellcheck v0.8.0
+      run: |
+        ./lib/tegonal-scripts/src/ci/jelastic/deploy.sh \
+          -l "$JELASTIC_LOGIN" -p "$JELASTIC_PASSWORD" -u "$JELASTIC_PLATFORM_URL" \
+          -e "test" -n cp \
+          -t "$DOCKER_IMAGE_VERSION"
 ```
 
 Help:
