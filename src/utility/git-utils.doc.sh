@@ -45,3 +45,5 @@ latestTag=$(latestRemoteTag)
 echo "latest tag on origin: $latestTag"
 latestTag=$(latestRemoteTag upstream)
 echo "latest tag on upstream: $latestTag"
+latestTag=$(latestRemoteTag origin "^v1\.[0-9]+\.[0-9]+$")
+echo "latest tag in the major 1.x.x series on origin without release candidates: $latestTag"
