@@ -258,7 +258,7 @@ function exitIfArgIsNotVersion() {
 
 function checkArgIsVersion() {
 	local versionRegex
-	source "$dir_of_tegonal_scripts/releasing/common-constants.source.sh" || die "could not source common-constants.source.sh"
+	source "$dir_of_tegonal_scripts/releasing/common-constants.source.sh" || traceAndDie "could not source common-constants.source.sh"
 
 	local value argNumberOrName
 	# shellcheck disable=SC2034   # is passed by name to parseFnArgs

@@ -138,7 +138,7 @@ function parseCommands {
 	local -r tmpRegex regex
 
 	if [[ "$command" =~ $regex ]]; then
-		"$sourceFn" "$command" || die "could not source necessary files to bring in function for command %s" "$command"
+		"$sourceFn" "$command" || traceAndDie "could not source necessary files to bring in function for command %s" "$command"
 		"$fnPrefix${command/-/_}" "$@"
 	elif [[ "$command" == "--help" ]]; then
 		parse_commands_printHelp parseCommands_paramArr "$version"

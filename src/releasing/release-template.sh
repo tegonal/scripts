@@ -96,7 +96,7 @@ function releaseTemplate() {
 	local additionalPatternParamPatternLong prepareOnlyParamPatternLong
 	local beforePrFnParamPatternLong prepareNextDevCycleFnParamPatternLong afterVersionUpdateHookParamPatternLong
 	local forReleaseParamPatternLong releaseHookParamPatternLong
-	source "$dir_of_tegonal_scripts/releasing/common-constants.source.sh" || die "could not source common-constants.source.sh"
+	source "$dir_of_tegonal_scripts/releasing/common-constants.source.sh" || traceAndDie "could not source common-constants.source.sh"
 
 	local version releaseHook branch projectsRootDir additionalPattern nextVersion prepareOnly
 	local beforePrFn prepareNextDevCycleFn afterVersionUpdateHook
