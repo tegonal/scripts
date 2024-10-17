@@ -51,7 +51,7 @@ function removeUnusedSignatures() {
 		exit 9
 	fi
 	local projectRootDir=$1
-	shift 1 || die "could not shift by 1"
+	shift 1 || traceAndDie "could not shift by 1"
 
 	find "$projectRootDir" \
 		-type f \

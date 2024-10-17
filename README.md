@@ -1796,7 +1796,7 @@ sourceOnce "$dir_of_tegonal_scripts/utility/parse-utils.sh"
 function myParseFunction() {
 	while (($# > 0)); do
 		if [[ $1 == "--version" ]]; then
-			shift || die "could not shift by 1"
+			shift 1 || traceAndDie "could not shift by 1"
 			printVersion "$MY_LIBRARY_VERSION"
 		fi
 		#...

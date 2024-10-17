@@ -96,7 +96,7 @@ function checkArgIsArray() {
 	fi
 	local -rn checkArgIsArray_arr=$1
 	local -r argNumberOrName=$2
-	shift 2 || die "could not shift by 2"
+	shift 2 || traceAndDie "could not shift by 2"
 
 	reg='^declare -a.*'
 	local arrayDefinition
@@ -121,7 +121,7 @@ function exitIfArgIsNotArrayOrIsEmpty() {
 	exitIfArgIsNotArray "$@"
 	local -rn exitIfArgIsNotArrayOrIsEmpty_arr=$1
 	local -r argNumberOrName=$2
-	shift 2 || die "could not shift by 2"
+	shift 2 || traceAndDie "could not shift by 2"
 	if [[ ${#exitIfArgIsNotArrayOrIsEmpty_arr[@]} -lt 1 ]]; then
 		die "the passed argument \033[0;36m%s\033[0m is an empty array" "${!checkArgIsArray_arr}"
 	fi
@@ -144,7 +144,7 @@ function checkArgIsArrayWithTuples() {
 	local -r tupleRepresents=$3
 	local -r argNumberOrName=$4
 	local -r describeTupleFn=$5
-	shift 5 || die "could not shift by 5"
+	shift 5 || traceAndDie "could not shift by 5"
 
 	local -r arrLength=${#checkArgIsArrayWithTuples_paramArr[@]}
 
@@ -301,7 +301,7 @@ function exitIfVarsNotAlreadySetBySource() {
 }
 
 function exitIfVariablesNotDefined() {
-	shift 1 || die "could not shift by 1"
+	shift 1 || traceAndDie "could not shift by 1"
 	for variableName in "$@"; do
 		if ! declare -p "$variableName" 2>/dev/null | grep -q 'declare --'; then
 			logError "you need to define the variable \033[0;36m%s\033[0m otherwise we write to the global scope" "$variableName"

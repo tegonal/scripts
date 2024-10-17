@@ -71,7 +71,7 @@ function sourceOnce() {
 	sourceOnce_exitIfNotAtLeastOneArg "$@"
 
 	local -r sourceOnce_file="$1"
-	shift 1 || die "could not shift by 1"
+	shift 1 || traceAndDie "could not shift by 1"
 
 	local sourceOnce_guard
 	sourceOnce_guard=$(determineSourceOnceGuard "$sourceOnce_file")
@@ -108,7 +108,7 @@ function sourceAlways() {
 	sourceOnce_exitIfNotAtLeastOneArg "$@"
 
 	local -r sourceAlways_file="$1"
-	shift 1 || die "could not shift by 1"
+	shift 1 || traceAndDie "could not shift by 1"
 
 	local sourceAlways_guard
 	sourceAlways_guard=$(determineSourceOnceGuard "$sourceAlways_file")

@@ -131,7 +131,7 @@ function hasRemoteTag() {
 	fi
 	local -r tag=$1
 	local -r remote=${2:-"origin"}
-	shift 1 || die "could not shift by 1"
+	shift 1 || traceAndDie "could not shift by 1"
 	local output
 	output=$(git ls-remote -t "$remote") || die "the following command failed (see above): git ls-remote -t \"$remote\""
 	grep "$tag" >/dev/null <<<"$output"
@@ -141,7 +141,7 @@ function remoteTagsSorted() {
 	local remote="origin"
 	if (($# > 0)); then
 		remote=$1
-		shift || die "could not shift by 1"
+		shift 1 || traceAndDie "could not shift by 1"
 	fi
 	git ls-remote --refs --tags "$remote" |
 		cut --delimiter='/' --fields=3 |

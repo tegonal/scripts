@@ -54,7 +54,7 @@ function withCustomOutputInput() {
 	local outputNr=$1
 	local inputNr=$2
 	local fun=$3
-	shift 3 || die "could not shift by 3"
+	shift 3 || traceAndDie "could not shift by 3"
 
 	exitIfArgIsNotFunction "$fun" 3
 
@@ -73,7 +73,7 @@ function withCustomOutputInput() {
 
 function deleteDirChmod777() {
 	local -r dir=$1
-	shift || die "could not shift by 1"
+	shift 1 || traceAndDie "could not shift by 1"
 	# e.g files in .git will be write-protected and we don't want sudo for this command
 	# yet, if it fails, then we ignore the problem and still try to delete the folder
 	chmod -R 777 "$dir" || true

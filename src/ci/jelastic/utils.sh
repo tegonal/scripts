@@ -49,7 +49,7 @@ sourceOnce "$dir_of_tegonal_scripts/utility/parse-fn-args.sh"
 
 function jelastic_exec() {
 	local -r command=$1
-	shift 1 || die "could not shift by 1"
+	shift 1 || traceAndDie "could not shift by 1"
 
 	local -r jelastic_cliHome="${JELASTIC_CLI_HOME:-${HOME:-~}}/jelastic"
 	if ! [[ -f "$jelastic_cliHome/$command" ]]; then
