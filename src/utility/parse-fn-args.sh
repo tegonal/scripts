@@ -74,7 +74,7 @@ function parseFnArgs() {
 
 	# using unconventional naming in order to avoid name clashes with the variables we will initialise further below
 	local -rn parseFnArgs_paramArr1=$1
-	shift 1 || die "could not shift by 1"
+	shift 1 || traceAndDie "could not shift by 1"
 
 	exitIfArgIsNotArray parseFnArgs_paramArr1 1
 
@@ -132,14 +132,14 @@ function parseFnArgs() {
 	for ((parseFnArgs_i = 0; parseFnArgs_i < parseFnArgs_minExpected; ++parseFnArgs_i)); do
 		local parseFnArgs_name=${parseFnArgs_paramArr1[parseFnArgs_i]}
 		# assign arguments to specified variables
-		printf -v "$parseFnArgs_name" "%s" "$1" || die "could not assign value to $parseFnArgs_name"
+		printf -v "$parseFnArgs_name" "%s" "$1" || traceAndDie "could not assign value to $parseFnArgs_name"
 		local -r "$parseFnArgs_name"
-		shift || die "could not shift by 1"
+		shift 1 || traceAndDie "could not shift by 1"
 	done
 
 	# assign rest to varargs if used
 	if [[ $parseFnArgs_withVarArgs == true ]]; then
 		# shellcheck disable=SC2034   # varargs is defined in outer scope and will be used there, thus ok
-		varargs=("$@") || die "could not assign the rest of arguments to varargs"
+		varargs=("$@") || traceAndDie "could not assign the rest of arguments to varargs"
 	fi
 }

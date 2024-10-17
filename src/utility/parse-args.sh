@@ -127,10 +127,10 @@ function parseArgumentsInternal {
 	local -rn parseArguments_paramArr=$2
 	local -r parseArguments_examples=$3
 	local -r parseArguments_version=$4
-	shift 4 || die "could not shift by 4"
+	shift 4 || traceAndDie "could not shift by 4"
 
 	if ! [[ "$parseArguments_unknownBehaviour" =~ ^(ignore|error)$ ]]; then
-		die "unknownBehaviour needs to be one of 'error' or 'ignore' got \033[0;36m%s\033[0m" "$parseArguments_unknownBehaviour"
+		traceAndDie "unknownBehaviour needs to be one of 'error' or 'ignore' got \033[0;36m%s\033[0m" "$parseArguments_unknownBehaviour"
 	fi
 
 	parse_args_exitIfParameterDefinitionIsNotTriple parseArguments_paramArr
@@ -178,10 +178,10 @@ function parseArgumentsInternal {
 					exit 9
 				fi
 				# that's where the black magic happens, we are assigning to global (not local to this function) variables here
-				printf -v "$parseArguments_paramName" "%s" "$2" || die "could not assign value to $parseArguments_paramName"
+				printf -v "$parseArguments_paramName" "%s" "$2" || traceAndDie "could not assign value to $parseArguments_paramName"
 				parseArguments_expectedName=1
 				((++parseArguments_numOfArgumentsParsed))
-				shift || die "could not shift by 1"
+				shift 1 || traceAndDie "could not shift by 1"
 			fi
 		done
 
@@ -195,7 +195,7 @@ function parseArgumentsInternal {
 			echo >&2 "consult the output of --help shown further above for valid names"
 			exit 9
 		fi
-		shift || die "could not shift by 1"
+		shift 1 || traceAndDie "could not shift by 1"
 	done
 }
 
@@ -260,7 +260,7 @@ function exitIfNotAllArgumentsSet {
 	local -rn exitIfNotAllArgumentsSet_paramArr=$1
 	local -r exitIfNotAllArgumentsSet_examples=$2
 	local -r exitIfNotAllArgumentsSet_version=$3
-	shift 3 || die "could not shift by 3"
+	shift 3 || traceAndDie "could not shift by 3"
 
 	# it is handy to see the stacktrace if it is not a direct call from command line
 	# where we assume that the script as such has a "main" function, this one calls one function from this file and

@@ -91,7 +91,7 @@ function releaseFiles() {
 	local versionParamPatternLong projectsRootDirParamPatternLong
 	local additionalPatternParamPatternLong afterVersionUpdateHookParamPatternLong releaseHookParamPatternLong
 	local findForSigningParamPatternLong beforePrFnParamPatternLong prepareNextDevCycleFnParamPatternLong
-	source "$dir_of_tegonal_scripts/releasing/common-constants.source.sh" || die "could not source common-constants.source.sh"
+	source "$dir_of_tegonal_scripts/releasing/common-constants.source.sh" || traceAndDie "could not source common-constants.source.sh"
 
 	local version key findForSigning branch projectsRootDir additionalPattern
 	# shellcheck disable=SC2034   # seems unused but is set in deduce-next-version

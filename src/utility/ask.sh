@@ -55,7 +55,7 @@ function askYesOrNo() {
 		exit 9
 	fi
 	local -r question=$1
-	shift || die "could not shift by 1"
+	shift 1 || traceAndDie "could not shift by 1"
 
 	local -r askYesOrNo_timeout=20
 	local answer='n'
@@ -99,7 +99,7 @@ function askWithTimeout() {
 	local -r askWithTimeout_noAnswerFn=$3
 	local -r askWithTimeout_outVarName=$4
 	local -r askWithTimeout_readArgs=$5
-	shift 5 || die "could not shift by 5"
+	shift 5 || traceAndDie "could not shift by 5"
 
 	exitIfArgIsNotFunction "$askWithTimeout_noAnswerFn" 3
 	# shellcheck disable=SC2059			# the question itself can have %s thus we use it in the format string

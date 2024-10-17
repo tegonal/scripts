@@ -76,7 +76,7 @@ function prepareNextDevCycleTemplate() {
 	local versionRegex versionParamPatternLong projectsRootDirParamPatternLong
 	local additionalPatternParamPatternLong beforePrFnParamPatternLong afterVersionUpdateHookParamPatternLong
 	local forReleaseParamPatternLong
-	source "$dir_of_tegonal_scripts/releasing/common-constants.source.sh" || die "could not source common-constants.source.sh"
+	source "$dir_of_tegonal_scripts/releasing/common-constants.source.sh" || traceAndDie "could not source common-constants.source.sh"
 
 	local version projectsRootDir additionalPattern beforePrFn afterVersionUpdateHook
 	# shellcheck disable=SC2034   # is passed by name to parseArguments
