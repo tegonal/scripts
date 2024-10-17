@@ -70,6 +70,10 @@
 #    # meant to be used in a file which is sourced where a contract exists between the file which `source`s and the sourced file
 #    exitIfVarsNotAlreadySetBySource myVar1 var2 var3
 #
+#    declare myVar4
+#    exitIfVariablesNotDefined myVar4 myVar5 # would exit because myVar5 is not set
+#    echo "myVar4 $myVar4"
+#
 ###################################
 set -euo pipefail
 shopt -s inherit_errexit
@@ -292,6 +296,17 @@ function exitIfVarsNotAlreadySetBySource() {
 	for varName in "$@"; do
 		if ! [[ -v "$varName" ]] || [[ -z ${!varName} ]]; then
 			die "looks like \$%s was not defined by %s where this file (%s) was sourced" "$varName" "${BASH_SOURCE[2]:-${BASH_SOURCE[1]}}" "${BASH_SOURCE[0]}"
+		fi
+	done
+}
+
+function exitIfVariablesNotDefined() {
+	shift 1 || die "could not shift by 1"
+	for variableName in "$@"; do
+		if ! declare -p "$variableName" 2>/dev/null | grep -q 'declare --'; then
+			logError "you need to define the variable \033[0;36m%s\033[0m otherwise we write to the global scope" "$variableName"
+			printStackTrace
+			exit 1
 		fi
 	done
 }

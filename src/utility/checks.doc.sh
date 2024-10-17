@@ -53,3 +53,7 @@ exitIfCommandDoesNotExist "git" "please install it via https://git-scm.com/downl
 
 # meant to be used in a file which is sourced where a contract exists between the file which `source`s and the sourced file
 exitIfVarsNotAlreadySetBySource myVar1 var2 var3
+
+declare myVar4
+exitIfVariablesNotDefined myVar4 myVar5 # would exit because myVar5 is not set
+echo "myVar4 $myVar4"
