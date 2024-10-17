@@ -130,7 +130,7 @@ function parseArgumentsInternal {
 	shift 4 || traceAndDie "could not shift by 4"
 
 	if ! [[ "$parseArguments_unknownBehaviour" =~ ^(ignore|error)$ ]]; then
-		die "unknownBehaviour needs to be one of 'error' or 'ignore' got \033[0;36m%s\033[0m" "$parseArguments_unknownBehaviour"
+		traceAndDie "unknownBehaviour needs to be one of 'error' or 'ignore' got \033[0;36m%s\033[0m" "$parseArguments_unknownBehaviour"
 	fi
 
 	parse_args_exitIfParameterDefinitionIsNotTriple parseArguments_paramArr
@@ -178,7 +178,7 @@ function parseArgumentsInternal {
 					exit 9
 				fi
 				# that's where the black magic happens, we are assigning to global (not local to this function) variables here
-				printf -v "$parseArguments_paramName" "%s" "$2" || die "could not assign value to $parseArguments_paramName"
+				printf -v "$parseArguments_paramName" "%s" "$2" || traceAndDie "could not assign value to $parseArguments_paramName"
 				parseArguments_expectedName=1
 				((++parseArguments_numOfArgumentsParsed))
 				shift 1 || traceAndDie "could not shift by 1"

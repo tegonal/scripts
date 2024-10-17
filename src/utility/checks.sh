@@ -123,7 +123,7 @@ function exitIfArgIsNotArrayOrIsEmpty() {
 	local -r argNumberOrName=$2
 	shift 2 || traceAndDie "could not shift by 2"
 	if [[ ${#exitIfArgIsNotArrayOrIsEmpty_arr[@]} -lt 1 ]]; then
-		die "the passed argument \033[0;36m%s\033[0m is an empty array" "${!checkArgIsArray_arr}"
+		traceAndDie "the passed argument \033[0;36m%s\033[0m is an empty array" "${!checkArgIsArray_arr}"
 	fi
 }
 
@@ -156,7 +156,7 @@ function checkArgIsArrayWithTuples() {
 	fi
 
 	local arrayDefinition
-	arrayDefinition=$(recursiveDeclareP checkArgIsArrayWithTuples_paramArr) || die "could not get array definition of %s" "${!checkArgIsArrayWithTuples_paramArr}"
+	arrayDefinition=$(recursiveDeclareP checkArgIsArrayWithTuples_paramArr) || traceAndDie "could not get array definition of %s" "${!checkArgIsArrayWithTuples_paramArr}"
 	reg='declare -a.*'
 	if ! [[ "$arrayDefinition" =~ $reg ]]; then
 		logError "the passed array \033[0;36m%s\033[0m is broken" "${!checkArgIsArrayWithTuples_paramArr}"
@@ -295,7 +295,7 @@ function exitIfCommandDoesNotExist() {
 function exitIfVarsNotAlreadySetBySource() {
 	for varName in "$@"; do
 		if ! [[ -v "$varName" ]] || [[ -z ${!varName} ]]; then
-			die "looks like \$%s was not defined by %s where this file (%s) was sourced" "$varName" "${BASH_SOURCE[2]:-${BASH_SOURCE[1]}}" "${BASH_SOURCE[0]}"
+			traceAndDie "looks like \$%s was not defined by %s where this file (%s) was sourced" "$varName" "${BASH_SOURCE[2]:-${BASH_SOURCE[1]}}" "${BASH_SOURCE[0]}"
 		fi
 	done
 }
