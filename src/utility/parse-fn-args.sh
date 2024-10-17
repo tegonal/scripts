@@ -127,6 +127,8 @@ function parseFnArgs() {
 		exit 9
 	fi
 
+	exitIfVariablesNotDefined "${parseFnArgs_paramArr1[@]}"
+
 	for ((parseFnArgs_i = 0; parseFnArgs_i < parseFnArgs_minExpected; ++parseFnArgs_i)); do
 		local parseFnArgs_name=${parseFnArgs_paramArr1[parseFnArgs_i]}
 		# assign arguments to specified variables

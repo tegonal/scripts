@@ -14,6 +14,8 @@ Describe 'parse-arg.sh'
 	Describe 'parseArguments'
 		Describe '--help'
 			It 'without examples'
+				# shellcheck disable=SC2034	# withoutHelp is never used but that's fine
+				declare version withoutHelp
 				declare params=(
 					version -v 'The version'
 					withoutHelp -wv ''
@@ -22,11 +24,12 @@ Describe 'parse-arg.sh'
 				The status should be successful
 				The output should include 'Parameters'
 				The output should include '-v'
-				The output should include '-wv'
 				The output should include 'The version'
+				The output should include '-wv'
 				The output should not include 'Examples'
 			End
 			It 'with examples'
+				declare version
 				declare params=(version -v 'The version')
 				When call parseArguments params "example code\non multiple lines" 'v1.0.0' --help
 				The status should be successful
@@ -38,6 +41,7 @@ Describe 'parse-arg.sh'
 			End
 		End
 		It '--version'
+			declare version
 			declare params=(version -v 'The version')
 			When call parseArguments params "example code\non multiple lines" "v1.2.0-RC2" --version
 			The status should be successful
@@ -45,7 +49,7 @@ Describe 'parse-arg.sh'
 		End
 		Describe 'happy cases'
 			It 'does not fail if not for all parameters an argument is passed'
-					declare version
+					declare version asdf
 					declare params=(
 						version -v ''
 						asdf -a ''
@@ -56,7 +60,8 @@ Describe 'parse-arg.sh'
 			End
 			It 'does not pollute parent "scope"'
 				function foo() {
-					declare version
+					# shellcheck disable=SC2034	# asdf is not used but that's fine
+					declare version asdf
 					declare params=(
 						version -v ''
 						asdf -a ''
@@ -71,6 +76,7 @@ Describe 'parse-arg.sh'
 		End
 		Describe 'errors'
 			It 'not enough arguments passed'
+				declare version
 				declare params=(version -v '')
 				When run parseArguments params
 				The status should be failure
@@ -78,6 +84,7 @@ Describe 'parse-arg.sh'
 			End
 			Describe 'wrong number in params'
 				It 'one leftover'
+					declare version
 					declare params=(version -v '' leftOver1)
 					When run parseArguments params '' 'v1.0.0'--help
 					The status should be failure
@@ -88,6 +95,7 @@ Describe 'parse-arg.sh'
 					The stderr should include 'leftOver1'
 				End
 				It 'two leftovers'
+					declare version
 					declare params=(version -v '' leftOver1 leftOver2)
 					When run parseArguments params '' 'v1.0.0' --help
 					The status should be failure
@@ -105,6 +113,16 @@ Describe 'parse-arg.sh'
 				The status should be failure
 				The stderr should include "$(printf "array \033[0;36massociativeParams\033[0m is broken")"
 				The stderr should include 'The first argument to parse_args_exitIfParameterDefinitionIsNotTriple needs to be a non-associative array containing parameter definitions'
+			End
+			It 'fails if variable not defined in scope'
+				declare version
+				declare params=(
+					version -v ''
+					asdf -a ''
+				)
+				When run parseArguments params 'example' 'v1.0.0' -v v0.1.0
+				The status should be failure
+				The stderr should include "$(printf "you need to define the variable \033[0;36masdf\033[0m")"
 			End
 		End
 	End

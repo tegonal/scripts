@@ -135,6 +135,11 @@ function parseArgumentsInternal {
 
 	parse_args_exitIfParameterDefinitionIsNotTriple parseArguments_paramArr
 
+	# shellcheck disable=SC2034		# passed by name to exitIfVariablesNotDefined
+	local -a parseArguments_variableNames
+	arrTakeEveryX parseArguments_paramArr parseArguments_variableNames 3 0
+	exitIfVariablesNotDefined "${parseArguments_variableNames[@]}"
+
 	local -ri parseArguments_arrLength="${#parseArguments_paramArr[@]}"
 
 	local -i parseArguments_numOfArgumentsParsed=0
