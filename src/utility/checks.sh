@@ -304,7 +304,7 @@ function exitIfVariablesNotDeclared() {
 	shift 1 || traceAndDie "could not shift by 1"
 	for variableName in "$@"; do
 		if ! declare -p "$variableName" 2>/dev/null | grep -q 'declare --'; then
-			logError "you need to define the variable \033[0;36m%s\033[0m otherwise we write to the global scope" "$variableName"
+			logError "you need to \`declare\` (\`local\`) the variable \033[0;36m%s\033[0m otherwise we write to the global scope (you can also \`declare\` it in the global scope)" "$variableName"
 			printStackTrace
 			exit 1
 		fi
