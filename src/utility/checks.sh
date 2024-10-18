@@ -71,7 +71,7 @@
 #    exitIfVarsNotAlreadySetBySource myVar1 var2 var3
 #
 #    declare myVar4
-#    exitIfVariablesNotDefined myVar4 myVar5 # would exit because myVar5 is not set
+#    exitIfVariablesNotDeclared myVar4 myVar5 # would exit because myVar5 is not set
 #    echo "myVar4 $myVar4"
 #
 ###################################
@@ -300,7 +300,7 @@ function exitIfVarsNotAlreadySetBySource() {
 	done
 }
 
-function exitIfVariablesNotDefined() {
+function exitIfVariablesNotDeclared() {
 	shift 1 || traceAndDie "could not shift by 1"
 	for variableName in "$@"; do
 		if ! declare -p "$variableName" 2>/dev/null | grep -q 'declare --'; then
