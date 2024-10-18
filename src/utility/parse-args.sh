@@ -74,6 +74,7 @@ if ! [[ -v dir_of_tegonal_scripts ]]; then
 	source "$dir_of_tegonal_scripts/setup.sh" "$dir_of_tegonal_scripts"
 fi
 sourceOnce "$dir_of_tegonal_scripts/utility/array-utils.sh"
+sourceOnce "$dir_of_tegonal_scripts/utility/ask.sh"
 sourceOnce "$dir_of_tegonal_scripts/utility/checks.sh"
 sourceOnce "$dir_of_tegonal_scripts/utility/parse-utils.sh"
 
@@ -186,13 +187,14 @@ function parseArgumentsInternal {
 		done
 
 		if [[ $parseArguments_unknownBehaviour = 'error' ]] && ((parseArguments_expectedName == 0)); then
-			parse_args_printHelp >&2 parseArguments_paramArr "$parseArguments_examples" "$parseArguments_version"
 			if [[ $parseArguments_argName =~ ^- ]] && (($# > 1)); then
 				logError "unknown argument \033[1;36m%s\033[0m (and value %s)" "$parseArguments_argName" "$2"
 			else
 				logError "unknown argument \033[1;36m%s\033[0m" "$parseArguments_argName"
 			fi
-			echo >&2 "consult the output of --help shown further above for valid names"
+			if askYesOrNo "Shall I print the help for you?"; then
+				parse_args_printHelp >&2 parseArguments_paramArr "$parseArguments_examples" "$parseArguments_version"
+			fi
 			exit 9
 		fi
 		shift 1 || traceAndDie "could not shift by 1"
