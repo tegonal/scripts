@@ -68,9 +68,9 @@ function askYesOrNo() {
 
 	# shellcheck disable=SC2059			# the question itself can have %s thus we use it in the format string
 	askWithTimeout "\033[0;36m$question\033[0m y/[n]:" "$askYesOrNo_timeout" askYesOrNo_noAnswerCallback answer "" "$@"
-	if [[ $answer == y ]] || [[ $answer == Y ]]; then
+	if [[ $answer == y ]] || [[ $answer == Y ]] || [[ $answer == yes ]]; then
 		return 0
-	elif [[ $answer == n ]] || [[ $answer == N ]]; then
+	elif [[ $answer == n ]] || [[ $answer == N ]] || [[ $answer == no ]]; then
 		return 1
 	else
 		logWarning "got \033[0;36m%s\033[0m as answer (instead of y for yes or n for no), interpreting it as a n, i.e. as a no" "$answer"
