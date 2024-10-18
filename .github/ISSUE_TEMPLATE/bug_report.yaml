@@ -11,7 +11,7 @@ body:
     attributes:
       label: Affected Version
       description: What version of scripts are you running?
-      placeholder: "v3.3.0"
+      placeholder: "v3.4.0"
     validations:
       required: true
   - type: dropdown
