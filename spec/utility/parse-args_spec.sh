@@ -122,7 +122,7 @@ Describe 'parse-arg.sh'
 				)
 				When run parseArguments params 'example' 'v1.0.0' -v v0.1.0
 				The status should be failure
-				The stderr should include "$(printf "you need to define the variable \033[0;36masdf\033[0m")"
+				The stderr should include "$(printf "you need to \`declare\` (\`local\`) the variable \033[0;36masdf\033[0m")"
 			End
 		End
 	End
