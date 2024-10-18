@@ -1387,7 +1387,7 @@ exitIfCommandDoesNotExist "git" "please install it via https://git-scm.com/downl
 exitIfVarsNotAlreadySetBySource myVar1 var2 var3
 
 declare myVar4
-exitIfVariablesNotDefined myVar4 myVar5 # would exit because myVar5 is not set
+exitIfVariablesNotDeclared myVar4 myVar5 # would exit because myVar5 is not set
 echo "myVar4 $myVar4"
 ```
 
