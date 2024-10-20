@@ -29,13 +29,12 @@ sourceOnce "$scriptsDir/cleanup-on-push-to-main.sh"
 sourceOnce "$scriptsDir/run-shellcheck.sh"
 
 function beforePr() {
-	runShellspecIfInstalled
-
 	# using && because this function is used on the left side of an || in releaseFiles
 	# this way we still have fail fast behaviour and don't mask/hide a non-zero exit code
-	checkInBugTemplate && \
-	customRunShellcheck && \
-	cleanupOnPushToMain
+	runShellspecIfInstalled &&
+		checkInBugTemplate &&
+		customRunShellcheck &&
+		cleanupOnPushToMain
 }
 
 ${__SOURCED__:+return}
