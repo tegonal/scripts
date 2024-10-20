@@ -146,8 +146,7 @@ The scripts under this topic (in directory `ci`) help out in performing CI steps
 
 ## Install shellcheck
 
-Installs shellcheck v0.8.0.  
-Most likely used together with [runShellcheck](#runshellcheck).
+Installs shellcheck. Most likely, you want to use it together with [runShellcheck](#runshellcheck).
 Following an example:
 
 <ci-install-shellcheck>
@@ -160,7 +159,7 @@ Following an example:
 
 jobs:
   steps:
-    - name: install shellcheck v0.10.0
+    - name: install shellcheck
       run: ./lib/tegonal-scripts/src/ci/install-shellcheck.sh
     # and most likely as well
     - name: run shellcheck
