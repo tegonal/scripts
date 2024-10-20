@@ -6,12 +6,12 @@
 #  \__/\__/\_, /\___/_//_/\_,_/_/         It is licensed under Apache License 2.0
 #         /___/                           Please report bugs and contribute back your improvements
 #
-#                                         Version: v3.5.0-SNAPSHOT
+#                                         Version: v3.5.0
 ###################################
 set -euo pipefail
 shopt -s inherit_errexit
 unset CDPATH
-TEGONAL_SCRIPTS_LATEST_VERSION="v3.4.0"
+TEGONAL_SCRIPTS_LATEST_VERSION="v3.5.0"
 
 if ! [[ -v dir_of_github_commons ]]; then
 	dir_of_github_commons="$(cd -- "$(dirname -- "${BASH_SOURCE[0]:-$0}")" >/dev/null && pwd 2>/dev/null)/lib/src"
