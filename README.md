@@ -107,6 +107,7 @@ The scripts are ordered by topic:
 - [Quality Assurance](#quality-assurance)
 	- [runShellcheck](#runshellcheck)
     - [runShellcheckPullHooks](#runshellcheck-on-pull-hookssh)
+    - [runShellspecIfInstalled](#runshellspecifinstalled)
 - [Releasing](#releasing)
 	- [Releasing Files](#release-files)
 	- [Prepare Files Next Dev Cycle](#prepare-files-next-dev-cycle)
@@ -355,6 +356,30 @@ runShellcheckPullHooks ".gt"
 
 </qa-run-shellcheck-pull-hooks>
 
+
+
+## runShellSpecIfInstalled
+
+Utility function which checks if shellspec is installed and if so executes it and prints a warning otherwise.
+Intended to be used in before-pr.sh where contributors shall not be forced to have shellspec installed
+
+<qa-run-shellspec-if-installed>
+
+<!-- auto-generated, do not modify here but in src/qa/run-shellspec-if-installed.sh.doc -->
+```bash
+#!/usr/bin/env bash
+set -euo pipefail
+shopt -s inherit_errexit
+# Assumes tegonal's scripts were fetched with gt - adjust location accordingly
+dir_of_tegonal_scripts="$(cd -- "$(dirname -- "${BASH_SOURCE[0]:-$0}")" >/dev/null && pwd 2>/dev/null)/../lib/tegonal-scripts/src"
+source "$dir_of_tegonal_scripts/setup.sh" "$dir_of_tegonal_scripts"
+
+source "$dir_of_tegonal_scripts/qa/run-shellspec-if-installed.sh"
+
+runShellspecIfInstalled
+```
+
+</qa-run-shellspec-if-installed>
 
 # Releasing
 
