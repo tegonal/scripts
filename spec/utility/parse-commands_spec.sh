@@ -6,7 +6,8 @@
 #  \__/\__/\_, /\___/_//_/\_,_/_/         Please report bugs and contribute back your improvements
 #         /___/
 #
-#
+###################################
+
 # the function which is responsible to load the corresponding file which contains the function of this particular command
 function sourceCommand() {
 	local -r command=$1
