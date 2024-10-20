@@ -6,7 +6,7 @@
 #  \__/\__/\_, /\___/_//_/\_,_/_/         Please report bugs and contribute back your improvements
 #         /___/
 #
-#
+###################################
 
 Describe 'parse-arg.sh'
 	Include src/utility/parse-args.sh

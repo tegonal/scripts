@@ -26,6 +26,7 @@ body:
         - ci/jelastic/utils.sh
         - qa/run-shellcheck.sh
         - qa/run-shellcheck-pull-hooks.sh
+        - qa/run-shellspec-if-installed.sh
         - releasing/common-constants.source.sh
         - releasing/deduce-next-version.source.sh
         - releasing/pre-release-checks-git.sh
