@@ -376,6 +376,9 @@ source "$dir_of_tegonal_scripts/setup.sh" "$dir_of_tegonal_scripts"
 source "$dir_of_tegonal_scripts/qa/run-shellspec-if-installed.sh"
 
 runShellspecIfInstalled
+
+# you can also pass arguments to shellspec
+runShellspecIfInstalled --jobs 2
 ```
 
 </qa-run-shellspec-if-installed>
