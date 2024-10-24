@@ -128,7 +128,8 @@ The scripts are ordered by topic:
 	- [Ask functions](#ask-functions)
     - [cleanups](#cleanups)
 	- [Checks](#checks)
-	- [git Utils](#git-utils)
+    - [date utils](#date-utils)
+	- [git utils](#git-utils)
 	- [GPG Utils](#gpg-utils)
 	- [Http functions](#http-functions)
 	- [IO functions](#io-functions)
@@ -1420,9 +1421,38 @@ echo "myVar4 $myVar4"
 
 </utility-checks>
 
-## git Utils
+## date utils
 
-Utility functions around git.
+Date utils around `date` and co
+
+<utility-date-utils>
+
+<!-- auto-generated, do not modify here but in src/utility/date-utils.sh.doc -->
+```bash
+#!/usr/bin/env bash
+set -euo pipefail
+shopt -s inherit_errexit
+
+projectDir="$(cd -- "$(dirname -- "${BASH_SOURCE[0]:-$0}")" >/dev/null && pwd 2>/dev/null)/.."
+
+# Assumes tegonal's scripts were fetched with gt - adjust location accordingly
+dir_of_tegonal_scripts="$projectDir/lib/tegonal-scripts/src"
+source "$dir_of_tegonal_scripts/setup.sh" "$dir_of_tegonal_scripts"
+
+sourceOnce "$dir_of_tegonal_scripts/utility/date-utils.sh"
+
+# converts the unix timestamp to a date in format Y-m-dTH:M:S
+timestampToDateTime 1662981524 # outputs 2022-09-12T13:18:44
+
+dateToTimestamp "2024-03-01" # outputs 1709247600
+dateToTimestamp "2022-09-12T13:18:44" # outputs 1662981524
+```
+
+</utility-date-utils>
+
+## git utils
+
+Utility functions around `git`.
 
 <utility-git-utils>
 
@@ -1481,9 +1511,9 @@ echo "latest tag in the major 1.x.x series on origin without release candidates:
 
 </utility-git-utils>
 
-## GPG Utils
+## GPG utils
 
-Utility functions which hopefully make it easier for you to deal with gpg
+Utility functions which hopefully make it easier for you to deal with `gpg`
 
 <utility-gpg-utils>
 
