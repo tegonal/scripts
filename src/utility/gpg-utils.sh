@@ -22,14 +22,15 @@
 #
 #    sourceOnce "$dir_of_tegonal_scripts/utility/gpg-utils.sh"
 #
-#    # import public-key.asc into gpg store located at ~/.gpg but ask for confirmation first
-#    importGpgKey ~/.gpg ./public-key.asc --confirmation=true
-#
 #    # import public-key.asc into gpg store located at ~/.gpg and trust automatically
-#    importGpgKey ~/.gpg ./public-key.asc --confirmation=false
+#    importGpgKey ~/.gpg ./public-key.asc
 #
-#    # import public-key.asc into gpg store located at .gt/.gpg and trust automatically
-#    importGpgKey .gt/.gpg ./public-key.asc --confirmation=false
+#    # import public-key.asc into gpg store located at ~/.gpg but ask given question first which needs to be answered with yes
+#    importGpgKey ~/.gpg ./public-key.asc "do you want to import the shown key(s)?"
+#
+#    # import public-key.asc into gpg store located at .gt/remotes/tegonal-scripts/public-keys/gpg
+#    # and trust automatically
+#    importGpgKey .gt/remotes/tegonal-scripts/public-keys/gpg ./public-key.asc
 #
 #    # trust key which is identified via info@tegonal.com in gpg store located at ~/.gpg
 #    trustGpgKey ~/.gpg info@tegonal.com
@@ -55,26 +56,26 @@ function trustGpgKey() {
 }
 
 function importGpgKey() {
-	local gpgDir file withConfirmation
+	local gpgDir file confirmationQuestion
 	# shellcheck disable=SC2034   # is passed by name to parseFnArgs
-	local -ra params=(gpgDir file withConfirmation)
+	local -ra params=(gpgDir file confirmationQuestion)
 	parseFnArgs params "$@"
 
 	local outputKey
 	outputKey=$(
 		gpg --homedir "$gpgDir" --no-tty --keyid-format LONG \
-			--list-options show-user-notations,show-std-notations,show-usage,show-sig-expire \
+			--list-options show-sig-expire,show-unusable-subkeys,show-unusable-uids,show-usage,show-user-notations \
 			--import-options show-only \
 			--import "$file"
 	) || die "not able to show the theoretical import of %s, aborting" "$file"
-	local isTrusting='y'
-	if [[ $withConfirmation != "--confirm=false" ]]; then
+	local isTrusting=y
+	if [[ -n $confirmationQuestion ]]; then
 		echo "==========================================================================="
 		echo "$outputKey"
-		if askYesOrNo "The above key(s) will be used to verify the files you will pull from this remote, do you trust them?"; then
-			isTrusting='y'
+		if askYesOrNo "%s" "$confirmationQuestion"; then
+			isTrusting=y
 		else
-			isTrusting='n'
+			isTrusting=n
 		fi
 		echo ""
 		echo "Decision: $isTrusting"
