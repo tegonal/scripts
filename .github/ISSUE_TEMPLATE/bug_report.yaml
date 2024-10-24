@@ -45,6 +45,7 @@ body:
         - utility/ask.sh
         - utility/checks.sh
         - utility/cleanups.sh
+        - utility/date-utils.sh
         - utility/execute-if-defined.sh
         - utility/git-utils.sh
         - utility/gpg-utils.sh
