@@ -6,7 +6,7 @@
 #  \__/\__/\_, /\___/_//_/\_,_/_/         It is licensed under Apache License 2.0
 #         /___/                           Please report bugs and contribute back your improvements
 #
-#                                         Version: v3.6.0-SNAPSHOT
+#                                         Version: v4.0.0
 #######  Description  #############
 #
 #  Checks if (env) var SONATYPE_USER and SONATYPE_PW is set and if not ask the user to input them (via stdin).
@@ -38,7 +38,7 @@
 set -euo pipefail
 shopt -s inherit_errexit
 unset CDPATH
-export TEGONAL_SCRIPTS_VERSION='v3.6.0-SNAPSHOT'
+export TEGONAL_SCRIPTS_VERSION='v4.0.0'
 
 if ! [[ -v dir_of_tegonal_scripts ]]; then
 	dir_of_tegonal_scripts="$(cd -- "$(dirname -- "${BASH_SOURCE[0]:-$0}")" >/dev/null && pwd 2>/dev/null)/.."
