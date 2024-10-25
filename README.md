@@ -1417,6 +1417,11 @@ exitIfVarsNotAlreadySetBySource myVar1 var2 var3
 declare myVar4
 exitIfVariablesNotDeclared myVar4 myVar5 # would exit because myVar5 is not set
 echo "myVar4 $myVar4"
+
+declare currentDir
+currentDir=$(pwd)
+checkIfPathNamedIsOutsideOf "$myVar4" "source directory" "$currentDir" # same as exitIfArgIsNotVersion if set -e has an effect on this line
+exitIfPathNamedIsOutsideOf "$myVar4/plugins.txt" "plugins" "$currentDir"
 ```
 
 </utility-checks>
