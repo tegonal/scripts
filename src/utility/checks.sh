@@ -74,6 +74,11 @@
 #    exitIfVariablesNotDeclared myVar4 myVar5 # would exit because myVar5 is not set
 #    echo "myVar4 $myVar4"
 #
+#    declare currentDir
+#    currentDir=$(pwd)
+#    checkIfPathNamedIsOutsideOf "$myVar4" "source directory" "$currentDir" # same as exitIfArgIsNotVersion if set -e has an effect on this line
+#    exitIfPathNamedIsOutsideOf "$myVar4/plugins.txt" "plugins" "$currentDir"
+#
 ###################################
 set -euo pipefail
 shopt -s inherit_errexit
@@ -309,4 +314,23 @@ function exitIfVariablesNotDeclared() {
 			exit 1
 		fi
 	done
+}
+
+function checkIfPathNamedIsOutsideOf() {
+	local path name parentDirectory
+	# shellcheck disable=SC2034   # is passed by name to parseFnArgs
+	local -ra params=(path name parentDirectory)
+	parseFnArgs params "$@"
+
+	local pathAbsolute parentDirectoryAbsolute
+	pathAbsolute="$(realpath "$path")"
+	parentDirectoryAbsolute="$(realpath "$parentDirectory")"
+	if ! [[ "$pathAbsolute" == "$parentDirectoryAbsolute"* ]]; then
+		returnDying "the given \033[0;36m%s\033[0m %s is outside of %s" "$name" "$pathAbsolute" "$parentDirectory" || return $?
+	fi
+}
+
+function exitIfPathNamedIsOutsideOf() {
+	# shellcheck disable=SC2310			# we are aware of that || will disable set -e for checkIfPathNamedIsOutsideOf
+	checkIfPathNamedIsOutsideOf "$@" || exit $?
 }
