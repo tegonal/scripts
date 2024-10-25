@@ -9,7 +9,7 @@
 #
 #######  Description  #############
 #
-#  utility functions for dealing with git
+#  utility functions for dealing with date
 #
 #######  Usage  ###################
 #
