@@ -76,7 +76,7 @@
 #
 #    declare currentDir
 #    currentDir=$(pwd)
-#    checkIfPathNamedIsOutsideOf "$myVar4" "source directory" "$currentDir" # same as exitIfArgIsNotVersion if set -e has an effect on this line
+#    checkIfPathNamedIsOutsideOf "$myVar4" "source directory" "$currentDir" # same as exitIfPathNamedIsOutsideOf if set -e has an effect on this line
 #    exitIfPathNamedIsOutsideOf "$myVar4/plugins.txt" "plugins" "$currentDir"
 #
 ###################################
