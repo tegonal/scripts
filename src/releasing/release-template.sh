@@ -156,8 +156,14 @@ function releaseTemplate() {
 
 	if [[ $prepareOnly != true ]]; then
 		git add . || return $?
-		git commit -m "$version" || return $?
-		git tag "$version" || return $?
+		git commit --edit -m "$version " || return $?
+		local signsTags
+		signsTags=$(git config --get tag.gpgSign)
+		if [[ $signsTags == true ]]; then
+			git tag -a "$version" -m "$version" || return $?
+		else
+			git tag "$version" || return $?
+		fi
 
 		"$prepareNextDevCycleFn" \
 			"$versionParamPatternLong" "$nextVersion" \
