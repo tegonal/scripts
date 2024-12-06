@@ -49,7 +49,8 @@
 #    function specialBeforePr(){
 #    	beforePr && echo "imagine some additional work"
 #    }
-#    # make the function visible to release-files.sh / not necessary if you sourcerepare-files-next-dev-cycle.sh, see further below
+#    # make the function visible to release-files.sh / not necessary if you source prepare-files-next-dev-cycle.sh
+#    # see further below
 #    declare -fx specialBeforePr
 #
 #    # releases version v0.1.0 using the key 0x945FE615904E5C85 for signing and
