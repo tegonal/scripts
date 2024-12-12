@@ -155,7 +155,7 @@ function releaseTemplate() {
 	"$releaseHook" || return $?
 
 	if [[ $prepareOnly != true ]]; then
-		git add . || return $?
+		git add "$projectsRootDir" || return $?
 		git commit --edit -m "$version " || return $?
 		local signsTags
 		signsTags=$(git config --get tag.gpgSign)
