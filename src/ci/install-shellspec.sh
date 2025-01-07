@@ -9,12 +9,11 @@
 #                                         Version: v4.3.0-SNAPSHOT
 #######  Description  #############
 #
-#  function which searches for *.sh files within defined paths (directories or a single *.sh) and
-#  runs shellcheck on each file with predefined settings i.a. sets `-s bash`
+#  installs shellspec 0.28.1 into $HOME/.local/lib
 #
 #######  Usage  ###################
 #
-#    # run the install-shellcheck.sh in your github/gitlab workflow
+#    # run the install-shellspec in your github/gitlab workflow
 #    # for instance, assuming you fetched this file via gt and remote name is tegonal-scripts
 #    # then in a github workflow you would have
 #
