@@ -175,7 +175,7 @@ jobs:
 
 <!-- auto-generated, do not modify here but in src/ci/install-shellspec.sh.doc -->
 ```bash
-# run the install-shellcheck.sh in your github/gitlab workflow
+# run the install-shellspec in your github/gitlab workflow
 # for instance, assuming you fetched this file via gt and remote name is tegonal-scripts
 # then in a github workflow you would have
 
