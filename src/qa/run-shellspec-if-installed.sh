@@ -45,6 +45,6 @@ function runShellspecIfInstalled() {
 		logInfo "Running shellspec $shellspecVersion ..."
 		shellspec "$@"
 	else
-		logWarning "shellspec is not installed, skipping running specs.\nConsider to install it https://github.com/shellspec/shellspec#installation"
+		logWarning "shellspec is not installed, skipping running specs.\nConsider to install it, execute $dir_of_tegonal_scripts/ci/install-shellcheck.sh (if pulled) or see https://github.com/shellspec/shellspec#installation"
 	fi
 }
