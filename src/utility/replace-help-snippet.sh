@@ -80,7 +80,7 @@ function replaceHelpSnippet() {
 
 	local snippet cleanedUpSnippet markdownSnippet
 	snippet=$("$script" "${varargs[@]}") || true
-	# remove ansi colour codes form snippet
+	# remove ansi colour codes from snippet
 	cleanedUpSnippet=$(perl -0777 -pe "s/\033\[([01];\d{2}|0)m//g" <<<"$snippet") || die "could not quote snippet for %s" "$script"
 	markdownSnippet=$(printf "\`\`\`text\n%s\n\`\`\`" "$cleanedUpSnippet") || die "could not create markdownSnippet for %s" "$script"
 
