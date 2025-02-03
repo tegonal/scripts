@@ -151,7 +151,7 @@ function parseArgumentsInternal {
 			if ! ((parseArguments_numOfArgumentsParsed == 0)); then
 				logWarning "there were arguments defined prior to --help, they were all ignored and instead the help is shown"
 			elif (($# > 1)); then
-				logWarning "there were arguments defined after --help, they were all be ignored, you might want to remove --help"
+				logWarning "there were arguments defined after --help, they will all be ignored, you might want to remove --help"
 			fi
 			return 99
 		fi
