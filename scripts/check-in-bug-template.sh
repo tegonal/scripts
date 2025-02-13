@@ -32,7 +32,7 @@ function checkInBugTemplate() {
 			-print0 |
 			while read -r -d $'\0' script; do
 				declare path=${script:(${#dir_of_tegonal_scripts} + 1)}
-				if ! grep "$path" "$scriptsDir/../$bugReportPath" >/dev/null; then
+				if ! grep --fixed-strings "$path" "$scriptsDir/../$bugReportPath" >/dev/null; then
 					echo "- $path"
 				fi
 			done

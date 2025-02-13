@@ -134,7 +134,7 @@ function hasRemoteTag() {
 	shift 1 || traceAndDie "could not shift by 1"
 	local output
 	output=$(git ls-remote -t "$remote") || die "the following command failed (see above): git ls-remote -t \"$remote\""
-	grep "$tag" >/dev/null <<<"$output"
+	grep -q --fixed-strings "$tag" <<<"$output"
 }
 
 function remoteTagsSorted() {
@@ -150,11 +150,11 @@ function remoteTagsSorted() {
 
 function latestRemoteTag() {
 	if (($# > 2)); then
-			logError "Maximum 2 arguments can be passed to latestRemoteTag, given \033[0;36m%s\033[0m\n" "$#"
-			echo >&2 '1: remote   	(optional) the name of the remote, defaults to origin'
-			echo >&2 '2: tagFilter	(optional) a regex pattern (as supported by grep -E) which allows to filter available tags before determining the latest, defaults to .* (i.e. include all)'
-			printStackTrace
-			exit 9
+		logError "Maximum 2 arguments can be passed to latestRemoteTag, given \033[0;36m%s\033[0m\n" "$#"
+		echo >&2 '1: remote   	(optional) the name of the remote, defaults to origin'
+		echo >&2 '2: tagFilter	(optional) a regex pattern (as supported by grep -E) which allows to filter available tags before determining the latest, defaults to .* (i.e. include all)'
+		printStackTrace
+		exit 9
 	fi
 	local -r remote=${1:-"origin"}
 	local -r tagFilter=${2:-".*"}
