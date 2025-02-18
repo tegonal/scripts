@@ -73,6 +73,7 @@ if ! [[ -v dir_of_tegonal_scripts ]]; then
 	source "$dir_of_tegonal_scripts/setup.sh" "$dir_of_tegonal_scripts"
 fi
 sourceOnce "$dir_of_tegonal_scripts/utility/parse-fn-args.sh"
+sourceOnce "$dir_of_tegonal_scripts/utility/string-utils.sh"
 
 function currentGitBranch() {
 	git rev-parse --abbrev-ref HEAD
@@ -132,9 +133,10 @@ function hasRemoteTag() {
 	local -r tag=$1
 	local -r remote=${2:-"origin"}
 	shift 1 || traceAndDie "could not shift by 1"
-	local output
+	local output literalTag
 	output=$(git ls-remote -t "$remote") || die "the following command failed (see above): git ls-remote -t \"$remote\""
-	grep -q --fixed-strings "$tag" <<<"$output"
+	literalTag=$(escapeRegex "refs/tags/$tag")
+	grep -q -E "$literalTag\$" <<<"$output"
 }
 
 function remoteTagsSorted() {
