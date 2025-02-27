@@ -93,7 +93,7 @@ sourceOnce "$dir_of_tegonal_scripts/utility/recursive-declare-p.sh"
 
 function checkArgIsArray() {
 	if ! (($# == 2)); then
-		logError "Two arguments 			needs to be passed to checkArgIsArray, given \033[0;36m%s\033[0m\n" "$#"
+		logError "Two arguments needs to be passed to checkArgIsArray, given \033[0;36m%s\033[0m\n" "$#"
 		echo >&2 '1: array      		  name of the array to check'
 		echo >&2 '2: argNumberOrName  what argument do we check (used in error message)'
 		printStackTrace
