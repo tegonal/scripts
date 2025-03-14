@@ -36,7 +36,15 @@ tmpDir=$(mktemp -d -t download-shellcheck-XXXXXXXXXX)
 cd "$tmpDir"
 shellcheckVersion="v0.10.0"
 echo "6c881ab0698e4e6ea235245f22832860544f17ba386442fe7e9d629f8cbedf87  ./shellcheck-$shellcheckVersion.linux.x86_64.tar.xz" >"shellcheck-$shellcheckVersion.linux.x86_64.tar.xz.sha256"
-wget --no-verbose "https://github.com/koalaman/shellcheck/releases/download/$shellcheckVersion/shellcheck-$shellcheckVersion.linux.x86_64.tar.xz"
+
+wgetExists="$(command -v wget)"
+if [[ -n $wgetExists ]]; then
+ 	wget --no-verbose "https://github.com/koalaman/shellcheck/releases/download/$shellcheckVersion/shellcheck-$shellcheckVersion.linux.x86_64.tar.xz"
+else
+	# if wget does not exist, then we try it with curl
+	curl "https://github.com/koalaman/shellcheck/releases/download/$shellcheckVersion/shellcheck-$shellcheckVersion.linux.x86_64.tar.xz" -o "shellcheck-$shellcheckVersion.linux.x86_64.tar.xz"
+fi
+
 sha256sum -c "shellcheck-$shellcheckVersion.linux.x86_64.tar.xz.sha256"
 tar -xf "./shellcheck-$shellcheckVersion.linux.x86_64.tar.xz"
 chmod +x "./shellcheck-$shellcheckVersion/shellcheck"
