@@ -30,33 +30,49 @@ set -euo pipefail
 shopt -s inherit_errexit
 unset CDPATH
 
+function logError() {
+	local -r msg=$1
+	shift 1 || traceAndDie "could not shift by 1"
+	# shellcheck disable=SC2059
+	printf >&2 "\033[0;31mERROR\033[0m: $msg\n" "$@"
+}
+
+function die() {
+	logError "$@"
+	exit 1
+}
+
 declare currentDir
 currentDir=$(pwd)
-tmpDir=$(mktemp -d -t download-shellcheck-XXXXXXXXXX)
+tmpDir=$(mktemp -d -t download-shellcheck-XXXXXXXXXX) || die "could not create a temp directory"
 cd "$tmpDir"
 shellcheckVersion="v0.10.0"
 echo "6c881ab0698e4e6ea235245f22832860544f17ba386442fe7e9d629f8cbedf87  ./shellcheck-$shellcheckVersion.linux.x86_64.tar.xz" >"shellcheck-$shellcheckVersion.linux.x86_64.tar.xz.sha256"
 
-wgetExists="$(command -v wget)"
-if [[ -n $wgetExists ]]; then
+if command -v wget > /dev/null; then
  	wget --no-verbose "https://github.com/koalaman/shellcheck/releases/download/$shellcheckVersion/shellcheck-$shellcheckVersion.linux.x86_64.tar.xz"
 else
 	# if wget does not exist, then we try it with curl
 	curl "https://github.com/koalaman/shellcheck/releases/download/$shellcheckVersion/shellcheck-$shellcheckVersion.linux.x86_64.tar.xz" -o "shellcheck-$shellcheckVersion.linux.x86_64.tar.xz"
 fi
 
-sha256sum -c "shellcheck-$shellcheckVersion.linux.x86_64.tar.xz.sha256"
+sha256sum -c "shellcheck-$shellcheckVersion.linux.x86_64.tar.xz.sha256" || die "checksum did not match, aborting"
 tar -xf "./shellcheck-$shellcheckVersion.linux.x86_64.tar.xz"
-chmod +x "./shellcheck-$shellcheckVersion/shellcheck"
-mkdir -p "$HOME/.local/bin"
+chmod +x "./shellcheck-$shellcheckVersion/shellcheck" || die "could not make shellcheck executable"
+
 shellcheckInTmp="$tmpDir/shellcheck-$shellcheckVersion"
-shellcheckInHomeLocalLib="$HOME/.local/lib/shellcheck-$shellcheckVersion"
-shellcheckBin="$HOME/.local/bin/shellcheck"
+homeLocalBin="$HOME/.local/bin"
+homeLocalLib="$HOME/.local/lib"
+shellcheckInHomeLocalLib="$homeLocalLib/shellcheck-$shellcheckVersion"
+shellcheckBin="$homeLocalBin/shellcheck"
+
+mkdir -p "$homeLocalBin" || die "was not able to create the bin directory %s" "$homeLocalBin"
+
 if [[ -d "$shellcheckInHomeLocalLib" ]]; then
 	echo "going to remove the existing installation in $shellcheckInHomeLocalLib"
-	rm -r "$shellcheckInHomeLocalLib"
+	rm -r "$shellcheckInHomeLocalLib" || die "was not able to remove a previous installation in %s" "$shellcheckInHomeLocalLib"
 else
-	mkdir -p "$HOME/.local/lib"
+	mkdir -p "$homeLocalLib" || die "was not able to create the installation directory %s" "$homeLocalLib"
 fi
 mv "$shellcheckInTmp" "$shellcheckInHomeLocalLib"
 if [[ -f  "$shellcheckBin" ]]; then
