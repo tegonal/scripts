@@ -47,16 +47,20 @@ currentDir=$(pwd)
 tmpDir=$(mktemp -d -t download-shellcheck-XXXXXXXXXX) || die "could not create a temp directory"
 cd "$tmpDir"
 shellcheckVersion="v0.10.0"
-echo "6c881ab0698e4e6ea235245f22832860544f17ba386442fe7e9d629f8cbedf87  ./shellcheck-$shellcheckVersion.linux.x86_64.tar.xz" >"shellcheck-$shellcheckVersion.linux.x86_64.tar.xz.sha256"
+tarFile="shellcheck-$shellcheckVersion.linux.x86_64.tar.xz"
+expectedSha="6c881ab0698e4e6ea235245f22832860544f17ba386442fe7e9d629f8cbedf87 $tarFile"
+echo "$expectedSha" >"$tarFile.sha256"
 
-if command -v wget > /dev/null; then
- 	wget --no-verbose "https://github.com/koalaman/shellcheck/releases/download/$shellcheckVersion/shellcheck-$shellcheckVersion.linux.x86_64.tar.xz"
+if command -v curl >/dev/null; then
+	curl -L -O "https://github.com/koalaman/shellcheck/releases/download/$shellcheckVersion/$tarFile"
 else
-	# if wget does not exist, then we try it with curl
-	curl "https://github.com/koalaman/shellcheck/releases/download/$shellcheckVersion/shellcheck-$shellcheckVersion.linux.x86_64.tar.xz" -o "shellcheck-$shellcheckVersion.linux.x86_64.tar.xz"
+	# if curl does not exist, then we try it with wget
+	wget --no-verbose "https://github.com/koalaman/shellcheck/releases/download/$shellcheckVersion/$tarFile"
 fi
-
-sha256sum -c "shellcheck-$shellcheckVersion.linux.x86_64.tar.xz.sha256" || die "checksum did not match, aborting"
+sha256sum -c "$tarFile.sha256" || {
+	actualSha="$(sha256sum "$tarFile")"
+	die "checksum did not match, aborting\nexpected:\n%s\ngiven   :\n%s" "$expectedSha" "$actualSha"
+}
 tar -xf "./shellcheck-$shellcheckVersion.linux.x86_64.tar.xz"
 chmod +x "./shellcheck-$shellcheckVersion/shellcheck" || die "could not make shellcheck executable"
 
@@ -75,8 +79,8 @@ else
 	mkdir -p "$homeLocalLib" || die "was not able to create the installation directory %s" "$homeLocalLib"
 fi
 mv "$shellcheckInTmp" "$shellcheckInHomeLocalLib"
-if [[ -f  "$shellcheckBin" ]]; then
-	rm  "$shellcheckBin"
+if [[ -f "$shellcheckBin" ]]; then
+	rm "$shellcheckBin"
 fi
 ln -s "$shellcheckInHomeLocalLib/shellcheck" "$shellcheckBin"
 
