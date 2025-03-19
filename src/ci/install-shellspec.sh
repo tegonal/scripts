@@ -9,7 +9,7 @@
 #                                         Version: v4.5.0-SNAPSHOT
 #######  Description  #############
 #
-#  installs shellspec 0.28.1 into $HOME/.local/lib
+#  installs shellspec v0.28.1 into $HOME/.local/lib
 #
 #######  Usage  ###################
 #
@@ -42,21 +42,24 @@ function die() {
 	exit 1
 }
 
-
 declare currentDir
 currentDir=$(pwd)
 tmpDir=$(mktemp -d -t download-shellspec-XXXXXXXXXX)
 cd "$tmpDir"
-echo "4cac73d958d1ca8c502f3aff1a3b3cfa46ab0062f81f1cc522b83b7b2b302175  shellspec" >shellspec.sha256
+expectedSha="4cac73d958d1ca8c502f3aff1a3b3cfa46ab0062f81f1cc522b83b7b2b302175  shellspec"
+echo "$expectedSha" >shellspec.sha256
 
-if command -v wget > /dev/null; then
-	wget --no-verbose https://git.io/shellspec
+if command -v curl >/dev/null; then
+	curl  -L -O https://git.io/shellspec
 else
-	# if wget does not exist, then we try it with curl
-	curl https://git.io/shellspec -L -o "shellspec"
+	# if curl does not exist, then we try it with wget
+		wget --no-verbose https://git.io/shellspec
 fi
 
-sha256sum -c shellspec.sha256 || die "checksum did not match, aborting"
+sha256sum -c shellspec.sha256 || {
+	actualSha="$(sha256sum shellspec.sha256)"
+	die "checksum did not match, aborting\nexpected:\n%s\ngiven   :\n%s" "$expectedSha" "$actualSha"
+}
 shellspecInHomeLocalLib="$HOME/.local/lib/shellspec"
 if [[ -d "$shellspecInHomeLocalLib" ]]; then
 	echo "going to remove the existing installation in $shellspecInHomeLocalLib"
