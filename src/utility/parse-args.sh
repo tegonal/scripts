@@ -186,8 +186,7 @@ function parseArgumentsInternal {
 					parseArgumentsInternal_ask_printHelp
 					exit 9
 				fi
-				# that's where the black magic happens, we are assigning to global (not local to this function) variables here
-				printf -v "$parseArguments_paramName" "%s" "$2" || traceAndDie "could not assign value to $parseArguments_paramName"
+				assignToVariableInOuterScope "$parseArguments_paramName" "$2"
 				parseArguments_expectedName=1
 				((++parseArguments_numOfArgumentsParsed))
 				shift 1 || traceAndDie "could not shift by 1"
