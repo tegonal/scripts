@@ -75,7 +75,7 @@ Describe 'parse-arg.sh'
 				The output should equal "Version: v0.1.0"
 			End
 		End
-		Describe 'errors'
+		Describe 'errors:'
 			It 'not enough arguments passed'
 				declare version
 				declare params=(version -v '')
@@ -115,7 +115,17 @@ Describe 'parse-arg.sh'
 				The stderr should include "$(printf "array \033[0;36massociativeParams\033[0m is broken")"
 				The stderr should include 'The first argument to parse_args_exitIfParameterDefinitionIsNotTriple needs to be a non-associative array containing parameter definitions'
 			End
-			It 'fails if variable not defined in scope'
+			It 'first variable not defined in scope'
+				declare version
+				declare params=(
+					asdf -a ''
+					version -v ''
+				)
+				When run parseArguments params 'example' 'v1.0.0' -v v0.1.0
+				The status should be failure
+				The stderr should include "$(printf "you need to \`declare\` (\`local\`) the variable \033[0;36masdf\033[0m")"
+			End
+			It 'second variable not defined in scope'
 				declare version
 				declare params=(
 					version -v ''
