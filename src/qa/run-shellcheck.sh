@@ -69,7 +69,7 @@ function runShellcheck() {
 		fi
 	done
 
-  shellcheck --version
+	shellcheck --version
 
 	local -i fileWithIssuesCounter=0
 	local -i fileCounter=0
@@ -81,7 +81,7 @@ function runShellcheck() {
 		else
 			((++fileCounter))
 			declare output
-			output=$(shellcheck -C -x -o all -P "$sourcePath" "$script"  2>&1 || true)
+			output=$(shellcheck --check-sourced --color=auto --external-sources --enable=all --source-path="$sourcePath" "$script" 2>&1 || true)
 			if [[ $output != "" ]]; then
 				printf "%s\n" "$output"
 				((++fileWithIssuesCounter))
@@ -107,7 +107,7 @@ function runShellcheck() {
 	elif ((fileCounter == 0)); then
 		die "looks suspicious, no files where analysed (%s symlinks skipped), watch out for errors above" "$skipped"
 	else
-    local runShellcheck_paths_as_string
+		local runShellcheck_paths_as_string
 		runShellcheck_paths_as_string=$(joinByChar $'\n' "${runShellcheck_paths[@]}")
 		logSuccess "no shellcheck issues found, analysed %s files (%s symlinks skipped) in paths:\n%s" "$fileCounter" "$skipped" "$runShellcheck_paths_as_string"
 	fi
