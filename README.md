@@ -48,8 +48,12 @@ Following the commands you need to execute to set up tegonal scripts via [gt](ht
 gt remote add -r tegonal-scripts -u https://github.com/tegonal/scripts
 ````
 
-Now you can pull the scripts you want via:
+Now you can pull the scripts you want in the latest version via:
+```bash
+gt pull -r tegonal-scripts -p ...
+````
 
+Or specify a version via `-t` as follows:
 ```bash
 export TEGONAL_SCRIPTS_VERSION="v4.4.3"
 gt pull -r tegonal-scripts -t "$TEGONAL_SCRIPTS_VERSION" -p ...
