@@ -26,6 +26,7 @@ Describe 'parse-arg.sh'
 				The output should include '-v'
 				The output should include 'The version'
 				The output should include '-wv'
+				The output should include 'Version of evaluation.sh'
 				The output should not include 'Examples'
 			End
 			It 'with examples'

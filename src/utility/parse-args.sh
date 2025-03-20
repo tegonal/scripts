@@ -150,7 +150,7 @@ function parseArgumentsInternal {
 	}
 
 	function parseArgumentsInternal_printHelp() {
-		parse_args_printHelp parseArguments_paramArr "$parseArguments_examples" "$parseArguments_version" 4
+		parse_args_printHelp parseArguments_paramArr "$parseArguments_examples" "$parseArguments_version" 5
 	}
 
 	local -i parseArguments_numOfArgumentsParsed=0
