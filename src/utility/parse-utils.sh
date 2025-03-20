@@ -68,5 +68,16 @@ function printVersion() {
 	fi
 	local version=$1
 	local stackFrame=${2:-3}
-	logInfo "Version of %s is:\n%s" "$(basename "${BASH_SOURCE[stackFrame]:-${BASH_SOURCE[((stackFrame-1))]}}")" "$version"
+	logInfo "Version of %s is:\n%s" "$(basename "${BASH_SOURCE[stackFrame]:-${BASH_SOURCE[((stackFrame - 1))]}}")" "$version"
+}
+
+function assignToOuterScopeVariable() {
+	if (($# != 2)); then
+		logError "Exactly two arguments required, given \033[0;36m%s\033[0m\nFollowing a description of the parameters:" "$#"
+		echo >&2 '1: version   		the version which shall be shown if one uses --version'
+		echo >&2 '2: stackFrame   number of frames to drop to determine the source of the call'
+		printStackTrace
+		exit 9
+	fi
+	printf -v "$parseArguments_paramName" "%s" "$2" || traceAndDie "could not assign value to $parseArguments_paramName"
 }

@@ -172,10 +172,10 @@ function parseArgumentsInternal {
 			if [[ $parseArguments_argName =~ $parseArguments_regex ]]; then
 				if (($# < 2)); then
 					logError "no value defined for parameter \033[1;36m%s\033[0m (pattern %s) in %s" "$parseArguments_paramName" "$parseArguments_pattern" "${BASH_SOURCE[2]}"
-					echo >&2 "following the help documentation:"
-					echo >&2 ""
-					parse_args_printHelp >&2 parseArguments_paramArr "$parseArguments_examples" "$parseArguments_version" 4
 					printStackTrace
+					if askYesOrNo "Shall I print the help for you?"; then
+          	parse_args_printHelp >&2 parseArguments_paramArr "$parseArguments_examples" "$parseArguments_version" 4
+					fi
 					exit 9
 				fi
 				# that's where the black magic happens, we are assigning to global (not local to this function) variables here
