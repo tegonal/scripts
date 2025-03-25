@@ -112,3 +112,21 @@ function runShellcheck() {
 		logSuccess "no shellcheck issues found, analysed %s files (%s symlinks skipped) in paths:\n%s" "$fileCounter" "$skipped" "$runShellcheck_paths_as_string"
 	fi
 }
+
+function runShellcheckPullHooks() {
+	if ! (($# == 1)); then
+		logError "Exactly one parameter needs to be passed to runShellcheckPullHooks, given \033[0;36m%s\033[0m\nFollowing a description of the parameters:" "$#"
+		echo >&2 '1: gt_dir  working directory of gt'
+		printStackTrace
+		exit 9
+	fi
+	local -r gt_dir=$1
+
+	local -r gt_remote_dir="$gt_dir/remotes/"
+	logInfo "analysing $gt_remote_dir/**/pull-hook.sh"
+
+	# shellcheck disable=SC2034   # is passed by name to runShellcheck
+	local -ra dirs2=("$gt_remote_dir")
+	local sourcePath="$dir_of_tegonal_scripts"
+	runShellcheck dirs2 "$sourcePath" -name "pull-hook.sh"
+}
