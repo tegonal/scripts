@@ -37,6 +37,7 @@ if ! [[ -v dir_of_tegonal_scripts ]]; then
 fi
 sourceOnce "$dir_of_tegonal_scripts/qa/run-shellcheck.sh"
 
+#TODO move to run-shellcheck with 5.0.0
 function runShellcheckPullHooks() {
 	if ! (($# == 1)); then
 		logError "Exactly one parameter needs to be passed to runShellcheckPullHooks, given \033[0;36m%s\033[0m\nFollowing a description of the parameters:" "$#"

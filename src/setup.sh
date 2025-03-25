@@ -31,6 +31,8 @@ set -euo pipefail
 shopt -s inherit_errexit
 unset CDPATH
 
+#TODO 5.0.0 rename file to setup_tegonal_scripts.sh -- this way consumers will not run into shellcheck issues when they name a file setup.sh as well
+
 if (($# != 1)); then
 	printf >&2 "\033[0;31mERROR\033[0m: You need to pass the path to the tegonal scripts directory as first argument. Following an example\n"
 	echo >&2 "source \"\$dir_of_tegonal_scripts/setup.sh\" \"\$dir_of_tegonal_scripts\""
