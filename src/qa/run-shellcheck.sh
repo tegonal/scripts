@@ -81,7 +81,7 @@ function runShellcheck() {
 		else
 			((++fileCounter))
 			declare output
-			output=$(shellcheck --check-sourced --color=auto --external-sources --enable=all --source-path="$sourcePath" "$script" 2>&1 || true)
+			output=$(shellcheck --check-sourced --color=always --external-sources --enable=all --source-path="$sourcePath" "$script" 2>&1 || true)
 			if [[ $output != "" ]]; then
 				printf "%s\n" "$output"
 				((++fileWithIssuesCounter))
