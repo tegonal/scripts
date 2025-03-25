@@ -60,6 +60,7 @@ body:
         - utility/replace-snippet.sh
         - utility/replace-help-snippet.sh
         - utility/string-utils.sh
+        - utility/secret-utils.sh
         - utility/source-once.sh
         - utility/update-bash-docu.sh
         - setup.sh
