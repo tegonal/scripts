@@ -27,8 +27,11 @@
 #    sourceOnce "$dir_of_tegonal_scripts/utility/io.sh"
 #
 ###################################
+set -euo pipefail
+shopt -s inherit_errexit
+unset CDPATH
 
-if ! (($# == 1)); then
+if (($# != 1)); then
 	printf >&2 "\033[0;31mERROR\033[0m: You need to pass the path to the tegonal scripts directory as first argument. Following an example\n"
 	echo >&2 "source \"\$dir_of_tegonal_scripts/setup.sh\" \"\$dir_of_tegonal_scripts\""
 	exit 9
