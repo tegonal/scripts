@@ -95,7 +95,7 @@ function parse_args_describeParameterTriple() {
 }
 
 function parse_args_exitIfParameterDefinitionIsNotTriple() {
-	if ! (($# == 1)); then
+	if (($# != 1)); then
 		logError "One argument needs to be passed to parse_args_exitIfParameterDefinitionIsNotTriple, given \033[0;36m%s\033[0m\nFollowing a description of the parameters:" "$#"
 		echo >&2 '1: params   the name of an array which contains the parameter definitions'
 		printStackTrace
@@ -207,7 +207,7 @@ function parseArgumentsInternal {
 }
 
 function parse_args_printHelp {
-	if ! (($# == 4)); then
+	if (($# != 4)); then
 		logError "Three arguments need to be passed to parse_args_printHelp, given \033[0;36m%s\033[0m\nFollowing a description of the parameters:" "$#"
 		echo >&2 '1: params       the name of an array which contains the parameter definitions'
 		echo >&2 '2: examples     a string containing examples (or an empty string)'
@@ -256,7 +256,7 @@ function parse_args_printHelp {
 }
 
 function exitIfNotAllArgumentsSet {
-	if ! (($# == 3)) && ! (($# == 4)); then
+	if (($# != 3)) && (($# != 4)); then
 		logError "Three arguments need to be passed to exitIfNotAllArgumentsSet, given \033[0;36m%s\033[0m\nFollowing a description of the parameters:" "$#"
 		echo >&2 '1: params    						the name of an array which contains the parameter definitions'
 		echo >&2 '2: examples 						a string containing examples (or an empty string)'

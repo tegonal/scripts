@@ -92,7 +92,7 @@ sourceOnce "$dir_of_tegonal_scripts/utility/parse-fn-args.sh"
 sourceOnce "$dir_of_tegonal_scripts/utility/recursive-declare-p.sh"
 
 function checkArgIsArray() {
-	if ! (($# == 2)); then
+	if (($# != 2)); then
 		logError "Two arguments needs to be passed to checkArgIsArray, given \033[0;36m%s\033[0m\n" "$#"
 		echo >&2 '1: array      		  name of the array to check'
 		echo >&2 '2: argNumberOrName  what argument do we check (used in error message)'
@@ -133,7 +133,7 @@ function exitIfArgIsNotArrayOrIsEmpty() {
 }
 
 function checkArgIsArrayWithTuples() {
-	if ! (($# == 5)); then
+	if (($# != 5)); then
 		logError "Five arguments needs to be passed to checkArgIsArrayWithTuples, given \033[0;36m%s\033[0m\n" "$#"
 		echo >&2 '1: array            name of the array to check'
 		echo >&2 '2: tupleNum         the number of values of each tuple'
@@ -281,7 +281,7 @@ function checkArgIsVersion() {
 }
 
 function checkCommandExists() {
-	if ! (($# == 1 || $# == 2)); then
+	if (($# != 1 && $# != 2)); then
 		traceAndDie "you need to pass the name of the command to check to checkCommandExists and optionally an additional hint (e.g. install via...)"
 	fi
 	local -r name=$1
@@ -316,7 +316,7 @@ function exitIfVariablesNotDeclared() {
 }
 
 function checkPathIsInsideOf() {
-	if ! (($# == 2)); then
+	if (($# != 2)); then
 		logError "Two arguments needs to be passed to checkPathIsInsideOf, given \033[0;36m%s\033[0m\n" "$#"
 		echo >&2 '1: pathToCheck     the path which should be inside of rootDir'
 		echo >&2 '2: rootDir         the root directory'
