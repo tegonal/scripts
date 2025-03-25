@@ -130,7 +130,6 @@ function promptForSecret() {
 
 	while IFS= read -r -s -n 1 promptForSecret_char; do
 		if [[ $promptForSecret_char == $'\0' || $promptForSecret_char == $'\n' ]]; then
-			printf "break"
 			break
 		fi
 
