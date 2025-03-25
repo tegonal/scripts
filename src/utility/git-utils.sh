@@ -103,7 +103,7 @@ function countCommits() {
 }
 
 function localGitIsAhead() {
-	if ! (($# == 1)) && ! (($# == 2)); then
+	if (($# != 1)) && (($# != 2)); then
 		traceAndDie "you need to pass at least the branch name to localGitIsAhead and optionally the name of the remote (defaults to origin) but not more, given: %s" "$#"
 	fi
 	local -r branch=$1
@@ -115,7 +115,7 @@ function localGitIsAhead() {
 }
 
 function localGitIsBehind() {
-	if ! (($# == 1)) && ! (($# == 2)); then
+	if (($# != 1)) && (($# != 2)); then
 		traceAndDie "you need to pass at least the branch name to localGitIsBehind and optionally the name of the remote (defaults to origin) but not more, given: %s" "$#"
 	fi
 	local -r branch=$1
@@ -127,7 +127,7 @@ function localGitIsBehind() {
 }
 
 function hasRemoteTag() {
-	if ! (($# == 1)) && ! (($# == 2)); then
+	if (($# != 1)) && (($# != 2)); then
 		traceAndDie "you need to pass at least the tag to hasRemoteTag and optionally the name of the remote (defaults to origin) but not more, given: %s" "$#"
 	fi
 	local -r tag=$1

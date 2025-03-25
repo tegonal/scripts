@@ -114,7 +114,7 @@ function runShellcheck() {
 }
 
 function runShellcheckPullHooks() {
-	if ! (($# == 1)); then
+	if (($# != 1)); then
 		logError "Exactly one parameter needs to be passed to runShellcheckPullHooks, given \033[0;36m%s\033[0m\nFollowing a description of the parameters:" "$#"
 		echo >&2 '1: gt_dir  working directory of gt'
 		printStackTrace

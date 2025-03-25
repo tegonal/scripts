@@ -50,7 +50,7 @@ shopt -s inherit_errexit
 unset CDPATH
 
 function determineSourceOnceGuard() {
-	if ! (($# == 1)); then
+	if (($# != 1)); then
 		traceAndDie "you need to pass the file name, for which we shall calculate the guard, to determineSourceOnceGuard"
 	fi
 	local -r file="$1"

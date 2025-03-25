@@ -43,7 +43,7 @@ if ! [[ -v dir_of_tegonal_scripts ]]; then
 fi
 
 function removeUnusedSignatures() {
-	if ! (($# == 1)); then
+	if (($# != 1)); then
 		logError "One argument needs to be passed to removeUnusedSignatures, given \033[0;36m%s\033[0m\n" "$#"
 		echo >&2 '1: projectDir	the path to the root directory of the project'
 		printStackTrace

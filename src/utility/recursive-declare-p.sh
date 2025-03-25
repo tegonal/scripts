@@ -54,7 +54,7 @@ if ! [[ -v dir_of_tegonal_scripts ]]; then
 fi
 
 function recursiveDeclareP() {
-	if ! (($# == 1)); then
+	if (($# != 1)); then
 		traceAndDie "you need to pass the variable name, whose declaration statement shall be determined, to recursiveDeclareP"
 	fi
 
