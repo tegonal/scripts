@@ -78,7 +78,7 @@ function getSecretViaSecretToolOrPromptAndStore() {
 
 	# shellcheck disable=SC2310   # we are aware of that set -e has no effect for getSecretViaSecretTool
 	if ! getSecretViaSecretToolOrPromptAndStore_secret=$(getSecretViaSecretTool "$getSecretViaSecretToolOrPromptAndStore_group" "$getSecretViaSecretToolOrPromptAndStore_key"); then
-		promptForSecret "$getSecretViaSecretToolOrPromptAndStore_prompt" getSecretViaSecretToolOrPromptAndStore_outVar
+		promptForSecret "$getSecretViaSecretToolOrPromptAndStore_prompt" getSecretViaSecretToolOrPromptAndStore_secret
 		storeSecretViaSecretTool "$getSecretViaSecretToolOrPromptAndStore_group" "$getSecretViaSecretToolOrPromptAndStore_key" "$getSecretViaSecretToolOrPromptAndStore_label" "$getSecretViaSecretToolOrPromptAndStore_secret"
 	fi
 	assignToVariableInOuterScope "$getSecretViaSecretToolOrPromptAndStore_outVar" "$getSecretViaSecretToolOrPromptAndStore_secret"
