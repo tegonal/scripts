@@ -51,6 +51,16 @@ fi
 sourceOnce "$dir_of_tegonal_scripts/utility/checks.sh"
 
 function withCustomOutputInput() {
+		if (($# < 3)); then
+  		logError "At least three arguments needs to be passed to withCustomOutputInput, given \033[0;36m%s\033[0m\nFollowing a description of the parameters:" "$#"
+  		echo >&2 '  1: outputNr   the file descriptor number for the output (i.e. in which you want to write)'
+  		echo >&2 '  2: inputNr    the file descriptor number for the input (i.e. from which you want to read)'
+  		echo >&2 '  3: callback		the name of the callback function which shall be called'
+  		echo >&2 '...: vararg			arguments which are passed to the callback function'
+
+  		printStackTrace
+  		exit 9
+  	fi
 	# prefix variables as the callback function might use variables from an outer scope and we would shadow those
 	local withCustomOutputInput_outputNr=$1
 	local withCustomOutputInput_inputNr=$2
@@ -60,10 +70,11 @@ function withCustomOutputInput() {
 	exitIfArgIsNotFunction "$withCustomOutputInput_fun" 3
 
 	local withCustomOutputInput_tmpFile
-	withCustomOutputInput_tmpFile=$(mktemp /tmp/tegonal-scripts-io.XXXXXXXXX)
+	withCustomOutputInput_tmpFile=$(mktemp /tmp/tegonal-scripts-io.XXXXXXXXX) || traceAndDie "could not create a temporary directory"
 	eval "exec ${withCustomOutputInput_outputNr}>\"$withCustomOutputInput_tmpFile\"" || traceAndDie "could not create output file descriptor %s" "$withCustomOutputInput_outputNr"
 	eval "exec ${withCustomOutputInput_inputNr}<\"$withCustomOutputInput_tmpFile\"" || traceAndDie "could not create input file descriptor %s" "$withCustomOutputInput_inputNr"
 	# don't fail if we cannot delete the tmp file, if this should happen, then the system should clean-up the file when the process ends
+	# same same if $withCustomOutputInput_fun should fail/exit, we don't setup a trap, the system should clean it up
 	rm "$withCustomOutputInput_tmpFile" || true
 
 	$withCustomOutputInput_fun "$@"
