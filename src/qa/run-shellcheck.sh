@@ -32,6 +32,10 @@
 #    declare sourcePath="$dir_of_tegonal_scripts"
 #    runShellcheck dirs "$sourcePath"
 #
+#    # pass the working directory of gt which usually is .gt in the root of your repository
+#    # this will run shellcheck on all pull-hook.sh files
+#    runShellcheckPullHooks ".gt"
+#
 ###################################
 set -euo pipefail
 shopt -s inherit_errexit
