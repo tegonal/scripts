@@ -126,11 +126,11 @@ function runShellcheckPullHooks() {
 	fi
 	local -r gt_dir=$1
 
-	local -r gt_remote_dir="$gt_dir/remotes/"
-	logInfo "analysing $gt_remote_dir/**/pull-hook.sh"
+	local -r gt_remote_dir="$gt_dir/remotes"
+	logInfo "analysing $gt_remote_dir/**/pull-hook*.sh"
 
 	# shellcheck disable=SC2034   # is passed by name to runShellcheck
-	local -ra dirs2=("$gt_remote_dir")
+	local -ra dirs=("$gt_remote_dir")
 	local sourcePath="$dir_of_tegonal_scripts"
-	runShellcheck dirs2 "$sourcePath" -name "pull-hook.sh"
+	runShellcheck dirs "$sourcePath" -name "pull-hook*.sh"
 }
