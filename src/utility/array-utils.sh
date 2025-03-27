@@ -85,7 +85,7 @@ joinByString() {
 
 function arrFilter() {
 	if (($# != 3)); then
-		logError "Three arguments needs to be passed to arrFilter, given \033[0;36m%s\033[0m\n" "$#"
+		logError "Three arguments need to be passed to arrFilter, given \033[0;36m%s\033[0m\n" "$#"
 		echo >&2 '1: arrayIn    name of the array to filter'
 		echo >&2 '2: arrayOut   name of the array which will contain the result'
 		echo >&2 '3: predicate  function which what argument do we check (used in error message)'
@@ -113,7 +113,7 @@ function arrFilter() {
 
 function arrTakeEveryX() {
 	if (($# != 4)); then
-		logError "Four arguments needs to be passed to arrTakeEveryX, given \033[0;36m%s\033[0m\n" "$#"
+		logError "Four arguments need to be passed to arrTakeEveryX, given \033[0;36m%s\033[0m\n" "$#"
 		echo >&2 '1: arrayIn      name of the array to filter'
 		echo >&2 '2: arrayOut     name of the array which will contain the result'
 		echo >&2 '3: everyXEntry  e.g. 2, every second entry'
