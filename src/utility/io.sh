@@ -52,7 +52,7 @@ sourceOnce "$dir_of_tegonal_scripts/utility/checks.sh"
 
 function withCustomOutputInput() {
 		if (($# < 3)); then
-  		logError "At least three arguments needs to be passed to withCustomOutputInput, given \033[0;36m%s\033[0m\nFollowing a description of the parameters:" "$#"
+  		logError "At least three arguments need to be passed to withCustomOutputInput, given \033[0;36m%s\033[0m\nFollowing a description of the parameters:" "$#"
   		echo >&2 '  1: outputNr   the file descriptor number for the output (i.e. in which you want to write)'
   		echo >&2 '  2: inputNr    the file descriptor number for the input (i.e. from which you want to read)'
   		echo >&2 '  3: callback		the name of the callback function which shall be called'
