@@ -51,16 +51,15 @@ fi
 sourceOnce "$dir_of_tegonal_scripts/utility/checks.sh"
 
 function withCustomOutputInput() {
-		if (($# < 3)); then
-  		logError "At least three arguments need to be passed to withCustomOutputInput, given \033[0;36m%s\033[0m\nFollowing a description of the parameters:" "$#"
-  		echo >&2 '  1: outputNr   the file descriptor number for the output (i.e. in which you want to write)'
-  		echo >&2 '  2: inputNr    the file descriptor number for the input (i.e. from which you want to read)'
-  		echo >&2 '  3: callback		the name of the callback function which shall be called'
-  		echo >&2 '...: vararg			arguments which are passed to the callback function'
-
-  		printStackTrace
-  		exit 9
-  	fi
+	if (($# < 3)); then
+		logError "At least three arguments need to be passed to withCustomOutputInput, given \033[0;36m%s\033[0m\nFollowing a description of the parameters:" "$#"
+		echo >&2 '  1: outputNr   the file descriptor number for the output (i.e. in which you want to write)'
+		echo >&2 '  2: inputNr    the file descriptor number for the input (i.e. from which you want to read)'
+		echo >&2 '  3: callback		the name of the callback function which shall be called'
+		echo >&2 '...: vararg			arguments which are passed to the callback function'
+		printStackTrace
+		exit 9
+	fi
 	# prefix variables as the callback function might use variables from an outer scope and we would shadow those
 	local withCustomOutputInput_outputNr=$1
 	local withCustomOutputInput_inputNr=$2

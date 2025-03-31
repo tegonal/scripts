@@ -31,6 +31,11 @@ set -euo pipefail
 shopt -s inherit_errexit
 unset CDPATH
 
+# shellcheck disable=SC2034		# global var used in log.sh
+declare -A TEGONAL_SCRIPTS_SUPPRESSED_DEPRECATION=()
+# shellcheck disable=SC2034		# global var used in log.sh
+declare TEGONAL_SCRIPTS_ERROR_ON_DEPRECATION=true
+
 #TODO 5.0.0 rename file to setup_tegonal_scripts.sh -- this way consumers will not run into shellcheck issues when they name a file setup.sh as well
 
 if (($# != 1)); then

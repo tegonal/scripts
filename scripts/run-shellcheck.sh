@@ -21,7 +21,7 @@ if ! [[ -v dir_of_tegonal_scripts ]]; then
 	dir_of_tegonal_scripts="$scriptsDir/../src"
 	source "$dir_of_tegonal_scripts/setup.sh" "$dir_of_tegonal_scripts"
 fi
-sourceOnce "$dir_of_tegonal_scripts/qa/run-shellcheck-pull-hooks.sh"
+sourceOnce "$dir_of_tegonal_scripts/qa/run-shellcheck.sh"
 
 function customRunShellcheck() {
 	# shellcheck disable=SC2034   # is passed by name to runShellcheck
