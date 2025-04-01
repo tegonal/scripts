@@ -14,7 +14,7 @@ unset CDPATH
 TEGONAL_SCRIPTS_LATEST_VERSION="v4.5.1"
 
 if ! [[ -v dir_of_github_commons ]]; then
-	dir_of_github_commons="$(cd -- "$(dirname -- "${BASH_SOURCE[0]:-$0}")" >/dev/null && pwd 2>/dev/null)/lib/src"
+	dir_of_github_commons="$(cd -- "$(dirname -- "${BASH_SOURCE[0]:-$0}")" >/dev/null && pwd 2>/dev/null)/../../../lib/tegonal-gh-commons/src"
 	readonly dir_of_github_commons
 fi
 
@@ -22,7 +22,6 @@ if ! [[ -v dir_of_tegonal_scripts ]]; then
 	dir_of_tegonal_scripts="$(cd -- "$(dirname -- "${BASH_SOURCE[0]:-$0}")" >/dev/null && pwd 2>/dev/null)/../../src"
 	source "$dir_of_tegonal_scripts/setup.sh" "$dir_of_tegonal_scripts"
 fi
-
 
 sourceOnce "$dir_of_github_commons/gt/pull-hook-functions.sh"
 sourceOnce "$dir_of_tegonal_scripts/utility/parse-fn-args.sh"

@@ -78,6 +78,7 @@ function sourceOnce() {
 	local -r sourceOnce_guard
 
 	if ! [[ -v "$sourceOnce_guard" ]]; then
+		# assigns to the outer scope
 		printf -v "$sourceOnce_guard" "%s" "true"
 		if ! [[ -f $sourceOnce_file ]]; then
 			if [[ -d $sourceOnce_file ]]; then
@@ -98,6 +99,7 @@ function sourceOnce() {
 if ! [[ -v dir_of_tegonal_scripts ]]; then
 	dir_of_tegonal_scripts="$(cd -- "$(dirname -- "${BASH_SOURCE[0]:-$0}")" >/dev/null && pwd 2>/dev/null)/.."
 fi
+
 sourceOnce "$dir_of_tegonal_scripts/utility/log.sh"
 
 # Use this function in case you want to source the given file even if it was previously sourced via sourceOnce

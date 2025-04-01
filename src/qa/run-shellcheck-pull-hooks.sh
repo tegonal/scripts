@@ -39,7 +39,7 @@ sourceOnce "$dir_of_tegonal_scripts/qa/run-shellcheck.sh"
 
 #TODO remove file, runShellcheckPullHooks is no also in run-shellcheck.sh
 function runShellcheckPullHooks() {
-	logWarning "please source run-shellcheck.sh instead of run-shellcheck-pull-hooks.sh -- run-shellcheck-pull-hooks.sh will be removed with v5.0.0"
+	logDeprecation "runShellcheckPullHooks" "please source run-shellcheck.sh instead of run-shellcheck-pull-hooks.sh -- run-shellcheck-pull-hooks.sh will be removed with v5.0.0"
 
 	if (($# != 1)); then
 		logError "Exactly one parameter needs to be passed to runShellcheckPullHooks, given \033[0;36m%s\033[0m\nFollowing a description of the parameters:" "$#"

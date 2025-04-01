@@ -130,6 +130,34 @@ function logSuccessWithoutNewline() {
 	printf "\033[0;32mSUCCESS\033[0m: $msg" "$@"
 }
 
+function logDeprecation() {
+	if (($# != 2)); then
+		logError "Two arguments need to be passed to logDeprecation, given \033[0;36m%s\033[0m\nFollowing a description of the parameters:" "$#"
+		echo >&2 '  1: id	 	    			the id of the deprecation -- used in reporting and one can use it to suppress the deprecation warning'
+		echo >&2 '  2: message    		the message to be printed (including replacement hint)'
+		printStackTrace
+		exit 9
+	fi
+	local -r id=$1
+	local -r msg=$2
+	shift 2 || traceAndDie "could not shift by 2"
+
+	if ! [[ -v TEGONAL_SCRIPTS_SUPPRESSED_DEPRECATION["$id"] ]]; then
+		printf >&2 "\033[0;93mDEPRECATION WARNING\033[0m id \033[0;36m%s\033[0m $msg\n" "$id" "$@"
+		printStackTrace >&2 2
+
+		if [[ -v TEGONAL_SCRIPTS_ERROR_ON_DEPRECATION && $TEGONAL_SCRIPTS_ERROR_ON_DEPRECATION = "true" ]]; then
+			die "found a deprecation and TEGONAL_SCRIPTS_ERROR_ON_DEPRECATION=true was specified, dying..."
+		fi
+	fi
+}
+
+function suppressDeprecation() {
+	local -r id=$1
+	# shellcheck disable=SC2034		# global var defined in setup.sh
+	TEGONAL_SCRIPTS_SUPPRESSED_DEPRECATION[id]=1
+}
+
 function die() {
 	logError "$@"
 	exit 1
@@ -165,12 +193,12 @@ function printStackTrace() {
 
 function traceAndDie() {
 	logError "$@"
-	printStackTrace 1
+	printStackTrace 1 >&2
 	exit 1
 }
 
 function traceAndReturnDying() {
 	logError "$@"
-	printStackTrace 1
+	printStackTrace 1 >&2
 	return 1
 }
