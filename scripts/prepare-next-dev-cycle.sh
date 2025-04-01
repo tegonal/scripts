@@ -9,7 +9,7 @@
 #                                         Version: v4.6.0-SNAPSHOT
 ###################################
 set -euo pipefail
-shopt -s inherit_errexit
+shopt -s inherit_errexit || { echo "please update to bash 5, see errors above"; exit 1; }
 unset CDPATH
 export TEGONAL_SCRIPTS_VERSION='v4.6.0-SNAPSHOT'
 
