@@ -1,6 +1,6 @@
 #!/usr/bin/env bash
 set -euo pipefail
-shopt -s inherit_errexit
+shopt -s inherit_errexit || { echo "please update to bash 5, see errors above"; exit 1; }
 
 if ! [[ -v dir_of_tegonal_scripts ]]; then
 	# Assumes your script is in (root is project folder) e.g. /src or /scripts and
