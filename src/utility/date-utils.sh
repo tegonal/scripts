@@ -96,21 +96,23 @@ function dateToTimestamp() {
 }
 
 function timestampInMs() {
-	date +%s%3N 2>/dev/null || {
-		# on error date most likely does not refer to gnu date (but maybe bsd date)
-		# let's try to fallback to perl in such cases
-		if command -v perl >/dev/null; then
+	local timestamp
+	timestamp="$(date +%s%3N 2>/dev/null || "3N")"
+	if [[ $timestamp =~ 3N$ ]]; then
+		# N modifier is not supported. Most likely date is not GNU date but BSD date
+		if command -v gdate; then
+			gdate +%s%3N 2>/dev/null
+		elif command -v perl >/dev/null; then
 			perl -MTime::HiRes=time -E 'printf("%.0f\n", time * 1000)' 2>/dev/null
 		else
-			# or to gdate
-			command -v gdate >/dev/null && gdate +%s%3N 2>/dev/null
+			# we give up and get a timestamp in seconds instead and append 000
+			local timestampInSeconds
+			timestampInSeconds="$(date +%s)"
+			echo "${timestampInSeconds}000"
 		fi
-	} || {
-		# ok... we give up we just get a timestamp in seconds and append 000
-		local timestampInSeconds
-		timestampInSeconds="$(date +%s)"
-		echo "${timestampInSeconds}000"
-	}
+	else
+		echo "$timestamp"
+	fi
 }
 
 function elapsedSecondsBasedOnTimestampInMs() {
