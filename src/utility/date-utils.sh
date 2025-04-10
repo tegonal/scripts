@@ -126,7 +126,7 @@ function elapsedSecondsBasedOnTimestampInMs() {
 	local endTimestampInMs
 	endTimestampInMs="$(timestampInMs)"
 	elapsedInMs="$((endTimestampInMs - startTimestampInMs))"
-	formatMillisToSeconds "$elapsedInMs"
+	formatMsToSeconds "$elapsedInMs"
 }
 
 function formatMsToSeconds() {
