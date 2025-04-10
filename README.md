@@ -1447,6 +1447,17 @@ timestampToDateInUserFormat 1662981524 # outputs 12.09.2022 for ch_DE
 
 dateToTimestamp "2024-03-01" # outputs 1709247600
 dateToTimestamp "2022-09-12T13:18:44" # outputs 1662981524
+
+# outputs a timestamp in ms
+startTimestampInMs="$(timestampInMs)"
+
+formatMsToSeconds 12 		# outputs 0.012
+formatMsToSeconds 1234  # outputs 1.234
+formatMsToSeconds -123  # outputs -0.123
+# note that formatMsToSeconds does not check if you pass a number
+
+# outputs the time passed since the given timestamp in ms formatted as seconds
+elapsedSecondsBasedOnTimestampInMs "$startTimestampInMs"
 ```
 
 </utility-date-utils>
