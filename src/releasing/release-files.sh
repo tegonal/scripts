@@ -162,8 +162,7 @@ function releaseFiles() {
 		mkdir "$gpgDir"
 		chmod 700 "$gpgDir"
 
-		gpg --homedir "$gpgDir" --batch --no-tty --import "$gtDir/signing-key.public.asc" || die "was not able to import %s" "$gtDir/signing-key.public.asc"
-		trustGpgKey "$gpgDir" "info@tegonal.com" || logInfo "could not trust key with id info@tegonal.com, you will see warnings due to this during signing the files"
+		importGpgKey "$gpgDir" "$gtDir/signing-key.public.asc" || die "was not able to import the signing-key, cannot release"
 
 		local script
 		"$release_files_findForSigning" -type f -not -name "*.sig" -print0 |
