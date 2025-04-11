@@ -69,7 +69,7 @@ function withCustomOutputInput() {
 	exitIfArgIsNotFunction "$withCustomOutputInput_fun" 3
 
 	local withCustomOutputInput_tmpFile
-	withCustomOutputInput_tmpFile=$(mktemp /tmp/tegonal-scripts-io.XXXXXXXXX) || traceAndDie "could not create a temporary directory"
+	withCustomOutputInput_tmpFile=$(mktemp -t tegonal-scripts-io.XXXXXXXXX) || traceAndDie "could not create a temporary directory"
 	eval "exec ${withCustomOutputInput_outputNr}>\"$withCustomOutputInput_tmpFile\"" || traceAndDie "could not create output file descriptor %s" "$withCustomOutputInput_outputNr"
 	eval "exec ${withCustomOutputInput_inputNr}<\"$withCustomOutputInput_tmpFile\"" || traceAndDie "could not create input file descriptor %s" "$withCustomOutputInput_inputNr"
 	# don't fail if we cannot delete the tmp file, if this should happen, then the system should clean-up the file when the process ends
