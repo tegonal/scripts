@@ -162,7 +162,8 @@ function releaseFiles() {
 		mkdir "$gpgDir"
 		chmod 700 "$gpgDir"
 
-		importGpgKey "$gpgDir" "$gtDir/signing-key.public.asc" || die "was not able to import the signing-key, cannot release"
+		# we don't specify confirmationQuestion (i.e. empty) which means we trust it without consent
+		importGpgKey "$gpgDir" "$gtDir/signing-key.public.asc" "" || die "was not able to import the signing-key, cannot release"
 
 		local script
 		"$release_files_findForSigning" -type f -not -name "*.sig" -print0 |
