@@ -144,8 +144,8 @@ function parseArgumentsInternal {
 	local -ri parseArguments_arrLength="${#parseArguments_paramArr[@]}"
 
 	function parseArgumentsInternal_ask_printHelp() {
-		if askYesOrNo "Shall I print the help for you?"; then
-			parseArgumentsInternal_printHelp
+		if askYesOrNo >&2 "Shall I print the help for you?"; then
+			parseArgumentsInternal_printHelp >&2
 		fi
 	}
 
