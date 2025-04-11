@@ -139,7 +139,8 @@ function importGpgKey() {
 		grep pub <<<"$outputKey" | perl -0777 -pe "s#pub\s+[^/]+/([0-9A-Z]+).*#\$1#g" |
 			while read -r keyId; do
 				echo "establishing trust for key $keyId"
-				trustGpgKey "$maybeSymlinkedGpgDir" "$keyId"
+				# shellcheck disable=SC2310   # we are aware of that set -e has no effect for trustGpgKey that's why we use || return $?
+				trustGpgKey "$maybeSymlinkedGpgDir" "$keyId" || return $?
 			done || {
 			local exitCode=$?
 			cleanupMaybeSymlinkedGpgDir "$gpgDir" "$maybeSymlinkedGpgDir"
