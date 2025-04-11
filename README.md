@@ -81,7 +81,7 @@ We recommend you use the following code at the beginning of your script in case 
 ```bash
 #!/usr/bin/env bash
 set -euo pipefail
-shopt -s inherit_errexit || { echo "please update to bash 5, see errors above"; exit 1; }
+shopt -s inherit_errexit || { echo >&2 "please update to bash 5, see errors above" && exit 1; }
 
 if ! [[ -v dir_of_tegonal_scripts ]]; then
 	# Assumes your script is in (root is project folder) e.g. /src or /scripts and
@@ -118,14 +118,13 @@ The scripts are ordered by topic:
 	- [Release Template](#release-template)
     - [Prepare Next Dev Cycle Template](#prepare-next-dev-cycle-template)
 	- [git Pre-Release checks](#git-pre-release-checks)
-    - [sbt sonatype publish](#sbt-publish-to-sonatype)
+    - [sbt sonatype publish](#sbt-sonatype-publish)
 	- [Update Version common steps](#update-version-common-steps)
 	- [Update Version in README](#update-version-in-readme)
 	- [Update Version in bash scripts](#update-version-in-bash-scripts)
 	- [Update Version in issue templates](#update-version-in-issue-templates)
 	- [Toggle main/release sections](#toggle-mainrelease-sections)
 	- [Hide/Show sneak-peek banner](#hideshow-sneak-peek-banner)
-	- [Create tag, prepare-next, push](#create-tag-prepare-next-dev-cycle-and-push-tag-and-changes)
 
 - [Script Utilities](#script-utilities)
 	- [array utils](#array-utils)
@@ -210,7 +209,7 @@ Helper function which performs a signin and redeploycontainers
 ```bash
 #!/usr/bin/env bash
 set -euo pipefail
-shopt -s inherit_errexit || { echo "please update to bash 5, see errors above"; exit 1; }
+shopt -s inherit_errexit || { echo >&2 "please update to bash 5, see errors above" && exit 1; }
 # Assumes tegonal's scripts were fetched with gt - adjust location accordingly
 dir_of_tegonal_scripts="$(cd -- "$(dirname -- "${BASH_SOURCE[0]:-$0}")" >/dev/null && pwd 2>/dev/null)/../lib/tegonal-scripts/src"
 source "$dir_of_tegonal_scripts/setup.sh" "$dir_of_tegonal_scripts"
@@ -279,7 +278,7 @@ The most important functions are defined in this file: jelastic_signin which in 
 ```bash
 #!/usr/bin/env bash
 set -euo pipefail
-shopt -s inherit_errexit || { echo "please update to bash 5, see errors above"; exit 1; }
+shopt -s inherit_errexit || { echo >&2 "please update to bash 5, see errors above" && exit 1; }
 # Assumes tegonal's scripts were fetched with gt - adjust location accordingly
 dir_of_tegonal_scripts="$(cd -- "$(dirname -- "${BASH_SOURCE[0]:-$0}")" >/dev/null && pwd 2>/dev/null)/../lib/tegonal-scripts/src"
 source "$dir_of_tegonal_scripts/setup.sh" "$dir_of_tegonal_scripts"
@@ -318,7 +317,7 @@ settings for shellcheck.
 ```bash
 #!/usr/bin/env bash
 set -euo pipefail
-shopt -s inherit_errexit || { echo "please update to bash 5, see errors above"; exit 1; }
+shopt -s inherit_errexit || { echo >&2 "please update to bash 5, see errors above" && exit 1; }
 # Assumes tegonal's scripts were fetched with gt - adjust location accordingly
 dir_of_tegonal_scripts="$(cd -- "$(dirname -- "${BASH_SOURCE[0]:-$0}")" >/dev/null && pwd 2>/dev/null)/../lib/tegonal-scripts/src"
 source "$dir_of_tegonal_scripts/setup.sh" "$dir_of_tegonal_scripts"
@@ -357,7 +356,7 @@ Intended to be used in before-pr.sh where contributors shall not be forced to ha
 ```bash
 #!/usr/bin/env bash
 set -euo pipefail
-shopt -s inherit_errexit || { echo "please update to bash 5, see errors above"; exit 1; }
+shopt -s inherit_errexit || { echo >&2 "please update to bash 5, see errors above" && exit 1; }
 # Assumes tegonal's scripts were fetched with gt - adjust location accordingly
 dir_of_tegonal_scripts="$(cd -- "$(dirname -- "${BASH_SOURCE[0]:-$0}")" >/dev/null && pwd 2>/dev/null)/../lib/tegonal-scripts/src"
 source "$dir_of_tegonal_scripts/setup.sh" "$dir_of_tegonal_scripts"
@@ -428,7 +427,7 @@ Full usage example:
 ```bash
 #!/usr/bin/env bash
 set -euo pipefail
-shopt -s inherit_errexit || { echo "please update to bash 5, see errors above"; exit 1; }
+shopt -s inherit_errexit || { echo >&2 "please update to bash 5, see errors above" && exit 1; }
 # Assumes tegonal's scripts were fetched with gt - adjust location accordingly
 dir_of_tegonal_scripts="$(cd -- "$(dirname -- "${BASH_SOURCE[0]:-$0}")" >/dev/null && pwd 2>/dev/null)/../lib/tegonal-scripts/src"
 source "$dir_of_tegonal_scripts/setup.sh" "$dir_of_tegonal_scripts"
@@ -515,7 +514,7 @@ Full usage example:
 ```bash
 #!/usr/bin/env bash
 set -euo pipefail
-shopt -s inherit_errexit || { echo "please update to bash 5, see errors above"; exit 1; }
+shopt -s inherit_errexit || { echo >&2 "please update to bash 5, see errors above" && exit 1; }
 # Assumes tegonal's scripts were fetched with gt - adjust location accordingly
 dir_of_tegonal_scripts="$(cd -- "$(dirname -- "${BASH_SOURCE[0]:-$0}")" >/dev/null && pwd 2>/dev/null)/../lib/tegonal-scripts/src"
 source "$dir_of_tegonal_scripts/setup.sh" "$dir_of_tegonal_scripts"
@@ -616,7 +615,7 @@ Full example:
 ```bash
 #!/usr/bin/env bash
 set -euo pipefail
-shopt -s inherit_errexit || { echo "please update to bash 5, see errors above"; exit 1; }
+shopt -s inherit_errexit || { echo >&2 "please update to bash 5, see errors above" && exit 1; }
 # Assumes tegonal's scripts were fetched with gt - adjust location accordingly
 dir_of_tegonal_scripts="$(cd -- "$(dirname -- "${BASH_SOURCE[0]:-$0}")" >/dev/null && pwd 2>/dev/null)/../lib/tegonal-scripts/src"
 source "$dir_of_tegonal_scripts/setup.sh" "$dir_of_tegonal_scripts"
@@ -700,7 +699,7 @@ Full example:
 ```bash
 #!/usr/bin/env bash
 set -euo pipefail
-shopt -s inherit_errexit || { echo "please update to bash 5, see errors above"; exit 1; }
+shopt -s inherit_errexit || { echo >&2 "please update to bash 5, see errors above" && exit 1; }
 # Assumes tegonal's scripts were fetched with gt - adjust location accordingly
 dir_of_tegonal_scripts="$(cd -- "$(dirname -- "${BASH_SOURCE[0]:-$0}")" >/dev/null && pwd 2>/dev/null)/../lib/tegonal-scripts/src"
 source "$dir_of_tegonal_scripts/setup.sh" "$dir_of_tegonal_scripts"
@@ -774,7 +773,7 @@ Full usage example:
 ```bash
 #!/usr/bin/env bash
 set -euo pipefail
-shopt -s inherit_errexit || { echo "please update to bash 5, see errors above"; exit 1; }
+shopt -s inherit_errexit || { echo >&2 "please update to bash 5, see errors above" && exit 1; }
 # Assumes tegonal's scripts were fetched with gt - adjust location accordingly
 dir_of_tegonal_scripts="$(cd -- "$(dirname -- "${BASH_SOURCE[0]:-$0}")" >/dev/null && pwd 2>/dev/null)/../lib/tegonal-scripts/src"
 source "$dir_of_tegonal_scripts/setup.sh" "$dir_of_tegonal_scripts"
@@ -812,7 +811,7 @@ Full example:
 ```bash
 #!/usr/bin/env bash
 set -euo pipefail
-shopt -s inherit_errexit || { echo "please update to bash 5, see errors above"; exit 1; }
+shopt -s inherit_errexit || { echo >&2 "please update to bash 5, see errors above" && exit 1; }
 # Assumes tegonal's scripts were fetched with gt - adjust location accordingly
 dir_of_tegonal_scripts="$(cd -- "$(dirname -- "${BASH_SOURCE[0]:-$0}")" >/dev/null && pwd 2>/dev/null)/../lib/tegonal-scripts/src"
 source "$dir_of_tegonal_scripts/setup.sh" "$dir_of_tegonal_scripts"
@@ -875,7 +874,7 @@ Full usage example:
 ```bash
 #!/usr/bin/env bash
 set -euo pipefail
-shopt -s inherit_errexit || { echo "please update to bash 5, see errors above"; exit 1; }
+shopt -s inherit_errexit || { echo >&2 "please update to bash 5, see errors above" && exit 1; }
 # Assumes tegonal's scripts were fetched with gt - adjust location accordingly
 dir_of_tegonal_scripts="$(cd -- "$(dirname -- "${BASH_SOURCE[0]:-$0}")" >/dev/null && pwd 2>/dev/null)/../lib/tegonal-scripts/src"
 source "$dir_of_tegonal_scripts/setup.sh" "$dir_of_tegonal_scripts"
@@ -963,7 +962,7 @@ Full usage example:
 ```bash
 #!/usr/bin/env bash
 set -euo pipefail
-shopt -s inherit_errexit || { echo "please update to bash 5, see errors above"; exit 1; }
+shopt -s inherit_errexit || { echo >&2 "please update to bash 5, see errors above" && exit 1; }
 # Assumes tegonal's scripts were fetched with gt - adjust location accordingly
 dir_of_tegonal_scripts="$(cd -- "$(dirname -- "${BASH_SOURCE[0]:-$0}")" >/dev/null && pwd 2>/dev/null)/../lib/tegonal-scripts/src"
 source "$dir_of_tegonal_scripts/setup.sh" "$dir_of_tegonal_scripts"
@@ -1022,7 +1021,7 @@ Full usage example:
 ```bash
 #!/usr/bin/env bash
 set -euo pipefail
-shopt -s inherit_errexit || { echo "please update to bash 5, see errors above"; exit 1; }
+shopt -s inherit_errexit || { echo >&2 "please update to bash 5, see errors above" && exit 1; }
 # Assumes tegonal's scripts were fetched with gt - adjust location accordingly
 dir_of_tegonal_scripts="$(cd -- "$(dirname -- "${BASH_SOURCE[0]:-$0}")" >/dev/null && pwd 2>/dev/null)/../lib/tegonal-scripts/src"
 source "$dir_of_tegonal_scripts/setup.sh" "$dir_of_tegonal_scripts"
@@ -1081,7 +1080,7 @@ Full usage example:
 ```bash
 #!/usr/bin/env bash
 set -euo pipefail
-shopt -s inherit_errexit || { echo "please update to bash 5, see errors above"; exit 1; }
+shopt -s inherit_errexit || { echo >&2 "please update to bash 5, see errors above" && exit 1; }
 # Assumes tegonal's scripts were fetched with gt - adjust location accordingly
 dir_of_tegonal_scripts="$(cd -- "$(dirname -- "${BASH_SOURCE[0]:-$0}")" >/dev/null && pwd 2>/dev/null)/../lib/tegonal-scripts/src"
 source "$dir_of_tegonal_scripts/setup.sh" "$dir_of_tegonal_scripts"
@@ -1154,7 +1153,7 @@ Full usage example:
 ```bash
 #!/usr/bin/env bash
 set -euo pipefail
-shopt -s inherit_errexit || { echo "please update to bash 5, see errors above"; exit 1; }
+shopt -s inherit_errexit || { echo >&2 "please update to bash 5, see errors above" && exit 1; }
 # Assumes tegonal's scripts were fetched with gt - adjust location accordingly
 dir_of_tegonal_scripts="$(cd -- "$(dirname -- "${BASH_SOURCE[0]:-$0}")" >/dev/null && pwd 2>/dev/null)/../lib/tegonal-scripts/src"
 source "$dir_of_tegonal_scripts/setup.sh" "$dir_of_tegonal_scripts"
@@ -1209,7 +1208,7 @@ Full usage example:
 ```bash
 #!/usr/bin/env bash
 set -euo pipefail
-shopt -s inherit_errexit || { echo "please update to bash 5, see errors above"; exit 1; }
+shopt -s inherit_errexit || { echo >&2 "please update to bash 5, see errors above" && exit 1; }
 # Assumes tegonal's scripts were fetched with gt - adjust location accordingly
 dir_of_tegonal_scripts="$(cd -- "$(dirname -- "${BASH_SOURCE[0]:-$0}")" >/dev/null && pwd 2>/dev/null)/../lib/tegonal-scripts/src"
 source "$dir_of_tegonal_scripts/setup.sh" "$dir_of_tegonal_scripts"
@@ -1239,7 +1238,7 @@ Utility functions when dealing with arrays.
 ```bash
 #!/usr/bin/env bash
 set -euo pipefail
-shopt -s inherit_errexit || { echo "please update to bash 5, see errors above"; exit 1; }
+shopt -s inherit_errexit || { echo >&2 "please update to bash 5, see errors above" && exit 1; }
 # Assumes tegonal's scripts were fetched with gt - adjust location accordingly
 dir_of_tegonal_scripts="$(cd -- "$(dirname -- "${BASH_SOURCE[0]:-$0}")" >/dev/null && pwd 2>/dev/null)/../lib/tegonal-scripts/src"
 source "$dir_of_tegonal_scripts/setup.sh" "$dir_of_tegonal_scripts"
@@ -1287,7 +1286,7 @@ Utility functions to interact with the user.
 ```bash
 #!/usr/bin/env bash
 set -euo pipefail
-shopt -s inherit_errexit || { echo "please update to bash 5, see errors above"; exit 1; }
+shopt -s inherit_errexit || { echo >&2 "please update to bash 5, see errors above" && exit 1; }
 # Assumes tegonal's scripts were fetched with gt - adjust location accordingly
 dir_of_tegonal_scripts="$(cd -- "$(dirname -- "${BASH_SOURCE[0]:-$0}")" >/dev/null && pwd 2>/dev/null)/../lib/tegonal-scripts/src"
 source "$dir_of_tegonal_scripts/setup.sh" "$dir_of_tegonal_scripts"
@@ -1320,7 +1319,7 @@ Utility functions which shall help to keep your repo clean and tidy.
 ```bash
 #!/usr/bin/env bash
 set -euo pipefail
-shopt -s inherit_errexit || { echo "please update to bash 5, see errors above"; exit 1; }
+shopt -s inherit_errexit || { echo >&2 "please update to bash 5, see errors above" && exit 1; }
 
 projectDir="$(cd -- "$(dirname -- "${BASH_SOURCE[0]:-$0}")" >/dev/null && pwd 2>/dev/null)/.."
 
@@ -1349,7 +1348,7 @@ Utility functions which check some conditions like is passed arg the correct typ
 ```bash
 #!/usr/bin/env bash
 set -euo pipefail
-shopt -s inherit_errexit || { echo "please update to bash 5, see errors above"; exit 1; }
+shopt -s inherit_errexit || { echo >&2 "please update to bash 5, see errors above" && exit 1; }
 # Assumes tegonal's scripts were fetched with gt - adjust location accordingly
 dir_of_tegonal_scripts="$(cd -- "$(dirname -- "${BASH_SOURCE[0]:-$0}")" >/dev/null && pwd 2>/dev/null)/../lib/tegonal-scripts/src"
 source "$dir_of_tegonal_scripts/setup.sh" "$dir_of_tegonal_scripts"
@@ -1425,7 +1424,7 @@ Date utils around `date` and co
 ```bash
 #!/usr/bin/env bash
 set -euo pipefail
-shopt -s inherit_errexit || { echo "please update to bash 5, see errors above"; exit 1; }
+shopt -s inherit_errexit || { echo >&2 "please update to bash 5, see errors above" && exit 1; }
 
 projectDir="$(cd -- "$(dirname -- "${BASH_SOURCE[0]:-$0}")" >/dev/null && pwd 2>/dev/null)/.."
 
@@ -1472,7 +1471,7 @@ Utility functions around `git`.
 ```bash
 #!/usr/bin/env bash
 set -euo pipefail
-shopt -s inherit_errexit || { echo "please update to bash 5, see errors above"; exit 1; }
+shopt -s inherit_errexit || { echo >&2 "please update to bash 5, see errors above" && exit 1; }
 # Assumes tegonal's scripts were fetched with gt - adjust location accordingly
 dir_of_tegonal_scripts="$(cd -- "$(dirname -- "${BASH_SOURCE[0]:-$0}")" >/dev/null && pwd 2>/dev/null)/../lib/tegonal-scripts/src"
 source "$dir_of_tegonal_scripts/setup.sh" "$dir_of_tegonal_scripts"
@@ -1533,7 +1532,7 @@ Utility functions which hopefully make it easier for you to deal with `gpg`
 ```bash
 #!/usr/bin/env bash
 set -euo pipefail
-shopt -s inherit_errexit || { echo "please update to bash 5, see errors above"; exit 1; }
+shopt -s inherit_errexit || { echo >&2 "please update to bash 5, see errors above" && exit 1; }
 # Assumes tegonal's scripts were fetched with gt - adjust location accordingly
 dir_of_tegonal_scripts="$(cd -- "$(dirname -- "${BASH_SOURCE[0]:-$0}")" >/dev/null && pwd 2>/dev/null)/../lib/tegonal-scripts/src"
 source "$dir_of_tegonal_scripts/setup.sh" "$dir_of_tegonal_scripts"
@@ -1605,7 +1604,7 @@ listSignaturesAndHighlightKey 4B78012139378220 .gt/remotes/tegonal-scripts/publi
 ```bash
 #!/usr/bin/env bash
 set -euo pipefail
-shopt -s inherit_errexit || { echo "please update to bash 5, see errors above"; exit 1; }
+shopt -s inherit_errexit || { echo >&2 "please update to bash 5, see errors above" && exit 1; }
 # Assumes tegonal's scripts were fetched with gt - adjust location accordingly
 dir_of_tegonal_scripts="$(cd -- "$(dirname -- "${BASH_SOURCE[0]:-$0}")" >/dev/null && pwd 2>/dev/null)/../lib/tegonal-scripts/src"
 source "$dir_of_tegonal_scripts/setup.sh" "$dir_of_tegonal_scripts"
@@ -1626,7 +1625,7 @@ wgetAndVerify "https://github.com/tegonal/gt/.gt/signing-key.public.asc"
 ```bash
 #!/usr/bin/env bash
 set -euo pipefail
-shopt -s inherit_errexit || { echo "please update to bash 5, see errors above"; exit 1; }
+shopt -s inherit_errexit || { echo >&2 "please update to bash 5, see errors above" && exit 1; }
 # Assumes tegonal's scripts were fetched with gt - adjust location accordingly
 dir_of_tegonal_scripts="$(cd -- "$(dirname -- "${BASH_SOURCE[0]:-$0}")" >/dev/null && pwd 2>/dev/null)/../lib/tegonal-scripts/src"
 source "$dir_of_tegonal_scripts/setup.sh" "$dir_of_tegonal_scripts"
@@ -1663,7 +1662,7 @@ Utility functions to log messages including a severity level where logError writ
 ```bash
 #!/usr/bin/env bash
 set -euo pipefail
-shopt -s inherit_errexit || { echo "please update to bash 5, see errors above"; exit 1; }
+shopt -s inherit_errexit || { echo >&2 "please update to bash 5, see errors above" && exit 1; }
 # Assumes tegonal's scripts were fetched with gt - adjust location accordingly
 dir_of_tegonal_scripts="$(cd -- "$(dirname -- "${BASH_SOURCE[0]:-$0}")" >/dev/null && pwd 2>/dev/null)/../lib/tegonal-scripts/src"
 source "$dir_of_tegonal_scripts/setup.sh" "$dir_of_tegonal_scripts"
@@ -1748,7 +1747,7 @@ Full usage example:
 ```bash
 #!/usr/bin/env bash
 set -euo pipefail
-shopt -s inherit_errexit || { echo "please update to bash 5, see errors above"; exit 1; }
+shopt -s inherit_errexit || { echo >&2 "please update to bash 5, see errors above" && exit 1; }
 MY_LIB_VERSION="v1.1.0"
 
 # Assumes tegonal's scripts were fetched with gt - adjust location accordingly
@@ -1800,7 +1799,7 @@ Full usage example:
 ```bash
 #!/usr/bin/env bash
 set -euo pipefail
-shopt -s inherit_errexit || { echo "please update to bash 5, see errors above"; exit 1; }
+shopt -s inherit_errexit || { echo >&2 "please update to bash 5, see errors above" && exit 1; }
 
 if ! [[ -v dir_of_tegonal_scripts ]]; then
 	# Assumes tegonal's scripts were fetched with gt - adjust location accordingly
@@ -1846,7 +1845,7 @@ Full usage example:
 ```bash
 #!/usr/bin/env bash
 set -euo pipefail
-shopt -s inherit_errexit || { echo "please update to bash 5, see errors above"; exit 1; }
+shopt -s inherit_errexit || { echo >&2 "please update to bash 5, see errors above" && exit 1; }
 MY_LIB_VERSION="v1.1.0"
 
 # Assumes tegonal's scripts were fetched with gt - adjust location accordingly
@@ -1894,7 +1893,7 @@ Utility functions when parsing (see also [Parse arguments](#parse-arguments)).
 ```bash
 #!/usr/bin/env bash
 set -euo pipefail
-shopt -s inherit_errexit || { echo "please update to bash 5, see errors above"; exit 1; }
+shopt -s inherit_errexit || { echo >&2 "please update to bash 5, see errors above" && exit 1; }
 MY_LIBRARY_VERSION="v1.0.3"
 
 if ! [[ -v dir_of_tegonal_scripts ]]; then
@@ -1934,7 +1933,7 @@ Utility function to find out the initial `declare` statement after following `de
 #!/usr/bin/env bash
 # shellcheck disable=SC2034
 set -euo pipefail
-shopt -s inherit_errexit || { echo "please update to bash 5, see errors above"; exit 1; }
+shopt -s inherit_errexit || { echo >&2 "please update to bash 5, see errors above" && exit 1; }
 
 # Assumes tegonal's scripts were fetched with gt - adjust location accordingly
 dir_of_tegonal_scripts="$(cd -- "$(dirname -- "${BASH_SOURCE[0]:-$0}")" >/dev/null && pwd 2>/dev/null)/../lib/tegonal-scripts/src"
@@ -1975,7 +1974,7 @@ Full usage example:
 ```bash
 #!/usr/bin/env bash
 set -euo pipefail
-shopt -s inherit_errexit || { echo "please update to bash 5, see errors above"; exit 1; }
+shopt -s inherit_errexit || { echo >&2 "please update to bash 5, see errors above" && exit 1; }
 # Assumes tegonal's scripts were fetched with gt - adjust location accordingly
 dir_of_tegonal_scripts="$(cd -- "$(dirname -- "${BASH_SOURCE[0]:-$0}")" >/dev/null && pwd 2>/dev/null)/../lib/tegonal-scripts/src"
 source "$dir_of_tegonal_scripts/setup.sh" "$dir_of_tegonal_scripts"
@@ -2019,7 +2018,7 @@ Utility functions around secrets and `secret-tool`.
 ```bash
 #!/usr/bin/env bash
 set -euo pipefail
-shopt -s inherit_errexit || { echo "please update to bash 5, see errors above"; exit 1; }
+shopt -s inherit_errexit || { echo >&2 "please update to bash 5, see errors above" && exit 1; }
 # Assumes tegonal's scripts were fetched with gt - adjust location accordingly
 dir_of_tegonal_scripts="$(cd -- "$(dirname -- "${BASH_SOURCE[0]:-$0}")" >/dev/null && pwd 2>/dev/null)/../lib/tegonal-scripts/src"
 source "$dir_of_tegonal_scripts/setup.sh" "$dir_of_tegonal_scripts"
@@ -2058,7 +2057,7 @@ Establishes a guard by creating a variable based on the file which shall be sour
 ```bash
 #!/usr/bin/env bash
 set -euo pipefail
-shopt -s inherit_errexit || { echo "please update to bash 5, see errors above"; exit 1; }
+shopt -s inherit_errexit || { echo >&2 "please update to bash 5, see errors above" && exit 1; }
 # Assumes tegonal's scripts were fetched with gt - adjust location accordingly
 dir_of_tegonal_scripts="$(cd -- "$(dirname -- "${BASH_SOURCE[0]:-$0}")" >/dev/null && pwd 2>/dev/null)/../lib/tegonal-scripts/src"
 source "$dir_of_tegonal_scripts/setup.sh" "$dir_of_tegonal_scripts"
@@ -2098,7 +2097,7 @@ String processing utils
 ```bash
 #!/usr/bin/env bash
 set -euo pipefail
-shopt -s inherit_errexit || { echo "please update to bash 5, see errors above"; exit 1; }
+shopt -s inherit_errexit || { echo >&2 "please update to bash 5, see errors above" && exit 1; }
 # Assumes tegonal's scripts were fetched with gt - adjust location accordingly
 dir_of_tegonal_scripts="$(cd -- "$(dirname -- "${BASH_SOURCE[0]:-$0}")" >/dev/null && pwd 2>/dev/null)/../lib/tegonal-scripts/src"
 source "$dir_of_tegonal_scripts/setup.sh" "$dir_of_tegonal_scripts"
@@ -2130,7 +2129,7 @@ Full usage example:
 ```bash
 #!/usr/bin/env bash
 set -euo pipefail
-shopt -s inherit_errexit || { echo "please update to bash 5, see errors above"; exit 1; }
+shopt -s inherit_errexit || { echo >&2 "please update to bash 5, see errors above" && exit 1; }
 # Assumes tegonal's scripts were fetched with gt - adjust location accordingly
 dir_of_tegonal_scripts="$(cd -- "$(dirname -- "${BASH_SOURCE[0]:-$0}")" >/dev/null && pwd 2>/dev/null)/../lib/tegonal-scripts/src"
 source "$dir_of_tegonal_scripts/setup.sh" "$dir_of_tegonal_scripts"

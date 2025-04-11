@@ -15,7 +15,7 @@
 #
 #    #!/usr/bin/env bash
 #    set -euo pipefail
-#    shopt -s inherit_errexit || { echo "please update to bash 5, see errors above"; exit 1; }
+#    shopt -s inherit_errexit || { echo >&2 "please update to bash 5, see errors above" && exit 1; }
 #
 #    if ! [[ -v dir_of_tegonal_scripts ]]; then
 #    	# Assumes your script is in (root is project folder) e.g. /src or /scripts and
@@ -28,7 +28,7 @@
 #
 ###################################
 set -euo pipefail
-shopt -s inherit_errexit || { echo "please update to bash 5, see errors above"; exit 1; }
+shopt -s inherit_errexit || { echo >&2 "please update to bash 5, see errors above" && exit 1; }
 unset CDPATH
 
 # shellcheck disable=SC2034		# global var used in log.sh
