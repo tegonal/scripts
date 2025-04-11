@@ -1,17 +1,17 @@
 <!-- for main -->
-
-[![Download](https://img.shields.io/badge/Download-v4.6.1-%23007ec6)](https://github.com/tegonal/scripts/releases/tag/v4.6.1)
+<!--
+[![Download](https://img.shields.io/badge/Download-v4.7.0-%23007ec6)](https://github.com/tegonal/scripts/releases/tag/v4.7.0)
 [![Apache 2.0](https://img.shields.io/badge/%E2%9A%96-Apache%202.0-%230b45a6)](http://opensource.org/licenses/Apache2.0 "License")
 [![Quality Assurance](https://github.com/tegonal/scripts/actions/workflows/quality-assurance.yml/badge.svg?event=push&branch=main)](https://github.com/tegonal/scripts/actions/workflows/quality-assurance.yml?query=branch%3Amain)
 [![Newcomers Welcome](https://img.shields.io/badge/%F0%9F%91%8B-Newcomers%20Welcome-blueviolet)](https://github.com/tegonal/scripts/issues?q=is%3Aissue+is%3Aopen+label%3A%22good+first+issue%22 "Ask in discussions for help")
-
+-->
 <!-- for main end -->
 <!-- for release -->
-<!--
-[![Download](https://img.shields.io/badge/Download-v4.6.1-%23007ec6)](https://github.com/tegonal/scripts/releases/tag/v4.6.1)
+
+[![Download](https://img.shields.io/badge/Download-v4.7.0-%23007ec6)](https://github.com/tegonal/scripts/releases/tag/v4.7.0)
 [![Apache 2.0](https://img.shields.io/badge/%E2%9A%96-Apache%202.0-%230b45a6)](http://opensource.org/licenses/Apache2.0 "License")
 [![Newcomers Welcome](https://img.shields.io/badge/%F0%9F%91%8B-Newcomers%20Welcome-blueviolet)](https://github.com/tegonal/scripts/issues?q=is%3Aissue+is%3Aopen+label%3A%22good+first+issue%22 "Ask in discussions for help")
--->
+
 <!-- for release end -->
 
 # Scripts of Tegonal
@@ -20,13 +20,13 @@ There are scripts which we use over and over again in different projects.
 As they might be usable for you as well, we are publishing them here.
 Feel free to use it and report bugs if you should find one.
 
----
+<!---
 ❗ You are taking a *sneak peek* at the next version. It could be that some features you find on this page are not
 released yet.  
 Please have a look at the README of the corresponding release/git tag. Latest
-version: [README of v4.6.1](https://github.com/tegonal/scripts/tree/v4.6.1/README.md).
+version: [README of v4.7.0](https://github.com/tegonal/scripts/tree/v4.7.0/README.md).
 
----
+--->
 
 **Table of Content**
 
@@ -39,7 +39,7 @@ version: [README of v4.6.1](https://github.com/tegonal/scripts/tree/v4.6.1/READM
 
 We recommend you pull the scripts with the help of [gt](https://github.com/tegonal/gt).  
 Alternatively you can
-[![Download](https://img.shields.io/badge/Download-v4.6.1-%23007ec6)](https://github.com/tegonal/scripts/releases/tag/v4.6.1)
+[![Download](https://img.shields.io/badge/Download-v4.7.0-%23007ec6)](https://github.com/tegonal/scripts/releases/tag/v4.7.0)
 the sources.
 
 Following the commands you need to execute to set up tegonal scripts via [gt](https://github.com/tegonal/gt).
@@ -55,7 +55,7 @@ gt pull -r tegonal-scripts -p ...
 
 Or specify a version via `-t` as follows:
 ```bash
-export TEGONAL_SCRIPTS_VERSION="v4.6.1"
+export TEGONAL_SCRIPTS_VERSION="v4.7.0"
 gt pull -r tegonal-scripts -t "$TEGONAL_SCRIPTS_VERSION" -p ...
 ```
 
@@ -65,7 +65,7 @@ Many of the scripts depend on further scripts located in `src/utility`.
 Therefore, for simplicity reasons, we recommend you pull `src/setup.sh` and all files in `src/utility` in addition:
 
 ```
-export TEGONAL_SCRIPTS_VERSION="v4.6.1" 
+export TEGONAL_SCRIPTS_VERSION="v4.7.0" 
 gt pull -r tegonal-scripts -t "$TEGONAL_SCRIPTS_VERSION" -p src/setup.sh
 gt pull -r tegonal-scripts -t "$TEGONAL_SCRIPTS_VERSION" -p src/utility/
 ```
@@ -264,7 +264,7 @@ Parameters:
 --version  prints the version of this script
 
 INFO: Version of deploy.sh is:
-v4.7.0-SNAPSHOT
+v4.7.0
 ```
 
 </ci-jelastic-deploy-help>
@@ -415,7 +415,7 @@ Parameters:
 --version  prints the version of this script
 
 INFO: Version of release-files.sh is:
-v4.7.0-SNAPSHOT
+v4.7.0
 ```
 
 </releasing-release-files-help>
@@ -502,7 +502,7 @@ Parameters:
 --version  prints the version of this script
 
 INFO: Version of prepare-files-next-dev-cycle.sh is:
-v4.7.0-SNAPSHOT
+v4.7.0
 ```
 
 </releasing-prepare-files-next-dev-cycle-help>
@@ -603,7 +603,7 @@ Parameters:
 --version  prints the version of this script
 
 INFO: Version of release-template.sh is:
-v4.7.0-SNAPSHOT
+v4.7.0
 ```
 
 </releasing-release-template-help>
@@ -686,7 +686,7 @@ Parameters:
 --version  prints the version of this script
 
 INFO: Version of prepare-next-dev-cycle-template.sh is:
-v4.7.0-SNAPSHOT
+v4.7.0
 ```
 
 </releasing-prepare-next-dev-cycle-template-help>
@@ -761,7 +761,7 @@ Parameters:
 --version  prints the version of this script
 
 INFO: Version of pre-release-checks-git.sh is:
-v4.7.0-SNAPSHOT
+v4.7.0
 ```
 
 </releasing-pre-release-checks-git-help>
@@ -862,7 +862,7 @@ Parameters:
 --version  prints the version of this script
 
 INFO: Version of update-version-common-steps.sh is:
-v4.7.0-SNAPSHOT
+v4.7.0
 ```
 
 </releasing-update-version-common-steps-help>
@@ -950,7 +950,7 @@ update-version-README.sh -v v0.1.0 -f ./docs/index.md
 update-version-README.sh -v v0.1.0 -p "(VERSION=['\"])[^'\"]+(['\"])"
 
 INFO: Version of update-version-README.sh is:
-v4.7.0-SNAPSHOT
+v4.7.0
 ```
 
 </releasing-update-version-README-help>
@@ -1009,7 +1009,7 @@ update-version-scripts.sh -v v0.1.0 -d ./scripts
 update-version-scripts.sh -v v0.1.0 -p "(VERSION=['\"])[^'\"]+(['\"])"
 
 INFO: Version of update-version-scripts.sh is:
-v4.7.0-SNAPSHOT
+v4.7.0
 ```
 
 </releasing-update-version-scripts-help>
@@ -1068,7 +1068,7 @@ update-version-issue-templates.sh -v v0.1.0 -d ./tpls
 update-version-issue-templates.sh -v v0.1.0 -p "(VERSION=['\"])[^'\"]+(['\"])"
 
 INFO: Version of update-version-issue-templates.sh is:
-v4.7.0-SNAPSHOT
+v4.7.0
 ```
 
 </releasing-update-version-issue-templates-help>
@@ -1141,7 +1141,7 @@ toggle-sections.sh -c main
 toggle-sections.sh -c release -f ./docs/index.md
 
 INFO: Version of toggle-sections.sh is:
-v4.7.0-SNAPSHOT
+v4.7.0
 ```
 
 </releasing-toggle-sections-help>
@@ -1196,7 +1196,7 @@ sneak-peek-banner.sh -c hide
 sneak-peek-banner.sh -c show -f ./docs/index.md
 
 INFO: Version of sneak-peek-banner.sh is:
-v4.7.0-SNAPSHOT
+v4.7.0
 ```
 
 </releasing-sneak-peek-banner-help>
