@@ -80,6 +80,7 @@ joinByString() {
 		local firstArg="$2"
 		shift 2 || traceAndDie "could not shift by 2"
 		printf "%s" "$firstArg" "${@/#/$separator}"
+		printf "\n"
 	fi
 }
 
