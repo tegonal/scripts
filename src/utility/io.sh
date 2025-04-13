@@ -76,10 +76,12 @@ function withCustomOutputInput() {
 	# same same if $withCustomOutputInput_fun should fail/exit, we don't setup a trap, the system should clean it up
 	rm "$withCustomOutputInput_tmpFile" || true
 
-	$withCustomOutputInput_fun "$@"
+	local exitCode=0
+	$withCustomOutputInput_fun "$@" || exitCode=$?
 
 	eval "exec ${withCustomOutputInput_outputNr}>&-"
 	eval "exec ${withCustomOutputInput_inputNr}<&-"
+	return "$exitCode"
 }
 
 function deleteDirChmod777() {
