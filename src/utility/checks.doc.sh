@@ -29,6 +29,7 @@ function foo() {
 
 	exitIfArgIsNotArray arr 1
 	exitIfArgIsNotArrayOrIsEmpty arr 1
+	exitIfArgIsNotArrayOrIsNonEmpty arr 1
 	exitIfArgIsNotFunction "$fn" 2
 	exitIfArgIsNotBoolean "$bool" 3
 	exitIfArgIsNotVersion "$version" 4
