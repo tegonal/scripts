@@ -112,6 +112,10 @@ function checkArgIsArray() {
 		if [[ $funcName == "exitIfArgIsNotArray" ]]; then
 			funcName=${FUNCNAME[2]}
 		fi
+		if [[ $funcName == "exitIfArgIsNotArrayOrIsEmpty" ]] ||
+			[[ $funcName == "exitIfArgIsNotArrayOrIsNonEmpty" ]]; then
+			funcName=${FUNCNAME[3]}
+		fi
 		traceAndReturnDying "the passed array \033[0;36m%s\033[0m is broken.\nThe %s argument to %s needs to be a non-associative array, given:\n%s" \
 			"${!checkArgIsArray_arr}" "$argNumberOrName" "$funcName" "$arrayDefinition"
 	fi
@@ -125,10 +129,16 @@ function exitIfArgIsNotArray() {
 function exitIfArgIsNotArrayOrIsEmpty() {
 	exitIfArgIsNotArray "$@"
 	local -rn exitIfArgIsNotArrayOrIsEmpty_arr=$1
-	local -r argNumberOrName=$2
-	shift 2 || traceAndDie "could not shift by 2"
 	if [[ ${#exitIfArgIsNotArrayOrIsEmpty_arr[@]} -lt 1 ]]; then
-		traceAndDie "the passed argument \033[0;36m%s\033[0m is an empty array" "${!checkArgIsArray_arr}"
+		traceAndDie "the passed argument \033[0;36m%s\033[0m is an empty array" "${!exitIfArgIsNotArrayOrIsEmpty_arr}"
+	fi
+}
+
+function exitIfArgIsNotArrayOrIsNonEmpty() {
+	exitIfArgIsNotArray "$@"
+	local -rn exitIfArgIsNotArrayOrIsNonEmpty_arr=$1
+	if [[ ${#exitIfArgIsNotArrayOrIsNonEmpty_arr[@]} -gt 0 ]]; then
+		traceAndDie "the passed argument \033[0;36m%s\033[0m is a non empty array" "${!exitIfArgIsNotArrayOrIsNonEmpty_arr}"
 	fi
 }
 
