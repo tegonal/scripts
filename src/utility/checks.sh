@@ -162,8 +162,6 @@ function checkArgIsArrayWithTuples() {
 	local -r describeTupleFn=$5
 	shift 5 || traceAndDie "could not shift by 5"
 
-	local -r arrLength=${#checkArgIsArrayWithTuples_paramArr[@]}
-
 	exitIfArgIsNotFunction "$describeTupleFn" "$argNumberOrName"
 
 	local funcName=${FUNCNAME[1]}
@@ -183,6 +181,8 @@ function checkArgIsArrayWithTuples() {
 		printStackTrace
 		exit 9
 	fi
+
+	local -r arrLength=${#checkArgIsArrayWithTuples_paramArr[@]}
 
 	if ((arrLength == 0)); then
 		logError "the passed array \033[0;36m%s\033[0m is broken, length was 0\033[0m" "${!checkArgIsArrayWithTuples_paramArr}"
