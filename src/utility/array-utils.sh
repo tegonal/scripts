@@ -99,6 +99,8 @@ function arrFilter() {
 	local -r predicate=$3
 	shift 3 || traceAndDie "could not shift by 3"
 
+	exitIfArgIsNotArray arrFilter_arrIn 1
+	exitIfArgIsNotArrayOrIsNonEmpty arrFilter_arrOut 2
 	exitIfArgIsNotFunction "$predicate" 3
 
 	local -ri arrFilter_arrInLength="${#arrFilter_arrIn[@]}"
@@ -123,20 +125,22 @@ function arrTakeEveryX() {
 		exit 9
 	fi
 	# shellcheck disable=SC2034   # is passed by name to arrFilter
-	local -rn arrFilterMod_arrIn=$1
+	local -rn arrTakeEveryX_arrIn=$1
 	# shellcheck disable=SC2034   # is passed by name to arrFilter
-	local -rn arrFilterMod_arrOut=$2
+	local -rn arrTakeEveryX_arrOut=$2
 	local -ri modulo=$3
 	local -ri offset=$4
 	shift 4 || traceAndDie "could not shift by 4"
 
-	# shellcheck disable=SC2329   # is passed by name to arrFilter
-	function arrFilterMod_fn() {
+	# arrFilter will check that arrTakeEveryX_arrIn and arrTakeEveryX_arrOut are arrays and arrOut non empty
+
+  # shellcheck disable=SC2329   # is passed by name to arrFilter
+	function arrTakeEveryX_fn() {
 		local -r index=$2
 		(((index - offset) % modulo == 0))
 	}
-	arrFilter arrFilterMod_arrIn arrFilterMod_arrOut arrFilterMod_fn
-	unset arrFilterMod_fn
+	arrFilter arrTakeEveryX_arrIn arrTakeEveryX_arrOut arrTakeEveryX_fn
+	unset arrTakeEveryX_fn
 }
 
 function arrStringEntryMaxLength() {
@@ -148,6 +152,7 @@ function arrStringEntryMaxLength() {
 	fi
 	local -rn arrStringEntryMaxLength_arr=$1
 	shift 1 || traceAndDie "could not shift by 1"
+	exitIfArgIsNotArray arrStringEntryMaxLength_arr 1
 
 	local -i i maxLength=0 arrLength="${#arrStringEntryMaxLength_arr[@]}"
 	for ((i = 0; i < arrLength; ++i)); do
