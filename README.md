@@ -58,14 +58,14 @@ export TEGONAL_SCRIPTS_VERSION="v4.9.1"
 gt pull -r tegonal-scripts -t "$TEGONAL_SCRIPTS_VERSION" -p ...
 ```
 
-Note that dependencies have to be pulled manually and almost all scripts depend on `src/setup.sh`
+Note that dependencies have to be pulled manually and almost all scripts depend on `src/setup_tegonal_scripts.sh`
 which in turn depends on `src/utility/source-once.sh` and this one depends on `src/utility/log.sh`.
 Many of the scripts depend on further scripts located in `src/utility`.
-Therefore, for simplicity reasons, we recommend you pull `src/setup.sh` and all files in `src/utility` in addition:
+Therefore, for simplicity reasons, we recommend you pull `src/setup_tegonal_scripts.sh` and all files in `src/utility` in addition:
 
 ```
 export TEGONAL_SCRIPTS_VERSION="v4.9.1" 
-gt pull -r tegonal-scripts -t "$TEGONAL_SCRIPTS_VERSION" -p src/setup.sh
+gt pull -r tegonal-scripts -t "$TEGONAL_SCRIPTS_VERSION" -p src/setup_tegonal_scripts.sh
 gt pull -r tegonal-scripts -t "$TEGONAL_SCRIPTS_VERSION" -p src/utility/
 ```
 
@@ -76,7 +76,7 @@ We recommend you use the following code at the beginning of your script in case 
 
 <setup>
 
-<!-- auto-generated, do not modify here but in src/setup.sh.doc -->
+<!-- auto-generated, do not modify here but in src/setup_tegonal_scripts.sh.doc -->
 ```bash
 #!/usr/bin/env bash
 set -euo pipefail
@@ -86,7 +86,7 @@ if ! [[ -v dir_of_tegonal_scripts ]]; then
 	# Assumes your script is in (root is project folder) e.g. /src or /scripts and
 	# the tegonal scripts have been pulled via gt and put into /lib/tegonal-scripts
 	dir_of_tegonal_scripts="$(cd -- "$(dirname -- "${BASH_SOURCE[0]:-$0}")" >/dev/null && pwd 2>/dev/null)/../lib/tegonal-scripts/src"
-	source "$dir_of_tegonal_scripts/setup.sh" "$dir_of_tegonal_scripts"
+	source "$dir_of_tegonal_scripts/setup_tegonal_scripts.sh" "$dir_of_tegonal_scripts"
 fi
 
 sourceOnce "$dir_of_tegonal_scripts/utility/io.sh"
@@ -94,7 +94,7 @@ sourceOnce "$dir_of_tegonal_scripts/utility/io.sh"
 
 </setup>
 
-Note that `source "$dir_of_tegonal_scripts/setup.sh"` will automatically source `utility/source-once.sh`
+Note that `source "$dir_of_tegonal_scripts/setup_tegonal_scripts.sh"` will automatically source `utility/source-once.sh`
 and `utility/log.sh`
 
 # Documentation
@@ -235,7 +235,7 @@ set -euo pipefail
 shopt -s inherit_errexit || { echo >&2 "please update to bash 5, see errors above" && exit 1; }
 # Assumes tegonal's scripts were fetched with gt - adjust location accordingly
 dir_of_tegonal_scripts="$(cd -- "$(dirname -- "${BASH_SOURCE[0]:-$0}")" >/dev/null && pwd 2>/dev/null)/../lib/tegonal-scripts/src"
-source "$dir_of_tegonal_scripts/setup.sh" "$dir_of_tegonal_scripts"
+source "$dir_of_tegonal_scripts/setup_tegonal_scripts.sh" "$dir_of_tegonal_scripts"
 
 # typically you would define those via secrets (GitHub) or Variables (Gitlab)
 JELASTIC_LOGIN='my-user'
@@ -304,7 +304,7 @@ set -euo pipefail
 shopt -s inherit_errexit || { echo >&2 "please update to bash 5, see errors above" && exit 1; }
 # Assumes tegonal's scripts were fetched with gt - adjust location accordingly
 dir_of_tegonal_scripts="$(cd -- "$(dirname -- "${BASH_SOURCE[0]:-$0}")" >/dev/null && pwd 2>/dev/null)/../lib/tegonal-scripts/src"
-source "$dir_of_tegonal_scripts/setup.sh" "$dir_of_tegonal_scripts"
+source "$dir_of_tegonal_scripts/setup_tegonal_scripts.sh" "$dir_of_tegonal_scripts"
 
 sourceOnce "$dir_of_tegonal_scripts/ci/jelastic/jelastic-utils.sh"
 
@@ -343,7 +343,7 @@ set -euo pipefail
 shopt -s inherit_errexit || { echo >&2 "please update to bash 5, see errors above" && exit 1; }
 # Assumes tegonal's scripts were fetched with gt - adjust location accordingly
 dir_of_tegonal_scripts="$(cd -- "$(dirname -- "${BASH_SOURCE[0]:-$0}")" >/dev/null && pwd 2>/dev/null)/../lib/tegonal-scripts/src"
-source "$dir_of_tegonal_scripts/setup.sh" "$dir_of_tegonal_scripts"
+source "$dir_of_tegonal_scripts/setup_tegonal_scripts.sh" "$dir_of_tegonal_scripts"
 
 source "$dir_of_tegonal_scripts/qa/run-shellcheck.sh"
 
@@ -382,7 +382,7 @@ set -euo pipefail
 shopt -s inherit_errexit || { echo >&2 "please update to bash 5, see errors above" && exit 1; }
 # Assumes tegonal's scripts were fetched with gt - adjust location accordingly
 dir_of_tegonal_scripts="$(cd -- "$(dirname -- "${BASH_SOURCE[0]:-$0}")" >/dev/null && pwd 2>/dev/null)/../lib/tegonal-scripts/src"
-source "$dir_of_tegonal_scripts/setup.sh" "$dir_of_tegonal_scripts"
+source "$dir_of_tegonal_scripts/setup_tegonal_scripts.sh" "$dir_of_tegonal_scripts"
 
 source "$dir_of_tegonal_scripts/qa/run-shellspec-if-installed.sh"
 
@@ -486,7 +486,7 @@ set -euo pipefail
 shopt -s inherit_errexit || { echo >&2 "please update to bash 5, see errors above" && exit 1; }
 # Assumes tegonal's scripts were fetched with gt - adjust location accordingly
 dir_of_tegonal_scripts="$(cd -- "$(dirname -- "${BASH_SOURCE[0]:-$0}")" >/dev/null && pwd 2>/dev/null)/../lib/tegonal-scripts/src"
-source "$dir_of_tegonal_scripts/setup.sh" "$dir_of_tegonal_scripts"
+source "$dir_of_tegonal_scripts/setup_tegonal_scripts.sh" "$dir_of_tegonal_scripts"
 
 scriptsDir="$(cd -- "$(dirname -- "${BASH_SOURCE[0]:-$0}")" >/dev/null && pwd 2>/dev/null)"
 sourceOnce "$scriptsDir/before-pr.sh"
@@ -572,7 +572,7 @@ set -euo pipefail
 shopt -s inherit_errexit || { echo >&2 "please update to bash 5, see errors above" && exit 1; }
 # Assumes tegonal's scripts were fetched with gt - adjust location accordingly
 dir_of_tegonal_scripts="$(cd -- "$(dirname -- "${BASH_SOURCE[0]:-$0}")" >/dev/null && pwd 2>/dev/null)/../lib/tegonal-scripts/src"
-source "$dir_of_tegonal_scripts/setup.sh" "$dir_of_tegonal_scripts"
+source "$dir_of_tegonal_scripts/setup_tegonal_scripts.sh" "$dir_of_tegonal_scripts"
 
 scriptsDir="$(cd -- "$(dirname -- "${BASH_SOURCE[0]:-$0}")" >/dev/null && pwd 2>/dev/null)"
 sourceOnce "$scriptsDir/before-pr.sh"
@@ -671,7 +671,7 @@ set -euo pipefail
 shopt -s inherit_errexit || { echo >&2 "please update to bash 5, see errors above" && exit 1; }
 # Assumes tegonal's scripts were fetched with gt - adjust location accordingly
 dir_of_tegonal_scripts="$(cd -- "$(dirname -- "${BASH_SOURCE[0]:-$0}")" >/dev/null && pwd 2>/dev/null)/../lib/tegonal-scripts/src"
-source "$dir_of_tegonal_scripts/setup.sh" "$dir_of_tegonal_scripts"
+source "$dir_of_tegonal_scripts/setup_tegonal_scripts.sh" "$dir_of_tegonal_scripts"
 
 function releaseScalaLib() {
 	sbt publishSigned
@@ -756,7 +756,7 @@ set -euo pipefail
 shopt -s inherit_errexit || { echo >&2 "please update to bash 5, see errors above" && exit 1; }
 # Assumes tegonal's scripts were fetched with gt - adjust location accordingly
 dir_of_tegonal_scripts="$(cd -- "$(dirname -- "${BASH_SOURCE[0]:-$0}")" >/dev/null && pwd 2>/dev/null)/../lib/tegonal-scripts/src"
-source "$dir_of_tegonal_scripts/setup.sh" "$dir_of_tegonal_scripts"
+source "$dir_of_tegonal_scripts/setup_tegonal_scripts.sh" "$dir_of_tegonal_scripts"
 
 function prepareNextAfterVersionUpdateHook() {
 	# some additional version bumps e.g. using perl
@@ -829,7 +829,7 @@ set -euo pipefail
 shopt -s inherit_errexit || { echo >&2 "please update to bash 5, see errors above" && exit 1; }
 # Assumes tegonal's scripts were fetched with gt - adjust location accordingly
 dir_of_tegonal_scripts="$(cd -- "$(dirname -- "${BASH_SOURCE[0]:-$0}")" >/dev/null && pwd 2>/dev/null)/../lib/tegonal-scripts/src"
-source "$dir_of_tegonal_scripts/setup.sh" "$dir_of_tegonal_scripts"
+source "$dir_of_tegonal_scripts/setup_tegonal_scripts.sh" "$dir_of_tegonal_scripts"
 
 # checks releasing v0.1.0 makes sense and the current branch is main
 "$dir_of_tegonal_scripts/releasing/pre-release-checks-git.sh" -v v0.1.0
@@ -869,7 +869,7 @@ set -euo pipefail
 shopt -s inherit_errexit || { echo >&2 "please update to bash 5, see errors above" && exit 1; }
 # Assumes tegonal's scripts were fetched with gt - adjust location accordingly
 dir_of_tegonal_scripts="$(cd -- "$(dirname -- "${BASH_SOURCE[0]:-$0}")" >/dev/null && pwd 2>/dev/null)/../lib/tegonal-scripts/src"
-source "$dir_of_tegonal_scripts/setup.sh" "$dir_of_tegonal_scripts"
+source "$dir_of_tegonal_scripts/setup_tegonal_scripts.sh" "$dir_of_tegonal_scripts"
 
 # ask for SONATYPE_USER and SONATYPE_PW (unless already exported beforehand) and calls sbt publishSigned
 "$dir_of_tegonal_scripts/releasing/sbt-publish-to-sonatype.sh"
@@ -932,7 +932,7 @@ set -euo pipefail
 shopt -s inherit_errexit || { echo >&2 "please update to bash 5, see errors above" && exit 1; }
 # Assumes tegonal's scripts were fetched with gt - adjust location accordingly
 dir_of_tegonal_scripts="$(cd -- "$(dirname -- "${BASH_SOURCE[0]:-$0}")" >/dev/null && pwd 2>/dev/null)/../lib/tegonal-scripts/src"
-source "$dir_of_tegonal_scripts/setup.sh" "$dir_of_tegonal_scripts"
+source "$dir_of_tegonal_scripts/setup_tegonal_scripts.sh" "$dir_of_tegonal_scripts"
 
 # updates the version in headers of different files, hides the sneak-peek banner and
 # toggles sections in README.md for release
@@ -1020,7 +1020,7 @@ set -euo pipefail
 shopt -s inherit_errexit || { echo >&2 "please update to bash 5, see errors above" && exit 1; }
 # Assumes tegonal's scripts were fetched with gt - adjust location accordingly
 dir_of_tegonal_scripts="$(cd -- "$(dirname -- "${BASH_SOURCE[0]:-$0}")" >/dev/null && pwd 2>/dev/null)/../lib/tegonal-scripts/src"
-source "$dir_of_tegonal_scripts/setup.sh" "$dir_of_tegonal_scripts"
+source "$dir_of_tegonal_scripts/setup_tegonal_scripts.sh" "$dir_of_tegonal_scripts"
 
 "$dir_of_tegonal_scripts/releasing/update-version-README.sh" -v 0.1.0
 
@@ -1079,7 +1079,7 @@ set -euo pipefail
 shopt -s inherit_errexit || { echo >&2 "please update to bash 5, see errors above" && exit 1; }
 # Assumes tegonal's scripts were fetched with gt - adjust location accordingly
 dir_of_tegonal_scripts="$(cd -- "$(dirname -- "${BASH_SOURCE[0]:-$0}")" >/dev/null && pwd 2>/dev/null)/../lib/tegonal-scripts/src"
-source "$dir_of_tegonal_scripts/setup.sh" "$dir_of_tegonal_scripts"
+source "$dir_of_tegonal_scripts/setup_tegonal_scripts.sh" "$dir_of_tegonal_scripts"
 
 "$dir_of_tegonal_scripts/releasing/update-version-scripts.sh" -v 0.1.0
 
@@ -1138,7 +1138,7 @@ set -euo pipefail
 shopt -s inherit_errexit || { echo >&2 "please update to bash 5, see errors above" && exit 1; }
 # Assumes tegonal's scripts were fetched with gt - adjust location accordingly
 dir_of_tegonal_scripts="$(cd -- "$(dirname -- "${BASH_SOURCE[0]:-$0}")" >/dev/null && pwd 2>/dev/null)/../lib/tegonal-scripts/src"
-source "$dir_of_tegonal_scripts/setup.sh" "$dir_of_tegonal_scripts"
+source "$dir_of_tegonal_scripts/setup_tegonal_scripts.sh" "$dir_of_tegonal_scripts"
 
 "$dir_of_tegonal_scripts/releasing/update-issue-templates.sh" -v 0.1.0
 
@@ -1211,7 +1211,7 @@ set -euo pipefail
 shopt -s inherit_errexit || { echo >&2 "please update to bash 5, see errors above" && exit 1; }
 # Assumes tegonal's scripts were fetched with gt - adjust location accordingly
 dir_of_tegonal_scripts="$(cd -- "$(dirname -- "${BASH_SOURCE[0]:-$0}")" >/dev/null && pwd 2>/dev/null)/../lib/tegonal-scripts/src"
-source "$dir_of_tegonal_scripts/setup.sh" "$dir_of_tegonal_scripts"
+source "$dir_of_tegonal_scripts/setup_tegonal_scripts.sh" "$dir_of_tegonal_scripts"
 
 "$dir_of_tegonal_scripts/releasing/toggle-sections.sh" -c main
 
@@ -1266,7 +1266,7 @@ set -euo pipefail
 shopt -s inherit_errexit || { echo >&2 "please update to bash 5, see errors above" && exit 1; }
 # Assumes tegonal's scripts were fetched with gt - adjust location accordingly
 dir_of_tegonal_scripts="$(cd -- "$(dirname -- "${BASH_SOURCE[0]:-$0}")" >/dev/null && pwd 2>/dev/null)/../lib/tegonal-scripts/src"
-source "$dir_of_tegonal_scripts/setup.sh" "$dir_of_tegonal_scripts"
+source "$dir_of_tegonal_scripts/setup_tegonal_scripts.sh" "$dir_of_tegonal_scripts"
 
 "$dir_of_tegonal_scripts/releasing/sneak-peek-banner.sh" -c hide
 
@@ -1296,7 +1296,7 @@ set -euo pipefail
 shopt -s inherit_errexit || { echo >&2 "please update to bash 5, see errors above" && exit 1; }
 # Assumes tegonal's scripts were fetched with gt - adjust location accordingly
 dir_of_tegonal_scripts="$(cd -- "$(dirname -- "${BASH_SOURCE[0]:-$0}")" >/dev/null && pwd 2>/dev/null)/../lib/tegonal-scripts/src"
-source "$dir_of_tegonal_scripts/setup.sh" "$dir_of_tegonal_scripts"
+source "$dir_of_tegonal_scripts/setup_tegonal_scripts.sh" "$dir_of_tegonal_scripts"
 
 sourceOnce "$dir_of_tegonal_scripts/utility/array-utils.sh"
 
@@ -1344,7 +1344,7 @@ set -euo pipefail
 shopt -s inherit_errexit || { echo >&2 "please update to bash 5, see errors above" && exit 1; }
 # Assumes tegonal's scripts were fetched with gt - adjust location accordingly
 dir_of_tegonal_scripts="$(cd -- "$(dirname -- "${BASH_SOURCE[0]:-$0}")" >/dev/null && pwd 2>/dev/null)/../lib/tegonal-scripts/src"
-source "$dir_of_tegonal_scripts/setup.sh" "$dir_of_tegonal_scripts"
+source "$dir_of_tegonal_scripts/setup_tegonal_scripts.sh" "$dir_of_tegonal_scripts"
 
 sourceOnce "$dir_of_tegonal_scripts/utility/ask.sh"
 
@@ -1380,7 +1380,7 @@ projectDir="$(cd -- "$(dirname -- "${BASH_SOURCE[0]:-$0}")" >/dev/null && pwd 2>
 
 # Assumes tegonal's scripts were fetched with gt - adjust location accordingly
 dir_of_tegonal_scripts="$projectDir/lib/tegonal-scripts/src"
-source "$dir_of_tegonal_scripts/setup.sh" "$dir_of_tegonal_scripts"
+source "$dir_of_tegonal_scripts/setup_tegonal_scripts.sh" "$dir_of_tegonal_scripts"
 
 sourceOnce "$dir_of_tegonal_scripts/utility/cleanups.sh"
 
@@ -1406,7 +1406,7 @@ set -euo pipefail
 shopt -s inherit_errexit || { echo >&2 "please update to bash 5, see errors above" && exit 1; }
 # Assumes tegonal's scripts were fetched with gt - adjust location accordingly
 dir_of_tegonal_scripts="$(cd -- "$(dirname -- "${BASH_SOURCE[0]:-$0}")" >/dev/null && pwd 2>/dev/null)/../lib/tegonal-scripts/src"
-source "$dir_of_tegonal_scripts/setup.sh" "$dir_of_tegonal_scripts"
+source "$dir_of_tegonal_scripts/setup_tegonal_scripts.sh" "$dir_of_tegonal_scripts"
 
 sourceOnce "$dir_of_tegonal_scripts/utility/checks.sh"
 
@@ -1489,7 +1489,7 @@ projectDir="$(cd -- "$(dirname -- "${BASH_SOURCE[0]:-$0}")" >/dev/null && pwd 2>
 
 # Assumes tegonal's scripts were fetched with gt - adjust location accordingly
 dir_of_tegonal_scripts="$projectDir/lib/tegonal-scripts/src"
-source "$dir_of_tegonal_scripts/setup.sh" "$dir_of_tegonal_scripts"
+source "$dir_of_tegonal_scripts/setup_tegonal_scripts.sh" "$dir_of_tegonal_scripts"
 
 sourceOnce "$dir_of_tegonal_scripts/utility/date-utils.sh"
 
@@ -1533,7 +1533,7 @@ set -euo pipefail
 shopt -s inherit_errexit || { echo >&2 "please update to bash 5, see errors above" && exit 1; }
 # Assumes tegonal's scripts were fetched with gt - adjust location accordingly
 dir_of_tegonal_scripts="$(cd -- "$(dirname -- "${BASH_SOURCE[0]:-$0}")" >/dev/null && pwd 2>/dev/null)/../lib/tegonal-scripts/src"
-source "$dir_of_tegonal_scripts/setup.sh" "$dir_of_tegonal_scripts"
+source "$dir_of_tegonal_scripts/setup_tegonal_scripts.sh" "$dir_of_tegonal_scripts"
 
 sourceOnce "$dir_of_tegonal_scripts/utility/git-utils.sh"
 
@@ -1594,7 +1594,7 @@ set -euo pipefail
 shopt -s inherit_errexit || { echo >&2 "please update to bash 5, see errors above" && exit 1; }
 # Assumes tegonal's scripts were fetched with gt - adjust location accordingly
 dir_of_tegonal_scripts="$(cd -- "$(dirname -- "${BASH_SOURCE[0]:-$0}")" >/dev/null && pwd 2>/dev/null)/../lib/tegonal-scripts/src"
-source "$dir_of_tegonal_scripts/setup.sh" "$dir_of_tegonal_scripts"
+source "$dir_of_tegonal_scripts/setup_tegonal_scripts.sh" "$dir_of_tegonal_scripts"
 
 sourceOnce "$dir_of_tegonal_scripts/utility/gpg-utils.sh"
 
@@ -1666,7 +1666,7 @@ set -euo pipefail
 shopt -s inherit_errexit || { echo >&2 "please update to bash 5, see errors above" && exit 1; }
 # Assumes tegonal's scripts were fetched with gt - adjust location accordingly
 dir_of_tegonal_scripts="$(cd -- "$(dirname -- "${BASH_SOURCE[0]:-$0}")" >/dev/null && pwd 2>/dev/null)/../lib/tegonal-scripts/src"
-source "$dir_of_tegonal_scripts/setup.sh" "$dir_of_tegonal_scripts"
+source "$dir_of_tegonal_scripts/setup_tegonal_scripts.sh" "$dir_of_tegonal_scripts"
 
 sourceOnce "$dir_of_tegonal_scripts/utility/http.sh"
 
@@ -1687,7 +1687,7 @@ set -euo pipefail
 shopt -s inherit_errexit || { echo >&2 "please update to bash 5, see errors above" && exit 1; }
 # Assumes tegonal's scripts were fetched with gt - adjust location accordingly
 dir_of_tegonal_scripts="$(cd -- "$(dirname -- "${BASH_SOURCE[0]:-$0}")" >/dev/null && pwd 2>/dev/null)/../lib/tegonal-scripts/src"
-source "$dir_of_tegonal_scripts/setup.sh" "$dir_of_tegonal_scripts"
+source "$dir_of_tegonal_scripts/setup_tegonal_scripts.sh" "$dir_of_tegonal_scripts"
 
 sourceOnce "$dir_of_tegonal_scripts/utility/io.sh"
 
@@ -1723,7 +1723,7 @@ set -euo pipefail
 shopt -s inherit_errexit || { echo >&2 "please update to bash 5, see errors above" && exit 1; }
 # Assumes tegonal's scripts were fetched with gt - adjust location accordingly
 dir_of_tegonal_scripts="$(cd -- "$(dirname -- "${BASH_SOURCE[0]:-$0}")" >/dev/null && pwd 2>/dev/null)/../lib/tegonal-scripts/src"
-source "$dir_of_tegonal_scripts/setup.sh" "$dir_of_tegonal_scripts"
+source "$dir_of_tegonal_scripts/setup_tegonal_scripts.sh" "$dir_of_tegonal_scripts"
 
 sourceOnce "$dir_of_tegonal_scripts/utility/log.sh"
 
@@ -1810,7 +1810,7 @@ MY_LIB_VERSION="v1.1.0"
 
 # Assumes tegonal's scripts were fetched with gt - adjust location accordingly
 dir_of_tegonal_scripts="$(cd -- "$(dirname -- "${BASH_SOURCE[0]:-$0}")" >/dev/null && pwd 2>/dev/null)/../lib/tegonal-scripts/src"
-source "$dir_of_tegonal_scripts/setup.sh" "$dir_of_tegonal_scripts"
+source "$dir_of_tegonal_scripts/setup_tegonal_scripts.sh" "$dir_of_tegonal_scripts"
 
 sourceOnce "$dir_of_tegonal_scripts/utility/parse-args.sh"
 
@@ -1862,7 +1862,7 @@ shopt -s inherit_errexit || { echo >&2 "please update to bash 5, see errors abov
 if ! [[ -v dir_of_tegonal_scripts ]]; then
 	# Assumes tegonal's scripts were fetched with gt - adjust location accordingly
 	dir_of_tegonal_scripts="$(cd -- "$(dirname -- "${BASH_SOURCE[0]:-$0}")" >/dev/null && pwd 2>/dev/null)/../lib/tegonal-scripts/src"
-	source "$dir_of_tegonal_scripts/setup.sh" "$dir_of_tegonal_scripts"
+	source "$dir_of_tegonal_scripts/setup_tegonal_scripts.sh" "$dir_of_tegonal_scripts"
 fi
 sourceOnce "$dir_of_tegonal_scripts/utility/parse-fn-args.sh"
 
@@ -1908,7 +1908,7 @@ MY_LIB_VERSION="v1.1.0"
 
 # Assumes tegonal's scripts were fetched with gt - adjust location accordingly
 dir_of_tegonal_scripts="$(cd -- "$(dirname -- "${BASH_SOURCE[0]:-$0}")" >/dev/null && pwd 2>/dev/null)/../lib/tegonal-scripts/src"
-source "$dir_of_tegonal_scripts/setup.sh" "$dir_of_tegonal_scripts"
+source "$dir_of_tegonal_scripts/setup_tegonal_scripts.sh" "$dir_of_tegonal_scripts"
 
 sourceOnce "$dir_of_tegonal_scripts/utility/parse-commands.sh"
 
@@ -1957,7 +1957,7 @@ MY_LIBRARY_VERSION="v1.0.3"
 if ! [[ -v dir_of_tegonal_scripts ]]; then
 	# Assumes tegonal's scripts were fetched with gt - adjust location accordingly
 	dir_of_tegonal_scripts="$(cd -- "$(dirname -- "${BASH_SOURCE[0]:-$0}")" >/dev/null && pwd 2>/dev/null)/../lib/tegonal-scripts/src"
-	source "$dir_of_tegonal_scripts/setup.sh" "$dir_of_tegonal_scripts"
+	source "$dir_of_tegonal_scripts/setup_tegonal_scripts.sh" "$dir_of_tegonal_scripts"
 fi
 sourceOnce "$dir_of_tegonal_scripts/utility/parse-utils.sh"
 
@@ -1995,7 +1995,7 @@ shopt -s inherit_errexit || { echo >&2 "please update to bash 5, see errors abov
 
 # Assumes tegonal's scripts were fetched with gt - adjust location accordingly
 dir_of_tegonal_scripts="$(cd -- "$(dirname -- "${BASH_SOURCE[0]:-$0}")" >/dev/null && pwd 2>/dev/null)/../lib/tegonal-scripts/src"
-source "$dir_of_tegonal_scripts/setup.sh" "$dir_of_tegonal_scripts"
+source "$dir_of_tegonal_scripts/setup_tegonal_scripts.sh" "$dir_of_tegonal_scripts"
 
 source "$dir_of_tegonal_scripts/utility/recursive-declare-p.sh"
 
@@ -2035,7 +2035,7 @@ set -euo pipefail
 shopt -s inherit_errexit || { echo >&2 "please update to bash 5, see errors above" && exit 1; }
 # Assumes tegonal's scripts were fetched with gt - adjust location accordingly
 dir_of_tegonal_scripts="$(cd -- "$(dirname -- "${BASH_SOURCE[0]:-$0}")" >/dev/null && pwd 2>/dev/null)/../lib/tegonal-scripts/src"
-source "$dir_of_tegonal_scripts/setup.sh" "$dir_of_tegonal_scripts"
+source "$dir_of_tegonal_scripts/setup_tegonal_scripts.sh" "$dir_of_tegonal_scripts"
 
 source "$dir_of_tegonal_scripts/utility/replace-snippet.sh"
 
@@ -2079,7 +2079,7 @@ set -euo pipefail
 shopt -s inherit_errexit || { echo >&2 "please update to bash 5, see errors above" && exit 1; }
 # Assumes tegonal's scripts were fetched with gt - adjust location accordingly
 dir_of_tegonal_scripts="$(cd -- "$(dirname -- "${BASH_SOURCE[0]:-$0}")" >/dev/null && pwd 2>/dev/null)/../lib/tegonal-scripts/src"
-source "$dir_of_tegonal_scripts/setup.sh" "$dir_of_tegonal_scripts"
+source "$dir_of_tegonal_scripts/setup_tegonal_scripts.sh" "$dir_of_tegonal_scripts"
 
 source "$dir_of_tegonal_scripts/utility/secret-utils.sh"
 
@@ -2118,7 +2118,7 @@ set -euo pipefail
 shopt -s inherit_errexit || { echo >&2 "please update to bash 5, see errors above" && exit 1; }
 # Assumes tegonal's scripts were fetched with gt - adjust location accordingly
 dir_of_tegonal_scripts="$(cd -- "$(dirname -- "${BASH_SOURCE[0]:-$0}")" >/dev/null && pwd 2>/dev/null)/../lib/tegonal-scripts/src"
-source "$dir_of_tegonal_scripts/setup.sh" "$dir_of_tegonal_scripts"
+source "$dir_of_tegonal_scripts/setup_tegonal_scripts.sh" "$dir_of_tegonal_scripts"
 
 source "$dir_of_tegonal_scripts/utility/source-once.sh"
 
@@ -2158,7 +2158,7 @@ set -euo pipefail
 shopt -s inherit_errexit || { echo >&2 "please update to bash 5, see errors above" && exit 1; }
 # Assumes tegonal's scripts were fetched with gt - adjust location accordingly
 dir_of_tegonal_scripts="$(cd -- "$(dirname -- "${BASH_SOURCE[0]:-$0}")" >/dev/null && pwd 2>/dev/null)/../lib/tegonal-scripts/src"
-source "$dir_of_tegonal_scripts/setup.sh" "$dir_of_tegonal_scripts"
+source "$dir_of_tegonal_scripts/setup_tegonal_scripts.sh" "$dir_of_tegonal_scripts"
 
 source "$dir_of_tegonal_scripts/utility/string-utils.sh"
 
@@ -2189,7 +2189,7 @@ set -euo pipefail
 shopt -s inherit_errexit || { echo >&2 "please update to bash 5, see errors above" && exit 1; }
 # Assumes tegonal's scripts were fetched with gt - adjust location accordingly
 dir_of_tegonal_scripts="$(cd -- "$(dirname -- "${BASH_SOURCE[0]:-$0}")" >/dev/null && pwd 2>/dev/null)/../lib/tegonal-scripts/src"
-source "$dir_of_tegonal_scripts/setup.sh" "$dir_of_tegonal_scripts"
+source "$dir_of_tegonal_scripts/setup_tegonal_scripts.sh" "$dir_of_tegonal_scripts"
 
 source "$dir_of_tegonal_scripts/utility/update-bash-docu.sh"
 
