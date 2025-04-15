@@ -151,7 +151,7 @@ function latestRemoteTag() {
 	if (($# > 2)); then
 		logError "Maximum 2 arguments can be passed to latestRemoteTag, given \033[0;36m%s\033[0m\n" "$#"
 		echo >&2 '1: remote   	(optional) the name of the remote, defaults to origin'
-		echo >&2 '2: tagFilter	(optional) a regex pattern (as supported by grep -E) which allows to filter available tags before determining the latest, defaults to .* (i.e. include all)'
+		echo >&2 '2: tagFilter	(optional) a regex pattern (as supported by grep -P) which allows to filter available tags before determining the latest, defaults to .* (i.e. include all)'
 		printStackTrace
 		exit 9
 	fi
