@@ -59,7 +59,7 @@ function jelastic_deploy() {
 		nodeGroup '-n|--nodeGroup' 'The nodeGroup to use'
 		tag '-t|--tag' 'The tag which shall be deployed'
 	)
-	parseArguments params "" "$TEGONAL_SCRIPTS_VERSION" "$@"
+	parseArguments params "" "$TEGONAL_SCRIPTS_VERSION" "$@" || return $?
 	exitIfNotAllArgumentsSet params "" "$TEGONAL_SCRIPTS_VERSION"
 
 	jelastic_signin "$url" "$login" "$password" || die "could not login to jelastic instance"

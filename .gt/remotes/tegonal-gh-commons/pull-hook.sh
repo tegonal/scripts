@@ -30,7 +30,7 @@ function gt_pullHook_tegonal_gh_commons_before() {
 	local _tag source _target
 	# shellcheck disable=SC2034   # is passed to parseFnArgs by name
 	local -ra params=(_tag source _target)
-	parseFnArgs params "$@"
+	parseFnArgs params "$@" || return $?
 
 	replaceTegonalGhCommonsPlaceholders_Tegonal "$source" "tegonal-scripts" "$TEGONAL_SCRIPTS_LATEST_VERSION" "scripts"
 }
@@ -39,7 +39,7 @@ function gt_pullHook_tegonal_gh_commons_after() {
 	local _tag source target
 	# shellcheck disable=SC2034   # is passed to parseFnArgs by name
 	local -ra params=(_tag source target)
-	parseFnArgs params "$@"
+	parseFnArgs params "$@" || return $?
 
 	if [[ $source =~ .*/src/gt/signing-key.public.asc.actual_sig ]]; then
 		mv "$target" "$(dirname "$target")/signing-key.public.asc.sig"

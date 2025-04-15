@@ -52,14 +52,14 @@ function wgetAndVerify() {
       wgetAndVerify "https://github.com/tegonal/gt/.gt/signing-key.public.asc"
 		EOM
 	)
-	parseArguments params "$examples" "$TEGONAL_SCRIPTS_VERSION" "$@"
+	parseArguments params "$examples" "$TEGONAL_SCRIPTS_VERSION" "$@" || return $?
 	if ! [[ -v gpgDir ]]; then gpgDir="$HOME/.gnupg"; fi
 	exitIfNotAllArgumentsSet params "$examples" "$TEGONAL_SCRIPTS_VERSION"
 
 	local fileName
-	fileName=$(basename "$url")
+	fileName=$(basename "$url") || die "could not determine file name of %s" "$url"
 	local currentDir
-	currentDir=$(pwd)
+	currentDir=$(pwd) || die "could not determine currentDir via pwd"
 
 	for name in "$fileName" "$fileName.sig"; do
 	if [[ -f $name ]]; then

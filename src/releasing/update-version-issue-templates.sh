@@ -65,7 +65,7 @@ function updateVersionIssueTemplates() {
 		EOM
 	)
 
-	parseArguments params "$examples" "$TEGONAL_SCRIPTS_VERSION" "$@"
+	parseArguments params "$examples" "$TEGONAL_SCRIPTS_VERSION" "$@" || return $?
 	if ! [[ -v directory ]]; then directory="./.github/ISSUE_TEMPLATE"; fi
 	if ! [[ -v additionalPattern ]]; then additionalPattern=""; fi
 	exitIfNotAllArgumentsSet params "$examples" "$TEGONAL_SCRIPTS_VERSION"

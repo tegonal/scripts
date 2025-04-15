@@ -61,7 +61,7 @@ function replaceSnippet() {
 	local file id dir pattern snippet
 	# shellcheck disable=SC2034   # is passed by name to parseFnArgs
 	local -ra params=(file id dir pattern snippet)
-	parseFnArgs params "$@"
+	parseFnArgs params "$@" || return $?
 
 	SNIPPET="$snippet" find "$dir" -name "$pattern" \
 		-exec echo "updating $id in {} " \; \

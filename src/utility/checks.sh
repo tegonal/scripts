@@ -279,7 +279,7 @@ function checkArgIsVersion() {
 	local value argNumberOrName
 	# shellcheck disable=SC2034   # is passed by name to parseFnArgs
 	local -ra params=(value argNumberOrName)
-	parseFnArgs params "$@"
+	parseFnArgs params "$@" || return $?
 
 	if ! [[ "$value" =~ $versionRegex ]]; then
 		local funcName=${FUNCNAME[1]}

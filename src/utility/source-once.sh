@@ -74,7 +74,8 @@ function sourceOnce() {
 	shift 1 || traceAndDie "could not shift by 1"
 
 	local sourceOnce_guard
-	sourceOnce_guard=$(determineSourceOnceGuard "$sourceOnce_file")
+	# shellcheck disable=SC2310   # we know that set -e will not have an effect for determineSourceOnceGuard
+	sourceOnce_guard=$(determineSourceOnceGuard "$sourceOnce_file") || die "was not able to determine sourceOnce guard for %s" "$sourceOnce_file"
 	local -r sourceOnce_guard
 
 	if ! [[ -v "$sourceOnce_guard" ]]; then

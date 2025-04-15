@@ -15,7 +15,7 @@ function myFunction() {
 
 	# shellcheck disable=SC2034   # is passed by name to parseFnArgs
 	local -ra params=(command dir)
-	parseFnArgs params "$@"
+	parseFnArgs params "$@" || return $?
 
 	# pass your variables storing the arguments to other scripts
 	echo "command: $command, dir: $dir"
@@ -27,7 +27,7 @@ function myFunctionWithVarargs() {
 	local command dir varargs
 	# shellcheck disable=SC2034   # is passed by name to parseFnArgs
 	local -ra params=(command dir varargs)
-	parseFnArgs params "$@"
+	parseFnArgs params "$@" || return $?
 
 	# use varargs in another script
 	echo "command: $command, dir: $dir, varargs: ${varargs*}"

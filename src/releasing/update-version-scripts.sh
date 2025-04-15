@@ -65,7 +65,7 @@ function updateVersionScripts() {
 		EOM
 	)
 
-	parseArguments params "$examples" "$TEGONAL_SCRIPTS_VERSION" "$@"
+	parseArguments params "$examples" "$TEGONAL_SCRIPTS_VERSION" "$@" || return $?
 	if ! [[ -v directory ]]; then directory="./src"; fi
 	if ! [[ -v additionalPattern ]]; then additionalPattern=""; fi
 	exitIfNotAllArgumentsSet params "$examples" "$TEGONAL_SCRIPTS_VERSION"

@@ -31,7 +31,7 @@ analysis.sh -p "%{21}" -v v0.1.0
 EOM
 )
 
-parseArguments params "$examples" "$MY_LIB_VERSION" "$@"
+parseArguments params "$examples" "$MY_LIB_VERSION" "$@" || return $?
 # in case there are optional parameters, then fill them in here before calling exitIfNotAllArgumentsSet
 if ! [[ -v directory ]]; then directory="."; fi
 exitIfNotAllArgumentsSet params "$examples" "$MY_LIB_VERSION"

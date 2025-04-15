@@ -56,7 +56,7 @@ function release() {
 		nextVersion "$nextVersionParamPattern" "$nextVersionParamDocu"
 		prepareOnly "$prepareOnlyParamPattern" "$prepareOnlyParamDocu"
 	)
-	parseArguments params "" "$TEGONAL_SCRIPTS_VERSION" "$@"
+	parseArguments params "" "$TEGONAL_SCRIPTS_VERSION" "$@" || return $?
 	# we don't check if all args are set (and neither set default values) as we currently don't use
 	# any param in here but just delegate to releaseFiles.
 
@@ -66,7 +66,7 @@ function release() {
 
 	function release_afterVersionHook() {
 		local version projectsRootDir additionalPattern
-		parseArguments afterVersionHookParams "" "$TEGONAL_SCRIPTS_VERSION" "$@"
+		parseArguments afterVersionHookParams "" "$TEGONAL_SCRIPTS_VERSION" "$@" || return $?
 
 		# same as in pull-hook.sh
 		local -r githubUrl="https://github.com/tegonal/scripts"

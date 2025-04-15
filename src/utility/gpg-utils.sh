@@ -92,10 +92,10 @@ function trustGpgKey() {
 	local gpgDir keyId
 	# shellcheck disable=SC2034   # is passed by name to parseFnArgs
 	local -ra params=(gpgDir keyId)
-	parseFnArgs params "$@"
+	parseFnArgs params "$@" || return $?
 
 	local fingerprint
-	fingerprint="$(gpg --homedir "$gpgDir" --with-colons --fingerprint "$keyId" | grep '^fpr:' | cut -d: -f10 | head -n1)"
+	fingerprint="$(gpg --homedir "$gpgDir" --with-colons --fingerprint "$keyId" | grep '^fpr:' | cut -d: -f10 | head -n1)" || die "was not able to determine fingerprint for keyId %s in gpg dir %s" "$keyId" "$gpgDir"
 	echo "$fingerprint:5:" | gpg --homedir "$gpgDir" --import-ownertrust
 }
 
@@ -103,7 +103,7 @@ function importGpgKey() {
 	local gpgDir file confirmationQuestion
 	# shellcheck disable=SC2034   # is passed by name to parseFnArgs
 	local -ra params=(gpgDir file confirmationQuestion)
-	parseFnArgs params "$@"
+	parseFnArgs params "$@" || return $?
 
 	local outputKey
 	outputKey=$(
@@ -175,7 +175,7 @@ function getSigCreationDate() {
 	local sigFile
 	# shellcheck disable=SC2034   # is passed by name to parseFnArgs
 	local -ra params=(sigFile)
-	parseFnArgs params "$@"
+	parseFnArgs params "$@" || return $?
 	shift 1 || traceAndDie "could not shift by 1"
 
 	local sigPackets keyId
@@ -187,7 +187,7 @@ function extractGpgKeyIdFromKeyData() {
 	local keyData
 	# shellcheck disable=SC2034   # is passed by name to parseFnArgs
 	local -ra params=(keyData)
-	parseFnArgs params "$@"
+	parseFnArgs params "$@" || return $?
 	cut -d ':' -f5 <<<"$keyData"
 }
 
@@ -195,7 +195,7 @@ function extractExpirationTimestampFromKeyData() {
 	local keyData
 	# shellcheck disable=SC2034   # is passed by name to parseFnArgs
 	local -ra params=(keyData)
-	parseFnArgs params "$@"
+	parseFnArgs params "$@" || return $?
 	cut -d ':' -f7 <<<"$keyData"
 }
 
@@ -203,7 +203,7 @@ function isGpgKeyInKeyDataExpired() {
 	local keyData
 	# shellcheck disable=SC2034   # is passed by name to parseFnArgs
 	local -ra params=(keyData)
-	parseFnArgs params "$@"
+	parseFnArgs params "$@" || return $?
 
 	grep -q -E '^(sub|pub):e:' <<<"$keyData"
 }
@@ -212,7 +212,7 @@ function isGpgKeyInKeyDataRevoked() {
 	local keyData
 	# shellcheck disable=SC2034   # is passed by name to parseFnArgs
 	local -ra params=(keyData)
-	parseFnArgs params "$@"
+	parseFnArgs params "$@" || return $?
 
 	grep -q -E '^(sub|pub):r:' <<<"$keyData"
 }
@@ -242,7 +242,7 @@ function extractCreationTimestampFromRevocationData() {
 	local revocationData
 	# shellcheck disable=SC2034   # is passed by name to parseFnArgs
 	local -ra params=(revocationData)
-	parseFnArgs params "$@"
+	parseFnArgs params "$@" || return $?
 	cut -d ':' -f6 <<<"$revocationData"
 }
 
@@ -275,15 +275,20 @@ function getSaveGpgHomedir() {
 	local gpgDir
 	# shellcheck disable=SC2034   # is passed by name to parseFnArgs
 	local -ra params=(gpgDir)
-	parseFnArgs params "$@"
+	parseFnArgs params "$@" || return $?
 
 	if ((${#gpgDir} < 100)); then
 		echo "$gpgDir"
 	else
 		local tmpDir
-		tmpDir=$(mktemp -d -t gpg-homedir-XXXXXXXXXX)
-		ln -s "$gpgDir" "$tmpDir/gpg"
-		echo "$tmpDir/gpg"
+		# we use the given gpgDir should the creation of a tmp dir fail
+		tmpDir=$(mktemp -d -t gpg-homedir-XXXXXXXXXX || echo "")
+		if [[ -n $tmpDir ]]; then
+			ln -s "$gpgDir" "$tmpDir/gpg"
+			echo "$tmpDir/gpg"
+		else
+			echo "$gpgDir"
+		fi
 	fi
 }
 
@@ -291,7 +296,7 @@ function cleanupMaybeSymlinkedGpgDir() {
 	local gpgDir maybeSymlinkedGpgDir
 	# shellcheck disable=SC2034   # is passed by name to parseFnArgs
 	local -ra params=(gpgDir maybeSymlinkedGpgDir)
-	parseFnArgs params "$@"
+	parseFnArgs params "$@" || return $?
 
 	if [[ $maybeSymlinkedGpgDir != "$gpgDir" ]]; then
 		# if cleanup fails then well... let's hope the system cleans it up at some point

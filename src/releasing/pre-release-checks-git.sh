@@ -55,7 +55,7 @@ function preReleaseCheckGit() {
 		branch "$branchParamPattern" "$branchParamDocu"
 	)
 
-	parseArguments params "" "$TEGONAL_SCRIPTS_VERSION" "$@"
+	parseArguments params "" "$TEGONAL_SCRIPTS_VERSION" "$@" || return $?
 	if ! [[ -v branch ]]; then branch="main"; fi
 	exitIfNotAllArgumentsSet params "" "$TEGONAL_SCRIPTS_VERSION"
 	exitIfArgIsNotVersion "$version" "$versionParamPatternLong"

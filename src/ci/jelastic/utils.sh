@@ -72,7 +72,7 @@ function jelastic_signin() {
 	# params is required for parseFnArgs thus:
 	# shellcheck disable=SC2034
 	local -ra params=(url login password)
-	parseFnArgs params "$@"
+	parseFnArgs params "$@" || return $?
 
 	echo "Signing in..."
 	jelastic_exec "users/authentication/signin" --login "$login" --password "$password" --platformUrl "$url" >/dev/null
