@@ -1388,6 +1388,9 @@ function foo() {
 	}
 	# check array with 2-tuples
 	exitIfArgIsNotArrayWithTuples arr 2 "names" 1 describePair
+
+	# returns 0 if the array was initialised (i.e. a value assigned) and non-0 otherwise
+	checkIsInitialisedArray arr
 }
 
 if checkCommandExists "cat"; then

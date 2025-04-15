@@ -56,6 +56,9 @@
 #    	}
 #    	# check array with 2-tuples
 #    	exitIfArgIsNotArrayWithTuples arr 2 "names" 1 describePair
+#
+#    	# returns 0 if the array was initialised (i.e. a value assigned) and non-0 otherwise
+#    	checkIsInitialisedArray arr
 #    }
 #
 #    if checkCommandExists "cat"; then
@@ -130,7 +133,10 @@ function exitIfArgIsNotArray() {
 function exitIfArgIsNotArrayOrIsEmpty() {
 	exitIfArgIsNotArray "$@"
 	local -rn exitIfArgIsNotArrayOrIsEmpty_arr=$1
-	if [[ ${#exitIfArgIsNotArrayOrIsEmpty_arr[@]} -lt 1 ]]; then
+	# shellcheck disable=SC2310		# we are aware of that if and ! will disable set -e for checkIsInitialisedArray
+	if ! checkIsInitialisedArray exitIfArgIsNotArrayOrIsEmpty_arr; then
+		traceAndDie "the passed argument \033[0;36m%s\033[0m is an uninitialised array" "${!exitIfArgIsNotArrayOrIsEmpty_arr}"
+	elif [[ ${#exitIfArgIsNotArrayOrIsEmpty_arr[@]} -lt 1 ]]; then
 		traceAndDie "the passed argument \033[0;36m%s\033[0m is an empty array" "${!exitIfArgIsNotArrayOrIsEmpty_arr}"
 	fi
 }
@@ -138,9 +144,17 @@ function exitIfArgIsNotArrayOrIsEmpty() {
 function exitIfArgIsNotArrayOrIsNonEmpty() {
 	exitIfArgIsNotArray "$@"
 	local -rn exitIfArgIsNotArrayOrIsNonEmpty_arr=$1
-	if [[ ${#exitIfArgIsNotArrayOrIsNonEmpty_arr[@]} -gt 0 ]]; then
+	# shellcheck disable=SC2310		# we are aware of that if and ! will disable set -e for checkIsInitialisedArray
+	if checkIsInitialisedArray exitIfArgIsNotArrayOrIsNonEmpty_arr && [[ ${#exitIfArgIsNotArrayOrIsNonEmpty_arr[@]} -gt 0 ]]; then
 		traceAndDie "the passed argument \033[0;36m%s\033[0m is a non empty array" "${!exitIfArgIsNotArrayOrIsNonEmpty_arr}"
 	fi
+}
+
+function checkIsInitialisedArray() {
+	if (($# != 1)); then
+		traceAndDie "One argument needs to be passed to checkIsInitialisedArray, the array name, given \033[0;36m%s\033[0m\n" "$#"
+	fi
+	recursiveDeclareP "$1" | grep '(' >/dev/null
 }
 
 function checkArgIsArrayWithTuples() {
