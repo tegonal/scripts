@@ -62,7 +62,7 @@ function toggleSections() {
 		EOM
 	)
 
-	parseArguments params "$examples" "$TEGONAL_SCRIPTS_VERSION" "$@"
+	parseArguments params "$examples" "$TEGONAL_SCRIPTS_VERSION" "$@" || return $?
 	if ! [[ -v file ]]; then file="./README.md"; fi
 	exitIfNotAllArgumentsSet params "$examples" "$TEGONAL_SCRIPTS_VERSION"
 

@@ -52,7 +52,7 @@ function updateBashDocumentation() {
 	local script id dir pattern
 	# shellcheck disable=SC2034   # is passed by name to parseFnArgs
 	local -ra params=(script id dir pattern)
-	parseFnArgs params "$@"
+	parseFnArgs params "$@" || return $?
 
 	local snippet pathWithoutExtension
 	pathWithoutExtension=${script::-3} || die "could not determine path without extension for script %s and %id" "$script" "$id"

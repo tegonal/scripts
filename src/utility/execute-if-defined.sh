@@ -36,7 +36,7 @@
 #    	declare params=(
 #    		findFn '--find-fn' ''
 #    	)
-#    	parseArguments params "" "$MY_LIB_VERSION" "$@"
+#    	parseArguments params "" "$MY_LIB_VERSION" "$@" || return $?
 #
 #    	executeIfFunctionNameDefined "$findFn" "--find-fn" "args" "passed" "to" "function"
 #    }

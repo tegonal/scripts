@@ -62,6 +62,6 @@ function recursiveDeclareP() {
 	local -r reg='^declare -n(r)? [^=]+=\"([^\"]+)\"$'
 	while [[ $definition =~ $reg ]]; do
 		definition=$(declare -p "${BASH_REMATCH[2]}" || echo "executing 'declare -p ${BASH_REMATCH[2]}' failed, see previous error message further above")
-	done
+	done || return $?
 	echo "$definition"
 }

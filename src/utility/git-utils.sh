@@ -98,7 +98,7 @@ function countCommits() {
 	local from to
 	# shellcheck disable=SC2034   # is passed by name to parseFnArgs
 	local -ra params=(from to)
-	parseFnArgs params "$@"
+	parseFnArgs params "$@" || return $?
 	git rev-list --count "$from..$to" || die "could not count commits for $from..$to, see above"
 }
 
@@ -135,7 +135,7 @@ function hasRemoteTag() {
 	shift 1 || traceAndDie "could not shift by 1"
 	local output literalTag
 	output=$(git ls-remote -t "$remote") || die "the following command failed (see above): git ls-remote -t \"$remote\""
-	literalTag=$(escapeRegex "refs/tags/$tag")
+	literalTag=$(escapeRegex "refs/tags/$tag") || die "was not able to escape the following for regex: %s" "refs/tags/$tag"
 	grep -q -E "$literalTag\$" <<<"$output"
 }
 

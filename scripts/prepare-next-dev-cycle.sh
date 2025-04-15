@@ -42,7 +42,7 @@ function prepareNextDevCycle() {
 		additionalPattern "$additionalPatternParamPattern" "is ignored as additional pattern is specified internally, still here as release-files uses this argument"
 		beforePrFn "$beforePrFnParamPattern" "$beforePrFnParamDocu"
 	)
-	parseArguments params "" "$TEGONAL_SCRIPTS_VERSION" "$@"
+	parseArguments params "" "$TEGONAL_SCRIPTS_VERSION" "$@" || return $?
 	# we don't check if all args are set (and neither set default values) as we currently don't use
 	# any param in here but just delegate to prepareFilesNextDevCycle.
 

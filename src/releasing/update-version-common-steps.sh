@@ -81,7 +81,7 @@ function updateVersionCommonSteps() {
 		projectsRootDir "$projectsRootDirParamPattern" "$projectsRootDirParamDocu"
 		additionalPattern "$additionalPatternParamPattern" "$additionalPatternParamDocu"
 	)
-	parseArguments params "" "$TEGONAL_SCRIPTS_VERSION" "$@"
+	parseArguments params "" "$TEGONAL_SCRIPTS_VERSION" "$@" || return $?
 
 	if ! [[ -v projectsRootDir ]]; then projectsRootDir=$(realpath "."); fi
 	if ! [[ -v additionalPattern ]]; then additionalPattern="^$"; fi

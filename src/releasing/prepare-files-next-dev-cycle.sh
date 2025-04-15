@@ -84,7 +84,7 @@ function prepareFilesNextDevCycle() {
 		beforePrFn "$beforePrFnParamPattern" "$beforePrFnParamDocu"
 		afterVersionUpdateHook "$afterVersionUpdateHookParamPattern" "$afterVersionUpdateHookParamDocu"
 	)
-	parseArguments params "" "$TEGONAL_SCRIPTS_VERSION" "$@"
+	parseArguments params "" "$TEGONAL_SCRIPTS_VERSION" "$@" || return $?
 	if ! [[ -v projectsRootDir ]]; then projectsRootDir=$(realpath ".") || die "could not determine realpath of ."; fi
 	if ! [[ -v additionalPattern ]]; then additionalPattern="^$"; fi
 	if ! [[ -v beforePrFn ]]; then beforePrFn="beforePr"; fi
@@ -100,7 +100,7 @@ function prepareFilesNextDevCycle() {
 
 	function prepareFilesNextDevCycle_afterVersionHook() {
 		local version projectsRootDir additionalPattern
-		parseArguments afterVersionHookParams "" "$TEGONAL_SCRIPTS_VERSION" "$@"
+		parseArguments afterVersionHookParams "" "$TEGONAL_SCRIPTS_VERSION" "$@" || return $?
 
 		updateVersionScripts \
 			"$versionParamPatternLong" "$version-SNAPSHOT" \

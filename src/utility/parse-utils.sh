@@ -69,7 +69,9 @@ function printVersion() {
 	fi
 	local version=$1
 	local stackFrame=${2:-3}
-	logInfo "Version of %s is:\n%s" "$(basename "${BASH_SOURCE[stackFrame]:-${BASH_SOURCE[((stackFrame - 1))]}}")" "$version"
+	local name
+	name=$(basename "${BASH_SOURCE[stackFrame]:-${BASH_SOURCE[((stackFrame - 1))]}}" || echo "<unknown>")
+	logInfo "Version of %s is:\n%s" "$name" "$version"
 }
 
 function assignToVariableInOuterScope() {

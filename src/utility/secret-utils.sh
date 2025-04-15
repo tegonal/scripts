@@ -81,7 +81,7 @@ function getSecretViaSecretToolOrPromptAndStore() {
 		promptForSecret "$getSecretViaSecretToolOrPromptAndStore_prompt" getSecretViaSecretToolOrPromptAndStore_secret
 		storeSecretViaSecretTool "$getSecretViaSecretToolOrPromptAndStore_group" "$getSecretViaSecretToolOrPromptAndStore_key" "$getSecretViaSecretToolOrPromptAndStore_label" "$getSecretViaSecretToolOrPromptAndStore_secret"
 	fi
-	assignToVariableInOuterScope "$getSecretViaSecretToolOrPromptAndStore_outVar" "$getSecretViaSecretToolOrPromptAndStore_secret"
+	assignToVariableInOuterScope "$getSecretViaSecretToolOrPromptAndStore_outVar" "$getSecretViaSecretToolOrPromptAndStore_secret" || die "could not to assign a value to variable in outer scope named %s" "$getSecretViaSecretToolOrPromptAndStore_outVar"
 }
 
 function getSecretViaSecretTool() {
@@ -155,5 +155,5 @@ function promptForSecret() {
 	if [[ -z $promptForSecret_password ]]; then
 		die "looks like you pressed ENTER too early, secret was empty"
 	fi
-	assignToVariableInOuterScope "$2" "$promptForSecret_password"
+	assignToVariableInOuterScope "$2" "$promptForSecret_password" || die "could not to assign a value to variable in outer scope named %s" "$2"
 }

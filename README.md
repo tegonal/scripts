@@ -1779,7 +1779,7 @@ analysis.sh -p "%{21}" -v v0.1.0
 EOM
 )
 
-parseArguments params "$examples" "$MY_LIB_VERSION" "$@"
+parseArguments params "$examples" "$MY_LIB_VERSION" "$@" || return $?
 # in case there are optional parameters, then fill them in here before calling exitIfNotAllArgumentsSet
 if ! [[ -v directory ]]; then directory="."; fi
 exitIfNotAllArgumentsSet params "$examples" "$MY_LIB_VERSION"
@@ -1815,7 +1815,7 @@ function myFunction() {
 
 	# shellcheck disable=SC2034   # is passed by name to parseFnArgs
 	local -ra params=(command dir)
-	parseFnArgs params "$@"
+	parseFnArgs params "$@" || return $?
 
 	# pass your variables storing the arguments to other scripts
 	echo "command: $command, dir: $dir"
@@ -1827,7 +1827,7 @@ function myFunctionWithVarargs() {
 	local command dir varargs
 	# shellcheck disable=SC2034   # is passed by name to parseFnArgs
 	local -ra params=(command dir varargs)
-	parseFnArgs params "$@"
+	parseFnArgs params "$@" || return $?
 
 	# use varargs in another script
 	echo "command: $command, dir: $dir, varargs: ${varargs*}"

@@ -67,7 +67,7 @@ function timestampToDateTime() {
 	local timestamp
 	# shellcheck disable=SC2034   # is passed by name to parseFnArgs
 	local -ra params=(timestamp)
-	parseFnArgs params "$@"
+	parseFnArgs params "$@" || return $?
 	date -d "@$timestamp" +"%Y-%m-%dT%H:%M:%S"
 }
 
@@ -75,7 +75,7 @@ function timestampToDate() {
 	local timestamp
 	# shellcheck disable=SC2034   # is passed by name to parseFnArgs
 	local -ra params=(timestamp)
-	parseFnArgs params "$@"
+	parseFnArgs params "$@" || return $?
 	date -d "@$timestamp" +"%Y-%m-%d"
 }
 
@@ -83,7 +83,7 @@ function timestampToDateInUserFormat() {
 	local timestamp
 	# shellcheck disable=SC2034   # is passed by name to parseFnArgs
 	local -ra params=(timestamp)
-	parseFnArgs params "$@"
+	parseFnArgs params "$@" || return $?
 	date -d "@$timestamp" +"%x"
 }
 
@@ -91,7 +91,7 @@ function dateToTimestamp() {
 	local dateAsString
 	# shellcheck disable=SC2034   # is passed by name to parseFnArgs
 	local -ra params=(dateAsString)
-	parseFnArgs params "$@"
+	parseFnArgs params "$@" || return $?
 	date -d "$dateAsString" +%s
 }
 
@@ -119,7 +119,7 @@ function elapsedSecondsBasedOnTimestampInMs() {
 	local startTimestampInMs
 	# shellcheck disable=SC2034   # is passed by name to parseFnArgs
 	local -ra params=(startTimestampInMs)
-	parseFnArgs params "$@"
+	parseFnArgs params "$@" || return $?
 
 	if ((${#startTimestampInMs} != 13)); then
 		die "looks like the given start timestamp was not in milliseconds, should have length 13 but was %s -- consider using timestampInMs -- following the given startTimestampInMs: %s" " ${#startTimestampInMs}" "$startTimestampInMs"
@@ -135,7 +135,7 @@ function formatMsToSeconds() {
 	local millis
 	# shellcheck disable=SC2034   # is passed by name to parseFnArgs
 	local -ra params=(millis)
-	parseFnArgs params "$@"
+	parseFnArgs params "$@" || return $?
 
 	local sign
 	if [[ $millis =~ ^- ]]; then

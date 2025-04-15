@@ -112,7 +112,7 @@ function releaseFiles() {
 		prepareNextDevCycleFn "$prepareNextDevCycleFnParamPattern" "$prepareNextDevCycleFnParamDocu"
 		afterVersionUpdateHook "$afterVersionUpdateHookParamPattern" "$afterVersionUpdateHookParamDocu"
 	)
-	parseArguments params "" "$TEGONAL_SCRIPTS_VERSION" "$@"
+	parseArguments params "" "$TEGONAL_SCRIPTS_VERSION" "$@" || return $?
 
 	# deduces nextVersion based on version if not already set (and if version set)
 	source "$dir_of_tegonal_scripts/releasing/deduce-next-version.source.sh"
@@ -139,7 +139,7 @@ function releaseFiles() {
 
 	function releaseFiles_afterVersionHook() {
 		local version projectsRootDir additionalPattern
-		parseArguments afterVersionHookParams "" "$TEGONAL_SCRIPTS_VERSION" "$@"
+		parseArguments afterVersionHookParams "" "$TEGONAL_SCRIPTS_VERSION" "$@" || return $?
 
 		updateVersionScripts \
 			"$versionParamPatternLong" "$version" \

@@ -59,7 +59,7 @@ function replaceHelpSnippet() {
 	local script id dir pattern varargs
 	# shellcheck disable=SC2034   # is passed by name to parseFnArgs
 	local -ra params=(script id dir pattern varargs)
-	parseFnArgs params "$@"
+	parseFnArgs params "$@" || return $?
 
 	if ! [[ -f $script ]] && ! checkCommandExists "$script" >/dev/null; then
 		logError "$script is neither a file nor a command"
