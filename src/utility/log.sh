@@ -20,7 +20,7 @@
 #    shopt -s inherit_errexit || { echo >&2 "please update to bash 5, see errors above" && exit 1; }
 #    # Assumes tegonal's scripts were fetched with gt - adjust location accordingly
 #    dir_of_tegonal_scripts="$(cd -- "$(dirname -- "${BASH_SOURCE[0]:-$0}")" >/dev/null && pwd 2>/dev/null)/../lib/tegonal-scripts/src"
-#    source "$dir_of_tegonal_scripts/setup.sh" "$dir_of_tegonal_scripts"
+#    source "$dir_of_tegonal_scripts/setup_tegonal_scripts.sh" "$dir_of_tegonal_scripts"
 #
 #    sourceOnce "$dir_of_tegonal_scripts/utility/log.sh"
 #
@@ -154,7 +154,7 @@ function logDeprecation() {
 
 function suppressDeprecation() {
 	local -r id=$1
-	# shellcheck disable=SC2034		# global var defined in setup.sh
+	# shellcheck disable=SC2034		# global var defined in setup_tegonal_scripts.sh
 	TEGONAL_SCRIPTS_SUPPRESSED_DEPRECATION[id]=1
 }
 
