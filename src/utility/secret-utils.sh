@@ -78,8 +78,8 @@ function getSecretViaSecretToolOrPromptAndStore() {
 
 	# shellcheck disable=SC2310   # we are aware of that set -e has no effect for getSecretViaSecretTool
 	if ! getSecretViaSecretToolOrPromptAndStore_secret=$(getSecretViaSecretTool "$getSecretViaSecretToolOrPromptAndStore_group" "$getSecretViaSecretToolOrPromptAndStore_key"); then
-		promptForSecret "$getSecretViaSecretToolOrPromptAndStore_prompt" getSecretViaSecretToolOrPromptAndStore_secret
-		storeSecretViaSecretTool "$getSecretViaSecretToolOrPromptAndStore_group" "$getSecretViaSecretToolOrPromptAndStore_key" "$getSecretViaSecretToolOrPromptAndStore_label" "$getSecretViaSecretToolOrPromptAndStore_secret"
+		promptForSecret "$getSecretViaSecretToolOrPromptAndStore_prompt" getSecretViaSecretToolOrPromptAndStore_secret || return $?
+		storeSecretViaSecretTool "$getSecretViaSecretToolOrPromptAndStore_group" "$getSecretViaSecretToolOrPromptAndStore_key" "$getSecretViaSecretToolOrPromptAndStore_label" "$getSecretViaSecretToolOrPromptAndStore_secret" || return $?
 	fi
 	assignToVariableInOuterScope "$getSecretViaSecretToolOrPromptAndStore_outVar" "$getSecretViaSecretToolOrPromptAndStore_secret" || die "could not to assign a value to variable in outer scope named %s" "$getSecretViaSecretToolOrPromptAndStore_outVar"
 }
@@ -125,7 +125,7 @@ function promptForSecret() {
 
 	# without using it, pasting secrets sometimes reveals parts of the secret (read is too slow)
 	stty -echo
-	trap "stty echo; return 130" INT
+	trap "stty echo; printf '\n'; return 130" INT
 	trap "stty echo" EXIT
 
 	# shellcheck disable=SC2059 # we want to be able to use newline in the $prompt, hence OK
