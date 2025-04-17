@@ -18,7 +18,7 @@ function my_lib_login() {
 	echo "called my_lib_login"
 }
 function my_lib_self_update() {
-	echo "called my_lib_self_updatelogin"
+	echo "called my_lib_self_update"
 }
 
 Describe 'parse-commands.sh'
