@@ -30,12 +30,26 @@ body:
         - qa/run-shellspec-if-installed.sh
         - qa/run-shfmt.sh
         - releasing/common-constants.source.sh
+        - releasing/after-version-update-hook.params.source.sh
+        - releasing/after-version-update-hook.params-definition.source.sh
         - releasing/deduce-next-version.source.sh
+        - releasing/common-constants.source.sh
         - releasing/pre-release-checks-git.sh
         - releasing/prepare-files-next-dev-cycle.sh
+        - releasing/prepare-files-next-dev-cycle.params.source.sh
+        - releasing/prepare-files-next-dev-cycle.params-definition.source.sh-
         - releasing/prepare-next-dev-cycle-template.sh
+        - releasing/prepare-next-dev-cycle-template.default-args.source.sh
+        - releasing/prepare-next-dev-cycle-template.params.source.sh
+        - releasing/prepare-next-dev-cycle-template.params-definition.source.sh
         - releasing/release-files.sh
+        - releasing/release-files.default-args.source.sh
+        - releasing/release-files.params.source.sh
+        - releasing/release-files.params-definition.source.sh
         - releasing/release-template.sh
+        - releasing/release-template.default-args.source.sh
+        - releasing/release-template.params.source.sh
+        - releasing/release-template.params-definition.source.sh
         - releasing/sbt-publish-to-sonatype.sh
         - releasing/sneak-peek-banner.sh
         - releasing/toggle-sections.sh

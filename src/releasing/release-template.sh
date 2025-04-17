@@ -98,34 +98,14 @@ function releaseTemplate() {
 	local forReleaseParamPatternLong releaseHookParamPatternLong
 	source "$dir_of_tegonal_scripts/releasing/common-constants.source.sh" || traceAndDie "could not source common-constants.source.sh"
 
-	local version releaseHook branch projectsRootDir additionalPattern nextVersion prepareOnly
-	local beforePrFn prepareNextDevCycleFn afterVersionUpdateHook
-	# shellcheck disable=SC2034   # is passed by name to parseArguments
-	local -ra params=(
-		version "$versionParamPattern" "$versionParamDocu"
-		releaseHook "$releaseHookParamPattern" "$releaseHookParamDocu"
-		branch "$branchParamPattern" "$branchParamDocu"
-		projectsRootDir "$projectsRootDirParamPattern" "$projectsRootDirParamDocu"
-		additionalPattern "$additionalPatternParamPattern" "$additionalPatternParamDocu"
-		nextVersion "$nextVersionParamPattern" "$nextVersionParamDocu"
-		prepareOnly "$prepareOnlyParamPattern" "$prepareOnlyParamDocu"
-		beforePrFn "$beforePrFnParamPattern" "$beforePrFnParamDocu"
-		prepareNextDevCycleFn "$prepareNextDevCycleFnParamPattern" "$prepareNextDevCycleFnParamDocu"
-		afterVersionUpdateHook "$afterVersionUpdateHookParamPattern" "$afterVersionUpdateHookParamDocu"
-	)
-
-	parseArgumentsIgnoreUnknown params "" "$TEGONAL_SCRIPTS_VERSION" "$@"
-
-	# deduces nextVersion based on version if not already set (and if version set)
-	source "$dir_of_tegonal_scripts/releasing/deduce-next-version.source.sh"
-	if ! [[ -v branch ]]; then branch="main"; fi
-	if ! [[ -v projectsRootDir ]]; then projectsRootDir=$(realpath "."); fi
-	if ! [[ -v additionalPattern ]]; then additionalPattern="^$"; fi
-	if ! [[ -v prepareOnly ]] || [[ $prepareOnly != "true" ]]; then prepareOnly=false; fi
-	if ! [[ -v beforePrFn ]]; then beforePrFn='beforePr'; fi
-	if ! [[ -v prepareNextDevCycleFn ]]; then prepareNextDevCycleFn='prepareNextDevCycle'; fi
-	if ! [[ -v afterVersionUpdateHook ]]; then afterVersionUpdateHook=''; fi
-	exitIfNotAllArgumentsSet params "" "$TEGONAL_SCRIPTS_VERSION"
+	source "$dir_of_tegonal_scripts/releasing/release-template.params.source.sh"
+	# for intellij, are defined via release-template.params.source.sh
+	local releaseHook beforePrFn prepareNextDevCycleFn version branch projectsRootDir additionalPattern
+	local afterVersionUpdateHook prepareOnly nextVersion
+	source "$dir_of_tegonal_scripts/releasing/release-template.params-definition.source.sh"
+	parseArguments releaseTemplateParams "" "$TEGONAL_SCRIPTS_VERSION" "$@" || return $?
+	source "$dir_of_tegonal_scripts/releasing/release-template.default-args.source.sh"
+	exitIfNotAllArgumentsSet releaseTemplateParams "" "$TEGONAL_SCRIPTS_VERSION"
 
 	exitIfArgIsNotFunction "$releaseHook" "$releaseHookParamPatternLong"
 	exitIfArgIsNotFunction "$beforePrFn" "$beforePrFnParamPatternLong"

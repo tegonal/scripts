@@ -23,17 +23,18 @@ if ! [[ -v dir_of_tegonal_scripts ]]; then
 fi
 sourceOnce "$dir_of_tegonal_scripts/utility/checks.sh"
 sourceOnce "$dir_of_tegonal_scripts/qa/run-shellspec-if-installed.sh"
+sourceOnce "$dir_of_tegonal_scripts/qa/run-shellspec-if-installed.sh"
 
 sourceOnce "$scriptsDir/check-in-bug-template.sh"
 sourceOnce "$scriptsDir/cleanup-on-push-to-main.sh"
 sourceOnce "$scriptsDir/run-shellcheck.sh"
+sourceOnce "$scriptsDir/check-params-and-definition-in-sync.sh"
 
 function beforePr() {
-	# using && because this function is used on the left side of an || in releaseFiles
-	# this way we still have fail fast behaviour and don't mask/hide a non-zero exit code
 	runShellspecIfInstalled --jobs 2 &&
-		checkInBugTemplate &&
 		customRunShellcheck &&
+		checkParamsAndDefinitionInSync &&
+		checkInBugTemplate &&
 		cleanupOnPushToMain
 }
 
