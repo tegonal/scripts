@@ -58,9 +58,9 @@ sourceOnce "$dir_of_tegonal_scripts/utility/checks.sh"
 function executeIfFunctionNameDefined() {
 	if (($# <= 2)); then
 		logError "At least two arguments need to be passed to executeIfFunctionNameDefined, given \033[0;36m%s\033[0m\nFollowing a description of the parameters:" "$#"
-			echo >&2 '1: functionName   	the function which shall be executed if defined'
+			echo >&2 '1: functionName     the function which shall be executed if defined'
 			echo >&2 '2: argNumberOrName  via which arg (number or name) was the function name defined (used in the error messages)'
-			echo >&2 '3... args...			  arguments passed to the function'
+			echo >&2 '3... args...        arguments passed to the function'
 			printStackTrace
 			exit 9
 	fi
