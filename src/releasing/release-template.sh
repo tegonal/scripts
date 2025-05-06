@@ -172,7 +172,7 @@ function releaseTemplate() {
 			"$beforePrFnParamPatternLong" "$beforePrFn" || die "could not prepare next dev cycle for version %s" "$nextVersion"
 
 		git push origin "$version" || die "could not push tag %s to origin" "$version"
-		git push origin "$branch" || die "could not push commits"
+		git push || die "could not push commits"
 
 		logSuccess "tag pushed and next dev cycle prepared and pushed"
 	else
