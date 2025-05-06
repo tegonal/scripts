@@ -158,11 +158,11 @@ function releaseTemplate() {
 		git add "$projectsRootDir" || return $?
 		git commit --edit -m "$version " || return $?
 		local signsTags
-		signsTags=$(git config --get tag.gpgSign)
+		signsTags=$(git config --get tag.gpgSign || echo "false")
 		if [[ $signsTags == true ]]; then
-			git tag -a "$version" -m "$version" || return $?
+			git tag -a "$version" -m "$version" || die "could not create tag $version"
 		else
-			git tag "$version" || return $?
+			git tag "$version" || die "could not create tag $version"
 		fi
 
 		"$prepareNextDevCycleFn" \
