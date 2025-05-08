@@ -117,7 +117,6 @@ function promptForSecret() {
 		logError "promptForSecret requires exactly 2 arguments, given \033[0;36m%s\033[0m\nFollowing a description of the parameters:\n" "$#"
 		echo >&2 '1: prompt  the text used in the prompt'
 		echo >&2 '2: outVar  variable name to which the secret shall be assigned'
-		echo "bla1"
 		exit 1
 	fi
 
@@ -155,5 +154,5 @@ function promptForSecret() {
 	if [[ -z $promptForSecret_password ]]; then
 		die "looks like you pressed ENTER too early, secret was empty"
 	fi
-	assignToVariableInOuterScope "$2" "$promptForSecret_password" || die "could not to assign a value to variable in outer scope named %s" "$2"
+	assignToVariableInOuterScope "$2" "$promptForSecret_password" || die "could not assign a value to variable in outer scope named %s" "$2"
 }

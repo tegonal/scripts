@@ -10,8 +10,8 @@
 #                                         Version: v4.9.0-SNAPSHOT
 #######  Description  #############
 #
-#  Utility functions wrapping printf and prefixing the message with a coloured INFO, WARNING or ERROR.
-#  logError writes to stderr and logWarning and logInfo to stdout
+#  Utility functions to source files but only if a certain guard is not defined. Sourcing happens inside the functions
+#  which also means defining global variables are prevented via declare.
 #
 #######  Usage  ###################
 #
