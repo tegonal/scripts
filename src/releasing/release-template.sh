@@ -133,7 +133,7 @@ function releaseTemplate() {
 
 	preReleaseCheckGit \
 		"$versionParamPatternLong" "$version" \
-		"$branchParamPatternLong" "$branch"
+		"$branchParamPatternLong" "$branch" || return $?
 
 	# make sure everything is up-to-date and works as it should
 	"$beforePrFn" || return $?
