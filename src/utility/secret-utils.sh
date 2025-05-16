@@ -124,7 +124,7 @@ function promptForSecret() {
 	# without using it, pasting secrets sometimes reveals parts of the secret (read is too slow)
 	stty -echo
 	trap "stty echo; printf '\n'; return 130" INT
-	trap "stty echo" EXIT
+	trap "stty echo;" EXIT
 
 	# shellcheck disable=SC2059 # we want to be able to use newline in the $prompt, hence OK
 	printf "$1"
