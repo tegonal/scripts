@@ -356,7 +356,7 @@ function checkPathNamedIsInsideOf() {
 	parseFnArgs params "$@" || return $?
 
 	if ! checkPathIsInsideOf "$path" "$rootDir"; then
-		returnDying "the given \033[0;36m%s\033[0m %s not inside of %s" "$name" "$pathAbsolute" "$rootDir" || return $?
+		returnDying "the given \033[0;36m%s\033[0m %s is not inside of %s" "$name" "$path" "$rootDir" || return $?
 	fi
 }
 
