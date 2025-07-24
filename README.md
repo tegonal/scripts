@@ -22,9 +22,8 @@ Feel free to use it and report bugs if you should find one.
 
 ---
 ❗ You are taking a *sneak peek* at the next version. It could be that some features you find on this page are not
-released yet.  
-Please have a look at the README of the corresponding release/git tag. Latest
-version: [README of v4.8.1](https://github.com/tegonal/scripts/tree/v4.8.1/README.md).
+released yet. Please have a look at the README of the corresponding release/git tag. 
+Latest version: [README of v4.8.1](https://github.com/tegonal/scripts/tree/v4.8.1/README.md).
 
 ---
 
@@ -110,15 +109,15 @@ The scripts are ordered by topic:
 		- [utils](#jelastic-utils)
 - [Quality Assurance](#quality-assurance)
 	- [runShellcheck](#runshellcheck)
-    - [runShellcheckPullHooks](#runshellcheck-on-pull-hookssh)
-    - [runShellspecIfInstalled](#runshellspecifinstalled)
+	- [runShellcheckPullHooks](#runshellcheck-on-pull-hookssh)
+	- [runShellspecIfInstalled](#runshellspecifinstalled)
 - [Releasing](#releasing)
 	- [Releasing Files](#release-files)
 	- [Prepare Files Next Dev Cycle](#prepare-files-next-dev-cycle)
 	- [Release Template](#release-template)
-    - [Prepare Next Dev Cycle Template](#prepare-next-dev-cycle-template)
+	- [Prepare Next Dev Cycle Template](#prepare-next-dev-cycle-template)
 	- [git Pre-Release checks](#git-pre-release-checks)
-    - [sbt sonatype publish](#sbt-sonatype-publish)
+	- [sbt sonatype publish](#sbt-sonatype-publish)
 	- [Update Version common steps](#update-version-common-steps)
 	- [Update Version in README](#update-version-in-readme)
 	- [Update Version in bash scripts](#update-version-in-bash-scripts)
@@ -129,9 +128,9 @@ The scripts are ordered by topic:
 - [Script Utilities](#script-utilities)
 	- [array utils](#array-utils)
 	- [Ask functions](#ask-functions)
-    - [cleanups](#cleanups)
+	- [cleanups](#cleanups)
 	- [Checks](#checks)
-    - [date utils](#date-utils)
+	- [date utils](#date-utils)
 	- [git utils](#git-utils)
 	- [GPG Utils](#gpg-utils)
 	- [Http functions](#http-functions)
@@ -143,7 +142,7 @@ The scripts are ordered by topic:
 	- [Replace Snippets](#replace-snippets)
 	- [Secret utils](#secret-utils)
 	- [`source` once](#source-once)
-    - [string utils](#string-utils)
+	- [string utils](#string-utils)
 	- [Update Documentation](#update-bash-documentation)
 
 # Continuous Integration
@@ -342,7 +341,7 @@ runShellcheckPullHooks ".gt"
 
 ## runShellCheck on pull-hooks.sh
 
-*Deprecated*, source `run-shellcheck.sh` instead of `run-shellcheck-pull-hooks.sh` which now includes 
+*Deprecated*, source `run-shellcheck.sh` instead of `run-shellcheck-pull-hooks.sh` which now includes
 `runShellcheckPullHooks` as well.
 
 ## runShellSpecIfInstalled
@@ -446,13 +445,13 @@ declare -fx findScripts
 "$dir_of_tegonal_scripts/releasing/release-files.sh" -v v0.1.0 -k "0x945FE615904E5C85" --sign-fn findScripts
 
 # releases version v0.1.0 using the key 0x945FE615904E5C85 for signing and function findScripts to find the files which
- ## should be signed (and thus released). Moreover, searches for additional occurrences where the version should be
+# should be signed (and thus released). Moreover, searches for additional occurrences where the version should be
 # replaced via the specified pattern
 "$dir_of_tegonal_scripts/releasing/release-files.sh" \
 	-v v0.1.0 -k "0x945FE615904E5C85" --sign-fn findScripts \
 	-p "(TEGONAL_SCRIPTS_VERSION=['\"])[^'\"]+(['\"])"
 
-function specialBeforePr(){
+function specialBeforePr() {
 	beforePr && echo "imagine some additional work"
 }
 # make the function visible to release-files.sh / not necessary if you source prepare-files-next-dev-cycle.sh
@@ -463,7 +462,6 @@ declare -fx specialBeforePr
 "$dir_of_tegonal_scripts/releasing/release-files.sh" \
 	-v v0.1.0 -k "0x945FE615904E5C85" --sign-fn findScripts \
 	--before-pr-fn specialBeforePr
-
 
 # in case you want to provide your own release.sh and only want to do some pre-configuration
 # then you might want to source it instead
@@ -568,17 +566,15 @@ Defines a release process template where some conventions are defined:
 
 It then executes the following steps:
 
-
 - [git pre-release checks](#git-pre-release-checks)
 - check `beforePrFn` can be executed without problems
 - [update version common release steps](#update-version-common-release-steps)
 - call the afterVersionUpdateHook if defined
--  check again `beforePrFn`  is not broken
+- check again `beforePrFn`  is not broken
 - call the releaseHook
 - commit changes, create tag
 - execute `prepareNextDevCycleFn` (which typically creates a commit as well)
 - push tag and commits
-
 
 Help:
 
@@ -666,7 +662,8 @@ releaseTemplate "$@" --release-hook releaseScalaLib \
 
 ## Prepare next dev cycle template
 
-template to prepare a next releases, updating version and such using [update-version-common-steps.sh](#update-version-common-release-steps)
+template to prepare a next releases, updating version and such,
+uses [update-version-common-steps.sh](#update-version-common-steps)
 
 Help:
 
@@ -789,8 +786,10 @@ source "$dir_of_tegonal_scripts/setup.sh" "$dir_of_tegonal_scripts"
 
 ## SBT Sonatype publish
 
-Assumes you have configured your sbt project to publish to sonatype (or any other repo) where you have defined to 
-use SONATYPE_USER and SONATYPE_PW as env vars for your credentials. I.e. your build.sbt file will contain something like:
+Assumes you have configured your sbt project to publish to sonatype (or any other repo) where you have defined to
+use SONATYPE_USER and SONATYPE_PW as env vars for your credentials. I.e. your build.sbt file will contain something
+like:
+
 ```sbt
 credentials += Credentials(
   "Sonatype Nexus Repository Manager",
@@ -832,7 +831,6 @@ SONATYPE_USER="kshjwo2" sbtPublishToSonatype
 
 </releasing-sbt-publish-to-sonatype>
 
-
 ## Update Version Common Steps
 
 Performs several `releasing` scripts defined in the following sections:
@@ -842,7 +840,8 @@ Performs several `releasing` scripts defined in the following sections:
 - Updates the version in .github/ISSUE_TEMPLATE/**.y(a)ml files (
   see [Update Version in issue templates](#update-version-in-issue-templates))
 - Updates the version in the README.md (see next section [Update Version in README](#update-version-in-readme)).
-- [activates the release section and hides the main section](#toggle-mainrelease-sections) if `-for-release` is `true` (the opposite otherwise)
+- [activates the release section and hides the main section](#toggle-mainrelease-sections) if `-for-release` 
+  is `true` (the opposite otherwise)
 - [hides the sneak-peek banner](#hideshow-sneak-peek-banner) (or shows it if `--for-release` is `false`)
 
 Help:
@@ -2118,7 +2117,6 @@ grep -E "$pattern"
 ```
 
 </utility-string-utils>
-
 
 ## Update Bash documentation
 
