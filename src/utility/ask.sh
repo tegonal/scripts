@@ -60,7 +60,7 @@ function askYesOrNo() {
 	local -r askYesOrNo_timeout=20
 	local answer='n'
 
-	# shellcheck disable=SC2317   # called by name
+	# shellcheck disable=SC2329   # called by name
 	function askYesOrNo_noAnswerCallback() {
 		printf "\n"
 		logInfo "no user interaction after %s seconds, going to interpret that as a 'no'." "$askYesOrNo_timeout"

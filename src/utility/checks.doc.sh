@@ -20,7 +20,7 @@ function foo() {
 	checkArgIsBoolean "$bool" 3   	# same as exitIfArgIsNotBoolean if set -e has an effect on this line
 	checkArgIsVersion "$version" 4  # same as exitIfArgIsNotVersion if set -e has an effect on this line
 
-	# shellcheck disable=SC2317   # is passed by name to checkArgIsArrayWithTuples
+	# shellcheck disable=SC2329   # is passed by name to checkArgIsArrayWithTuples
 	function describeTriple() {
 		echo >&2 "array contains 3-tuples with names where the first value is the first-, the second the middle- and the third the lastname"
 	}
@@ -34,7 +34,7 @@ function foo() {
 	exitIfArgIsNotBoolean "$bool" 3
 	exitIfArgIsNotVersion "$version" 4
 
-	# shellcheck disable=SC2317   # is passed by name to exitIfArgIsNotArrayWithTuples
+	# shellcheck disable=SC2329   # is passed by name to exitIfArgIsNotArrayWithTuples
 	function describePair() {
 		echo >&2 "array contains 2-tuples with names where the first value is the first-, and the second the last name"
 	}

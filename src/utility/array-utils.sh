@@ -130,7 +130,7 @@ function arrTakeEveryX() {
 	local -ri offset=$4
 	shift 4 || traceAndDie "could not shift by 4"
 
-  # shellcheck disable=SC2317   # is passed by name to arrFilter
+  # shellcheck disable=SC2329   # is passed by name to arrFilter
 	function arrFilterMod_fn() {
 		local -r index=$2
 		(((index - offset) % modulo == 0))
