@@ -6,7 +6,7 @@
 #  \__/\__/\_, /\___/_//_/\_,_/_/         It is licensed under Apache License 2.0
 #         /___/                           Please report bugs and contribute back your improvements
 #
-#                                         Version: v4.9.1
+#                                         Version: v4.10.0-SNAPSHOT
 #######  Description  #############
 #
 #  function which analyses pull-hook.sh in the `remotes` directory of the given gt working directory.
