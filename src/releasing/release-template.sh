@@ -60,7 +60,7 @@
 #    sourceOnce "$dir_of_tegonal_scripts/releasing/release-template.sh"
 #
 #    # and then call the function with your pre-configuration settings:
-#    # here we define the function which shall be used as release-hook after "$@" this way one cannot override it.
+#    # here we define the function which shall be used as release-hook after "$@", this way one cannot override it.
 #    # put --release-hook before "$@" if you want to define only a default
 #    releaseTemplates "$@" --release-hook releaseScalaLib
 #
