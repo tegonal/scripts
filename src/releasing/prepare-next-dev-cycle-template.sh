@@ -33,29 +33,29 @@
 #    	# some additional version bumps e.g. using perl
 #    	perl -0777 -i #...
 #    }
-#    # make the function visible to release-templates.sh / not necessary if you source release-templates.sh, see further below
-#    declare -fx releaseScalaLib
+#    # make the function visible to prepare-next-dev-cycle-templates.sh / not necessary if you source it, see further below
+#    declare -fx prepareNextAfterVersionUpdateHook
 #
-#    # releases version v0.1.0 using releaseScalaLib as hook
-#    "$dir_of_tegonal_scripts/releasing/release-template.sh" \
-#    	-v v0.1.0 -k "0x945FE615904E5C85" --release-hook releaseScalaLib
+#    # prepare version 0.1.0 dev cycle
+#    "$dir_of_tegonal_scripts/releasing/prepare-next-dev-cycle-templates.sh" \
+#    	-v v0.1.0 -k "0x945FE615904E5C85" --after-version-update-hook prepareNextAfterVersionUpdateHook
 #
-#    # releases version v0.1.0 using releaseScalaLib as hook and
+#    # prepare version 0.1.0 dev cycle
 #    # searches for additional occurrences where the version should be replaced via the specified pattern in:
 #    # - script files in ./src and ./scripts
 #    # - ./README.md
 #    "$dir_of_tegonal_scripts/releasing/release-files.sh" \
-#    	-v v0.1.0 -k "0x945FE615904E5C85" --release-hook releaseScalaLib \
+#    	-v v0.1.0 -k "0x945FE615904E5C85" --after-version-update-hook prepareNextAfterVersionUpdateHook \
 #    	-p "(TEGONAL_SCRIPTS_VERSION=['\"])[^'\"]+(['\"])"
 #
-#    # in case you want to provide your own release.sh and only want to do some pre-configuration
-#    # (such as specify the release-hook) then you might want to source it instead
-#    sourceOnce "$dir_of_tegonal_scripts/releasing/release-template.sh"
+#    # in case you want to provide your own prepare-next-dev-cycle.sh and only want to do some pre-configuration
+#    # (such as specify the after-version-hook) then you might want to source it instead
+#    sourceOnce "$dir_of_tegonal_scripts/releasing/prepare-next-dev-cycle-templates.sh.sh"
 #
 #    # and then call the function with your pre-configuration settings:
-#    # here we define the function which shall be used as release-hook after "$@" this way one cannot override it.
-#    # put --release-hook before "$@" if you want to define only a default
-#    releaseTemplates "$@" --release-hook releaseScalaLib
+#    # here we define the function which shall be used as after-version-update-hook after "$@", this way one cannot
+#    # override it. put --after-version-update-hook before "$@" if you want to define only a default
+#    prepareNextDevCycleTemplate "$@" --after-version-update-hook prepareNextAfterVersionUpdateHook
 #
 ###################################
 set -euo pipefail
