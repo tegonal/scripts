@@ -21,21 +21,20 @@ if ! [[ -v dir_of_tegonal_scripts ]]; then
 	dir_of_tegonal_scripts="$scriptsDir/../src"
 	source "$dir_of_tegonal_scripts/setup.sh" "$dir_of_tegonal_scripts"
 fi
-sourceOnce "$dir_of_tegonal_scripts/qa/run-shellcheck.sh"
+sourceOnce "$dir_of_tegonal_scripts/qa/run-shfmt.sh"
 
-function customRunShellcheck() {
-	# shellcheck disable=SC2034   # is passed by name to runShellcheck
+function customRunShfmt() {
+	# shellcheck disable=SC2034   # is passed by name to runShfmt
 	local -ra dirs=(
 		"$dir_of_tegonal_scripts"
 		"$scriptsDir"
 		"$dir_of_tegonal_scripts/../spec"
 	)
-	local sourcePath="$dir_of_tegonal_scripts:$scriptsDir"
-	runShellcheck dirs "$sourcePath" \
+	runShfmt dirs \
 		-not -name "install-*.doc.sh" # those are github workflow excerpts and not bash
 
-	runShellcheckPullHooks "$scriptsDir/../.gt"
+	runShfmtPullHooks "$scriptsDir/../.gt"
 }
 
 ${__SOURCED__:+return}
-customRunShellcheck "$@"
+customRunShfmt "$@"

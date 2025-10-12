@@ -49,7 +49,7 @@ function wgetAndVerify() {
 		# shellcheck disable=SC2312		# cat shouldn't fail for a constant string hence fine to ignore exit code
 		cat <<-EOM
 			# downloads https://.../signing-key.public.asc and https://.../signing-key.public.asc.sig and verifies it with gpg
-      wgetAndVerify "https://github.com/tegonal/gt/.gt/signing-key.public.asc"
+			wgetAndVerify "https://github.com/tegonal/gt/.gt/signing-key.public.asc"
 		EOM
 	)
 	parseArguments params "$examples" "$TEGONAL_SCRIPTS_VERSION" "$@" || return $?
@@ -62,9 +62,9 @@ function wgetAndVerify() {
 	currentDir=$(pwd) || die "could not determine currentDir via pwd"
 
 	for name in "$fileName" "$fileName.sig"; do
-	if [[ -f $name ]]; then
-  		logInfo "there is already a file named %s in %s, going to override" "$name" "$currentDir"
-  	fi
+		if [[ -f $name ]]; then
+			logInfo "there is already a file named %s in %s, going to override" "$name" "$currentDir"
+		fi
 	done
 
 	wget -O "$url" || die "could not download %s" "$url"

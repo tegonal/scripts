@@ -9,4 +9,3 @@ sourceOnce "$dir_of_tegonal_scripts/utility/http.sh"
 
 # downloads https://.../signing-key.public.asc and https://.../signing-key.public.asc.sig and verifies it with gpg
 wgetAndVerify "https://github.com/tegonal/gt/.gt/signing-key.public.asc"
-

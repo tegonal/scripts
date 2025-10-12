@@ -30,5 +30,5 @@ function myFunctionWithVarargs() {
 	parseFnArgs params "$@" || return $?
 
 	# use varargs in another script
-	echo "command: $command, dir: $dir, varargs: ${varargs*}"
+	echo "command: $command, dir: $dir, varargs: ${varargs[*]}"
 }

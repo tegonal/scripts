@@ -66,7 +66,7 @@ function jelastic_deploy() {
 
 	echo "deploying $tag to env '$env' and nodeGroup '$nodeGroup' ..."
 	jelastic_exec "environment/control/redeploycontainers" \
-		--envName "$env" --nodeGroup "$nodeGroup" --tag "$tag" > /dev/null || returnDying "deploy failed" || return $?
+		--envName "$env" --nodeGroup "$nodeGroup" --tag "$tag" >/dev/null || returnDying "deploy failed" || return $?
 
 	logSuccess "deployment finished"
 }

@@ -9,7 +9,7 @@
 #                                         Version: v4.10.0-SNAPSHOT
 #######  Description  #############
 #
-#  installs shellcheck v0.10.0 into $HOME/.local/lib
+#  installs shellcheck v0.11.0 into $HOME/.local/lib and sets up a symlink in $HOME/.local/bin
 #
 #######  Usage  ###################
 #
@@ -56,13 +56,13 @@ if command -v curl >/dev/null; then
 	curl --fail -L -O "$url" || die "could not download shellcheck"
 else
 	# if curl does not exist, then we try it with wget
-	wget --no-verbose "https://github.com/koalaman/shellcheck/releases/download/$shellcheckVersion/$tarFile"
+	wget --no-verbose "$url"
 fi
 sha256sum -c "$tarFile.sha256" || {
 	actualSha="$(sha256sum "$tarFile")"
 	die "checksum did not match, aborting\nexpected:\n%s\ngiven   :\n%s" "$expectedSha" "$actualSha"
 }
-tar -xf "./shellcheck-$shellcheckVersion.linux.x86_64.tar.xz"
+tar -xf "./$tarFile"
 chmod +x "./shellcheck-$shellcheckVersion/shellcheck" || die "could not make shellcheck executable"
 
 shellcheckInTmp="$tmpDir/shellcheck-$shellcheckVersion"
@@ -86,4 +86,12 @@ fi
 ln -s "$shellcheckInHomeLocalLib/shellcheck" "$shellcheckBin"
 
 cd "$currentDir"
-shellcheck --version
+
+shellcheckPath=$(command -v shellcheck)
+if [[ $shellcheckPath != "$shellcheckBin" ]]; then
+	shellcheckCurrentVersion=$(shellcheck --version)
+	logError "was able to install shellcheck in %s but \`command -v shellcheck\` returns another path:\n%s\nFollowing the output of \`shellcheck --version\`:\n%s" "$shellcheckBin" "$shellcheckPath" "$shellcheckCurrentVersion"
+else
+	shellcheck --version
+	printf "\033[0;32mSUCCESS\033[0m: installed shellcheck %s in %s\n" "$shellcheckVersion" "$homeLocalLib"
+fi

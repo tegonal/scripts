@@ -9,7 +9,7 @@ source "$dir_of_tegonal_scripts/utility/replace-help-snippet.sh"
 
 declare file
 file=$(mktemp)
-echo "<my-script-help></my-script-help>" > "$file"
+echo "<my-script-help></my-script-help>" >"$file"
 
 # replaceHelpSnippet script id dir pattern
 replaceHelpSnippet my-script.sh my-script-help "$(dirname "$file")" "$(basename "$file")"

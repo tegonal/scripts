@@ -121,7 +121,7 @@ function parseCommands {
 	local -r fnPrefix=$4
 	shift 4 || traceAndDie "could not shift by 4"
 
-	if (($# < 1 )); then
+	if (($# < 1)); then
 		logError "no command passed to %s, following the output of --help\n" "$(basename "${BASH_SOURCE[1]}")"
 		>&2 parse_commands_printHelp parseCommands_paramArr "$version"
 		exit 9
@@ -135,7 +135,7 @@ function parseCommands {
 	local -a commandNames=()
 	arrTakeEveryX parseCommands_paramArr commandNames 2 0 || return $?
 	local tmpRegex regex
-	tmpRegex=$(joinByChar "|" "${commandNames[@]}") || die "could not join commands by |, command names are %s" "${commandNames*}"
+	tmpRegex=$(joinByChar "|" "${commandNames[@]}") || die "could not join commands by |, command names are %s" "${commandNames[*]}"
 	regex="^($tmpRegex)\$"
 	local -r tmpRegex regex
 

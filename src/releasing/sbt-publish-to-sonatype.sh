@@ -59,15 +59,15 @@ function sbtPublishToSonatype() {
 	if ! [[ -v SONATYPE_USER ]] || [[ -z "$SONATYPE_USER" ]]; then
 		askWithTimeout "Please enter the sonatype user token (input is hidden -- will be written to SONATYPE_USER):" \
 			"$askWithTimeout" sbtPublishToSonatype_noAnswerCallback SONATYPE_USER "-s"
-  else
-  	logInfo "SONATYPE_USER already defined"
+	else
+		logInfo "SONATYPE_USER already defined"
 	fi
 
 	if ! [[ -v SONATYPE_PW ]] || [[ -z "$SONATYPE_PW" ]]; then
 		askWithTimeout "Please enter the sonatype access token (input is hidden -- will be written to SONATYPE_PW):" \
 			"$askWithTimeout" sbtPublishToSonatype_noAnswerCallback SONATYPE_PW "-s"
-  else
-  	logInfo "$SONATYPE_PW already defined"
+	else
+		logInfo "$SONATYPE_PW already defined"
 	fi
 	printf "\n"
 	SONATYPE_PW="$SONATYPE_PW" SONATYPE_USER="$SONATYPE_USER" sbt publishSigned
