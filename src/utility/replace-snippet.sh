@@ -24,7 +24,7 @@
 #
 #    declare file
 #    file=$(mktemp)
-#    echo "<my-script></my-script>" > "$file"
+#    echo "<my-script></my-script>" >"$file"
 #
 #    declare dir fileName output
 #    dir=$(dirname "$file")

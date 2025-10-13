@@ -53,8 +53,8 @@ function runShellcheck() {
 	exitIfCommandDoesNotExist "shellcheck" "execute $dir_of_tegonal_scripts/ci/install-shellcheck.sh (if pulled) or see https://github.com/koalaman/shellcheck#installing"
 
 	if (($# < 2)); then
-		logError "At least two parameters need to be passed to runShellcheck, given \033[0;36m%s\033[0m\nFollowing a description of the parameters:" "$#"
-		echo >&2 '1: dirs         name of array which contains paths in which *.sh files are searched'
+		logError "At least two arguments need to be passed to runShellcheck, given \033[0;36m%s\033[0m\nFollowing a description of the parameters:" "$#"
+		echo >&2 '1: paths        name of array which contains paths in which *.sh files are searched'
 		echo >&2 "2: sourcePath   equivalent to shellcheck's -P, path to search for sourced files, separated by :"
 		echo >&2 '3... args       additional args which are passed to the find command'
 		printStackTrace

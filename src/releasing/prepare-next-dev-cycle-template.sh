@@ -28,7 +28,6 @@
 #    dir_of_tegonal_scripts="$(cd -- "$(dirname -- "${BASH_SOURCE[0]:-$0}")" >/dev/null && pwd 2>/dev/null)/../lib/tegonal-scripts/src"
 #    source "$dir_of_tegonal_scripts/setup.sh" "$dir_of_tegonal_scripts"
 #
-#
 #    function prepareNextAfterVersionUpdateHook() {
 #    	# some additional version bumps e.g. using perl
 #    	perl -0777 -i #...

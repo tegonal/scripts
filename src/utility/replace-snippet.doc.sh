@@ -9,7 +9,7 @@ source "$dir_of_tegonal_scripts/utility/replace-snippet.sh"
 
 declare file
 file=$(mktemp)
-echo "<my-script></my-script>" > "$file"
+echo "<my-script></my-script>" >"$file"
 
 declare dir fileName output
 dir=$(dirname "$file")

@@ -104,6 +104,7 @@ The scripts are ordered by topic:
 - [CI](#continuous-integration)
 	- [install shellcheck](#install-shellcheck)
 	- [install shellspec](#install-shellspec)
+    - [install shfmt](#install-shfmt)
 	- [Jelastic](#jelastic)
 		- [deploy](#deploy-to-jelastic)
 		- [utils](#jelastic-utils)
@@ -111,6 +112,7 @@ The scripts are ordered by topic:
 	- [runShellcheck](#runshellcheck)
 	- [runShellcheckPullHooks](#runshellcheck-on-pull-hookssh)
 	- [runShellspecIfInstalled](#runshellspecifinstalled)
+    - [runShfmt](#runshfmt)
 - [Releasing](#releasing)
 	- [Releasing Files](#release-files)
 	- [Prepare Files Next Dev Cycle](#prepare-files-next-dev-cycle)
@@ -193,6 +195,28 @@ jobs:
 ```
 
 </ci-install-shellspec>
+
+
+## Install shfmt
+
+<ci-install-shfmt>
+
+<!-- auto-generated, do not modify here but in src/ci/install-shfmt.sh.doc -->
+```bash
+# run the install-shfmt.sh in your github/gitlab workflow
+# for instance, assuming you fetched this file via gt and remote name is tegonal-scripts
+# then in a github workflow you would have
+
+jobs:
+  steps:
+    - name: install shfmt
+      run: ./lib/tegonal-scripts/src/ci/install-shfmt.sh
+    # and most likely as well
+    - name: run shfmt
+      run: ./scripts/run-shfmt.sh
+```
+
+</ci-install-shfmt>
 
 ## Jelastic
 
@@ -306,9 +330,9 @@ The scripts under this topic (in directory `qa`) perform checks or execute qa to
 
 ## runShellcheck
 
-A function which expects the name of an array of dirs as first argument and a source path as second argument (which is
-passed to shellcheck via -P parameter). It then executes shellcheck for each *.sh in these directories with predefined
-settings for shellcheck.
+A function which expects the name of an array of dirs as first argument, a source path as second argument (which is
+passed to `shellcheck` via `-P` parameter) and optionally additional arguments which are passed to the `find` command. 
+It then executes shellcheck for each *.sh in these directories with predefined settings for shellcheck.
 
 <qa-run-shellcheck>
 
@@ -369,6 +393,39 @@ runShellspecIfInstalled --jobs 2
 ```
 
 </qa-run-shellspec-if-installed>
+
+## runShfmt
+
+A function which expects the name of an array of dirs as first argument and optionally additional arguments which 
+are passed to the `find` command. It then executes shfmt for each *.sh in these directories.
+
+<qa-run-shfmt>
+
+<!-- auto-generated, do not modify here but in src/qa/run-shfmt.sh.doc -->
+```bash
+#!/usr/bin/env bash
+set -euo pipefail
+shopt -s inherit_errexit || { echo >&2 "please update to bash 5, see errors above" && exit 1; }
+# Assumes tegonal's scripts were fetched with gt - adjust location accordingly
+dir_of_tegonal_scripts="$(cd -- "$(dirname -- "${BASH_SOURCE[0]:-$0}")" >/dev/null && pwd 2>/dev/null)/../lib/tegonal-scripts/src"
+source "$dir_of_tegonal_scripts/setup.sh" "$dir_of_tegonal_scripts"
+
+source "$dir_of_tegonal_scripts/qa/run-shfmt.sh"
+
+# shellcheck disable=SC2034   # is passed by name to runShfmt
+declare -a dirs=(
+	"$dir_of_tegonal_scripts"
+	"$dir_of_tegonal_scripts/../scripts"
+	"$dir_of_tegonal_scripts/../spec"
+)
+runShfmt dirs -not -name sh-to-exclude.sh
+
+# pass the working directory of gt which usually is .gt in the root of your repository
+# this will run shfmt on all pull-hook.sh files
+runShfmtPullHooks ".gt"
+```
+
+</qa-run-shfmt>
 
 # Releasing
 
@@ -523,7 +580,7 @@ sourceOnce "$scriptsDir/before-pr.sh"
 # prepare dev cycle for version v0.2.0, assumes a function beforePr is in scope which we sourced above
 "$dir_of_tegonal_scripts/releasing/prepare-files-next-dev-cycle.sh" -v v0.2.0
 
-function specialBeforePr(){
+function specialBeforePr() {
 	beforePr && echo "imagine some additional work"
 }
 # make the function visible to release-files.sh / not necessary if you source prepare-files-next-dev-cycle.sh, see further below
@@ -700,7 +757,6 @@ shopt -s inherit_errexit || { echo >&2 "please update to bash 5, see errors abov
 # Assumes tegonal's scripts were fetched with gt - adjust location accordingly
 dir_of_tegonal_scripts="$(cd -- "$(dirname -- "${BASH_SOURCE[0]:-$0}")" >/dev/null && pwd 2>/dev/null)/../lib/tegonal-scripts/src"
 source "$dir_of_tegonal_scripts/setup.sh" "$dir_of_tegonal_scripts"
-
 
 function prepareNextAfterVersionUpdateHook() {
 	# some additional version bumps e.g. using perl
@@ -1362,10 +1418,10 @@ function foo() {
 	local -r version=$4
 
 	# resolves arr recursively via recursiveDeclareP and check that is a non-associative array
-	checkArgIsArray arr 1        		# same as exitIfArgIsNotArray if set -e has an effect on this line
-	checkArgIsFunction "$fn" 2   		# same as exitIfArgIsNotFunction if set -e has an effect on this line
-	checkArgIsBoolean "$bool" 3   	# same as exitIfArgIsNotBoolean if set -e has an effect on this line
-	checkArgIsVersion "$version" 4  # same as exitIfArgIsNotVersion if set -e has an effect on this line
+	checkArgIsArray arr 1          # same as exitIfArgIsNotArray if set -e has an effect on this line
+	checkArgIsFunction "$fn" 2     # same as exitIfArgIsNotFunction if set -e has an effect on this line
+	checkArgIsBoolean "$bool" 3    # same as exitIfArgIsNotBoolean if set -e has an effect on this line
+	checkArgIsVersion "$version" 4 # same as exitIfArgIsNotVersion if set -e has an effect on this line
 
 	# shellcheck disable=SC2329   # is passed by name to checkArgIsArrayWithTuples
 	function describeTriple() {
@@ -1447,15 +1503,15 @@ timestampToDate 1662981524 # outputs 2022-09-12
 # (usually as defined by the user in the system settings)
 timestampToDateInUserFormat 1662981524 # outputs 12.09.2022 for ch_DE
 
-dateToTimestamp "2024-03-01" # outputs 1709247600
+dateToTimestamp "2024-03-01"          # outputs 1709247600
 dateToTimestamp "2022-09-12T13:18:44" # outputs 1662981524
 
 # outputs a timestamp in ms
 startTimestampInMs="$(timestampInMs)"
 
-formatMsToSeconds 12 		# outputs 0.012
-formatMsToSeconds 1234  # outputs 1.234
-formatMsToSeconds -123  # outputs -0.123
+formatMsToSeconds 12   # outputs 0.012
+formatMsToSeconds 1234 # outputs 1.234
+formatMsToSeconds -123 # outputs -0.123
 # note that formatMsToSeconds does not check if you pass a number
 
 # outputs the time passed since the given timestamp in ms formatted as seconds
@@ -1648,7 +1704,6 @@ function readFile() {
 # executes readFile and closes the file descriptors again
 withCustomOutputInput 3 4 readFile "my-file.txt"
 
-
 # First tries to set chmod 777 to the directory and all files within it and then deletes the directory
 deleteDirChmod777 ".git"
 ```
@@ -1832,7 +1887,7 @@ function myFunctionWithVarargs() {
 	parseFnArgs params "$@" || return $?
 
 	# use varargs in another script
-	echo "command: $command, dir: $dir, varargs: ${varargs*}"
+	echo "command: $command, dir: $dir, varargs: ${varargs[*]}"
 }
 ```
 
@@ -1986,7 +2041,7 @@ source "$dir_of_tegonal_scripts/utility/replace-snippet.sh"
 
 declare file
 file=$(mktemp)
-echo "<my-script></my-script>" > "$file"
+echo "<my-script></my-script>" >"$file"
 
 declare dir fileName output
 dir=$(dirname "$file")
@@ -2067,10 +2122,10 @@ source "$dir_of_tegonal_scripts/setup.sh" "$dir_of_tegonal_scripts"
 
 source "$dir_of_tegonal_scripts/utility/source-once.sh"
 
-sourceOnce "foo.sh"    # creates a variable named sourceOnceGuard_foo__sh which acts as guard and sources foo.sh
-sourceOnce "foo.sh"    # will source nothing as sourceOnceGuard_foo__sh is already defined
-unset sourceOnceGuard_foo__sh          # unsets the guard
-sourceOnce "foo.sh"    # is sourced again and the guard established
+sourceOnce "foo.sh"           # creates a variable named sourceOnceGuard_foo__sh which acts as guard and sources foo.sh
+sourceOnce "foo.sh"           # will source nothing as sourceOnceGuard_foo__sh is already defined
+unset sourceOnceGuard_foo__sh # unsets the guard
+sourceOnce "foo.sh"           # is sourced again and the guard established
 # you can also use sourceAlways instead of unsetting and using sourceOnce.
 sourceAlways "foo.sh"
 

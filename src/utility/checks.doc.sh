@@ -15,10 +15,10 @@ function foo() {
 	local -r version=$4
 
 	# resolves arr recursively via recursiveDeclareP and check that is a non-associative array
-	checkArgIsArray arr 1        		# same as exitIfArgIsNotArray if set -e has an effect on this line
-	checkArgIsFunction "$fn" 2   		# same as exitIfArgIsNotFunction if set -e has an effect on this line
-	checkArgIsBoolean "$bool" 3   	# same as exitIfArgIsNotBoolean if set -e has an effect on this line
-	checkArgIsVersion "$version" 4  # same as exitIfArgIsNotVersion if set -e has an effect on this line
+	checkArgIsArray arr 1          # same as exitIfArgIsNotArray if set -e has an effect on this line
+	checkArgIsFunction "$fn" 2     # same as exitIfArgIsNotFunction if set -e has an effect on this line
+	checkArgIsBoolean "$bool" 3    # same as exitIfArgIsNotBoolean if set -e has an effect on this line
+	checkArgIsVersion "$version" 4 # same as exitIfArgIsNotVersion if set -e has an effect on this line
 
 	# shellcheck disable=SC2329   # is passed by name to checkArgIsArrayWithTuples
 	function describeTriple() {

@@ -37,7 +37,7 @@ if ! [[ -v dir_of_tegonal_scripts ]]; then
 fi
 sourceOnce "$dir_of_tegonal_scripts/qa/run-shellcheck.sh"
 
-#TODO remove file, runShellcheckPullHooks is no also in run-shellcheck.sh
+#TODO 5.0.0 remove file, runShellcheckPullHooks is no also in run-shellcheck.sh
 function runShellcheckPullHooks() {
 	logDeprecation "runShellcheckPullHooks" "please source run-shellcheck.sh instead of run-shellcheck-pull-hooks.sh -- run-shellcheck-pull-hooks.sh will be removed with v5.0.0"
 

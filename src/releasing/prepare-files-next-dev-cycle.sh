@@ -28,7 +28,7 @@
 #    # prepare dev cycle for version v0.2.0, assumes a function beforePr is in scope which we sourced above
 #    "$dir_of_tegonal_scripts/releasing/prepare-files-next-dev-cycle.sh" -v v0.2.0
 #
-#    function specialBeforePr(){
+#    function specialBeforePr() {
 #    	beforePr && echo "imagine some additional work"
 #    }
 #    # make the function visible to release-files.sh / not necessary if you source prepare-files-next-dev-cycle.sh, see further below

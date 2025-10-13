@@ -34,4 +34,3 @@ function sourceCommand() {
 #    function my_lib_show if the users wants to execute command show
 # 5. arguments passed to the corresponding function
 parseCommands commands "$MY_LIB_VERSION" sourceCommand "my_lib_" "$@"
-

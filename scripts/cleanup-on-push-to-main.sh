@@ -30,9 +30,12 @@ fi
 sourceOnce "$dir_of_tegonal_scripts/utility/cleanups.sh"
 sourceOnce "$dir_of_tegonal_scripts/utility/replace-help-snippet.sh"
 sourceOnce "$dir_of_tegonal_scripts/utility/update-bash-docu.sh"
+sourceOnce "$scriptsDir/run-shfmt.sh"
 
 function cleanupOnPushToMain() {
-	removeUnusedSignatures "$projectDir"
+	removeUnusedSignatures "$projectDir" || return $?
+
+	customRunShfmt || die "was not able to format"
 
 	local script
 	find "$dir_of_tegonal_scripts" -name "*.sh" \
