@@ -49,10 +49,10 @@ sourceOnce "$dir_of_tegonal_scripts/utility/array-utils.sh"
 function runShfmt() {
 	exitIfCommandDoesNotExist "shfmt" "execute $dir_of_tegonal_scripts/ci/install-shfmt.sh (if pulled) or see hhttps://github.com/mvdan/sh/releases"
 
-	if (($# < 2)); then
+	if (($# < 1)); then
 		logError "At least one argument needs to be passed to runShfmt, given \033[0;36m%s\033[0m\nFollowing a description of the parameters:" "$#"
 		echo >&2 '1: paths        name of array which contains paths in which *.sh files are searched'
-		echo >&2 '3... args       additional args which are passed to the find command'
+		echo >&2 '2... args       additional args which are passed to the find command'
 		printStackTrace
 		exit 9
 	fi
