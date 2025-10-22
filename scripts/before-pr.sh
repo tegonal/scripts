@@ -31,10 +31,10 @@ sourceOnce "$scriptsDir/run-shellcheck.sh"
 function beforePr() {
 	# using && because this function is used on the left side of an || in releaseFiles
 	# this way we still have fail fast behaviour and don't mask/hide a non-zero exit code
-	runShellspecIfInstalled --jobs 2 &&
+	cleanupOnPushToMain &&
+		runShellspecIfInstalled --jobs 2 &&
 		checkInBugTemplate &&
-		customRunShellcheck &&
-		cleanupOnPushToMain
+		customRunShellcheck
 }
 
 ${__SOURCED__:+return}
