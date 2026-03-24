@@ -88,40 +88,10 @@ sourceOnce "$dir_of_tegonal_scripts/releasing/release-template.sh"
 sourceOnce "$dir_of_tegonal_scripts/releasing/update-version-scripts.sh"
 
 function releaseFiles() {
-	local versionParamPatternLong projectsRootDirParamPatternLong
-	local additionalPatternParamPatternLong afterVersionUpdateHookParamPatternLong releaseHookParamPatternLong
-	local findForSigningParamPatternLong beforePrFnParamPatternLong prepareNextDevCycleFnParamPatternLong
-	source "$dir_of_tegonal_scripts/releasing/common-constants.source.sh" || traceAndDie "could not source common-constants.source.sh"
-
-	local version key findForSigning branch projectsRootDir additionalPattern
-	# shellcheck disable=SC2034   # seems unused but is set in deduce-next-version
-	local nextVersion
-	local prepareOnly beforePrFn prepareNextDevCycleFn afterVersionUpdateHook
-	# shellcheck disable=SC2034   # is passed by name to parseArguments
-	local -ra params=(
-		version "$versionParamPattern" "$versionParamDocu"
-		key "$keyParamPattern" "$keyParamDocu"
-		findForSigning "$findForSigningParamPattern" "$findForSigningParamDocu"
-		branch "$branchParamPattern" "$branchParamDocu"
-		projectsRootDir "$projectsRootDirParamPattern" "$projectsRootDirParamDocu"
-		additionalPattern "$additionalPatternParamPattern" "$additionalPatternParamDocu"
-		nextVersion "$nextVersionParamPattern" "$nextVersionParamDocu"
-		prepareOnly "$prepareOnlyParamPattern" "$prepareOnlyParamDocu"
-		beforePrFn "$beforePrFnParamPattern" "$beforePrFnParamDocu"
-		prepareNextDevCycleFn "$prepareNextDevCycleFnParamPattern" "$prepareNextDevCycleFnParamDocu"
-		afterVersionUpdateHook "$afterVersionUpdateHookParamPattern" "$afterVersionUpdateHookParamDocu"
-	)
-	parseArguments params "" "$TEGONAL_SCRIPTS_VERSION" "$@" || return $?
-
-	# deduces nextVersion based on version if not already set (and if version set)
-	source "$dir_of_tegonal_scripts/releasing/deduce-next-version.source.sh"
-	if ! [[ -v branch ]]; then branch="main"; fi
-	if ! [[ -v projectsRootDir ]]; then projectsRootDir=$(realpath "."); fi
-	if ! [[ -v additionalPattern ]]; then additionalPattern="^$"; fi
-	if ! [[ -v prepareOnly ]] || [[ $prepareOnly != "true" ]]; then prepareOnly=false; fi
-	if ! [[ -v beforePrFn ]]; then beforePrFn='beforePr'; fi
-	if ! [[ -v prepareNextDevCycleFn ]]; then prepareNextDevCycleFn='prepareNextDevCycle'; fi
-	if ! [[ -v afterVersionUpdateHook ]]; then afterVersionUpdateHook=''; fi
+	source "$dir_of_tegonal_scripts/releasing/release-files.params.source.sh" || traceAndDie "could not source release-files.params.source.sh"
+	source "$dir_of_tegonal_scripts/releasing/release-files.params-definition.source.sh" || die "could not source release-files.params-definition.source.sh"
+	parseArguments releaseFilesParams "" "$TEGONAL_SCRIPTS_VERSION" "$@" || return $?
+	source "$dir_of_tegonal_scripts/releasing/release-files.default-args.source.sh" || die "could not source release-files.default-args.source.sh"
 	exitIfNotAllArgumentsSet params "" "$TEGONAL_SCRIPTS_VERSION"
 
 	exitIfArgIsNotFunction "$findForSigning" "$findForSigningParamPatternLong"
@@ -137,7 +107,8 @@ function releaseFiles() {
 	local release_files_afterVersionUpdateHook="$afterVersionUpdateHook"
 
 	function releaseFiles_afterVersionHook() {
-		local version projectsRootDir additionalPattern
+		source "$dir_of_tegonal_scripts/releasing/after-version-update-hook.params.source.sh" || traceAndDie "could not source after-version-update-hook.params.source.sh"
+		source "$dir_of_tegonal_scripts/releasing/after-version-update-hook.params-definition.source.sh" || traceAndDie "could not source after-version-update-hook.params-definition.source.sh"
 		parseArguments afterVersionHookParams "" "$TEGONAL_SCRIPTS_VERSION" "$@" || return $?
 
 		updateVersionScripts \
@@ -145,7 +116,8 @@ function releaseFiles() {
 			"$additionalPatternParamPatternLong" "$additionalPattern" \
 			-d "$projectsRootDir/src" || return $?
 
-		executeIfFunctionNameDefined "$release_files_afterVersionUpdateHook" "$afterVersionUpdateHookParamPatternLong" \
+		executeIfFunctionNameDefined \
+			"$release_files_afterVersionUpdateHook" "$afterVersionUpdateHookParamPatternLong" \
 			"$versionParamPatternLong" "$version" \
 			"$projectsRootDirParamPatternLong" "$projectsRootDir" \
 			"$additionalPatternParamPatternLong" "$additionalPattern"

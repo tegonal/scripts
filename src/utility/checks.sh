@@ -159,7 +159,7 @@ function checkArgIsArrayWithTuples() {
 		logError "Five arguments need to be passed to checkArgIsArrayWithTuples, given \033[0;36m%s\033[0m\n" "$#"
 		echo >&2 '1: array            name of the array to check'
 		echo >&2 '2: tupleNum         the number of values of each tuple'
-		echo >&2 '3: tupleRepresents  what does the tuple represent (used in error message)'
+		echo >&2 '3: specificError  	specific error message after mwhat does the tuple represent (used in error message)'
 		echo >&2 '4: argNumberOrName  what argument do we check (used in error message)'
 		echo >&2 '5: describeTupleFn  function which describes how the tuples are built up'
 		printStackTrace
@@ -215,7 +215,7 @@ function checkArgIsArrayWithTuples() {
 
 		local -i i j
 		for ((i = 0; i < arrLength; i += tupleNum)); do
-			local -r length=$((i + tupleNum - 1 < arrLength ? i + tupleNum : arrLength))
+			local length=$((i + tupleNum - 1 < arrLength ? i + tupleNum : arrLength))
 			if ((i + tupleNum - 1 >= arrLength)); then
 				printf >&2 "\033[1;33mleftovers:\033[0m\n"
 			fi

@@ -71,25 +71,11 @@ sourceOnce "$dir_of_tegonal_scripts/utility/parse-args.sh"
 sourceOnce "$dir_of_tegonal_scripts/releasing/prepare-next-dev-cycle-template.sh"
 
 function prepareFilesNextDevCycle() {
-	local versionParamPatternLong projectsRootDirParamPatternLong
-	local additionalPatternParamPatternLong beforePrFnParamPatternLong afterVersionUpdateHookParamPatternLong
-	source "$dir_of_tegonal_scripts/releasing/common-constants.source.sh" || traceAndDie "could not source common-constants.source.sh"
-
-	local version afterVersionUpdateHook projectsRootDir additionalPattern beforePrFn afterVersionUpdateHook
-	# shellcheck disable=SC2034   # is passed by name to parseArguments
-	local -ra params=(
-		version "$versionParamPattern" 'the version for which we prepare the dev cycle'
-		projectsRootDir "$projectsRootDirParamPattern" "$projectsRootDirParamDocu"
-		additionalPattern "$additionalPatternParamPattern" "$additionalPatternParamDocu"
-		beforePrFn "$beforePrFnParamPattern" "$beforePrFnParamDocu"
-		afterVersionUpdateHook "$afterVersionUpdateHookParamPattern" "$afterVersionUpdateHookParamDocu"
-	)
-	parseArguments params "" "$TEGONAL_SCRIPTS_VERSION" "$@" || return $?
-	if ! [[ -v projectsRootDir ]]; then projectsRootDir=$(realpath ".") || die "could not determine realpath of ."; fi
-	if ! [[ -v additionalPattern ]]; then additionalPattern="^$"; fi
-	if ! [[ -v beforePrFn ]]; then beforePrFn="beforePr"; fi
-	if ! [[ -v afterVersionUpdateHook ]]; then afterVersionUpdateHook=''; fi
-	exitIfNotAllArgumentsSet params "" "$TEGONAL_SCRIPTS_VERSION"
+	source "$dir_of_tegonal_scripts/releasing/prepare-files-next-dev-cycle.params.source.sh" || traceAndDie "could not source prepare-files-next-dev-cycle.params.source.sh"
+	source "$dir_of_tegonal_scripts/releasing/prepare-files-next-dev-cycle.params-definition.source.sh" || traceAndDie "could not source prepare-files-next-dev-cycle.params-definition.source.sh"
+	parseArguments prepareFilesNextDevCycleParams "" "$TEGONAL_SCRIPTS_VERSION" "$@" || return $?
+	source "$dir_of_tegonal_scripts/releasing/prepare-files-next-dev-cycle.default-args.source.sh" || traceAndDie "could not source prepare-files-next-dev-cycle.default-args.source.sh"
+	exitIfNotAllArgumentsSet prepareFilesNextDevCycleParams "" "$TEGONAL_SCRIPTS_VERSION"
 
 	exitIfArgIsNotFunction "$beforePrFn" "$beforePrFnParamPatternLong"
 
@@ -99,7 +85,8 @@ function prepareFilesNextDevCycle() {
 	local prepare_files_next_dev_afterVersionUpdateHook="$afterVersionUpdateHook"
 
 	function prepareFilesNextDevCycle_afterVersionHook() {
-		local version projectsRootDir additionalPattern
+		source "$dir_of_tegonal_scripts/releasing/after-version-update-hook.params.source.sh" || traceAndDie "could not source after-version-update-hook.params.source.sh"
+		source "$dir_of_tegonal_scripts/releasing/after-version-update-hook.params-definition.source.sh" || traceAndDie "could not source after-version-update-hook.params-definition.source.sh"
 		parseArguments afterVersionHookParams "" "$TEGONAL_SCRIPTS_VERSION" "$@" || return $?
 
 		updateVersionScripts \
@@ -107,7 +94,8 @@ function prepareFilesNextDevCycle() {
 			"$additionalPatternParamPatternLong" "$additionalPattern" \
 			-d "$projectsRootDir/src" || return $?
 
-		executeIfFunctionNameDefined "$prepare_files_next_dev_afterVersionUpdateHook" "$afterVersionUpdateHookParamPatternLong" \
+		executeIfFunctionNameDefined \
+			"$prepare_files_next_dev_afterVersionUpdateHook" "$afterVersionUpdateHookParamPatternLong" \
 			"$versionParamPatternLong" "$version" \
 			"$projectsRootDirParamPatternLong" "$projectsRootDir" \
 			"$additionalPatternParamPatternLong" "$additionalPattern"

@@ -1,7 +1,7 @@
 #!/usr/bin/env bash
 #
 #    __                          __
-#   / /____ ___ ____  ___  ___ _/ /       This script is provided to you by https://github.com/tegonal/scripts
+#   / /____ ___ ____  ___  ___ _/ /       This file is provided to you by https://github.com/tegonal/scripts
 #  / __/ -_) _ `/ _ \/ _ \/ _ `/ /        Copyright 2022 Tegonal Genossenschaft <info@tegonal.com>
 #  \__/\__/\_, /\___/_//_/\_,_/_/         It is licensed under Apache License 2.0
 #         /___/                           Please report bugs and contribute back your improvements
@@ -9,7 +9,7 @@
 #                                         Version: v4.11.0-SNAPSHOT
 #######  Description  #############
 #
-#  Helper script do replace a snippet in HTML based files (e.g. in a Markdown file).
+#  Helper file do replace a snippet in HTML based files (e.g. in a Markdown file).
 #
 #######  Usage  ###################
 #
@@ -62,10 +62,14 @@ function replaceSnippet() {
 	# shellcheck disable=SC2034   # is passed by name to parseFnArgs
 	local -ra params=(file id dir pattern snippet)
 	parseFnArgs params "$@" || return $?
+	local source
+	source=$(realpath --relative-to "$PWD" "$file")
 
-	SNIPPET="$snippet" find "$dir" -name "$pattern" \
-		-exec echo "updating $id in {} " \; \
-		-exec perl -0777 -i \
-		-pe "s@<${id}>[\S\s]+</${id}>@<${id}>\n\n<!-- auto-generated, do not modify here but in $(realpath --relative-to "$PWD" "$file") -->\n\$ENV{SNIPPET}\n\n</${id}>@g;" \
-		{} \; 2>/dev/null || true
+	find "$dir" -name "$pattern" -print0 |
+		while read -r -d $'\0' target; do
+			echo "updating $id in $target"
+			SNIPPET="$snippet" perl -0777 -i \
+				-pe "s@<${id}>[\S\s]+</${id}>@<${id}>\n\n<!-- auto-generated, do not modify here but in $source -->\n\$ENV{SNIPPET}\n\n</${id}>@g;" \
+				"$target" || return $?
+		done || return $?
 }
