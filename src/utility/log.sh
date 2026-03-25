@@ -81,6 +81,13 @@
 #    #    bar @ /opt/bar.sh:10:1
 #    #   main @ /opt/main.sh:4:1
 #
+#    # true per default, set to false if you only want to see warnings but not fail on (new) deprecations
+#    export TEGONAL_SCRIPTS_ERROR_ON_DEPRECATION=false
+#    logDeprecation MY_DEPRECATION_ID "deprecation message"
+#
+#    # suppress a particular deprecation
+#    suppressDeprecation MY_DEPRECATION_ID
+#
 ###################################
 set -euo pipefail
 shopt -s inherit_errexit || { echo >&2 "please update to bash 5, see errors above" && exit 1; }
@@ -143,11 +150,11 @@ function logDeprecation() {
 	shift 2 || traceAndDie "could not shift by 2"
 
 	if ! [[ -v TEGONAL_SCRIPTS_SUPPRESSED_DEPRECATION["$id"] ]]; then
-		printf >&2 "\033[0;93mDEPRECATION WARNING\033[0m id \033[0;36m%s\033[0m $msg\n" "$id" "$@"
+		printf >&2 "\033[0;93mDEPRECATION WARNING\033[0m with id \033[0;36m%s\033[0m: $msg\n" "$id" "$@"
 		printStackTrace >&2 2
 
-		if [[ -v TEGONAL_SCRIPTS_ERROR_ON_DEPRECATION && $TEGONAL_SCRIPTS_ERROR_ON_DEPRECATION = "true" ]]; then
-			die "found a deprecation and TEGONAL_SCRIPTS_ERROR_ON_DEPRECATION=true was specified, dying..."
+		if [[ -v TEGONAL_SCRIPTS_ERROR_ON_DEPRECATION && $TEGONAL_SCRIPTS_ERROR_ON_DEPRECATION == "true" ]]; then
+			die "found the deprecation %s (not suppressed via suppressDeprecation '%s') and TEGONAL_SCRIPTS_ERROR_ON_DEPRECATION=true was specified, dying..." "$id" "$id"
 		fi
 	fi
 }

@@ -63,3 +63,10 @@ printStackTrace
 #    foo @ /opt/foo.sh:32:1
 #    bar @ /opt/bar.sh:10:1
 #   main @ /opt/main.sh:4:1
+
+# true per default, set to false if you only want to see warnings but not fail on (new) deprecations
+export TEGONAL_SCRIPTS_ERROR_ON_DEPRECATION=false
+logDeprecation MY_DEPRECATION_ID "deprecation message"
+
+# suppress a particular deprecation
+suppressDeprecation MY_DEPRECATION_ID

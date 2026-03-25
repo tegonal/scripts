@@ -74,7 +74,7 @@ gt pull -r tegonal-scripts -t "$TEGONAL_SCRIPTS_VERSION" -p src/utility/
 We recommend you use the following code at the beginning of your script in case you want to `source` a file/function
 (in the example below we want to use tegonal's io functions located in `utility/io.sh`):
 
-<setup>
+<setup_tegonal_scripts>
 
 <!-- auto-generated, do not modify here but in src/setup_tegonal_scripts.sh.doc -->
 ```bash
@@ -92,7 +92,7 @@ fi
 sourceOnce "$dir_of_tegonal_scripts/utility/io.sh"
 ```
 
-</setup>
+</setup_tegonal_scripts>
 
 Note that `source "$dir_of_tegonal_scripts/setup_tegonal_scripts.sh"` will automatically source `utility/source-once.sh`
 and `utility/log.sh`
@@ -1783,6 +1783,13 @@ printStackTrace
 #    foo @ /opt/foo.sh:32:1
 #    bar @ /opt/bar.sh:10:1
 #   main @ /opt/main.sh:4:1
+
+# true per default, set to false if you only want to see warnings but not fail on (new) deprecations
+export TEGONAL_SCRIPTS_ERROR_ON_DEPRECATION=false
+logDeprecation MY_DEPRECATION_ID "deprecation message"
+
+# suppress a particular deprecation
+suppressDeprecation MY_DEPRECATION_ID
 ```
 
 </utility-log>
