@@ -5,7 +5,7 @@ MY_LIB_VERSION="v1.1.0"
 
 # Assumes tegonal's scripts were fetched with gt - adjust location accordingly
 dir_of_tegonal_scripts="$(cd -- "$(dirname -- "${BASH_SOURCE[0]:-$0}")" >/dev/null && pwd 2>/dev/null)/../lib/tegonal-scripts/src"
-source "$dir_of_tegonal_scripts/setup.sh" "$dir_of_tegonal_scripts"
+source "$dir_of_tegonal_scripts/setup_tegonal_scripts.sh" "$dir_of_tegonal_scripts"
 
 sourceOnce "$dir_of_tegonal_scripts/utility/execute-if-defined.sh"
 

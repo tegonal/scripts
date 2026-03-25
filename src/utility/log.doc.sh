@@ -3,7 +3,7 @@ set -euo pipefail
 shopt -s inherit_errexit || { echo >&2 "please update to bash 5, see errors above" && exit 1; }
 # Assumes tegonal's scripts were fetched with gt - adjust location accordingly
 dir_of_tegonal_scripts="$(cd -- "$(dirname -- "${BASH_SOURCE[0]:-$0}")" >/dev/null && pwd 2>/dev/null)/../lib/tegonal-scripts/src"
-source "$dir_of_tegonal_scripts/setup.sh" "$dir_of_tegonal_scripts"
+source "$dir_of_tegonal_scripts/setup_tegonal_scripts.sh" "$dir_of_tegonal_scripts"
 
 sourceOnce "$dir_of_tegonal_scripts/utility/log.sh"
 
@@ -63,3 +63,10 @@ printStackTrace
 #    foo @ /opt/foo.sh:32:1
 #    bar @ /opt/bar.sh:10:1
 #   main @ /opt/main.sh:4:1
+
+# true per default, set to false if you only want to see warnings but not fail on (new) deprecations
+export TEGONAL_SCRIPTS_ERROR_ON_DEPRECATION=false
+logDeprecation MY_DEPRECATION_ID "deprecation message"
+
+# suppress a particular deprecation
+suppressDeprecation MY_DEPRECATION_ID

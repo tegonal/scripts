@@ -66,6 +66,7 @@ body:
         - utility/source-once.sh
         - utility/update-bash-docu.sh
         - setup.sh
+        - setup_tegonal_scripts.sh
     validations:
       required: false
   - type: textarea
