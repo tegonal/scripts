@@ -17,21 +17,7 @@ if ! [[ -v scriptsDir ]]; then
 	scriptsDir="$(cd -- "$(dirname -- "${BASH_SOURCE[0]:-$0}")" >/dev/null && pwd 2>/dev/null)"
 	readonly scriptsDir
 fi
-
-if ! [[ -v projectDir ]]; then
-	projectDir="$(realpath "$scriptsDir/../")"
-	readonly projectDir
-fi
-
-if ! [[ -v dir_of_github_commons ]]; then
-	dir_of_github_commons="$projectDir/lib/tegonal-gh-commons/src"
-	readonly dir_of_github_commons
-fi
-
-if ! [[ -v dir_of_tegonal_scripts ]]; then
-	dir_of_tegonal_scripts="$projectDir/src"
-	source "$dir_of_tegonal_scripts/setup_tegonal_scripts.sh" "$dir_of_tegonal_scripts"
-fi
+source "$scriptsDir/dirs.source.sh"
 sourceOnce "$dir_of_tegonal_scripts/releasing/release-files.sh"
 sourceOnce "$dir_of_tegonal_scripts/utility/checks.sh"
 sourceOnce "$dir_of_github_commons/gt/pull-hook-functions.sh"

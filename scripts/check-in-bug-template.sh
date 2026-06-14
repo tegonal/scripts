@@ -16,11 +16,7 @@ if ! [[ -v scriptsDir ]]; then
 	scriptsDir="$(cd -- "$(dirname -- "${BASH_SOURCE[0]:-$0}")" >/dev/null && pwd 2>/dev/null)"
 	readonly scriptsDir
 fi
-
-if ! [[ -v dir_of_tegonal_scripts ]]; then
-	dir_of_tegonal_scripts="$scriptsDir/../src"
-	source "$dir_of_tegonal_scripts/setup_tegonal_scripts.sh" "$dir_of_tegonal_scripts"
-fi
+source "$scriptsDir/dirs.source.sh"
 
 function checkInBugTemplate() {
 	local -r bugReportPath='.github/ISSUE_TEMPLATE/bug_report.yaml'
