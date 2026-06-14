@@ -457,14 +457,14 @@ Parameters:
 -v                            The version to release in the format vX.Y.Z(-RC...)
 -k|key                        The GPG private key which shall be used to sign the files
 --sign-fn                     Function which is called to determine what files should be signed. It should be based find and allow to pass further arguments (we will i.a. pass -print0)
--b|--branch                   (optional) The expected branch which is currently checked out -- default: main
---project-dir                 (optional) The projects directory -- default: .
--p|--pattern                  (optional) pattern which is used in a perl command (separator /) to search & replace additional occurrences. It should define two match groups and the replace operation looks as follows: \${1}$version\${2}
 -nv|--next-version            (optional) the version to use for prepare-next-dev-cycle -- default: is next minor based on version
 --prepare-only                (optional) defines whether the release shall only be prepared (i.e. no push, no tag, no prepare-next-dev-cycle) -- default: false
 --before-pr-fn                (optional) defines the function which is executed before preparing the release (to see if we should release) and after preparing the release -- default: beforePr (per convention defined in scripts/before-pr.sh). No arguments are passed
 --prepare-next-dev-cycle-fn   (optional) defines the function which is executed to prepare the next dev cycle -- default: perpareNextDevCycle (per convention defined in scripts/prepareNextDevCycle). The following arguments are passed: -v nextVersion --pattern additionalPattern --project-dir projectsRootDir --before-pr-fn beforePrFn
 --after-version-update-hook   (optional) if defined, then this function is called after versions were updated and before calling beforePr. The following arguments are passed: -v version --project-dir projectsRootDir and --pattern additionalPattern
+-b|--branch                   (optional) The expected branch which is currently checked out -- default: main
+--project-dir                 (optional) The projects directory -- default: .
+-p|--pattern                  (optional) pattern which is used in a perl command (separator /) to search & replace additional occurrences. It should define two match groups and the replace operation looks as follows: \${1}$version\${2}
 
 --help     prints this help
 --version  prints the version of this script
@@ -546,11 +546,12 @@ it uses the [prepare next dev cycle template](#prepare-next-dev-cycle-template) 
 <!-- auto-generated, do not modify here but in src/releasing/prepare-files-next-dev-cycle.sh -->
 ```text
 Parameters:
--v                            the version for which we prepare the dev cycle
---project-dir                 (optional) The projects directory -- default: .
--p|--pattern                  (optional) pattern which is used in a perl command (separator /) to search & replace additional occurrences. It should define two match groups and the replace operation looks as follows: \${1}$version\${2}
+-v                            The version for which we prepare the dev cycle
+-b|--branch                   (optional) The branch on which we develop the next version
 --before-pr-fn                (optional) defines the function which is executed before preparing the release (to see if we should release) and after preparing the release -- default: beforePr (per convention defined in scripts/before-pr.sh). No arguments are passed
 --after-version-update-hook   (optional) if defined, then this function is called after versions were updated and before calling beforePr. The following arguments are passed: -v version --project-dir projectsRootDir and --pattern additionalPattern
+--project-dir                 (optional) The projects directory -- default: .
+-p|--pattern                  (optional) pattern which is used in a perl command (separator /) to search & replace additional occurrences. It should define two match groups and the replace operation looks as follows: \${1}$version\${2}
 
 --help     prints this help
 --version  prints the version of this script
@@ -642,14 +643,14 @@ Help:
 Parameters:
 -v                            The version to release in the format vX.Y.Z(-RC...)
 --release-hook                performs the main release task such as (run tests) create artifacts, deploy artifacts
--b|--branch                   (optional) The expected branch which is currently checked out -- default: main
---project-dir                 (optional) The projects directory -- default: .
--p|--pattern                  (optional) pattern which is used in a perl command (separator /) to search & replace additional occurrences. It should define two match groups and the replace operation looks as follows: \${1}$version\${2}
 -nv|--next-version            (optional) the version to use for prepare-next-dev-cycle -- default: is next minor based on version
 --prepare-only                (optional) defines whether the release shall only be prepared (i.e. no push, no tag, no prepare-next-dev-cycle) -- default: false
 --before-pr-fn                (optional) defines the function which is executed before preparing the release (to see if we should release) and after preparing the release -- default: beforePr (per convention defined in scripts/before-pr.sh). No arguments are passed
 --prepare-next-dev-cycle-fn   (optional) defines the function which is executed to prepare the next dev cycle -- default: perpareNextDevCycle (per convention defined in scripts/prepareNextDevCycle). The following arguments are passed: -v nextVersion --pattern additionalPattern --project-dir projectsRootDir --before-pr-fn beforePrFn
 --after-version-update-hook   (optional) if defined, then this function is called after versions were updated and before calling beforePr. The following arguments are passed: -v version --project-dir projectsRootDir and --pattern additionalPattern
+-b|--branch                   (optional) The expected branch which is currently checked out -- default: main
+--project-dir                 (optional) The projects directory -- default: .
+-p|--pattern                  (optional) pattern which is used in a perl command (separator /) to search & replace additional occurrences. It should define two match groups and the replace operation looks as follows: \${1}$version\${2}
 
 --help     prints this help
 --version  prints the version of this script
@@ -729,11 +730,12 @@ Help:
 <!-- auto-generated, do not modify here but in src/releasing/prepare-next-dev-cycle-template.sh -->
 ```text
 Parameters:
--v                            the version for which we prepare the dev cycle
---project-dir                 (optional) The projects directory -- default: .
--p|--pattern                  (optional) pattern which is used in a perl command (separator /) to search & replace additional occurrences. It should define two match groups and the replace operation looks as follows: \${1}$version\${2}
+-v                            The version for which we prepare the dev cycle
+-b|--branch                   (optional) The branch on which we develop the next version
 --before-pr-fn                (optional) defines the function which is executed before preparing the release (to see if we should release) and after preparing the release -- default: beforePr (per convention defined in scripts/before-pr.sh). No arguments are passed
 --after-version-update-hook   (optional) if defined, then this function is called after versions were updated and before calling beforePr. The following arguments are passed: -v version --project-dir projectsRootDir and --pattern additionalPattern
+--project-dir                 (optional) The projects directory -- default: .
+-p|--pattern                  (optional) pattern which is used in a perl command (separator /) to search & replace additional occurrences. It should define two match groups and the replace operation looks as follows: \${1}$version\${2}
 
 --help     prints this help
 --version  prints the version of this script

@@ -65,8 +65,8 @@ function cleanupOnPushToMain() {
 	)
 
 	for script in "${scriptsWithHelp[@]}"; do
-		replaceHelpSnippet "$dir_of_tegonal_scripts/$script.sh" "${script////-}-help" . README.md || returnDying "replacing help snippets failed, see above"
-	done
+		replaceHelpSnippet "$dir_of_tegonal_scripts/$script.sh" "${script////-}-help" . README.md || return $?
+	done || die "updating help snippets in README.md failed, see above"
 
 	logSuccess "Updating bash docu and README completed"
 }
