@@ -129,8 +129,8 @@ function runShellcheckPullHooks() {
 	shift 1 || traceAndDie "could not shift by 1"
 
 	local sourcePath=""
-	if (($# == 2)); then
-		sourcePath=$2
+	if (($# == 1)); then
+		sourcePath=$1
 		shift 1 || traceAndDie "could not shift by 1"
 	else
 		sourcePath="$dir_of_tegonal_scripts"
