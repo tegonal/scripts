@@ -94,8 +94,11 @@ function trustGpgKey() {
 	local -ra params=(gpgDir keyId)
 	parseFnArgs params "$@" || return $?
 
-	local fingerprint
-	fingerprint="$(gpg --homedir "$gpgDir" --with-colons --fingerprint "$keyId" | grep '^fpr:' | cut -d: -f10 | head -n1)" || die "was not able to determine fingerprint for keyId %s in gpg dir %s" "$keyId" "$gpgDir"
+	local fingerprints fingerprint
+	fingerprints="$(
+		gpg --homedir "$gpgDir" --with-colons --fingerprint "$keyId" | grep '^fpr:' | cut -d: -f10
+	)" || die "was not able to determine fingerprint for keyId %s in gpg dir %s" "$keyId" "$gpgDir"
+	fingerprint=$(head -n1 <<<"$fingerprints") || die "was not able to extract the first fingerprint for keyId %s in gpg dir %s" "$keyId" "$gpgDir"
 	echo "$fingerprint:5:" | gpg --homedir "$gpgDir" --import-ownertrust
 }
 
