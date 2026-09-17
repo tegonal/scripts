@@ -145,19 +145,19 @@ function parseArgumentsInternal {
 
 	function parseArgumentsInternal_ask_printHelp() {
 		if askYesOrNo >&2 "Shall I print the help for you?"; then
-			parseArgumentsInternal_printHelp >&2
+			parseArgumentsInternal_printHelp >&2 6
 		fi
 	}
 
 	function parseArgumentsInternal_printHelp() {
-		parse_args_printHelp parseArguments_paramArr "$parseArguments_examples" "$parseArguments_version" 5
+		parse_args_printHelp parseArguments_paramArr "$parseArguments_examples" "$parseArguments_version" "$1"
 	}
 
 	local -i parseArguments_numOfArgumentsParsed=0
 	while (($# > 0)); do
 		parseArguments_argName="$1"
 		if [[ $parseArguments_argName == --help ]]; then
-			parseArgumentsInternal_printHelp
+			parseArgumentsInternal_printHelp 5
 			if ! ((parseArguments_numOfArgumentsParsed == 0)); then
 				logWarning "there were arguments defined prior to --help, they were all ignored and instead the help is shown"
 			elif (($# > 1)); then
