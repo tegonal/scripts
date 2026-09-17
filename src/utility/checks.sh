@@ -215,7 +215,7 @@ function checkArgIsArrayWithTuples() {
 
 		local -i i j
 		for ((i = 0; i < arrLength; i += tupleNum)); do
-			local -r length=$((i + tupleNum - 1 < arrLength ? i + tupleNum : arrLength))
+			local length=$((i + tupleNum - 1 < arrLength ? i + tupleNum : arrLength))
 			if ((i + tupleNum - 1 >= arrLength)); then
 				printf >&2 "\033[1;33mleftovers:\033[0m\n"
 			fi
