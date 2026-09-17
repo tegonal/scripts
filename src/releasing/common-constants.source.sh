@@ -14,7 +14,7 @@
 #
 ###################################
 
-local -r versionRegex="^(v[0-9]+)\.([0-9]+)\.[0-9]+(-RC[0-9]+)?$"
+local -r versionRegex="^v(0|[1-9][0-9]+)\.(0|[1-9][0-9]+)\.(0|[1-9][0-9]+)(-(alpha|beta|RC)(\.[0-9]+)+)?$"
 
 local -r versionParamPatternLong='-v'
 local -r versionParamPattern="$versionParamPatternLong"
