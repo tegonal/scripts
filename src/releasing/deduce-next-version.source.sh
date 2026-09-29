@@ -15,8 +15,8 @@
 #
 ###################################
 
-if [[ -v version ]]; then
-	if ! [[ -v nextVersion ]] && [[ "$version" =~ $versionRegex ]]; then
+if [[ -v version ]] && ! [[ -v nextVersion ]]; then
+	if [[ $version =~ $versionRegex ]]; then
 		nextVersion="${BASH_REMATCH[1]}.$((BASH_REMATCH[2] + 1)).0"
 	else
 		logInfo "cannot deduce nextVersion from version as it does not follow format vX.Y.Z(-RC...): $version"
