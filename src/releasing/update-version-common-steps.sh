@@ -103,7 +103,7 @@ function updateVersionCommonSteps() {
 		"$additionalPatternParamPatternLong" "$additionalPattern" \
 		-d "$projectsScriptsDir" || return $?
 
-	find "$projectsRootDir/.gt" -name "pull-hook.sh" -print0 |
+	find "$projectsRootDir/.gt" -name "pull-hook*.sh" -print0 |
 		while read -r -d $'\0' script; do
 			updateVersionScripts \
 				"$versionParamPatternLong" "$version" \
