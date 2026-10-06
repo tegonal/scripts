@@ -17,20 +17,16 @@ if ! [[ -v scriptsDir ]]; then
 	readonly scriptsDir
 fi
 source "$scriptsDir/dirs.source.sh"
-sourceOnce "$dir_of_tegonal_scripts/utility/checks.sh"
-sourceOnce "$dir_of_tegonal_scripts/qa/run-shellspec-if-installed.sh"
-sourceOnce "$scriptsDir/check-in-bug-template.sh"
-sourceOnce "$scriptsDir/cleanup-on-push-to-main.sh"
-sourceOnce "$scriptsDir/run-shellcheck.sh"
-sourceOnce "$scriptsDir/check-params-and-definition-in-sync.sh"
+sourceOnce "$dir_of_tegonal_scripts/qa/check-params-and-definition-in-sync.sh"
 
-function beforePr() {
-	customCheckParamsAndDefinitionInSync &&
-		cleanupOnPushToMain &&
-		runShellspecIfInstalled --jobs 2 &&
-		customRunShellcheck &&
-		checkInBugTemplate
+function customCheckParamsAndDefinitionInSync() {
+	# shellcheck disable=SC2034   # is passed by name to checkParamsAndDefinitionInSync
+	local -ra dirs=(
+		"$scriptsDir"
+		"$dir_of_tegonal_scripts"
+	)
+	checkParamsAndDefinitionInSync dirs "$projectDir/src/releasing/common-constants.source.sh"
 }
 
 ${__SOURCED__:+return}
-beforePr "$@"
+customCheckParamsAndDefinitionInSync "$@"

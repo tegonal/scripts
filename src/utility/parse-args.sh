@@ -104,7 +104,10 @@ function parse_args_exitIfParameterDefinitionIsNotTriple() {
 
 	exitIfArgIsNotArrayWithTuples "$1" 3 "parameter definitions" "first" "parse_args_describeParameterTriple"
 }
+
+#TODO v5.0.0 remove and I guess also inline parseArgumentsInternal
 function parseArgumentsIgnoreUnknown {
+	logDeprecation PARSE_ARGS_IGNORE_UNKNOWN "You should no longer use parseArgumentsIgnoreUnknown and instead switch to using addLocalVarMatchingParamNamesToArgs"
 	parseArgumentsInternal 'ignore' "$@"
 }
 
@@ -301,4 +304,33 @@ function exitIfNotAllArgumentsSet {
 		fi
 		exit 1
 	fi
+}
+
+# Puts all local variables which correspond to the params names (first value in the triples) into the outputArr
+# Requires that a variable xyzParamPatternLong exists where Xyz is the name of the param. For instance for a param
+# version there needs to be a variable versionParamPatternLong
+# since 4.13.0
+function addLocalVarMatchingParamNamesToArgs() {
+	if (($# != 2)); then
+		logError "Two arguments need to be passed to addLocalVarMatchingParamNamesToArgs, given \033[0;36m%s\033[0m"
+		echo >&2 '1: params      name of the array with the callee'"'"'s parameter definitions'
+		echo >&2 '2: outputArr   name of the array which receives the reconstructed arguments'
+		printStackTrace
+		exit 9
+	fi
+	local -rn addVarMatchingParamToArgs_params=$1
+	local -n addVarMatchingParamToArgs_out=$2
+	shift 2 || traceAndDie "could not shift by 2"
+	parse_args_exitIfParameterDefinitionIsNotTriple addVarMatchingParamToArgs_params
+	exitIfArgIsNotArrayOrIsNonEmpty addVarMatchingParamToArgs_out 2
+
+	local -ri addVarMatchingParamToArgs_arrLength=${#addVarMatchingParamToArgs_params[@]}
+	local -i i
+	for ((i = 0; i < addVarMatchingParamToArgs_arrLength; i += 3)); do
+		local addVarMatchingParamToArgs_paramName="${addVarMatchingParamToArgs_params[i]}"
+		if [[ -v $addVarMatchingParamToArgs_paramName ]]; then
+			local -n addVarMatchingParamToArgs_paramFlag="${addVarMatchingParamToArgs_paramName}ParamPatternLong"
+			addVarMatchingParamToArgs_out+=("$addVarMatchingParamToArgs_paramFlag" "${!addVarMatchingParamToArgs_paramName}")
+		fi
+	done
 }

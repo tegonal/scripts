@@ -25,6 +25,7 @@ body:
         - ci/install-shfmt.sh
         - ci/jelastic/deploy.sh
         - ci/jelastic/utils.sh
+        - qa/check-params-and-definition-in-sync.sh
         - qa/run-shellcheck.sh
         - qa/run-shellcheck-pull-hooks.sh
         - qa/run-shellspec-if-installed.sh
@@ -43,6 +44,20 @@ body:
         - releasing/update-version-README.sh
         - releasing/update-version-scripts.sh
         - releasing/update-version-issue-templates.sh
+        - releasing/params/after-version-update-hook.params.source.sh
+        - releasing/params/after-version-update-hook.params-definition.source.sh
+        - releasing/params/prepare-files-next-dev-cycle.default-args.source.sh
+        - releasing/params/prepare-files-next-dev-cycle.params.source.sh
+        - releasing/params/prepare-files-next-dev-cycle.params-definition.source.sh-
+        - releasing/params/prepare-next-dev-cycle-template.default-args.source.sh
+        - releasing/params/prepare-next-dev-cycle-template.params.source.sh
+        - releasing/params/prepare-next-dev-cycle-template.params-definition.source.sh
+        - releasing/params/release-files.default-args.source.sh
+        - releasing/params/release-files.params.source.sh
+        - releasing/params/release-files.params-definition.source.sh
+        - releasing/params/release-template.default-args.source.sh
+        - releasing/params/release-template.params.source.sh
+        - releasing/params/release-template.params-definition.source.sh
         - utility/array-utils.sh
         - utility/ask.sh
         - utility/checks.sh
