@@ -88,6 +88,7 @@ function prepareFilesNextDevCycle() {
 		source "$dir_of_tegonal_scripts/releasing/params/after-version-update-hook.params.source.sh" || traceAndDie "could not source after-version-update-hook.params.source.sh"
 		source "$dir_of_tegonal_scripts/releasing/params/after-version-update-hook.params-definition.source.sh" || traceAndDie "could not source after-version-update-hook.params-definition.source.sh"
 		parseArguments afterVersionHookParams "" "$TEGONAL_SCRIPTS_VERSION" "$@" || return $?
+		exitIfNotAllArgumentsSet afterVersionHookParams "" "$TEGONAL_SCRIPTS_VERSION"
 
 		updateVersionScripts \
 			"$versionParamPatternLong" "$version-SNAPSHOT" \
