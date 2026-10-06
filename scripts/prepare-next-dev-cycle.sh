@@ -22,25 +22,20 @@ sourceOnce "$dir_of_tegonal_scripts/releasing/prepare-files-next-dev-cycle.sh"
 sourceOnce "$scriptsDir/before-pr.sh"
 
 function prepareNextDevCycle() {
-	source "$dir_of_tegonal_scripts/releasing/common-constants.source.sh" || traceAndDie "could not source common-constants.source.sh"
+	source "$scriptsDir/params/prepare-next-dev-cycle.params.source.sh" || traceAndDie "could not source prepare-next-dev-cycle.params.source.sh"
+	source "$scriptsDir/params/prepare-next-dev-cycle.params-definition.source.sh" || traceAndDie "could not source prepare-next-dev-cycle.params-definition.source.sh"
+	parseArguments prepareNextDevCycleParams "" "$TEGONAL_SCRIPTS_VERSION" "$@" || return $?
+	source "$scriptsDir/params/prepare-next-dev-cycle.default-args.source.sh" || die "could not source prepare-next-dev-cycle.default-args.source.sh"
+	exitIfNotAllArgumentsSet prepareNextDevCycleParams "" "$TEGONAL_SCRIPTS_VERSION"
 
-	# shellcheck disable=SC2034   # they seem unused but are necessary in order that parseArguments doesn't create global readonly vars
-	local version projectsRootDir additionalPattern beforePrFn
-	# shellcheck disable=SC2034   # is passed by name to parseArguments
-	local -ra params=(
-		version "$versionParamPattern" 'the version for which we prepare the dev cycle'
-		projectsRootDir "$projectsRootDirParamPattern" "$projectsRootDirParamDocu"
-		additionalPattern "$additionalPatternParamPattern" "is ignored as additional pattern is specified internally, still here as release-files uses this argument"
-		beforePrFn "$beforePrFnParamPattern" "$beforePrFnParamDocu"
-	)
-	parseArguments params "" "$TEGONAL_SCRIPTS_VERSION" "$@" || return $?
-	# we don't check if all args are set (and neither set default values) as we currently don't use
-	# any param in here but just delegate to prepareFilesNextDevCycle.
+	local -a prepareFilesNextDevCycleArgs
+	addLocalVarMatchingParamNamesToArgs prepareFilesNextDevCycleParams prepareFilesNextDevCycleArgs
 
 	# similar as in release.sh, you might need to update it there as well if you change something here
 	local -r additionalPattern="(TEGONAL_SCRIPTS_VERSION=['\"])[^'\"]+(['\"])"
 
-	prepareFilesNextDevCycle --project-dir "$projectDir" "$@" -p "$additionalPattern"
+	prepareFilesNextDevCycle "${prepareFilesNextDevCycleArgs[@]}" \
+		"$additionalPatternParamPatternLong" "$additionalPattern"
 }
 
 ${__SOURCED__:+return}

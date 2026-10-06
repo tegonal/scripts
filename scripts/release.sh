@@ -19,6 +19,7 @@ if ! [[ -v scriptsDir ]]; then
 fi
 source "$scriptsDir/dirs.source.sh"
 sourceOnce "$dir_of_tegonal_scripts/releasing/release-files.sh"
+sourceOnce "$dir_of_tegonal_scripts/utility/array-utils.sh"
 sourceOnce "$dir_of_tegonal_scripts/utility/checks.sh"
 sourceOnce "$dir_of_github_commons/gt/pull-hook-functions.sh"
 sourceOnce "$scriptsDir/before-pr.sh"
@@ -29,22 +30,11 @@ function release() {
 		die "You need to have shellspec installed if you want to create a release."
 	fi
 
-	source "$dir_of_tegonal_scripts/releasing/common-constants.source.sh" || traceAndDie "could not source common-constants.source.sh"
-
-	local version
-	# shellcheck disable=SC2034   # they seem unused but are necessary in order that parseArguments doesn't create global readonly vars
-	local key branch nextVersion prepareOnly
-	# shellcheck disable=SC2034   # is passed by name to parseArguments
-	local -ra params=(
-		version "$versionParamPattern" "$versionParamDocu"
-		key "$keyParamPattern" "$keyParamDocu"
-		branch "$branchParamPattern" "$branchParamDocu"
-		nextVersion "$nextVersionParamPattern" "$nextVersionParamDocu"
-		prepareOnly "$prepareOnlyParamPattern" "$prepareOnlyParamDocu"
-	)
-	parseArguments params "" "$TEGONAL_SCRIPTS_VERSION" "$@" || return $?
-	# we don't check if all args are set (and neither set default values) as we currently don't use
-	# any param in here but just delegate to releaseFiles.
+	source "$scriptsDir/params/release.params.source.sh" || traceAndDie "could not source release.params.source.sh"
+	source "$scriptsDir/params/release.params-definition.source.sh" || traceAndDie "could not source release.params-definition.source.sh"
+	parseArguments releaseParams "" "$TEGONAL_SCRIPTS_VERSION" "$@" || return $?
+	source "$scriptsDir/params/release.default-args.source.sh" || die "could not source release.default-args.source.sh"
+	exitIfNotAllArgumentsSet releaseParams "" "$TEGONAL_SCRIPTS_VERSION"
 
 	function findScripts() {
 		find "$dir_of_tegonal_scripts" -name "*.sh" -not -name "*.doc.sh" "$@"
@@ -59,15 +49,18 @@ function release() {
 		replaceTagInPullRequestTemplate "$projectsRootDir/.github/PULL_REQUEST_TEMPLATE.md" "$githubUrl" "$version" || die "could not fill the placeholders in PULL_REQUEST_TEMPLATE.md"
 	}
 
+	local -a releaseFilesArgs
+	addLocalVarMatchingParamNamesToArgs releaseFilesParams releaseFilesArgs
+
 	# similar as in prepare-next-dev-cycle.sh, you might need to update it there as well if you change something here
 	local -r additionalPattern="(TEGONAL_SCRIPTS_(?:LATEST_)?VERSION=['\"])[^'\"]+(['\"])"
 
 	releaseFiles \
-		--project-dir "$projectDir" \
-		--pattern "$additionalPattern" \
-		"$@" \
-		--sign-fn findScripts \
-		--after-version-update-hook release_afterVersionHook
+		"${releaseFilesArgs[@]}" \
+		"$projectsRootDirParamPatternLong" "$projectDir" \
+		"$additionalPatternParamPatternLong" "$additionalPattern" \
+		"$findForSigningParamPatternLong" findScripts \
+		"$afterVersionUpdateHookParamPatternLong" releaseFiles_afterVersionHook
 }
 
 ${__SOURCED__:+return}

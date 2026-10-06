@@ -109,7 +109,8 @@ The scripts are ordered by topic:
 		- [deploy](#deploy-to-jelastic)
 		- [utils](#jelastic-utils)
 - [Quality Assurance](#quality-assurance)
-	- [runShellcheck](#runshellcheck)
+	- [checkParamsAndDefinitionInSync](#checkParamsAndDefinitionInSync)
+    - [runShellcheck](#runshellcheck)
 	- [runShellcheckPullHooks](#runshellcheck-on-pull-hookssh)
 	- [runShellspecIfInstalled](#runshellspecifinstalled)
     - [runShfmt](#runshfmt)
@@ -328,6 +329,159 @@ jelastic_exec "environment/control/redeploycontainers" --envName "test" --nodeGr
 
 The scripts under this topic (in directory `qa`) perform checks or execute qa tools.
 
+## checkParamsAndDefinitionInSync
+
+A function which checks that `*.params.source.sh` and its `*.params-definitions.source.sh` are in sync and that for each 
+parameter Xyz a corresponding variable named XyzParamPatternLong is defined.
+
+The idea behind those two files and additionally an optional `*.default-args.source.sh` together with
+`addLocalVarMatchingParamNamesToArgs` is to ease pipelining arguments
+through multiple functions which all make use of [parse-arguments](#parse-arguments) and reduce duplication.
+
+<qa-check-params-and-definition-in-sync>
+
+<!-- auto-generated, do not modify here but in src/qa/check-params-and-definition-in-sync.sh.doc -->
+```bash
+#!/usr/bin/env bash
+set -euo pipefail
+shopt -s inherit_errexit || { echo >&2 "please update to bash 5, see errors above" && exit 1; }
+scriptsDir="$(cd -- "$(dirname -- "${BASH_SOURCE[0]:-$0}")" >/dev/null && pwd 2>/dev/null)"
+# Assumes tegonal's scripts were fetched with gt - adjust location accordingly
+dir_of_tegonal_scripts="scriptsDir/../lib/tegonal-scripts/src"
+source "$dir_of_tegonal_scripts/setup_tegonal_scripts.sh" "$dir_of_tegonal_scripts"
+source "$dir_of_tegonal_scripts/qa//check-params-and-definition-in-sync.sh"
+
+# shellcheck disable=SC2034   # is passed by name to runShellcheck
+declare -a dirs=(
+	"$scriptsDir"
+	"$scriptsDir/../src/releasing"
+)
+
+# check params.source.sh found in all dirs are in sync with params-definition.source.sh and
+# params-definition.source.sh include the corresponding ParamsPatternLong definitions.
+checkParamsAndDefinitionInSync dirs
+
+# check params.source.sh found in all dirs are in sync with params-definition.source.sh and
+# params-definition.source.sh or common-constants.source.sh include the corresponding
+# ParamsPatternLong definitions.
+checkParamsAndDefinitionInSync dirs "$scriptsDir/../src/releasing/common-constants.source.sh"
+```
+
+</qa-check-params-and-definition-in-sync>
+
+Say you have two functions `foo` and `bar` where `foo` defines:
+```bash
+local pattern version directory
+# shellcheck disable=SC2034   # is passed by name to parseArguments
+local -ra fooParams=(
+	pattern '-p|--pattern' ''
+	version '-v' 'The version'
+	directory '-d|--directory' '(optional) The working directory -- default: .'
+)
+parseArguments fooParams "" "$fooVersion" "$@" || return $?
+if ! [[ -v directory ]]; then directory="."; fi
+exitIfNotAllArgumentsSet fooParams "" "$fooVersion"
+```
+
+and bar defines:
+```bash
+local pattern version directory jdkVersion
+# shellcheck disable=SC2034   # is passed by name to parseArguments
+local -ra barParams=(
+	pattern '-p|--pattern' ''
+	version '-v' 'The version'
+	jdkVersion '--jdk' 'The jdk version to use'
+	directory '-d|--directory' '(optional) The working directory -- default: .'
+)
+parseArguments barParams "" "$barVersion" "$@" || return $?
+if ! [[ -v directory ]]; then directory="."; fi
+exitIfNotAllArgumentsSet barParams "" "$barVersion"
+```
+
+Imagine `bar` does just some pre-checks or the like and then passes the arguments to `foo`. 
+Typically, we would repeat all arguments
+```
+foo --pattern "$pattern" -v "$version" --directory "$directory"
+```
+Three arguments might be okayish but say `foo` adds a fourth parameter `-b|--branch` (and maybe more).
+Each time we modify `foo` we have to modify `bar` as well. 
+That's where the concept of params(-definition).source.sh comes into play. Next to `foo.sh` we define
+a `foo.params.source.sh` which contains `local pattern version directory`,
+`foo.params-definitions.source.sh` which contains:
+```bash
+local -r patternParamPatternLong="--pattern"
+local -r versionParamPatternLong="-v"
+local -r directoryParamPatternLong="--directory"
+local -ra fooParams=(
+	pattern "-p|$patternParamPatternLong" ''
+	version '$versionParamPatternLong' 'The version'
+	directory '-d|$directoryParamPatternLong' '(optional) The working directory -- default: .'
+)
+```
+and `foo.default-args.source.sh` which contains:
+```bash
+if ! [[ -v directory ]]; then directory="."; fi
+```
+
+`checkParamsAndDefinitionInSync` now ensures, that the `local` variable names in `foo.params.source.sh` are the same as
+in `foo.params-definitions.source.sh` (we currently don't check that default arguments
+are set according to the documentation). In addition, it checks that there is a ParamPatternLong definition for the 
+param names defined in the `foo.params-definitions.source.sh` or in one of the constant source files which can be passed
+as additional arguments to `checkParamsAndDefinitionInSync`.
+
+`foo.sh` is then reduced to:
+```bash
+source "$scriptsDir/foo.params.source.sh"
+source "$scriptsDir/foo.params-definition.source.sh"
+parseArguments fooParams "" "$fooVersion" "$@" || return $?
+source "$scriptsDir/foo.default-args.source.sh"
+exitIfNotAllArgumentsSet fooParams "" "$fooVersion"
+```
+
+So far we have only extracted pieces of the logic into separate files. Nevertheless, we can already simplify the call
+of `foo` in bar based on `addLocalVarMatchingParamNamesToArgs` (assuming we have also sourced 
+`foo.params-definitions.source.sh` in `bar`, which is done indirectly, more to it further below):
+```bash
+local -a fooArgs
+addLocalVarMatchingParamNamesToArgs fooParams fooArgs
+foo "${fooArgs[@]}"
+```
+`addLocalVarMatchingParamNamesToArgs` auto-magically fills in the arguments which match.
+If we now define `bar.params.source.sh` in terms of `foo.params.source.sh` as follows:
+```bash
+# shellcheck disable=SC2154   # it is assumed scriptsDir is defined where this file is sourced
+source "$scriptsDir/foo.params.source.sh" || traceAndDie "could not source foo.params.source.sh"
+local jdkVersion
+```
+
+and likewise `bar.params-definition.source.sh`:
+```bash
+# shellcheck disable=SC2154   # it is assumed scriptsDir is defined where this file is sourced
+source "$scriptsDir/foo.params-definition.source.sh" || traceAndDie "could not source foo.params-definition.source.sh"
+
+local -ra barParams=(
+	"${fooParams[@]}"
+	jdkVersion '--jdk' 'The jdk version to use'
+)
+```
+
+We no longer have to adjust `bar` if a new parameter is added to `foo`. Unless we don't want to expose it. For such 
+cases we can use helper methods from [array-utils](#array-utils) such as `arrDropTuplesByKey`, `arrKeepTuplesByKey`
+as well as `arrPartitionTuplesByKey`. Following an exmaple:
+```bash
+# we want that `key` and `findForSigning` come after version and we don't want to expose `releaseHook`
+local -a releaseFiles_version=() releaseFiles_restWithoutReleaseHook=()
+arrKeepTuplesByKey releaseTemplateParams 3 releaseFiles_version version
+arrDropTuplesByKey releaseTemplateParams 3 releaseFiles_restWithoutReleaseHook version releaseHook
+
+local -ra releaseFilesParams=(
+	"${releaseFiles_version[@]}"
+	key "$keyParamPattern" "$keyParamDocu"
+	findForSigning "$findForSigningParamPattern" "$findForSigningParamDocu"
+	"${releaseFiles_restWithoutReleaseHook[@]}"
+)
+```
+
 ## runShellcheck
 
 A function which expects the name of an array of dirs as first argument, a source path as second argument (which is
@@ -341,17 +495,16 @@ It then executes shellcheck for each *.sh in these directories with predefined s
 #!/usr/bin/env bash
 set -euo pipefail
 shopt -s inherit_errexit || { echo >&2 "please update to bash 5, see errors above" && exit 1; }
+scriptsDir="$(cd -- "$(dirname -- "${BASH_SOURCE[0]:-$0}")" >/dev/null && pwd 2>/dev/null)"
 # Assumes tegonal's scripts were fetched with gt - adjust location accordingly
-dir_of_tegonal_scripts="$(cd -- "$(dirname -- "${BASH_SOURCE[0]:-$0}")" >/dev/null && pwd 2>/dev/null)/../lib/tegonal-scripts/src"
+dir_of_tegonal_scripts="scriptsDir/../lib/tegonal-scripts/src"
 source "$dir_of_tegonal_scripts/setup_tegonal_scripts.sh" "$dir_of_tegonal_scripts"
-
 source "$dir_of_tegonal_scripts/qa/run-shellcheck.sh"
 
 # shellcheck disable=SC2034   # is passed by name to runShellcheck
 declare -a dirs=(
-	"$dir_of_tegonal_scripts"
-	"$dir_of_tegonal_scripts/../scripts"
-	"$dir_of_tegonal_scripts/../spec"
+	"$scriptsDir"
+	"$scriptsDir/../spec"
 )
 declare sourcePath="$dir_of_tegonal_scripts"
 runShellcheck dirs "$sourcePath"
@@ -458,13 +611,13 @@ Parameters:
 -k|key                        The GPG private key which shall be used to sign the files
 --sign-fn                     Function which is called to determine what files should be signed. It should be based find and allow to pass further arguments (we will i.a. pass -print0)
 -b|--branch                   (optional) The expected branch which is currently checked out -- default: main
---project-dir                 (optional) The projects directory -- default: .
--p|--pattern                  (optional) pattern which is used in a perl command (separator /) to search & replace additional occurrences. It should define two match groups and the replace operation looks as follows: \${1}$version\${2}
 -nv|--next-version            (optional) the version to use for prepare-next-dev-cycle -- default: is next minor based on version
 --prepare-only                (optional) defines whether the release shall only be prepared (i.e. no push, no tag, no prepare-next-dev-cycle) -- default: false
 --before-pr-fn                (optional) defines the function which is executed before preparing the release (to see if we should release) and after preparing the release -- default: beforePr (per convention defined in scripts/before-pr.sh). No arguments are passed
 --prepare-next-dev-cycle-fn   (optional) defines the function which is executed to prepare the next dev cycle -- default: perpareNextDevCycle (per convention defined in scripts/prepareNextDevCycle). The following arguments are passed: -v nextVersion --pattern additionalPattern --project-dir projectsRootDir --before-pr-fn beforePrFn
 --after-version-update-hook   (optional) if defined, then this function is called after versions were updated and before calling beforePr. The following arguments are passed: -v version --project-dir projectsRootDir and --pattern additionalPattern
+--project-dir                 (optional) The projects directory -- default: .
+-p|--pattern                  (optional) pattern which is used in a perl command (separator /) to search & replace additional occurrences. It should define two match groups and the replace operation looks as follows: \${1}$version\${2}
 
 --help     prints this help
 --version  prints the version of this script
@@ -546,11 +699,11 @@ it uses the [prepare next dev cycle template](#prepare-next-dev-cycle-template) 
 <!-- auto-generated, do not modify here but in src/releasing/prepare-files-next-dev-cycle.sh -->
 ```text
 Parameters:
--v                            the version for which we prepare the dev cycle
---project-dir                 (optional) The projects directory -- default: .
--p|--pattern                  (optional) pattern which is used in a perl command (separator /) to search & replace additional occurrences. It should define two match groups and the replace operation looks as follows: \${1}$version\${2}
+-v                            The version for which we prepare the dev cycle
 --before-pr-fn                (optional) defines the function which is executed before preparing the release (to see if we should release) and after preparing the release -- default: beforePr (per convention defined in scripts/before-pr.sh). No arguments are passed
 --after-version-update-hook   (optional) if defined, then this function is called after versions were updated and before calling beforePr. The following arguments are passed: -v version --project-dir projectsRootDir and --pattern additionalPattern
+--project-dir                 (optional) The projects directory -- default: .
+-p|--pattern                  (optional) pattern which is used in a perl command (separator /) to search & replace additional occurrences. It should define two match groups and the replace operation looks as follows: \${1}$version\${2}
 
 --help     prints this help
 --version  prints the version of this script
@@ -643,13 +796,13 @@ Parameters:
 -v                            The version to release in the format vX.Y.Z(-RC...)
 --release-hook                performs the main release task such as (run tests) create artifacts, deploy artifacts
 -b|--branch                   (optional) The expected branch which is currently checked out -- default: main
---project-dir                 (optional) The projects directory -- default: .
--p|--pattern                  (optional) pattern which is used in a perl command (separator /) to search & replace additional occurrences. It should define two match groups and the replace operation looks as follows: \${1}$version\${2}
 -nv|--next-version            (optional) the version to use for prepare-next-dev-cycle -- default: is next minor based on version
 --prepare-only                (optional) defines whether the release shall only be prepared (i.e. no push, no tag, no prepare-next-dev-cycle) -- default: false
 --before-pr-fn                (optional) defines the function which is executed before preparing the release (to see if we should release) and after preparing the release -- default: beforePr (per convention defined in scripts/before-pr.sh). No arguments are passed
 --prepare-next-dev-cycle-fn   (optional) defines the function which is executed to prepare the next dev cycle -- default: perpareNextDevCycle (per convention defined in scripts/prepareNextDevCycle). The following arguments are passed: -v nextVersion --pattern additionalPattern --project-dir projectsRootDir --before-pr-fn beforePrFn
 --after-version-update-hook   (optional) if defined, then this function is called after versions were updated and before calling beforePr. The following arguments are passed: -v version --project-dir projectsRootDir and --pattern additionalPattern
+--project-dir                 (optional) The projects directory -- default: .
+-p|--pattern                  (optional) pattern which is used in a perl command (separator /) to search & replace additional occurrences. It should define two match groups and the replace operation looks as follows: \${1}$version\${2}
 
 --help     prints this help
 --version  prints the version of this script
@@ -729,11 +882,11 @@ Help:
 <!-- auto-generated, do not modify here but in src/releasing/prepare-next-dev-cycle-template.sh -->
 ```text
 Parameters:
--v                            the version for which we prepare the dev cycle
---project-dir                 (optional) The projects directory -- default: .
--p|--pattern                  (optional) pattern which is used in a perl command (separator /) to search & replace additional occurrences. It should define two match groups and the replace operation looks as follows: \${1}$version\${2}
+-v                            The version for which we prepare the dev cycle
 --before-pr-fn                (optional) defines the function which is executed before preparing the release (to see if we should release) and after preparing the release -- default: beforePr (per convention defined in scripts/before-pr.sh). No arguments are passed
 --after-version-update-hook   (optional) if defined, then this function is called after versions were updated and before calling beforePr. The following arguments are passed: -v version --project-dir projectsRootDir and --pattern additionalPattern
+--project-dir                 (optional) The projects directory -- default: .
+-p|--pattern                  (optional) pattern which is used in a perl command (separator /) to search & replace additional occurrences. It should define two match groups and the replace operation looks as follows: \${1}$version\${2}
 
 --help     prints this help
 --version  prints the version of this script
@@ -1881,6 +2034,10 @@ echo "p: $pattern, v: $version, d: $directory"
 ```
 
 </utility-parse-args>
+
+if you should have a chain of functions which make use of similar parameters, then take a look at 
+[checkParamsAndDefinitionInSync](#checkParamsAndDefinitionInSync) which shows how you can reduce duplication and ease
+maintenance.
 
 ### parse-fn-args.sh
 
