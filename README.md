@@ -1327,6 +1327,34 @@ arrTakeEveryX names everySecondNameStartingFrom1 2 1
 declare -p everySecondNameStartingFrom1
 
 arrStringEntryMaxLength names # 6
+
+# shellcheck disable=SC2034	# passed by name to arrPartitionTuples
+declare -a attendees=(
+	alice 30 berlin
+	bob 25 zurich
+	carol 41 lausanne
+)
+declare -a youngerThan30 olderOr30
+function isYoungerThan30() {
+	(($2 < 30))
+}
+# fills the arrays youngerThan30 and olderOr30m with the tuples from the array attendees
+# based on the result of the function isYoungerThan30. The second argument defines the size of the tuples in attendees.
+arrPartitionTuples attendees 3 youngerThan30 olderOr30 isYoungerThan30
+declare -p youngerThan30
+declare -p olderOr30
+
+declare -a alineAndBob
+# fills the array alineAndBob with the tuples from the array attendees which have either alice or bob as first
+# element of the tuple where each tuple has 3 elements (defined by the second argument).
+arrKeepTuplesByKey attendees 3 alice bob
+declare -p alineAndBob
+
+declare -a withoutBobAndCarol
+# fills the array withoutBobAndCarol with the tuples from the array attendees which have neither bob nor carol as first
+# element of the tuple where each tuple has 3 elements (defined by the second argument).
+arrDropTuplesByKey attendees 3 bob carol
+declare -p withoutBobAndCarol
 ```
 
 </utility-array-utils>
