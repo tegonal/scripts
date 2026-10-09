@@ -57,7 +57,7 @@ function askYesOrNo() {
 	local -r question=$1
 	shift 1 || traceAndDie "could not shift by 1"
 
-	local -r askYesOrNo_timeout=20
+	local -r askYesOrNo_timeout=30
 	local answer='n'
 
 	# shellcheck disable=SC2329   # called by name
