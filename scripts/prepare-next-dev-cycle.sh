@@ -22,11 +22,11 @@ sourceOnce "$dir_of_tegonal_scripts/releasing/prepare-files-next-dev-cycle-templ
 sourceOnce "$scriptsDir/before-pr.sh"
 
 function prepareNextDevCycle() {
-	source "$scriptsDir/params/prepare-next-dev-cycle.params.source.sh" || traceAndDie "could not source prepare-next-dev-cycle.params.source.sh"
-	source "$scriptsDir/params/prepare-next-dev-cycle.params-definition.source.sh" || traceAndDie "could not source prepare-next-dev-cycle.params-definition.source.sh"
-	parseArguments prepareNextDevCycleParams "" "$TEGONAL_SCRIPTS_VERSION" "$@" || return $?
-	source "$scriptsDir/params/prepare-next-dev-cycle.default-args.source.sh" || die "could not source prepare-next-dev-cycle.default-args.source.sh"
-	exitIfNotAllArgumentsSet prepareNextDevCycleParams "" "$TEGONAL_SCRIPTS_VERSION"
+	source "$dir_of_tegonal_scripts/releasing/params/prepare-files-next-dev-cycle.params.source.sh" || traceAndDie "could not source prepare-files-next-dev-cycle.params.source.sh"
+	source "$dir_of_tegonal_scripts/releasing/params/prepare-files-next-dev-cycle.params-definition.source.sh" || traceAndDie "could not source prepare-files-next-dev-cycle.params-definition.source.sh"
+	parseArguments prepareFilesNextDevCycleParams "" "$TEGONAL_SCRIPTS_VERSION" "$@" || return $?
+	source "$dir_of_tegonal_scripts/releasing/params/prepare-files-next-dev-cycle.default-args.source.sh" || die "could not source prepare-files-next-dev-cycle.default-args.source.sh"
+	exitIfNotAllArgumentsSet prepareFilesNextDevCycleParams "" "$TEGONAL_SCRIPTS_VERSION"
 
 	local -a prepareFilesNextDevCycleTemplateArgs
 	addLocalVarMatchingParamNamesToArgs prepareFilesNextDevCycleTemplateParams prepareFilesNextDevCycleTemplateArgs

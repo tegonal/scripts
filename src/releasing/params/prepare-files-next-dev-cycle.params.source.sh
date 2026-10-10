@@ -8,6 +8,10 @@
 #         /___/                           Please report bugs and contribute back your improvements
 #
 #                                         Version: v4.14.0-SNAPSHOT
+#######  Description  #############
+#
+# Defines local variables for the params defined in ...params-definition.source.sh
+#
 ###################################
 {
 	# shellcheck disable=SC2154   # it is assumed dir_of_tegonal_scripts is defined where this file is sourced
