@@ -32,44 +32,44 @@
 #    function findScripts() {
 #    	find "src" -name "*.sh" -not -name "*.doc.sh" "$@"
 #    }
-#    # make the function visible to release-files.sh / not necessary if you source release-files.sh, see further below
+#    # make the function visible to release-files-template.sh / not necessary if you source release-files-template.sh, see further below
 #    declare -fx findScripts
 #
 #    # releases version v0.1.0 using the key 0x945FE615904E5C85 for signing and function findScripts to find the files which
 #    # should be signed (and thus released). Assumes that a function named beforePr is in scope (which we sourced above)
-#    "$dir_of_tegonal_scripts/releasing/release-files.sh" -v v0.1.0 -k "0x945FE615904E5C85" --sign-fn findScripts
+#    "$dir_of_tegonal_scripts/releasing/release-files-template.sh" -v v0.1.0 -k "0x945FE615904E5C85" --sign-fn findScripts
 #
 #    # releases version v0.1.0 using the key 0x945FE615904E5C85 for signing and function findScripts to find the files which
 #    # should be signed (and thus released). Moreover, searches for additional occurrences where the version should be
 #    # replaced via the specified pattern
-#    "$dir_of_tegonal_scripts/releasing/release-files.sh" \
+#    "$dir_of_tegonal_scripts/releasing/release-files-template.sh" \
 #    	-v v0.1.0 -k "0x945FE615904E5C85" --sign-fn findScripts \
 #    	-p "(TEGONAL_SCRIPTS_VERSION=['\"])[^'\"]+(['\"])"
 #
 #    function specialBeforePr() {
 #    	beforePr && echo "imagine some additional work"
 #    }
-#    # make the function visible to release-files.sh / not necessary if you source prepare-files-next-dev-cycle.sh
+#    # make the function visible to release-files-template.sh / not necessary if you source prepare-files-next-dev-cycle-template.sh
 #    # see further below
 #    declare -fx specialBeforePr
 #
 #    # releases version v0.1.0 using the key 0x945FE615904E5C85 for signing and
-#    "$dir_of_tegonal_scripts/releasing/release-files.sh" \
+#    "$dir_of_tegonal_scripts/releasing/release-files-template.sh" \
 #    	-v v0.1.0 -k "0x945FE615904E5C85" --sign-fn findScripts \
 #    	--before-pr-fn specialBeforePr
 #
 #    # in case you want to provide your own release.sh and only want to do some pre-configuration
 #    # then you might want to source it instead
-#    sourceOnce "$dir_of_tegonal_scripts/releasing/release-files.sh"
+#    sourceOnce "$dir_of_tegonal_scripts/releasing/release-files-template.sh"
 #
 #    # and then call the function with your pre-configuration settings:
 #    # here we define the function which shall be used to find the files to be signed
 #    # since "$@" follows afterwards, one could still override it via command line arguments.
 #    # put "$@" first, if you don't want that a user can override your pre-configuration
-#    releaseFiles --sign-fn findScripts "$@"
+#    releaseFilesTemplate --sign-fn findScripts "$@"
 #
 #    # call the function define --before-pr-fn, don't allow to override via command line arguments
-#    releaseFiles "$@" --before-pr-fn specialBeforePr
+#    releaseFilesTemplate "$@" --before-pr-fn specialBeforePr
 #
 ###################################
 set -euo pipefail
@@ -87,12 +87,12 @@ sourceOnce "$dir_of_tegonal_scripts/utility/parse-args.sh"
 sourceOnce "$dir_of_tegonal_scripts/releasing/release-template.sh"
 sourceOnce "$dir_of_tegonal_scripts/releasing/update-version-scripts.sh"
 
-function releaseFiles() {
-	source "$dir_of_tegonal_scripts/releasing/params/release-files.params.source.sh" || traceAndDie "could not source release-files.params.source.sh"
-	source "$dir_of_tegonal_scripts/releasing/params/release-files.params-definition.source.sh" || die "could not source release-files.params-definition.source.sh"
-	parseArguments releaseFilesParams "" "$TEGONAL_SCRIPTS_VERSION" "$@" || return $?
-	source "$dir_of_tegonal_scripts/releasing/params/release-files.default-args.source.sh" || die "could not source release-files.default-args.source.sh"
-	exitIfNotAllArgumentsSet releaseFilesParams "" "$TEGONAL_SCRIPTS_VERSION"
+function releaseFilesTemplate() {
+	source "$dir_of_tegonal_scripts/releasing/params/release-files-template.params.source.sh" || traceAndDie "could not source release-files-template.params.source.sh"
+	source "$dir_of_tegonal_scripts/releasing/params/release-files-template.params-definition.source.sh" || die "could not source release-files-template.params-definition.source.sh"
+	parseArguments releaseFilesTemplateParams "" "$TEGONAL_SCRIPTS_VERSION" "$@" || return $?
+	source "$dir_of_tegonal_scripts/releasing/params/release-files-template.default-args.source.sh" || die "could not source release-files-template.default-args.source.sh"
+	exitIfNotAllArgumentsSet releaseFilesTemplateParams "" "$TEGONAL_SCRIPTS_VERSION"
 
 	exitIfArgIsNotFunction "$findForSigning" "$findForSigningParamPatternLong"
 	exitIfArgIsNotFunction "$beforePrFn" "$beforePrFnParamPatternLong"
@@ -106,7 +106,7 @@ function releaseFiles() {
 	local release_files_findForSigning="$findForSigning"
 	local release_files_branch="$branch"
 
-	function releaseFiles_afterVersionHook() {
+	function releaseFilesTemplate_afterVersionHook() {
 		source "$dir_of_tegonal_scripts/releasing/params/after-version-update-hook.params.source.sh" || traceAndDie "could not source after-version-update-hook.params.source.sh"
 		source "$dir_of_tegonal_scripts/releasing/params/after-version-update-hook.params-definition.source.sh" || traceAndDie "could not source after-version-update-hook.params-definition.source.sh"
 		parseArguments afterVersionHookParams "" "$TEGONAL_SCRIPTS_VERSION" "$@" || return $?
@@ -123,7 +123,7 @@ function releaseFiles() {
 			"$additionalPatternParamPatternLong" "$additionalPattern"
 	}
 
-	function releaseFiles_releaseHook() {
+	function releaseFilesTemplate_releaseHook() {
 		local -r gtDir="$release_files_projectsRootDir/.gt"
 		local -r gpgDir="$gtDir/gpg"
 		if ! rm -rf "$gpgDir"; then
@@ -150,9 +150,9 @@ function releaseFiles() {
 
 	releaseTemplate \
 		"${releaseTemplateArgs[@]}" \
-		"$releaseHookParamPatternLong" releaseFiles_releaseHook \
-		"$afterVersionUpdateHookParamPatternLong" releaseFiles_afterVersionHook
+		"$releaseHookParamPatternLong" releaseFilesTemplate_releaseHook \
+		"$afterVersionUpdateHookParamPatternLong" releaseFilesTemplate_afterVersionHook
 }
 
 ${__SOURCED__:+return}
-releaseFiles "$@"
+releaseFilesTemplate "$@"

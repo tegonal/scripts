@@ -11,12 +11,12 @@
 ###################################
 {
 	# shellcheck disable=SC2154   # it is assumed dir_of_tegonal_scripts is defined where this file is sourced
-	source "$dir_of_tegonal_scripts/releasing/params/release-files.params-definition.source.sh" ||
-		traceAndDie "could not source release-files.params-definition.source.sh"
+	source "$dir_of_tegonal_scripts/releasing/params/release-files-template.params-definition.source.sh" ||
+		traceAndDie "could not source release-files-template.params-definition.source.sh"
 }
 
 local -a release_sameAsFilesWithSomeExceptions=()
-arrDropTuplesByKey releaseFilesParams 3 release_sameAsFilesWithSomeExceptions \
+arrDropTuplesByKey releaseFilesTemplateParams 3 release_sameAsFilesWithSomeExceptions \
 	findForSigning prepareNextDevCycleFn afterVersionUpdateHook projectsRootDir additionalPattern
 
 local -ra releaseParams=(

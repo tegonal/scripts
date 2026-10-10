@@ -10,14 +10,16 @@
 #                                         Version: v4.14.0-SNAPSHOT
 #######  Description  #############
 #
-# Defines default args for ...params-definition.source.sh
+# Defines the parameters for the function prepareFilesNextDevCycleTemplate
 #
 ###################################
 {
 	# shellcheck disable=SC2154   # it is assumed dir_of_tegonal_scripts is defined where this file is sourced
-	source "$dir_of_tegonal_scripts/releasing/params/prepare-next-dev-cycle-template.default-args.source.sh" ||
-		traceAndDie "could not source prepare-next-dev-cycle-template.default-args.source.sh"
+	source "$dir_of_tegonal_scripts/releasing/params/prepare-next-dev-cycle-template.params-definition.source.sh" ||
+		traceAndDie "could not source prepare-next-dev-cycle-template.params-definition.source.sh"
 }
 
-# currently prepare-files-next-dev-cycle defines not more optional params than prepare-next-dev-cycle-template,
-# hence the above is enough
+# keep in sync with src/releasing/release-files-template.params.source.sh
+local -ra prepareFilesNextDevCycleTemplateParams=(
+	"${prepareNextDevCycleTemplateParams[@]}"
+)
