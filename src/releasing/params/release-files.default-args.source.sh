@@ -8,11 +8,14 @@
 #         /___/                           Please report bugs and contribute back your improvements
 #
 #                                         Version: v4.14.0-SNAPSHOT
+#######  Description  #############
+#
+# Defines default args for ...params-definition.source.sh
+#
 ###################################
 {
 	# shellcheck disable=SC2154   # it is assumed dir_of_tegonal_scripts is defined where this file is sourced
-	source "$dir_of_tegonal_scripts/releasing/params/release-files-template.params.source.sh" || traceAndDie "could not source release-files-template.params.source.sh"
+	source "$dir_of_tegonal_scripts/releasing/params/release-files-template.default-args.source.sh" ||
+		traceAndDie "could not source release-files-template.default-args.source.sh"
 }
-# no additional local variables currently compared to release-files-template.params.source.sh
-# adding `local` as comment to tell the linter that's fine
-# local
+# currently release-files defines not more optional params than release-files-template, hence the above is enough

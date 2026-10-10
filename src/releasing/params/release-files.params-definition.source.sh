@@ -8,6 +8,11 @@
 #         /___/                           Please report bugs and contribute back your improvements
 #
 #                                         Version: v4.14.0-SNAPSHOT
+#######  Description  #############
+#
+# Defines the parameters for the a custom release function which is based on releaseFilesTemplate but wants to
+# hide certain params from the consumers (see below)
+#
 ###################################
 {
 	# shellcheck disable=SC2154   # it is assumed dir_of_tegonal_scripts is defined where this file is sourced
@@ -15,10 +20,10 @@
 		traceAndDie "could not source release-files-template.params-definition.source.sh"
 }
 
-local -a release_sameAsFilesWithSomeExceptions=()
-arrDropTuplesByKey releaseFilesTemplateParams 3 release_sameAsFilesWithSomeExceptions \
+local -a releaseFiles_sameAsFilesWithSomeExceptions=()
+arrDropTuplesByKey releaseFilesTemplateParams 3 releaseFiles_sameAsFilesWithSomeExceptions \
 	findForSigning prepareNextDevCycleFn afterVersionUpdateHook projectsRootDir additionalPattern
 
-local -ra releaseParams=(
-	"${release_sameAsFilesWithSomeExceptions[@]}"
+local -ra releaseFilesParams=(
+	"${releaseFiles_sameAsFilesWithSomeExceptions[@]}"
 )
