@@ -11,8 +11,8 @@
 ###################################
 {
 	# shellcheck disable=SC2154   # it is assumed dir_of_tegonal_scripts is defined where this file is sourced
-	source "$dir_of_tegonal_scripts/releasing/params/release-files.params.source.sh" || traceAndDie "could not source release-files.params.source.sh"
+	source "$dir_of_tegonal_scripts/releasing/params/release-files-template.params.source.sh" || traceAndDie "could not source release-files-template.params.source.sh"
 }
-# no additional local variables currently compared to release-files.params.source.sh
+# no additional local variables currently compared to release-files-template.params.source.sh
 # adding `local` as comment to tell the linter that's fine
 # local

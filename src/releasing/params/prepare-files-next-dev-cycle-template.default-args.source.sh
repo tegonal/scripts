@@ -13,9 +13,11 @@
 # Defines default args for ...params-definition.source.sh
 #
 ###################################
+{
+	# shellcheck disable=SC2154   # it is assumed dir_of_tegonal_scripts is defined where this file is sourced
+	source "$dir_of_tegonal_scripts/releasing/params/prepare-next-dev-cycle-template.default-args.source.sh" ||
+		traceAndDie "could not source prepare-next-dev-cycle-template.default-args.source.sh"
+}
 
-# shellcheck disable=SC2154   # it is assumed dir_of_tegonal_scripts is defined where this file is sourced
-source "$dir_of_tegonal_scripts/releasing/params/release-template.default-args.source.sh" ||
-	traceAndDie "could not source release-template.default-args.source.sh"
-
-# currently release-files defines not more optional params than release-template, hence the above is enough
+# currently prepare-files-next-dev-cycle-template defines not more optional params than prepare-next-dev-cycle-template,
+# hence the above is enough

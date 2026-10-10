@@ -11,7 +11,7 @@
 ###################################
 {
 	# shellcheck disable=SC2154   # it is assumed dir_of_tegonal_scripts is defined where this file is sourced
-	source "$dir_of_tegonal_scripts/releasing/params/release-files.default-args.source.sh" ||
-		traceAndDie "could not source release-files.default-args.source.sh"
+	source "$dir_of_tegonal_scripts/releasing/params/release-files-template.default-args.source.sh" ||
+		traceAndDie "could not source release-files-template.default-args.source.sh"
 }
-# currently release defines not more optional params than release-files, hence the above is enough
+# currently release defines not more optional params than release-files-template, hence the above is enough
