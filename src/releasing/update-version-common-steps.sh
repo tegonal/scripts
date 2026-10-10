@@ -70,22 +70,12 @@ sourceOnce "$dir_of_tegonal_scripts/releasing/update-version-README.sh"
 sourceOnce "$dir_of_tegonal_scripts/releasing/update-version-scripts.sh"
 
 function updateVersionCommonSteps() {
-	local forReleaseParamPatternLong versionParamPatternLong additionalPatternParamPatternLong
-	source "$dir_of_tegonal_scripts/releasing/common-constants.source.sh" || traceAndDie "could not source common-constants.source.sh"
+	source "$dir_of_tegonal_scripts/releasing/params/update-version-common-steps.params.source.sh" || traceAndDie "could not source update-version-common-steps.params.source.sh"
+	source "$dir_of_tegonal_scripts/releasing/params/update-version-common-steps.params-definition.source.sh" || traceAndDie "could not source /update-version-common-steps.params-definition.source.sh"
+	parseArguments updateVersionCommonStepsParams "" "$TEGONAL_SCRIPTS_VERSION" "$@" || return $?
+	source "$dir_of_tegonal_scripts/releasing/params/update-version-common-steps.default-args.source.sh" || traceAndDie "could not source update-version-common-steps.default-args.source.sh"
+	exitIfNotAllArgumentsSet updateVersionCommonStepsParams "" "$TEGONAL_SCRIPTS_VERSION"
 
-	local forRelease version projectsRootDir additionalPattern
-	# shellcheck disable=SC2034   # is passed by name to parseArguments
-	local -ra params=(
-		forRelease "$forReleaseParamPattern" "$forReleaseParamDocu"
-		version "$versionParamPattern" "$versionParamDocu"
-		projectsRootDir "$projectsRootDirParamPattern" "$projectsRootDirParamDocu"
-		additionalPattern "$additionalPatternParamPattern" "$additionalPatternParamDocu"
-	)
-	parseArguments params "" "$TEGONAL_SCRIPTS_VERSION" "$@" || return $?
-
-	if ! [[ -v projectsRootDir ]]; then projectsRootDir=$(realpath "."); fi
-	if ! [[ -v additionalPattern ]]; then additionalPattern="^$"; fi
-	exitIfNotAllArgumentsSet params "" "$TEGONAL_SCRIPTS_VERSION"
 	exitIfArgIsNotBoolean "$forRelease" "$forReleaseParamPatternLong"
 
 	local -r projectsScriptsDir="$projectsRootDir/scripts"
