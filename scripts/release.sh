@@ -18,7 +18,7 @@ if ! [[ -v scriptsDir ]]; then
 	readonly scriptsDir
 fi
 source "$scriptsDir/dirs.source.sh"
-sourceOnce "$dir_of_tegonal_scripts/releasing/release-files.sh"
+sourceOnce "$dir_of_tegonal_scripts/releasing/release-files-template.sh"
 sourceOnce "$dir_of_tegonal_scripts/utility/array-utils.sh"
 sourceOnce "$dir_of_tegonal_scripts/utility/checks.sh"
 sourceOnce "$dir_of_github_commons/gt/pull-hook-functions.sh"
@@ -35,6 +35,9 @@ function release() {
 	parseArguments releaseParams "" "$TEGONAL_SCRIPTS_VERSION" "$@" || return $?
 	source "$scriptsDir/params/release.default-args.source.sh" || die "could not source release.default-args.source.sh"
 	exitIfNotAllArgumentsSet releaseParams "" "$TEGONAL_SCRIPTS_VERSION"
+
+	local -a releaseFilesTemplateArgs
+	addLocalVarMatchingParamNamesToArgs releaseFilesTemplateParams releaseFilesTemplateArgs
 
 	local -a releaseFilesArgs
 	addLocalVarMatchingParamNamesToArgs releaseFilesParams releaseFilesArgs
@@ -54,11 +57,13 @@ function release() {
 		replaceTagInPullRequestTemplate "$projectsRootDir/.github/PULL_REQUEST_TEMPLATE.md" "$githubUrl" "$version" || die "could not fill the placeholders in PULL_REQUEST_TEMPLATE.md"
 	}
 
+
+
 	# similar as in prepare-next-dev-cycle.sh, you might need to update it there as well if you change something here
 	local -r additionalPattern="(TEGONAL_SCRIPTS_(?:LATEST_)?VERSION=['\"])[^'\"]+(['\"])"
 
-	releaseFiles \
-		"${releaseFilesArgs[@]}" \
+	releaseFilesTemplate \
+		"${releaseFilesTemplateArgs[@]}" \
 		"$projectsRootDirParamPatternLong" "$projectDir" \
 		"$additionalPatternParamPatternLong" "$additionalPattern" \
 		"$findForSigningParamPatternLong" findScripts \

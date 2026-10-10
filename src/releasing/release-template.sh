@@ -40,7 +40,7 @@
 #    	# or
 #    	sbt test publishedSigned
 #    }
-#    # make the function visible to release-templates.sh / not necessary if you source release-templates.sh, see further below
+#    # make the function visible to release-template.sh / not necessary if you source release-template.sh, see further below
 #    declare -fx releaseScalaLib
 #
 #    # releases version v0.1.0 using releaseScalaLib as hook

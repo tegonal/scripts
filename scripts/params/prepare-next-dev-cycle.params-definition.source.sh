@@ -11,14 +11,14 @@
 ###################################
 {
 	# shellcheck disable=SC2154   # it is assumed dir_of_tegonal_scripts is defined where this file is sourced
-	source "$dir_of_tegonal_scripts/releasing/params/prepare-files-next-dev-cycle.params-definition.source.sh" ||
-		traceAndDie "could not source prepare-files-next-dev-cycle.params-definition.source.sh"
+	source "$dir_of_tegonal_scripts/releasing/params/prepare-files-next-dev-cycle-template.params-definition.source.sh" ||
+		traceAndDie "could not source prepare-files-next-dev-cycle-template.params-definition.source.sh"
 }
 
 local -a prepareNextDevCycle_withoutAdditionalPattern=()
-arrDropTuplesByKey prepareFilesNextDevCycleParams 3 prepareNextDevCycle_withoutAdditionalPattern additionalPattern
+arrDropTuplesByKey prepareFilesNextDevCycleTemplateParams 3 prepareNextDevCycle_withoutAdditionalPattern additionalPattern
 
 local -ra prepareNextDevCycleParams=(
 	"${prepareNextDevCycle_withoutAdditionalPattern[@]}"
-	additionalPattern "$additionalPatternParamPattern" "is ignored because the function itself overwrites it, still here as release-files uses this argument"
+	additionalPattern "$additionalPatternParamPattern" "is ignored because the function itself overwrites it, still here as release-files-template uses this argument"
 )
