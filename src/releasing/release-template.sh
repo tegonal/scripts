@@ -98,6 +98,7 @@ function releaseTemplate() {
 	source "$dir_of_tegonal_scripts/releasing/params/release-template.default-args.source.sh"
 	exitIfNotAllArgumentsSet releaseTemplateParams "" "$TEGONAL_SCRIPTS_VERSION"
 
+	exitIfArgIsNotBoolean "$prepareOnly" "$prepareOnlyParamPatternLong"
 	exitIfArgIsNotFunction "$releaseHook" "$releaseHookParamPatternLong"
 	exitIfArgIsNotFunction "$beforePrFn" "$beforePrFnParamPatternLong"
 	exitIfArgIsNotFunction "$prepareNextDevCycleFn" "$prepareNextDevCycleFnParamPatternLong"
