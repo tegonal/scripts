@@ -30,11 +30,11 @@ function release() {
 		die "You need to have shellspec installed if you want to create a release."
 	fi
 
-	source "$scriptsDir/params/release.params.source.sh" || traceAndDie "could not source release.params.source.sh"
-	source "$scriptsDir/params/release.params-definition.source.sh" || traceAndDie "could not source release.params-definition.source.sh"
-	parseArguments releaseParams "" "$TEGONAL_SCRIPTS_VERSION" "$@" || return $?
-	source "$scriptsDir/params/release.default-args.source.sh" || die "could not source release.default-args.source.sh"
-	exitIfNotAllArgumentsSet releaseParams "" "$TEGONAL_SCRIPTS_VERSION"
+	source "$dir_of_tegonal_scripts/releasing/params/release-files.params.source.sh" || traceAndDie "could not source release-files.params.source.sh"
+	source "$dir_of_tegonal_scripts/releasing/params/release-files.params-definition.source.sh" || traceAndDie "could not source release-files.params-definition.source.sh"
+	parseArguments releaseFilesParams "" "$TEGONAL_SCRIPTS_VERSION" "$@" || return $?
+	source "$dir_of_tegonal_scripts/releasing/params/release-files.default-args.source.sh" || die "could not source release-files.default-args.source.sh"
+	exitIfNotAllArgumentsSet releaseFilesParams "" "$TEGONAL_SCRIPTS_VERSION"
 
 	local -a releaseFilesTemplateArgs
 	addLocalVarMatchingParamNamesToArgs releaseFilesTemplateParams releaseFilesTemplateArgs

@@ -8,6 +8,11 @@
 #         /___/                           Please report bugs and contribute back your improvements
 #
 #                                         Version: v4.14.0-SNAPSHOT
+#######  Description  #############
+#
+# Defines the parameters for a prepareNextDevCycle function which is based on prepareNextDevCycleTemplate
+# but defines an own pattern for additionalPattern
+#
 ###################################
 {
 	# shellcheck disable=SC2154   # it is assumed dir_of_tegonal_scripts is defined where this file is sourced
@@ -15,10 +20,10 @@
 		traceAndDie "could not source prepare-files-next-dev-cycle-template.params-definition.source.sh"
 }
 
-local -a prepareNextDevCycle_withoutAdditionalPattern=()
-arrDropTuplesByKey prepareFilesNextDevCycleTemplateParams 3 prepareNextDevCycle_withoutAdditionalPattern additionalPattern
+local -a prepareFilesNextDevCycle_withoutAdditionalPattern=()
+arrDropTuplesByKey prepareFilesNextDevCycleTemplateParams 3 prepareFilesNextDevCycle_withoutAdditionalPattern additionalPattern
 
-local -ra prepareNextDevCycleParams=(
-	"${prepareNextDevCycle_withoutAdditionalPattern[@]}"
+local -ra prepareFilesNextDevCycleParams=(
+	"${prepareFilesNextDevCycle_withoutAdditionalPattern[@]}"
 	additionalPattern "$additionalPatternParamPattern" "is ignored because the function itself overwrites it, still here as release-files-template uses this argument"
 )
