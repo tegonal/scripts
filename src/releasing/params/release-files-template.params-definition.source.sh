@@ -10,7 +10,7 @@
 #                                         Version: v4.14.0-SNAPSHOT
 #######  Description  #############
 #
-# Defines the parameters for the function releaseFiles
+# Defines the parameters for the function releaseFilesTemplate
 #
 ###################################
 {
@@ -19,13 +19,13 @@
 		traceAndDie "could not source release-template.params-definition.source.sh"
 }
 
-local -a releaseFiles_version=() releaseFiles_restWithoutReleaseHook=()
-arrKeepTuplesByKey releaseTemplateParams 3 releaseFiles_version version
-arrDropTuplesByKey releaseTemplateParams 3 releaseFiles_restWithoutReleaseHook version releaseHook
+local -a releaseFilesTemplate_version=() releaseFilesTemplate_restWithoutReleaseHook=()
+arrKeepTuplesByKey releaseTemplateParams 3 releaseFilesTemplate_version version
+arrDropTuplesByKey releaseTemplateParams 3 releaseFilesTemplate_restWithoutReleaseHook version releaseHook
 
-local -ra releaseFilesParams=(
-	"${releaseFiles_version[@]}"
+local -ra releaseFilesTemplateParams=(
+	"${releaseFilesTemplate_version[@]}"
 	key "$keyParamPattern" "$keyParamDocu"
 	findForSigning "$findForSigningParamPattern" "$findForSigningParamDocu"
-	"${releaseFiles_restWithoutReleaseHook[@]}"
+	"${releaseFilesTemplate_restWithoutReleaseHook[@]}"
 )

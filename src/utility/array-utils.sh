@@ -285,7 +285,7 @@ function arrTakeEveryX() {
 
 	# arrFilter will check that arrTakeEveryX_arrIn and arrTakeEveryX_arrOut are arrays and arrOut non empty
 
-  # shellcheck disable=SC2329   # is passed by name to arrFilter
+	# shellcheck disable=SC2329   # is passed by name to arrFilter
 	function arrTakeEveryX_fn() {
 		local -r index=$2
 		(((index - offset) % modulo == 0))
