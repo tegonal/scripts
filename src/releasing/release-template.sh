@@ -92,10 +92,10 @@ sourceOnce "$dir_of_tegonal_scripts/releasing/pre-release-checks-git.sh"
 sourceOnce "$dir_of_tegonal_scripts/releasing/update-version-common-steps.sh"
 
 function releaseTemplate() {
-	source "$dir_of_tegonal_scripts/releasing/params/release-template.params.source.sh"
-	source "$dir_of_tegonal_scripts/releasing/params/release-template.params-definition.source.sh"
+	source "$dir_of_tegonal_scripts/releasing/params/release-template.params.source.sh" || traceAndDie "could not source release-template.params.source.sh"
+	source "$dir_of_tegonal_scripts/releasing/params/release-template.params-definition.source.sh" || traceAndDie "could not source release-template.params-definition.source.sh"
 	parseArguments releaseTemplateParams "" "$TEGONAL_SCRIPTS_VERSION" "$@" || return $?
-	source "$dir_of_tegonal_scripts/releasing/params/release-template.default-args.source.sh"
+	source "$dir_of_tegonal_scripts/releasing/params/release-template.default-args.source.sh" || traceAndDie "could not source release-template.default-args.source.sh"
 	exitIfNotAllArgumentsSet releaseTemplateParams "" "$TEGONAL_SCRIPTS_VERSION"
 
 	exitIfArgIsNotFunction "$releaseHook" "$releaseHookParamPatternLong"

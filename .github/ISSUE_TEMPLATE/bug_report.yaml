@@ -58,6 +58,9 @@ body:
         - releasing/params/release-template.default-args.source.sh
         - releasing/params/release-template.params.source.sh
         - releasing/params/release-template.params-definition.source.sh
+        - releasing/params/update-version-common-steps.params.source.sh
+        - releasing/params/update-version-common-steps.params-definition.source.sh
+        - releasing/params/update-version-common-steps.default-args.source.sh
         - utility/array-utils.sh
         - utility/ask.sh
         - utility/checks.sh
