@@ -18,7 +18,7 @@ if ! [[ -v scriptsDir ]]; then
 	readonly scriptsDir
 fi
 source "$scriptsDir/dirs.source.sh"
-sourceOnce "$dir_of_tegonal_scripts/releasing/prepare-files-next-dev-cycle.sh"
+sourceOnce "$dir_of_tegonal_scripts/releasing/prepare-files-next-dev-cycle-template.sh"
 sourceOnce "$scriptsDir/before-pr.sh"
 
 function prepareNextDevCycle() {
@@ -28,13 +28,13 @@ function prepareNextDevCycle() {
 	source "$scriptsDir/params/prepare-next-dev-cycle.default-args.source.sh" || die "could not source prepare-next-dev-cycle.default-args.source.sh"
 	exitIfNotAllArgumentsSet prepareNextDevCycleParams "" "$TEGONAL_SCRIPTS_VERSION"
 
-	local -a prepareFilesNextDevCycleArgs
-	addLocalVarMatchingParamNamesToArgs prepareFilesNextDevCycleParams prepareFilesNextDevCycleArgs
+	local -a prepareFilesNextDevCycleTemplateArgs
+	addLocalVarMatchingParamNamesToArgs prepareFilesNextDevCycleTemplateParams prepareFilesNextDevCycleTemplateArgs
 
 	# similar as in release.sh, you might need to update it there as well if you change something here
 	local -r additionalPattern="(TEGONAL_SCRIPTS_VERSION=['\"])[^'\"]+(['\"])"
 
-	prepareFilesNextDevCycle "${prepareFilesNextDevCycleArgs[@]}" \
+	prepareFilesNextDevCycleTemplate "${prepareFilesNextDevCycleTemplateArgs[@]}" \
 		"$additionalPatternParamPatternLong" "$additionalPattern"
 }
 

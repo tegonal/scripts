@@ -42,9 +42,9 @@ function cleanupOnPushToMain() {
 	local -ra scriptsWithHelp=(
 		ci/jelastic/deploy
 		releasing/pre-release-checks-git
-		releasing/prepare-files-next-dev-cycle
+		releasing/prepare-files-next-dev-cycle-template
 		releasing/prepare-next-dev-cycle-template
-		releasing/release-files
+		releasing/release-files-template
 		releasing/release-template
 		releasing/sneak-peek-banner
 		releasing/toggle-sections
