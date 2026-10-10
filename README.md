@@ -516,11 +516,6 @@ runShellcheckPullHooks ".gt"
 
 </qa-run-shellcheck>
 
-## runShellCheck on pull-hooks.sh
-
-*Deprecated*, source `run-shellcheck.sh` instead of `run-shellcheck-pull-hooks.sh` which now includes
-`runShellcheckPullHooks` as well.
-
 ## runShellSpecIfInstalled
 
 Utility function which checks if shellspec is installed and if so executes it and prints a warning otherwise.
