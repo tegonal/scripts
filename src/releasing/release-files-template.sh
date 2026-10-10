@@ -98,6 +98,9 @@ function releaseFilesTemplate() {
 	exitIfArgIsNotFunction "$beforePrFn" "$beforePrFnParamPatternLong"
 	exitIfArgIsNotFunction "$prepareNextDevCycleFn" "$prepareNextDevCycleFnParamPatternLong"
 
+	local -a releaseTemplateArgs
+	addLocalVarMatchingParamNamesToArgs releaseTemplateParams releaseTemplateArgs
+
 	# those variables are used in local functions further below which will be called from releaseTemplate.
 	# The problem: in case releaseTemplate defines a variable with the same name, then we would use those
 	# variables instead of the one we define here, hence we prefix them to avoid this problem
@@ -144,9 +147,6 @@ function releaseFilesTemplate() {
 				gpg --homedir "$gpgDir" --batch --no-tty --verify "${script}.sig" "$script" || die "verification via previously imported %s failed" "$gtDir/signing-key.public.asc"
 			done || return $?
 	}
-
-	local -a releaseTemplateArgs
-	addLocalVarMatchingParamNamesToArgs releaseTemplateParams releaseTemplateArgs
 
 	releaseTemplate \
 		"${releaseTemplateArgs[@]}" \
