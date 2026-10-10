@@ -36,6 +36,9 @@ function release() {
 	source "$scriptsDir/params/release.default-args.source.sh" || die "could not source release.default-args.source.sh"
 	exitIfNotAllArgumentsSet releaseParams "" "$TEGONAL_SCRIPTS_VERSION"
 
+	local -a releaseFilesTemplateArgs
+	addLocalVarMatchingParamNamesToArgs releaseFilesTemplateParams releaseFilesTemplateArgs
+
 	function findScripts() {
 		find "$dir_of_tegonal_scripts" -name "*.sh" -not -name "*.doc.sh" "$@"
 	}
@@ -50,9 +53,6 @@ function release() {
 		local -r githubUrl="https://github.com/tegonal/scripts"
 		replaceTagInPullRequestTemplate "$projectsRootDir/.github/PULL_REQUEST_TEMPLATE.md" "$githubUrl" "$version" || die "could not fill the placeholders in PULL_REQUEST_TEMPLATE.md"
 	}
-
-	local -a releaseFilesTemplateArgs
-	addLocalVarMatchingParamNamesToArgs releaseFilesTemplateParams releaseFilesTemplateArgs
 
 	# similar as in prepare-next-dev-cycle.sh, you might need to update it there as well if you change something here
 	local -r additionalPattern="(TEGONAL_SCRIPTS_(?:LATEST_)?VERSION=['\"])[^'\"]+(['\"])"

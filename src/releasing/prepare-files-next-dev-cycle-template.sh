@@ -90,6 +90,9 @@ function prepareFilesNextDevCycleTemplate() {
 		parseArguments afterVersionHookParams "" "$TEGONAL_SCRIPTS_VERSION" "$@" || return $?
 		exitIfNotAllArgumentsSet afterVersionHookParams "" "$TEGONAL_SCRIPTS_VERSION"
 
+		local -a prepareNextDevCycleTemplateArgs
+		addLocalVarMatchingParamNamesToArgs prepareNextDevCycleTemplateParams prepareNextDevCycleTemplateArgs
+
 		updateVersionScripts \
 			"$versionParamPatternLong" "$version-SNAPSHOT" \
 			"$additionalPatternParamPatternLong" "$additionalPattern" \
@@ -100,9 +103,6 @@ function prepareFilesNextDevCycleTemplate() {
 			"$projectsRootDirParamPatternLong" "$projectsRootDir" \
 			"$additionalPatternParamPatternLong" "$additionalPattern"
 	}
-
-	local -a prepareNextDevCycleTemplateArgs
-	addLocalVarMatchingParamNamesToArgs prepareNextDevCycleTemplateParams prepareNextDevCycleTemplateArgs
 
 	prepareNextDevCycleTemplate \
 		"${prepareNextDevCycleTemplateArgs[@]}" \
