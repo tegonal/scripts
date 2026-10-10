@@ -32,10 +32,10 @@ function prepareNextDevCycle() {
 	addLocalVarMatchingParamNamesToArgs prepareFilesNextDevCycleParams prepareFilesNextDevCycleArgs
 
 	# similar as in release.sh, you might need to update it there as well if you change something here
-	local -r additionalPattern="(TEGONAL_SCRIPTS_VERSION=['\"])[^'\"]+(['\"])"
+	local -r ownAdditionalPattern="(TEGONAL_SCRIPTS_VERSION=['\"])[^'\"]+(['\"])"
 
 	prepareFilesNextDevCycle "${prepareFilesNextDevCycleArgs[@]}" \
-		"$additionalPatternParamPatternLong" "$additionalPattern"
+		"$additionalPatternParamPatternLong" "$ownAdditionalPattern"
 }
 
 ${__SOURCED__:+return}
