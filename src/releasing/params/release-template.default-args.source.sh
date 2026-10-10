@@ -20,6 +20,6 @@
 	source "$dir_of_tegonal_scripts/releasing/params/prepare-next-dev-cycle-template.params.source.sh" || traceAndDie "could not source prepare-next-dev-cycle-template.params.source.sh"
 }
 if ! [[ -v branch ]]; then branch="main"; fi
-if ! [[ -v prepareOnly ]] || [[ $prepareOnly != "true" ]]; then prepareOnly=false; fi
+if ! [[ -v prepareOnly ]]; then prepareOnly=false; fi
 if ! [[ -v beforePrFn ]]; then beforePrFn='beforePr'; fi
 if ! [[ -v prepareNextDevCycleFn ]]; then prepareNextDevCycleFn='prepareNextDevCycle'; fi
