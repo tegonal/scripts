@@ -115,8 +115,8 @@ The scripts are ordered by topic:
 	- [runShellspecIfInstalled](#runshellspecifinstalled)
     - [runShfmt](#runshfmt)
 - [Releasing](#releasing)
-	- [Releasing Files](#release-files)
-	- [Prepare Files Next Dev Cycle](#prepare-files-next-dev-cycle)
+	- [Releasing Files Template](#release-files-template)
+	- [Prepare Files Next Dev Cycle Template](#prepare-files-next-dev-cycle-template)
 	- [Release Template](#release-template)
 	- [Prepare Next Dev Cycle Template](#prepare-next-dev-cycle-template)
 	- [git Pre-Release checks](#git-pre-release-checks)
@@ -467,18 +467,18 @@ local -ra barParams=(
 
 We no longer have to adjust `bar` if a new parameter is added to `foo`. Unless we don't want to expose it. For such 
 cases we can use helper methods from [array-utils](#array-utils) such as `arrDropTuplesByKey`, `arrKeepTuplesByKey`
-as well as `arrPartitionTuplesByKey`. Following an exmaple:
+as well as `arrPartitionTuplesByKey`. Following an example:
 ```bash
 # we want that `key` and `findForSigning` come after version and we don't want to expose `releaseHook`
-local -a releaseFiles_version=() releaseFiles_restWithoutReleaseHook=()
-arrKeepTuplesByKey releaseTemplateParams 3 releaseFiles_version version
-arrDropTuplesByKey releaseTemplateParams 3 releaseFiles_restWithoutReleaseHook version releaseHook
+local -a releaseFilesTemplate_version=() releaseFilesTemplate_restWithoutReleaseHook=()
+arrKeepTuplesByKey releaseTemplateParams 3 releaseFilesTemplate_version version
+arrDropTuplesByKey releaseTemplateParams 3 releaseFilesTemplate_restWithoutReleaseHook version releaseHook
 
-local -ra releaseFilesParams=(
-	"${releaseFiles_version[@]}"
+local -ra releaseFilesTemplateParams=(
+	"${releaseFilesTemplate_version[@]}"
 	key "$keyParamPattern" "$keyParamDocu"
 	findForSigning "$findForSigningParamPattern" "$findForSigningParamDocu"
-	"${releaseFiles_restWithoutReleaseHook[@]}"
+	"${releaseFilesTemplate_restWithoutReleaseHook[@]}"
 )
 ```
 
@@ -584,9 +584,9 @@ runShfmtPullHooks ".gt"
 
 The scripts under this topic (in directory `releasing`) perform some steps of your release process.
 
-## Release Files
+## Release Files Template
 
-Script which releases a version for a repository containing files which don't need to be compiled or packaged.
+Defines a release process template for a repository containing files which don't need to be compiled or packaged.
 Instead, they will be signed by a specified gpg key where its public key, defined in .gt/signing-key.public.asc,
 will be used to verify the signatures.
 
@@ -594,17 +594,16 @@ This script is useful if you want to release e.g. scripts which can then be fetc
 via [gt](https://github.com/tegonal/gt).
 
 It uses [release-template](#release-template) internally and thus applies the same conventions + the mentioned public
-key
-which needs to be defined in .gt/signing-key.public.asc
+key which needs to be defined in .gt/signing-key.public.asc
 
 It executes the same steps as in release-template where scripts located in projectRootDir/src are also updated
 regarding the version and as explained, in the releaseHook, it signs the files the given --sign-fn finds.
 
 Help:
 
-<releasing-release-files-help>
+<releasing-release-files-template-help>
 
-<!-- auto-generated, do not modify here but in src/releasing/release-files.sh -->
+<!-- auto-generated, do not modify here but in src/releasing/release-files-template.sh -->
 ```text
 Parameters:
 -v                            The version to release in the format vX.Y.Z(-RC...)
@@ -622,17 +621,17 @@ Parameters:
 --help     prints this help
 --version  prints the version of this script
 
-INFO: Version of release-files.sh is:
+INFO: Version of release-files-template.sh is:
 v4.14.0-SNAPSHOT
 ```
 
-</releasing-release-files-help>
+</releasing-release-files-template-help>
 
 Full usage example:
 
-<releasing-release-files>
+<releasing-release-files-template>
 
-<!-- auto-generated, do not modify here but in src/releasing/release-files.sh.doc -->
+<!-- auto-generated, do not modify here but in src/releasing/release-files-template.sh.doc -->
 ```bash
 #!/usr/bin/env bash
 set -euo pipefail
@@ -647,56 +646,56 @@ sourceOnce "$scriptsDir/before-pr.sh"
 function findScripts() {
 	find "src" -name "*.sh" -not -name "*.doc.sh" "$@"
 }
-# make the function visible to release-files.sh / not necessary if you source release-files.sh, see further below
+# make the function visible to release-files-template.sh / not necessary if you source release-files-template.sh, see further below
 declare -fx findScripts
 
 # releases version v0.1.0 using the key 0x945FE615904E5C85 for signing and function findScripts to find the files which
 # should be signed (and thus released). Assumes that a function named beforePr is in scope (which we sourced above)
-"$dir_of_tegonal_scripts/releasing/release-files.sh" -v v0.1.0 -k "0x945FE615904E5C85" --sign-fn findScripts
+"$dir_of_tegonal_scripts/releasing/release-files-template.sh" -v v0.1.0 -k "0x945FE615904E5C85" --sign-fn findScripts
 
 # releases version v0.1.0 using the key 0x945FE615904E5C85 for signing and function findScripts to find the files which
 # should be signed (and thus released). Moreover, searches for additional occurrences where the version should be
 # replaced via the specified pattern
-"$dir_of_tegonal_scripts/releasing/release-files.sh" \
+"$dir_of_tegonal_scripts/releasing/release-files-template.sh" \
 	-v v0.1.0 -k "0x945FE615904E5C85" --sign-fn findScripts \
 	-p "(TEGONAL_SCRIPTS_VERSION=['\"])[^'\"]+(['\"])"
 
 function specialBeforePr() {
 	beforePr && echo "imagine some additional work"
 }
-# make the function visible to release-files.sh / not necessary if you source prepare-files-next-dev-cycle.sh
+# make the function visible to release-files-template.sh / not necessary if you source prepare-files-next-dev-cycle-template.sh
 # see further below
 declare -fx specialBeforePr
 
 # releases version v0.1.0 using the key 0x945FE615904E5C85 for signing and
-"$dir_of_tegonal_scripts/releasing/release-files.sh" \
+"$dir_of_tegonal_scripts/releasing/release-files-template.sh" \
 	-v v0.1.0 -k "0x945FE615904E5C85" --sign-fn findScripts \
 	--before-pr-fn specialBeforePr
 
 # in case you want to provide your own release.sh and only want to do some pre-configuration
 # then you might want to source it instead
-sourceOnce "$dir_of_tegonal_scripts/releasing/release-files.sh"
+sourceOnce "$dir_of_tegonal_scripts/releasing/release-files-template.sh"
 
 # and then call the function with your pre-configuration settings:
 # here we define the function which shall be used to find the files to be signed
 # since "$@" follows afterwards, one could still override it via command line arguments.
 # put "$@" first, if you don't want that a user can override your pre-configuration
-releaseFiles --sign-fn findScripts "$@"
+releaseFilesTemplate --sign-fn findScripts "$@"
 
 # call the function define --before-pr-fn, don't allow to override via command line arguments
-releaseFiles "$@" --before-pr-fn specialBeforePr
+releaseFilesTemplate "$@" --before-pr-fn specialBeforePr
 ```
 
-</releasing-release-files>
+</releasing-release-files-template>
 
-## Prepare Files Next Dev Cycle
+## Prepare Files Next Dev Cycle Template
 
-Script which prepares files for a next development cycle (typically used together with [release files](#release-files)).
+Template to prepare a next development cycle for a repository that releases files (typically used together with [release files template](#release-files-template)).
 it uses the [prepare next dev cycle template](#prepare-next-dev-cycle-template) and thus is based on the same conventions.
 
-<releasing-prepare-files-next-dev-cycle-help>
+<releasing-prepare-files-next-dev-cycle-template-help>
 
-<!-- auto-generated, do not modify here but in src/releasing/prepare-files-next-dev-cycle.sh -->
+<!-- auto-generated, do not modify here but in src/releasing/prepare-files-next-dev-cycle-template.sh -->
 ```text
 Parameters:
 -v                            The version for which we prepare the dev cycle
@@ -708,17 +707,17 @@ Parameters:
 --help     prints this help
 --version  prints the version of this script
 
-INFO: Version of prepare-files-next-dev-cycle.sh is:
+INFO: Version of prepare-files-next-dev-cycle-template.sh is:
 v4.14.0-SNAPSHOT
 ```
 
-</releasing-prepare-files-next-dev-cycle-help>
+</releasing-prepare-files-next-dev-cycle-template-help>
 
 Full usage example:
 
-<releasing-prepare-files-next-dev-cycle>
+<releasing-prepare-files-next-dev-cycle-template>
 
-<!-- auto-generated, do not modify here but in src/releasing/prepare-files-next-dev-cycle.sh.doc -->
+<!-- auto-generated, do not modify here but in src/releasing/prepare-files-next-dev-cycle-template.sh.doc -->
 ```bash
 #!/usr/bin/env bash
 set -euo pipefail
@@ -731,12 +730,13 @@ scriptsDir="$(cd -- "$(dirname -- "${BASH_SOURCE[0]:-$0}")" >/dev/null && pwd 2>
 sourceOnce "$scriptsDir/before-pr.sh"
 
 # prepare dev cycle for version v0.2.0, assumes a function beforePr is in scope which we sourced above
-"$dir_of_tegonal_scripts/releasing/prepare-files-next-dev-cycle.sh" -v v0.2.0
+"$dir_of_tegonal_scripts/releasing/prepare-files-next-dev-cycle-template.sh" -v v0.2.0
 
 function specialBeforePr() {
 	beforePr && echo "imagine some additional work"
 }
-# make the function visible to release-files.sh / not necessary if you source prepare-files-next-dev-cycle.sh, see further below
+# make the function visible to prepare-files-next-dev-cycle-template.sh / not necessary if you source
+# prepare-files-next-dev-cycle-template.sh, see further below
 declare -fx specialBeforePr
 
 # prepare dev cycle for version v0.2.0 and
@@ -744,25 +744,24 @@ declare -fx specialBeforePr
 # - script files in ./src and ./scripts
 # - ./README.md
 # uses specialBeforePr instead of beforePr
-"$dir_of_tegonal_scripts/releasing/prepare-files-next-dev-cycle.sh" -v v0.2.0 \
-	-p "(TEGONAL_SCRIPTS_VERSION=['\"])[^'\"]+(['\"])" \
-	--before-pr-fn specialBeforePr
+"$dir_of_tegonal_scripts/releasing/prepare-files-next-dev-cycle-template.sh" \
+	-v v0.2.0 -p "(TEGONAL_SCRIPTS_VERSION=['\"])[^'\"]+(['\"])" --before-pr-fn specialBeforePr
 
 # in case you want to provide your own release.sh and only want to do some pre-configuration
 # then you might want to source it instead
-sourceOnce "$dir_of_tegonal_scripts/releasing/prepare-files-next-dev-cycle.sh"
+sourceOnce "$dir_of_tegonal_scripts/releasing/prepare-files-next-dev-cycle-template.sh"
 
 # and then call the function with your pre-configuration settings:
 # here we define the pattern which shall be used to replace further version occurrences
 # since "$@" follows afterwards, one could still override it via command line arguments.
 # put "$@" first, if you don't want that a user can override your pre-configuration
-prepareNextDevCycle -p "(TEGONAL_SCRIPTS_VERSION=['\"])[^'\"]+(['\"])" "$@"
+prepareFilesNextDevCycleTemplate -p "(TEGONAL_SCRIPTS_VERSION=['\"])[^'\"]+(['\"])" "$@"
 
 # call the function define --before-pr-fn, don't allow to override via command line arguments
-prepareNextDevCycle "$@" --before-pr-fn specialBeforePr
+prepareFilesNextDevCycleTemplate "$@" --before-pr-fn specialBeforePr
 ```
 
-</releasing-prepare-files-next-dev-cycle>
+</releasing-prepare-files-next-dev-cycle-template>
 
 ## Release Template
 
@@ -831,7 +830,7 @@ function releaseScalaLib() {
 	# or
 	sbt test publishedSigned
 }
-# make the function visible to release-templates.sh / not necessary if you source release-templates.sh, see further below
+# make the function visible to release-template.sh / not necessary if you source release-template.sh, see further below
 declare -fx releaseScalaLib
 
 # releases version v0.1.0 using releaseScalaLib as hook
@@ -872,7 +871,7 @@ releaseTemplate "$@" --release-hook releaseScalaLib \
 
 ## Prepare next dev cycle template
 
-template to prepare a next releases, updating version and such,
+Template to prepare a next release, updating version and such,
 uses [update-version-common-steps.sh](#update-version-common-steps)
 
 Help:
@@ -915,24 +914,24 @@ function prepareNextAfterVersionUpdateHook() {
 	# some additional version bumps e.g. using perl
 	perl -0777 -i #...
 }
-# make the function visible to prepare-next-dev-cycle-templates.sh / not necessary if you source it, see further below
+# make the function visible to prepare-next-dev-cycle-template.sh / not necessary if you source it, see further below
 declare -fx prepareNextAfterVersionUpdateHook
 
 # prepare version 0.1.0 dev cycle
-"$dir_of_tegonal_scripts/releasing/prepare-next-dev-cycle-templates.sh" \
-	-v v0.1.0 -k "0x945FE615904E5C85" --after-version-update-hook prepareNextAfterVersionUpdateHook
+"$dir_of_tegonal_scripts/releasing/prepare-next-dev-cycle-template.sh" \
+	-v v0.1.0 --after-version-update-hook prepareNextAfterVersionUpdateHook
 
 # prepare version 0.1.0 dev cycle
 # searches for additional occurrences where the version should be replaced via the specified pattern in:
 # - script files in ./src and ./scripts
 # - ./README.md
-"$dir_of_tegonal_scripts/releasing/release-files.sh" \
-	-v v0.1.0 -k "0x945FE615904E5C85" --after-version-update-hook prepareNextAfterVersionUpdateHook \
+"$dir_of_tegonal_scripts/releasing/prepare-next-dev-cycle-template.sh" \
+	-v v0.1.0 --after-version-update-hook prepareNextAfterVersionUpdateHook \
 	-p "(TEGONAL_SCRIPTS_VERSION=['\"])[^'\"]+(['\"])"
 
 # in case you want to provide your own prepare-next-dev-cycle.sh and only want to do some pre-configuration
 # (such as specify the after-version-hook) then you might want to source it instead
-sourceOnce "$dir_of_tegonal_scripts/releasing/prepare-next-dev-cycle-templates.sh.sh"
+sourceOnce "$dir_of_tegonal_scripts/releasing/prepare-next-dev-cycle-template.sh.sh"
 
 # and then call the function with your pre-configuration settings:
 # here we define the function which shall be used as after-version-update-hook after "$@", this way one cannot

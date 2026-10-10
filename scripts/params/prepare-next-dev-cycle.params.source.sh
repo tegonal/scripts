@@ -11,7 +11,7 @@
 ###################################
 {
 	# shellcheck disable=SC2154   # it is assumed dir_of_tegonal_scripts is defined where this file is sourced
-	source "$dir_of_tegonal_scripts/releasing/params/prepare-files-next-dev-cycle.params.source.sh" ||
-		traceAndDie "could not source prepare-files-next-dev-cycle.params.source.sh"
+	source "$dir_of_tegonal_scripts/releasing/params/prepare-files-next-dev-cycle-template.params.source.sh" ||
+		traceAndDie "could not source prepare-files-next-dev-cycle-template.params.source.sh"
 }
 local additionalPattern
