@@ -79,6 +79,9 @@ function prepareFilesNextDevCycleTemplate() {
 	exitIfArgIsNotVersion "$version" "$versionParamPatternLong"
 	exitIfArgIsNotFunction "$beforePrFn" "$beforePrFnParamPatternLong"
 
+	local -a prepareNextDevCycleTemplateArgs
+	addLocalVarMatchingParamNamesToArgs prepareNextDevCycleTemplateParams prepareNextDevCycleTemplateArgs
+
 	# those variables are used in local functions further below which will be called from releaseTemplate.
 	# The problem: in case releaseTemplate defines a variable with the same name, then we would use those
 	# variables instead of the one we define here, hence we prefix them to avoid this problem
@@ -89,9 +92,6 @@ function prepareFilesNextDevCycleTemplate() {
 		source "$dir_of_tegonal_scripts/releasing/params/after-version-update-hook.params-definition.source.sh" || traceAndDie "could not source after-version-update-hook.params-definition.source.sh"
 		parseArguments afterVersionHookParams "" "$TEGONAL_SCRIPTS_VERSION" "$@" || return $?
 		exitIfNotAllArgumentsSet afterVersionHookParams "" "$TEGONAL_SCRIPTS_VERSION"
-
-		local -a prepareNextDevCycleTemplateArgs
-		addLocalVarMatchingParamNamesToArgs prepareNextDevCycleTemplateParams prepareNextDevCycleTemplateArgs
 
 		updateVersionScripts \
 			"$versionParamPatternLong" "$version-SNAPSHOT" \
