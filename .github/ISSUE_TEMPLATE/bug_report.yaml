@@ -25,6 +25,7 @@ body:
         - ci/install-shfmt.sh
         - ci/jelastic/deploy.sh
         - ci/jelastic/utils.sh
+        - qa/check-help-callable.sh
         - qa/check-params-and-definition-in-sync.sh
         - qa/run-shellcheck.sh
         - qa/run-shellcheck-pull-hooks.sh

@@ -22,7 +22,7 @@ Feel free to use it and report bugs if you should find one.
 
 ---
 ❗ You are taking a *sneak peek* at the next version. It could be that some features you find on this page are not
-released yet. Please have a look at the README of the corresponding release/git tag. 
+released yet. Please have a look at the README of the corresponding release/git tag.
 Latest version: [README of v5.0.0](https://github.com/tegonal/scripts/tree/v5.0.0/README.md).
 
 ---
@@ -48,11 +48,13 @@ gt remote add -r tegonal-scripts -u https://github.com/tegonal/scripts
 ````
 
 Now you can pull the scripts you want in the latest version via:
+
 ```bash
 gt pull -r tegonal-scripts -p ...
 ````
 
 Or specify a version via `-t` as follows:
+
 ```bash
 export TEGONAL_SCRIPTS_VERSION="v5.0.0"
 gt pull -r tegonal-scripts -t "$TEGONAL_SCRIPTS_VERSION" -p ...
@@ -72,12 +74,13 @@ gt pull -r tegonal-scripts -t "$TEGONAL_SCRIPTS_VERSION" -p src/utility/ --track
 
 ## Sourcing functions
 
-We recommend you use the following code at the beginning of your script in case you want to `source` a file/function
-(in the example below we want to use tegonal's io functions located in `utility/io.sh`):
+We recommend you use the following code at the beginning of your script in case you want to `source` a file/function (in
+the example below we want to use tegonal's io functions located in `utility/io.sh`):
 
 <setup_tegonal_scripts>
 
 <!-- auto-generated, do not modify here but in src/setup_tegonal_scripts.sh.doc -->
+
 ```bash
 #!/usr/bin/env bash
 set -euo pipefail
@@ -105,16 +108,17 @@ The scripts are ordered by topic:
 - [CI](#continuous-integration)
 	- [install shellcheck](#install-shellcheck)
 	- [install shellspec](#install-shellspec)
-    - [install shfmt](#install-shfmt)
+	- [install shfmt](#install-shfmt)
 	- [Jelastic](#jelastic)
 		- [deploy](#deploy-to-jelastic)
 		- [utils](#jelastic-utils)
 - [Quality Assurance](#quality-assurance)
+	- [checkHelpCallable](#checkHelpCallable)
 	- [checkParamsAndDefinitionInSync](#checkParamsAndDefinitionInSync)
-    - [runShellcheck](#runshellcheck)
+	- [runShellcheck](#runshellcheck)
 	- [runShellcheckPullHooks](#runshellcheck-on-pull-hookssh)
 	- [runShellspecIfInstalled](#runshellspecifinstalled)
-    - [runShfmt](#runshfmt)
+	- [runShfmt](#runshfmt)
 - [Releasing](#releasing)
 	- [Releasing Files Template](#release-files-template)
 	- [Prepare Files Next Dev Cycle Template](#prepare-files-next-dev-cycle-template)
@@ -161,6 +165,7 @@ Following an example:
 <ci-install-shellcheck>
 
 <!-- auto-generated, do not modify here but in src/ci/install-shellcheck.sh.doc -->
+
 ```bash
 # run the install-shellcheck.sh in your github/gitlab workflow
 # for instance, assuming you fetched this file via gt and remote name is tegonal-scripts
@@ -182,6 +187,7 @@ jobs:
 <ci-install-shellspec>
 
 <!-- auto-generated, do not modify here but in src/ci/install-shellspec.sh.doc -->
+
 ```bash
 # run the install-shellspec in your github/gitlab workflow
 # for instance, assuming you fetched this file via gt and remote name is tegonal-scripts
@@ -198,12 +204,12 @@ jobs:
 
 </ci-install-shellspec>
 
-
 ## Install shfmt
 
 <ci-install-shfmt>
 
 <!-- auto-generated, do not modify here but in src/ci/install-shfmt.sh.doc -->
+
 ```bash
 # run the install-shfmt.sh in your github/gitlab workflow
 # for instance, assuming you fetched this file via gt and remote name is tegonal-scripts
@@ -231,6 +237,7 @@ Helper function which performs a signin and redeploycontainers
 <ci-jelastic-deploy>
 
 <!-- auto-generated, do not modify here but in src/ci/jelastic/deploy.sh.doc -->
+
 ```bash
 #!/usr/bin/env bash
 set -euo pipefail
@@ -261,13 +268,13 @@ In a GitHub workflow you would use it as follows:
 
 ```yaml
 jobs:
-  steps:
-    - name: deploy shellcheck v0.8.0
-      run: |
-        ./lib/tegonal-scripts/src/ci/jelastic/deploy.sh \
-          -l "$JELASTIC_LOGIN" -p "$JELASTIC_PASSWORD" -u "$JELASTIC_PLATFORM_URL" \
-          -e "test" -n cp \
-          -t "$DOCKER_IMAGE_VERSION"
+	steps:
+		-   name: deploy shellcheck v0.8.0
+		run: |
+			./lib/tegonal-scripts/src/ci/jelastic/deploy.sh \
+			  -l "$JELASTIC_LOGIN" -p "$JELASTIC_PASSWORD" -u "$JELASTIC_PLATFORM_URL" \
+			  -e "test" -n cp \
+			  -t "$DOCKER_IMAGE_VERSION"
 ```
 
 Help:
@@ -275,6 +282,7 @@ Help:
 <ci-jelastic-deploy-help>
 
 <!-- auto-generated, do not modify here but in src/ci/jelastic/deploy.sh -->
+
 ```text
 Parameters:
 -l|--login       The user who logs in
@@ -300,6 +308,7 @@ The most important functions are defined in this file: jelastic_signin which in 
 <ci-jelastic-utils>
 
 <!-- auto-generated, do not modify here but in src/ci/jelastic/utils.sh.doc -->
+
 ```bash
 #!/usr/bin/env bash
 set -euo pipefail
@@ -330,9 +339,41 @@ jelastic_exec "environment/control/redeploycontainers" --envName "test" --nodeGr
 
 The scripts under this topic (in directory `qa`) perform checks or execute qa tools.
 
+## checkHelpCallable
+
+A function which checks that calling the given scripts and passing `--help` exits with `99` (which is typical for
+scripts which make use of [parseArguments](#parse-arguments)).
+This is especially useful for scripts which are not called as part of your CI regularly. For instance, if you fetch one
+of the [release scripts](#releasing). With this check you get at least an idea if the help command still works if you
+update to a newer version. Following an example:
+
+<qa-check-help-callable>
+
+<!-- auto-generated, do not modify here but in src/qa/check-help-callable.sh.doc -->
+
+```bash
+#!/usr/bin/env bash
+set -euo pipefail
+shopt -s inherit_errexit || { echo >&2 "please update to bash 5, see errors above" && exit 1; }
+scriptsDir="$(cd -- "$(dirname -- "${BASH_SOURCE[0]:-$0}")" >/dev/null && pwd 2>/dev/null)"
+# Assumes tegonal's scripts were fetched with gt - adjust location accordingly
+dir_of_tegonal_scripts="$scriptsDir/../lib/tegonal-scripts/src"
+source "$dir_of_tegonal_scripts/setup_tegonal_scripts.sh" "$dir_of_tegonal_scripts"
+source "$dir_of_tegonal_scripts/qa/check-help-callable.sh"
+
+# shellcheck disable=SC2034   # is passed by name to checkHelpCallable
+declare -a scripts=(
+	"$scriptsDir/release.sh"
+	"$scriptsDir/prepare-next-dev-cycle.sh"
+)
+checkHelpCallable scripts
+```
+
+</qa-check-help-callable>
+
 ## checkParamsAndDefinitionInSync
 
-A function which checks that `*.params.source.sh` and its `*.params-definitions.source.sh` are in sync and that for each 
+A function which checks that `*.params.source.sh` and its `*.params-definitions.source.sh` are in sync and that for each
 parameter Xyz a corresponding variable named XyzParamPatternLong is defined.
 
 The idea behind those two files and additionally an optional `*.default-args.source.sh` together with
@@ -342,13 +383,14 @@ through multiple functions which all make use of [parse-arguments](#parse-argume
 <qa-check-params-and-definition-in-sync>
 
 <!-- auto-generated, do not modify here but in src/qa/check-params-and-definition-in-sync.sh.doc -->
+
 ```bash
 #!/usr/bin/env bash
 set -euo pipefail
 shopt -s inherit_errexit || { echo >&2 "please update to bash 5, see errors above" && exit 1; }
 scriptsDir="$(cd -- "$(dirname -- "${BASH_SOURCE[0]:-$0}")" >/dev/null && pwd 2>/dev/null)"
 # Assumes tegonal's scripts were fetched with gt - adjust location accordingly
-dir_of_tegonal_scripts="scriptsDir/../lib/tegonal-scripts/src"
+dir_of_tegonal_scripts="$scriptsDir/../lib/tegonal-scripts/src"
 source "$dir_of_tegonal_scripts/setup_tegonal_scripts.sh" "$dir_of_tegonal_scripts"
 source "$dir_of_tegonal_scripts/qa//check-params-and-definition-in-sync.sh"
 
@@ -371,6 +413,7 @@ checkParamsAndDefinitionInSync dirs "$scriptsDir/../src/releasing/common-constan
 </qa-check-params-and-definition-in-sync>
 
 Say you have two functions `foo` and `bar` where `foo` defines:
+
 ```bash
 local pattern version directory
 # shellcheck disable=SC2034   # is passed by name to parseArguments
@@ -385,6 +428,7 @@ exitIfNotAllArgumentsSet fooParams "" "$fooVersion"
 ```
 
 and bar defines:
+
 ```bash
 local pattern version directory jdkVersion
 # shellcheck disable=SC2034   # is passed by name to parseArguments
@@ -399,16 +443,19 @@ if ! [[ -v directory ]]; then directory="."; fi
 exitIfNotAllArgumentsSet barParams "" "$barVersion"
 ```
 
-Imagine `bar` does just some pre-checks or the like and then passes the arguments to `foo`. 
+Imagine `bar` does just some pre-checks or the like and then passes the arguments to `foo`.
 Typically, we would repeat all arguments
+
 ```
 foo --pattern "$pattern" -v "$version" --directory "$directory"
 ```
+
 Three arguments might be okayish but say `foo` adds a fourth parameter `-b|--branch` (and maybe more).
-Each time we modify `foo` we have to modify `bar` as well. 
-That's where the concept of params(-definition).source.sh comes into play. Next to `foo.sh` we define
+Each time we modify `foo` we have to modify `bar` as well.
+That's where the concept of params (-definition).source.sh comes into play. Next to `foo.sh` we define
 a `foo.params.source.sh` which contains `local pattern version directory`,
 `foo.params-definitions.source.sh` which contains:
+
 ```bash
 local -r patternParamPatternLong="--pattern"
 local -r versionParamPatternLong="-v"
@@ -419,18 +466,21 @@ local -ra fooParams=(
 	directory '-d|$directoryParamPatternLong' '(optional) The working directory -- default: .'
 )
 ```
+
 and `foo.default-args.source.sh` which contains:
+
 ```bash
 if ! [[ -v directory ]]; then directory="."; fi
 ```
 
 `checkParamsAndDefinitionInSync` now ensures, that the `local` variable names in `foo.params.source.sh` are the same as
 in `foo.params-definitions.source.sh` (we currently don't check that default arguments
-are set according to the documentation). In addition, it checks that there is a ParamPatternLong definition for the 
+are set according to the documentation). In addition, it checks that there is a ParamPatternLong definition for the
 param names defined in the `foo.params-definitions.source.sh` or in one of the constant source files which can be passed
 as additional arguments to `checkParamsAndDefinitionInSync`.
 
 `foo.sh` is then reduced to:
+
 ```bash
 source "$scriptsDir/foo.params.source.sh"
 source "$scriptsDir/foo.params-definition.source.sh"
@@ -440,15 +490,18 @@ exitIfNotAllArgumentsSet fooParams "" "$fooVersion"
 ```
 
 So far we have only extracted pieces of the logic into separate files. Nevertheless, we can already simplify the call
-of `foo` in bar based on `addLocalVarMatchingParamNamesToArgs` (assuming we have also sourced 
+of `foo` in bar based on `addLocalVarMatchingParamNamesToArgs` (assuming we have also sourced
 `foo.params-definitions.source.sh` in `bar`, which is done indirectly, more to it further below):
+
 ```bash
 local -a fooArgs
 addLocalVarMatchingParamNamesToArgs fooParams fooArgs
 foo "${fooArgs[@]}"
 ```
+
 `addLocalVarMatchingParamNamesToArgs` auto-magically fills in the arguments which match.
 If we now define `bar.params.source.sh` in terms of `foo.params.source.sh` as follows:
+
 ```bash
 # shellcheck disable=SC2154   # it is assumed scriptsDir is defined where this file is sourced
 source "$scriptsDir/foo.params.source.sh" || traceAndDie "could not source foo.params.source.sh"
@@ -456,6 +509,7 @@ local jdkVersion
 ```
 
 and likewise `bar.params-definition.source.sh`:
+
 ```bash
 # shellcheck disable=SC2154   # it is assumed scriptsDir is defined where this file is sourced
 source "$scriptsDir/foo.params-definition.source.sh" || traceAndDie "could not source foo.params-definition.source.sh"
@@ -466,9 +520,10 @@ local -ra barParams=(
 )
 ```
 
-We no longer have to adjust `bar` if a new parameter is added to `foo`. Unless we don't want to expose it. For such 
+We no longer have to adjust `bar` if a new parameter is added to `foo`. Unless we don't want to expose it. For such
 cases we can use helper methods from [array-utils](#array-utils) such as `arrDropTuplesByKey`, `arrKeepTuplesByKey`
 as well as `arrPartitionTuplesByKey`. Following an example:
+
 ```bash
 # we want that `key` and `findForSigning` come after version and we don't want to expose `releaseHook`
 local -a releaseFilesTemplate_version=() releaseFilesTemplate_restWithoutReleaseHook=()
@@ -486,19 +541,20 @@ local -ra releaseFilesTemplateParams=(
 ## runShellcheck
 
 A function which expects the name of an array of dirs as first argument, a source path as second argument (which is
-passed to `shellcheck` via `-P` parameter) and optionally additional arguments which are passed to the `find` command. 
+passed to `shellcheck` via `-P` parameter) and optionally additional arguments which are passed to the `find` command.
 It then executes shellcheck for each *.sh in these directories with predefined settings for shellcheck.
 
 <qa-run-shellcheck>
 
 <!-- auto-generated, do not modify here but in src/qa/run-shellcheck.sh.doc -->
+
 ```bash
 #!/usr/bin/env bash
 set -euo pipefail
 shopt -s inherit_errexit || { echo >&2 "please update to bash 5, see errors above" && exit 1; }
 scriptsDir="$(cd -- "$(dirname -- "${BASH_SOURCE[0]:-$0}")" >/dev/null && pwd 2>/dev/null)"
 # Assumes tegonal's scripts were fetched with gt - adjust location accordingly
-dir_of_tegonal_scripts="scriptsDir/../lib/tegonal-scripts/src"
+dir_of_tegonal_scripts="$scriptsDir/../lib/tegonal-scripts/src"
 source "$dir_of_tegonal_scripts/setup_tegonal_scripts.sh" "$dir_of_tegonal_scripts"
 source "$dir_of_tegonal_scripts/qa/run-shellcheck.sh"
 
@@ -525,6 +581,7 @@ Intended to be used in before-pr.sh where contributors shall not be forced to ha
 <qa-run-shellspec-if-installed>
 
 <!-- auto-generated, do not modify here but in src/qa/run-shellspec-if-installed.sh.doc -->
+
 ```bash
 #!/usr/bin/env bash
 set -euo pipefail
@@ -545,12 +602,13 @@ runShellspecIfInstalled --jobs 2
 
 ## runShfmt
 
-A function which expects the name of an array of dirs as first argument and optionally additional arguments which 
+A function which expects the name of an array of dirs as first argument and optionally additional arguments which
 are passed to the `find` command. It then executes shfmt for each *.sh in these directories.
 
 <qa-run-shfmt>
 
 <!-- auto-generated, do not modify here but in src/qa/run-shfmt.sh.doc -->
+
 ```bash
 #!/usr/bin/env bash
 set -euo pipefail
@@ -579,11 +637,11 @@ runShfmtPullHooks ".gt"
 # Releasing
 
 The scripts under this topic (in directory `releasing`) perform some steps of your release process.
-We recommend you pull the `src/releasing` and track it:  
+We recommend you pull the `src/releasing` and track it:
+
 ```bash
 gt pull -r tegonal-scripts -t "$TEGONAL_SCRIPTS_VERSION" -p src/releasing/ --track-dir true
 ```
-
 
 ## Release Files Template
 
@@ -605,6 +663,7 @@ Help:
 <releasing-release-files-template-help>
 
 <!-- auto-generated, do not modify here but in src/releasing/release-files-template.sh -->
+
 ```text
 Parameters:
 -v                            The version to release in the format vX.Y.Z(-RC...)
@@ -633,6 +692,7 @@ Full usage example:
 <releasing-release-files-template>
 
 <!-- auto-generated, do not modify here but in src/releasing/release-files-template.sh.doc -->
+
 ```bash
 #!/usr/bin/env bash
 set -euo pipefail
@@ -691,12 +751,15 @@ releaseFilesTemplate "$@" --before-pr-fn specialBeforePr
 
 ## Prepare Files Next Dev Cycle Template
 
-Template to prepare a next development cycle for a repository that releases files (typically used together with [release files template](#release-files-template)).
-it uses the [prepare next dev cycle template](#prepare-next-dev-cycle-template) and thus is based on the same conventions.
+Template to prepare a next development cycle for a repository that releases files (typically used together
+with [release files template](#release-files-template)).
+it uses the [prepare next dev cycle template](#prepare-next-dev-cycle-template) and thus is based on the same
+conventions.
 
 <releasing-prepare-files-next-dev-cycle-template-help>
 
 <!-- auto-generated, do not modify here but in src/releasing/prepare-files-next-dev-cycle-template.sh -->
+
 ```text
 Parameters:
 -v                            The version for which we prepare the dev cycle
@@ -719,6 +782,7 @@ Full usage example:
 <releasing-prepare-files-next-dev-cycle-template>
 
 <!-- auto-generated, do not modify here but in src/releasing/prepare-files-next-dev-cycle-template.sh.doc -->
+
 ```bash
 #!/usr/bin/env bash
 set -euo pipefail
@@ -768,7 +832,7 @@ prepareFilesNextDevCycleTemplate "$@" --before-pr-fn specialBeforePr
 
 Defines a release process template where some conventions are defined:
 
-- expects a version in format vX.Y.Z(-RC...)
+- expects a version in format vX.Y.Z (-RC...)
 - main is your default branch (or you use --branch to define another)
 - requires you to have a function beforePr in scope (or you define another one via --before-pr-fn)
 - requires you to have a function prepareNextDevCycle in scope (or you define another one via
@@ -791,6 +855,7 @@ Help:
 <releasing-release-template-help>
 
 <!-- auto-generated, do not modify here but in src/releasing/release-template.sh -->
+
 ```text
 Parameters:
 -v                            The version to release in the format vX.Y.Z(-RC...)
@@ -818,6 +883,7 @@ Full example:
 <releasing-release-template>
 
 <!-- auto-generated, do not modify here but in src/releasing/release-template.sh.doc -->
+
 ```bash
 #!/usr/bin/env bash
 set -euo pipefail
@@ -880,6 +946,7 @@ Help:
 <releasing-prepare-next-dev-cycle-template-help>
 
 <!-- auto-generated, do not modify here but in src/releasing/prepare-next-dev-cycle-template.sh -->
+
 ```text
 Parameters:
 -v                            The version for which we prepare the dev cycle
@@ -903,6 +970,7 @@ Full example:
 <releasing-prepare-next-dev-cycle-template>
 
 <!-- auto-generated, do not modify here but in src/releasing/prepare-next-dev-cycle-template.sh.doc -->
+
 ```bash
 #!/usr/bin/env bash
 set -euo pipefail
@@ -946,7 +1014,7 @@ prepareNextDevCycleTemplate "$@" --after-version-update-hook prepareNextAfterVer
 
 checks if the repo is ready to be released for a given version
 
-- expects a version in format vX.Y.Z(-RC...)
+- expects a version in format vX.Y.Z (-RC...)
 - you are currently on `main` (or use `--branch` to define a different expected branch)
 - your branch is up-to-date with `origin`
 
@@ -957,6 +1025,7 @@ Help:
 <releasing-pre-release-checks-git-help>
 
 <!-- auto-generated, do not modify here but in src/releasing/pre-release-checks-git.sh -->
+
 ```text
 Parameters:
 -v            The version to release in the format vX.Y.Z(-RC...)
@@ -976,6 +1045,7 @@ Full usage example:
 <releasing-pre-release-checks-git>
 
 <!-- auto-generated, do not modify here but in src/releasing/pre-release-checks-git.sh.doc -->
+
 ```bash
 #!/usr/bin/env bash
 set -euo pipefail
@@ -1001,10 +1071,10 @@ like:
 
 ```sbt
 credentials += Credentials(
-  "Sonatype Nexus Repository Manager",
-  "oss.sonatype.org",
-  sys.env.getOrElse("SONATYPE_USER", ""),
-  sys.env.getOrElse("SONATYPE_PW", "")
+	"Sonatype Nexus Repository Manager",
+	"oss.sonatype.org",
+	sys.env.getOrElse("SONATYPE_USER", ""),
+	sys.env.getOrElse("SONATYPE_PW", "")
 )
 ```
 
@@ -1016,6 +1086,7 @@ Full example:
 <releasing-sbt-publish-to-sonatype>
 
 <!-- auto-generated, do not modify here but in src/releasing/sbt-publish-to-sonatype.sh.doc -->
+
 ```bash
 #!/usr/bin/env bash
 set -euo pipefail
@@ -1046,10 +1117,10 @@ Performs several `releasing` scripts defined in the following sections:
 
 - Updates the version in *.sh (see [Update Version in bash scripts](#update-version-in-bash-scripts))
   defined in /scripts and .gt/**/pull-hook.sh
-- Updates the version in .github/ISSUE_TEMPLATE/**.y(a)ml files (
-  see [Update Version in issue templates](#update-version-in-issue-templates))
+- Updates the version in .github/ISSUE_TEMPLATE/**.y (a)ml files
+  (see [Update Version in issue templates](#update-version-in-issue-templates))
 - Updates the version in the README.md (see next section [Update Version in README](#update-version-in-readme)).
-- [activates the release section and hides the main section](#toggle-mainrelease-sections) if `-for-release` 
+- [activates the release section and hides the main section](#toggle-mainrelease-sections) if `-for-release`
   is `true` (the opposite otherwise)
 - [hides the sneak-peek banner](#hideshow-sneak-peek-banner) (or shows it if `--for-release` is `false`)
 
@@ -1058,6 +1129,7 @@ Help:
 <releasing-update-version-common-steps-help>
 
 <!-- auto-generated, do not modify here but in src/releasing/update-version-common-steps.sh -->
+
 ```text
 Parameters:
 --for-release   true if update is for release in which case we hide the sneak-peek banner and toggle sections for release, if false then we show the sneak-peek banner and toggle the section for development
@@ -1079,6 +1151,7 @@ Full usage example:
 <releasing-update-version-common-steps>
 
 <!-- auto-generated, do not modify here but in src/releasing/update-version-common-steps.sh.doc -->
+
 ```bash
 #!/usr/bin/env bash
 set -euo pipefail
@@ -1136,6 +1209,7 @@ Help:
 <releasing-update-version-README-help>
 
 <!-- auto-generated, do not modify here but in src/releasing/update-version-README.sh -->
+
 ```text
 Parameters:
 -v             The version to release in the format vX.Y.Z(-RC...)
@@ -1167,6 +1241,7 @@ Full usage example:
 <releasing-update-version-README>
 
 <!-- auto-generated, do not modify here but in src/releasing/update-version-README.sh.doc -->
+
 ```bash
 #!/usr/bin/env bash
 set -euo pipefail
@@ -1195,6 +1270,7 @@ Help:
 <releasing-update-version-scripts-help>
 
 <!-- auto-generated, do not modify here but in src/releasing/update-version-scripts.sh -->
+
 ```text
 Parameters:
 -v               The version to release in the format vX.Y.Z(-RC...)
@@ -1226,6 +1302,7 @@ Full usage example:
 <releasing-update-version-scripts>
 
 <!-- auto-generated, do not modify here but in src/releasing/update-version-scripts.sh.doc -->
+
 ```bash
 #!/usr/bin/env bash
 set -euo pipefail
@@ -1247,13 +1324,14 @@ updateVersionReadme -v 0.2.0
 
 ## Update Version in issue templates
 
-Replaces the `placeholder` of the `Affected Version` field in the given y(a)ml files
+Replaces the `placeholder` of the `Affected Version` field in the given y (a)ml files
 
 Help:
 
 <releasing-update-version-issue-templates-help>
 
 <!-- auto-generated, do not modify here but in src/releasing/update-version-issue-templates.sh -->
+
 ```text
 Parameters:
 -v               The version to release in the format vX.Y.Z(-RC...)
@@ -1285,6 +1363,7 @@ Full usage example:
 <releasing-update-version-issue-templates>
 
 <!-- auto-generated, do not modify here but in src/releasing/update-version-issue-templates.sh.doc -->
+
 ```bash
 #!/usr/bin/env bash
 set -euo pipefail
@@ -1332,6 +1411,7 @@ Help:
 <releasing-toggle-sections-help>
 
 <!-- auto-generated, do not modify here but in src/releasing/toggle-sections.sh -->
+
 ```text
 Parameters:
 -c|--command   either 'main' or 'release'
@@ -1358,6 +1438,7 @@ Full usage example:
 <releasing-toggle-sections>
 
 <!-- auto-generated, do not modify here but in src/releasing/toggle-sections.sh.doc -->
+
 ```bash
 #!/usr/bin/env bash
 set -euo pipefail
@@ -1387,6 +1468,7 @@ Help:
 <releasing-sneak-peek-banner-help>
 
 <!-- auto-generated, do not modify here but in src/releasing/sneak-peek-banner.sh -->
+
 ```text
 Parameters:
 -c|--command   either 'show' or 'hide'
@@ -1413,6 +1495,7 @@ Full usage example:
 <releasing-sneak-peek-banner>
 
 <!-- auto-generated, do not modify here but in src/releasing/sneak-peek-banner.sh.doc -->
+
 ```bash
 #!/usr/bin/env bash
 set -euo pipefail
@@ -1443,6 +1526,7 @@ Utility functions when dealing with arrays.
 <utility-array-utils>
 
 <!-- auto-generated, do not modify here but in src/utility/array-utils.sh.doc -->
+
 ```bash
 #!/usr/bin/env bash
 set -euo pipefail
@@ -1519,6 +1603,7 @@ Utility functions to interact with the user.
 <utility-ask>
 
 <!-- auto-generated, do not modify here but in src/utility/ask.sh.doc -->
+
 ```bash
 #!/usr/bin/env bash
 set -euo pipefail
@@ -1552,6 +1637,7 @@ Utility functions which shall help to keep your repo clean and tidy.
 <utility-cleanups>
 
 <!-- auto-generated, do not modify here but in src/utility/cleanups.sh.doc -->
+
 ```bash
 #!/usr/bin/env bash
 set -euo pipefail
@@ -1581,6 +1667,7 @@ Utility functions which check some conditions like is passed arg the correct typ
 <utility-checks>
 
 <!-- auto-generated, do not modify here but in src/utility/checks.sh.doc -->
+
 ```bash
 #!/usr/bin/env bash
 set -euo pipefail
@@ -1661,6 +1748,7 @@ Date utils around `date` and co
 <utility-date-utils>
 
 <!-- auto-generated, do not modify here but in src/utility/date-utils.sh.doc -->
+
 ```bash
 #!/usr/bin/env bash
 set -euo pipefail
@@ -1708,6 +1796,7 @@ Utility functions around `git`.
 <utility-git-utils>
 
 <!-- auto-generated, do not modify here but in src/utility/git-utils.sh.doc -->
+
 ```bash
 #!/usr/bin/env bash
 set -euo pipefail
@@ -1769,6 +1858,7 @@ Utility functions which hopefully make it easier for you to deal with `gpg`
 <utility-gpg-utils>
 
 <!-- auto-generated, do not modify here but in src/utility/gpg-utils.sh.doc -->
+
 ```bash
 #!/usr/bin/env bash
 set -euo pipefail
@@ -1841,6 +1931,7 @@ listSignaturesAndHighlightKey 4B78012139378220 .gt/remotes/tegonal-scripts/publi
 <utility-http>
 
 <!-- auto-generated, do not modify here but in src/utility/http.sh.doc -->
+
 ```bash
 #!/usr/bin/env bash
 set -euo pipefail
@@ -1862,6 +1953,7 @@ wgetAndVerify "https://github.com/tegonal/gt/.gt/signing-key.public.asc"
 <utility-io>
 
 <!-- auto-generated, do not modify here but in src/utility/io.sh.doc -->
+
 ```bash
 #!/usr/bin/env bash
 set -euo pipefail
@@ -1898,6 +1990,7 @@ Utility functions to log messages including a severity level where logError writ
 <utility-log>
 
 <!-- auto-generated, do not modify here but in src/utility/log.sh.doc -->
+
 ```bash
 #!/usr/bin/env bash
 set -euo pipefail
@@ -1990,6 +2083,7 @@ Full usage example:
 <utility-parse-args>
 
 <!-- auto-generated, do not modify here but in src/utility/parse-args.sh.doc -->
+
 ```bash
 #!/usr/bin/env bash
 set -euo pipefail
@@ -2035,7 +2129,7 @@ echo "p: $pattern, v: $version, d: $directory"
 
 </utility-parse-args>
 
-if you should have a chain of functions which make use of similar parameters, then take a look at 
+if you should have a chain of functions which make use of similar parameters, then take a look at
 [checkParamsAndDefinitionInSync](#checkParamsAndDefinitionInSync) which shows how you can reduce duplication and ease
 maintenance.
 
@@ -2046,6 +2140,7 @@ Full usage example:
 <utility-parse-fn-args>
 
 <!-- auto-generated, do not modify here but in src/utility/parse-fn-args.sh.doc -->
+
 ```bash
 #!/usr/bin/env bash
 set -euo pipefail
@@ -2092,6 +2187,7 @@ Full usage example:
 <utility-parse-commands>
 
 <!-- auto-generated, do not modify here but in src/utility/parse-commands.sh.doc -->
+
 ```bash
 #!/usr/bin/env bash
 set -euo pipefail
@@ -2140,6 +2236,7 @@ Utility functions when parsing (see also [Parse arguments](#parse-arguments)).
 <utility-parse-utils>
 
 <!-- auto-generated, do not modify here but in src/utility/parse-utils.sh.doc -->
+
 ```bash
 #!/usr/bin/env bash
 set -euo pipefail
@@ -2179,6 +2276,7 @@ Utility function to find out the initial `declare` statement after following `de
 <utility-recursive-declare-p>
 
 <!-- auto-generated, do not modify here but in src/utility/recursive-declare-p.sh.doc -->
+
 ```bash
 #!/usr/bin/env bash
 # shellcheck disable=SC2034
@@ -2221,6 +2319,7 @@ Full usage example:
 <utility-replace-snippet>
 
 <!-- auto-generated, do not modify here but in src/utility/replace-snippet.sh.doc -->
+
 ```bash
 #!/usr/bin/env bash
 set -euo pipefail
@@ -2265,6 +2364,7 @@ Utility functions around secrets and `secret-tool`.
 <utility-secret-utils>
 
 <!-- auto-generated, do not modify here but in src/utility/secret-utils.sh.doc -->
+
 ```bash
 #!/usr/bin/env bash
 set -euo pipefail
@@ -2304,6 +2404,7 @@ Establishes a guard by creating a variable based on the file which shall be sour
 <utility-source-once>
 
 <!-- auto-generated, do not modify here but in src/utility/source-once.sh.doc -->
+
 ```bash
 #!/usr/bin/env bash
 set -euo pipefail
@@ -2344,6 +2445,7 @@ String processing utils
 <utility-string-utils>
 
 <!-- auto-generated, do not modify here but in src/utility/string-utils.sh.doc -->
+
 ```bash
 #!/usr/bin/env bash
 set -euo pipefail
@@ -2375,6 +2477,7 @@ Full usage example:
 <utility-update-bash-docu>
 
 <!-- auto-generated, do not modify here but in src/utility/update-bash-docu.sh.doc -->
+
 ```bash
 #!/usr/bin/env bash
 set -euo pipefail
