@@ -137,7 +137,7 @@ function releaseTemplate() {
 			git tag "$version" || die "could not create tag $version"
 		fi
 
-		logInfo "Release completed, going to prepare next development cycle for %s by calling" "$nextVersion" \
+		logInfo "Release completed, going to prepare next development cycle for %s by calling %s" "$nextVersion" \
 			"$prepareNextDevCycleFn $versionParamPatternLong $nextVersion $additionalPatternParamPatternLong $additionalPattern $projectsRootDirParamPatternLong $projectsRootDir $beforePrFnParamPatternLong $beforePrFn"
 
 		"$prepareNextDevCycleFn" \
