@@ -58,9 +58,9 @@ function release() {
 	local -r additionalPattern="(TEGONAL_SCRIPTS_(?:LATEST_)?VERSION=['\"])[^'\"]+(['\"])"
 
 	releaseFilesTemplate \
-		"${releaseFilesTemplateArgs[@]}" \
 		"$projectsRootDirParamPatternLong" "$projectDir" \
 		"$additionalPatternParamPatternLong" "$additionalPattern" \
+		"${releaseFilesTemplateArgs[@]}" \
 		"$findForSigningParamPatternLong" findScripts \
 		"$afterVersionUpdateHookParamPatternLong" release_afterVersionHook
 }
