@@ -1,17 +1,17 @@
 <!-- for main -->
-
-[![Download](https://img.shields.io/badge/Download-v5.0.0-%23007ec6)](https://github.com/tegonal/scripts/releases/tag/v5.0.0)
+<!--
+[![Download](https://img.shields.io/badge/Download-v5.1.0-%23007ec6)](https://github.com/tegonal/scripts/releases/tag/v5.1.0)
 [![Apache 2.0](https://img.shields.io/badge/%E2%9A%96-Apache%202.0-%230b45a6)](http://opensource.org/licenses/Apache2.0 "License")
 [![Quality Assurance](https://github.com/tegonal/scripts/actions/workflows/quality-assurance.yml/badge.svg?event=push&branch=main)](https://github.com/tegonal/scripts/actions/workflows/quality-assurance.yml?query=branch%3Amain)
 [![Newcomers Welcome](https://img.shields.io/badge/%F0%9F%91%8B-Newcomers%20Welcome-blueviolet)](https://github.com/tegonal/scripts/issues?q=is%3Aissue+is%3Aopen+label%3A%22good+first+issue%22 "Ask in discussions for help")
-
+-->
 <!-- for main end -->
 <!-- for release -->
-<!--
-[![Download](https://img.shields.io/badge/Download-v5.0.0-%23007ec6)](https://github.com/tegonal/scripts/releases/tag/v5.0.0)
+
+[![Download](https://img.shields.io/badge/Download-v5.1.0-%23007ec6)](https://github.com/tegonal/scripts/releases/tag/v5.1.0)
 [![Apache 2.0](https://img.shields.io/badge/%E2%9A%96-Apache%202.0-%230b45a6)](http://opensource.org/licenses/Apache2.0 "License")
 [![Newcomers Welcome](https://img.shields.io/badge/%F0%9F%91%8B-Newcomers%20Welcome-blueviolet)](https://github.com/tegonal/scripts/issues?q=is%3Aissue+is%3Aopen+label%3A%22good+first+issue%22 "Ask in discussions for help")
--->
+
 <!-- for release end -->
 
 # Scripts of Tegonal
@@ -20,12 +20,12 @@ There are scripts which we use over and over again in different projects.
 As they might be usable for you as well, we are publishing them here.
 Feel free to use it and report bugs if you should find one.
 
----
+<!---
 ❗ You are taking a *sneak peek* at the next version. It could be that some features you find on this page are not
 released yet. Please have a look at the README of the corresponding release/git tag.
-Latest version: [README of v5.0.0](https://github.com/tegonal/scripts/tree/v5.0.0/README.md).
+Latest version: [README of v5.1.0](https://github.com/tegonal/scripts/tree/v5.1.0/README.md).
 
----
+--->
 
 **Table of Content**
 
@@ -38,7 +38,7 @@ Latest version: [README of v5.0.0](https://github.com/tegonal/scripts/tree/v5.0.
 
 We recommend you pull the scripts with the help of [gt](https://github.com/tegonal/gt).  
 Alternatively you can
-[![Download](https://img.shields.io/badge/Download-v5.0.0-%23007ec6)](https://github.com/tegonal/scripts/releases/tag/v5.0.0)
+[![Download](https://img.shields.io/badge/Download-v5.1.0-%23007ec6)](https://github.com/tegonal/scripts/releases/tag/v5.1.0)
 the sources.
 
 Following the commands you need to execute to set up tegonal scripts via [gt](https://github.com/tegonal/gt).
@@ -80,7 +80,6 @@ the example below we want to use tegonal's io functions located in `utility/io.s
 <setup_tegonal_scripts>
 
 <!-- auto-generated, do not modify here but in src/setup_tegonal_scripts.sh.doc -->
-
 ```bash
 #!/usr/bin/env bash
 set -euo pipefail
@@ -165,7 +164,6 @@ Following an example:
 <ci-install-shellcheck>
 
 <!-- auto-generated, do not modify here but in src/ci/install-shellcheck.sh.doc -->
-
 ```bash
 # run the install-shellcheck.sh in your github/gitlab workflow
 # for instance, assuming you fetched this file via gt and remote name is tegonal-scripts
@@ -187,7 +185,6 @@ jobs:
 <ci-install-shellspec>
 
 <!-- auto-generated, do not modify here but in src/ci/install-shellspec.sh.doc -->
-
 ```bash
 # run the install-shellspec in your github/gitlab workflow
 # for instance, assuming you fetched this file via gt and remote name is tegonal-scripts
@@ -209,7 +206,6 @@ jobs:
 <ci-install-shfmt>
 
 <!-- auto-generated, do not modify here but in src/ci/install-shfmt.sh.doc -->
-
 ```bash
 # run the install-shfmt.sh in your github/gitlab workflow
 # for instance, assuming you fetched this file via gt and remote name is tegonal-scripts
@@ -237,7 +233,6 @@ Helper function which performs a signin and redeploycontainers
 <ci-jelastic-deploy>
 
 <!-- auto-generated, do not modify here but in src/ci/jelastic/deploy.sh.doc -->
-
 ```bash
 #!/usr/bin/env bash
 set -euo pipefail
@@ -282,7 +277,6 @@ Help:
 <ci-jelastic-deploy-help>
 
 <!-- auto-generated, do not modify here but in src/ci/jelastic/deploy.sh -->
-
 ```text
 Parameters:
 -l|--login       The user who logs in
@@ -308,7 +302,6 @@ The most important functions are defined in this file: jelastic_signin which in 
 <ci-jelastic-utils>
 
 <!-- auto-generated, do not modify here but in src/ci/jelastic/utils.sh.doc -->
-
 ```bash
 #!/usr/bin/env bash
 set -euo pipefail
@@ -350,7 +343,6 @@ update to a newer version. Following an example:
 <qa-check-help-callable>
 
 <!-- auto-generated, do not modify here but in src/qa/check-help-callable.sh.doc -->
-
 ```bash
 #!/usr/bin/env bash
 set -euo pipefail
@@ -383,7 +375,6 @@ through multiple functions which all make use of [parse-arguments](#parse-argume
 <qa-check-params-and-definition-in-sync>
 
 <!-- auto-generated, do not modify here but in src/qa/check-params-and-definition-in-sync.sh.doc -->
-
 ```bash
 #!/usr/bin/env bash
 set -euo pipefail
@@ -547,7 +538,6 @@ It then executes shellcheck for each *.sh in these directories with predefined s
 <qa-run-shellcheck>
 
 <!-- auto-generated, do not modify here but in src/qa/run-shellcheck.sh.doc -->
-
 ```bash
 #!/usr/bin/env bash
 set -euo pipefail
@@ -581,7 +571,6 @@ Intended to be used in before-pr.sh where contributors shall not be forced to ha
 <qa-run-shellspec-if-installed>
 
 <!-- auto-generated, do not modify here but in src/qa/run-shellspec-if-installed.sh.doc -->
-
 ```bash
 #!/usr/bin/env bash
 set -euo pipefail
@@ -608,7 +597,6 @@ are passed to the `find` command. It then executes shfmt for each *.sh in these 
 <qa-run-shfmt>
 
 <!-- auto-generated, do not modify here but in src/qa/run-shfmt.sh.doc -->
-
 ```bash
 #!/usr/bin/env bash
 set -euo pipefail
@@ -663,7 +651,6 @@ Help:
 <releasing-release-files-template-help>
 
 <!-- auto-generated, do not modify here but in src/releasing/release-files-template.sh -->
-
 ```text
 Parameters:
 -v                            The version to release in the format vX.Y.Z(-RC...)
@@ -692,7 +679,6 @@ Full usage example:
 <releasing-release-files-template>
 
 <!-- auto-generated, do not modify here but in src/releasing/release-files-template.sh.doc -->
-
 ```bash
 #!/usr/bin/env bash
 set -euo pipefail
@@ -759,7 +745,6 @@ conventions.
 <releasing-prepare-files-next-dev-cycle-template-help>
 
 <!-- auto-generated, do not modify here but in src/releasing/prepare-files-next-dev-cycle-template.sh -->
-
 ```text
 Parameters:
 -v                            The version for which we prepare the dev cycle
@@ -782,7 +767,6 @@ Full usage example:
 <releasing-prepare-files-next-dev-cycle-template>
 
 <!-- auto-generated, do not modify here but in src/releasing/prepare-files-next-dev-cycle-template.sh.doc -->
-
 ```bash
 #!/usr/bin/env bash
 set -euo pipefail
@@ -855,7 +839,6 @@ Help:
 <releasing-release-template-help>
 
 <!-- auto-generated, do not modify here but in src/releasing/release-template.sh -->
-
 ```text
 Parameters:
 -v                            The version to release in the format vX.Y.Z(-RC...)
@@ -883,7 +866,6 @@ Full example:
 <releasing-release-template>
 
 <!-- auto-generated, do not modify here but in src/releasing/release-template.sh.doc -->
-
 ```bash
 #!/usr/bin/env bash
 set -euo pipefail
@@ -946,7 +928,6 @@ Help:
 <releasing-prepare-next-dev-cycle-template-help>
 
 <!-- auto-generated, do not modify here but in src/releasing/prepare-next-dev-cycle-template.sh -->
-
 ```text
 Parameters:
 -v                            The version for which we prepare the dev cycle
@@ -970,7 +951,6 @@ Full example:
 <releasing-prepare-next-dev-cycle-template>
 
 <!-- auto-generated, do not modify here but in src/releasing/prepare-next-dev-cycle-template.sh.doc -->
-
 ```bash
 #!/usr/bin/env bash
 set -euo pipefail
@@ -1025,7 +1005,6 @@ Help:
 <releasing-pre-release-checks-git-help>
 
 <!-- auto-generated, do not modify here but in src/releasing/pre-release-checks-git.sh -->
-
 ```text
 Parameters:
 -v            The version to release in the format vX.Y.Z(-RC...)
@@ -1045,7 +1024,6 @@ Full usage example:
 <releasing-pre-release-checks-git>
 
 <!-- auto-generated, do not modify here but in src/releasing/pre-release-checks-git.sh.doc -->
-
 ```bash
 #!/usr/bin/env bash
 set -euo pipefail
@@ -1086,7 +1064,6 @@ Full example:
 <releasing-sbt-publish-to-sonatype>
 
 <!-- auto-generated, do not modify here but in src/releasing/sbt-publish-to-sonatype.sh.doc -->
-
 ```bash
 #!/usr/bin/env bash
 set -euo pipefail
@@ -1129,7 +1106,6 @@ Help:
 <releasing-update-version-common-steps-help>
 
 <!-- auto-generated, do not modify here but in src/releasing/update-version-common-steps.sh -->
-
 ```text
 Parameters:
 --for-release   true if update is for release in which case we hide the sneak-peek banner and toggle sections for release, if false then we show the sneak-peek banner and toggle the section for development
@@ -1151,7 +1127,6 @@ Full usage example:
 <releasing-update-version-common-steps>
 
 <!-- auto-generated, do not modify here but in src/releasing/update-version-common-steps.sh.doc -->
-
 ```bash
 #!/usr/bin/env bash
 set -euo pipefail
@@ -1209,7 +1184,6 @@ Help:
 <releasing-update-version-README-help>
 
 <!-- auto-generated, do not modify here but in src/releasing/update-version-README.sh -->
-
 ```text
 Parameters:
 -v             The version to release in the format vX.Y.Z(-RC...)
@@ -1241,7 +1215,6 @@ Full usage example:
 <releasing-update-version-README>
 
 <!-- auto-generated, do not modify here but in src/releasing/update-version-README.sh.doc -->
-
 ```bash
 #!/usr/bin/env bash
 set -euo pipefail
@@ -1270,7 +1243,6 @@ Help:
 <releasing-update-version-scripts-help>
 
 <!-- auto-generated, do not modify here but in src/releasing/update-version-scripts.sh -->
-
 ```text
 Parameters:
 -v               The version to release in the format vX.Y.Z(-RC...)
@@ -1302,7 +1274,6 @@ Full usage example:
 <releasing-update-version-scripts>
 
 <!-- auto-generated, do not modify here but in src/releasing/update-version-scripts.sh.doc -->
-
 ```bash
 #!/usr/bin/env bash
 set -euo pipefail
@@ -1331,7 +1302,6 @@ Help:
 <releasing-update-version-issue-templates-help>
 
 <!-- auto-generated, do not modify here but in src/releasing/update-version-issue-templates.sh -->
-
 ```text
 Parameters:
 -v               The version to release in the format vX.Y.Z(-RC...)
@@ -1363,7 +1333,6 @@ Full usage example:
 <releasing-update-version-issue-templates>
 
 <!-- auto-generated, do not modify here but in src/releasing/update-version-issue-templates.sh.doc -->
-
 ```bash
 #!/usr/bin/env bash
 set -euo pipefail
@@ -1411,7 +1380,6 @@ Help:
 <releasing-toggle-sections-help>
 
 <!-- auto-generated, do not modify here but in src/releasing/toggle-sections.sh -->
-
 ```text
 Parameters:
 -c|--command   either 'main' or 'release'
@@ -1438,7 +1406,6 @@ Full usage example:
 <releasing-toggle-sections>
 
 <!-- auto-generated, do not modify here but in src/releasing/toggle-sections.sh.doc -->
-
 ```bash
 #!/usr/bin/env bash
 set -euo pipefail
@@ -1468,7 +1435,6 @@ Help:
 <releasing-sneak-peek-banner-help>
 
 <!-- auto-generated, do not modify here but in src/releasing/sneak-peek-banner.sh -->
-
 ```text
 Parameters:
 -c|--command   either 'show' or 'hide'
@@ -1495,7 +1461,6 @@ Full usage example:
 <releasing-sneak-peek-banner>
 
 <!-- auto-generated, do not modify here but in src/releasing/sneak-peek-banner.sh.doc -->
-
 ```bash
 #!/usr/bin/env bash
 set -euo pipefail
@@ -1526,7 +1491,6 @@ Utility functions when dealing with arrays.
 <utility-array-utils>
 
 <!-- auto-generated, do not modify here but in src/utility/array-utils.sh.doc -->
-
 ```bash
 #!/usr/bin/env bash
 set -euo pipefail
@@ -1603,7 +1567,6 @@ Utility functions to interact with the user.
 <utility-ask>
 
 <!-- auto-generated, do not modify here but in src/utility/ask.sh.doc -->
-
 ```bash
 #!/usr/bin/env bash
 set -euo pipefail
@@ -1637,7 +1600,6 @@ Utility functions which shall help to keep your repo clean and tidy.
 <utility-cleanups>
 
 <!-- auto-generated, do not modify here but in src/utility/cleanups.sh.doc -->
-
 ```bash
 #!/usr/bin/env bash
 set -euo pipefail
@@ -1667,7 +1629,6 @@ Utility functions which check some conditions like is passed arg the correct typ
 <utility-checks>
 
 <!-- auto-generated, do not modify here but in src/utility/checks.sh.doc -->
-
 ```bash
 #!/usr/bin/env bash
 set -euo pipefail
@@ -1748,7 +1709,6 @@ Date utils around `date` and co
 <utility-date-utils>
 
 <!-- auto-generated, do not modify here but in src/utility/date-utils.sh.doc -->
-
 ```bash
 #!/usr/bin/env bash
 set -euo pipefail
@@ -1796,7 +1756,6 @@ Utility functions around `git`.
 <utility-git-utils>
 
 <!-- auto-generated, do not modify here but in src/utility/git-utils.sh.doc -->
-
 ```bash
 #!/usr/bin/env bash
 set -euo pipefail
@@ -1858,7 +1817,6 @@ Utility functions which hopefully make it easier for you to deal with `gpg`
 <utility-gpg-utils>
 
 <!-- auto-generated, do not modify here but in src/utility/gpg-utils.sh.doc -->
-
 ```bash
 #!/usr/bin/env bash
 set -euo pipefail
@@ -1931,7 +1889,6 @@ listSignaturesAndHighlightKey 4B78012139378220 .gt/remotes/tegonal-scripts/publi
 <utility-http>
 
 <!-- auto-generated, do not modify here but in src/utility/http.sh.doc -->
-
 ```bash
 #!/usr/bin/env bash
 set -euo pipefail
@@ -1953,7 +1910,6 @@ wgetAndVerify "https://github.com/tegonal/gt/.gt/signing-key.public.asc"
 <utility-io>
 
 <!-- auto-generated, do not modify here but in src/utility/io.sh.doc -->
-
 ```bash
 #!/usr/bin/env bash
 set -euo pipefail
@@ -1990,7 +1946,6 @@ Utility functions to log messages including a severity level where logError writ
 <utility-log>
 
 <!-- auto-generated, do not modify here but in src/utility/log.sh.doc -->
-
 ```bash
 #!/usr/bin/env bash
 set -euo pipefail
@@ -2083,7 +2038,6 @@ Full usage example:
 <utility-parse-args>
 
 <!-- auto-generated, do not modify here but in src/utility/parse-args.sh.doc -->
-
 ```bash
 #!/usr/bin/env bash
 set -euo pipefail
@@ -2140,7 +2094,6 @@ Full usage example:
 <utility-parse-fn-args>
 
 <!-- auto-generated, do not modify here but in src/utility/parse-fn-args.sh.doc -->
-
 ```bash
 #!/usr/bin/env bash
 set -euo pipefail
@@ -2187,7 +2140,6 @@ Full usage example:
 <utility-parse-commands>
 
 <!-- auto-generated, do not modify here but in src/utility/parse-commands.sh.doc -->
-
 ```bash
 #!/usr/bin/env bash
 set -euo pipefail
@@ -2236,7 +2188,6 @@ Utility functions when parsing (see also [Parse arguments](#parse-arguments)).
 <utility-parse-utils>
 
 <!-- auto-generated, do not modify here but in src/utility/parse-utils.sh.doc -->
-
 ```bash
 #!/usr/bin/env bash
 set -euo pipefail
@@ -2276,7 +2227,6 @@ Utility function to find out the initial `declare` statement after following `de
 <utility-recursive-declare-p>
 
 <!-- auto-generated, do not modify here but in src/utility/recursive-declare-p.sh.doc -->
-
 ```bash
 #!/usr/bin/env bash
 # shellcheck disable=SC2034
@@ -2319,7 +2269,6 @@ Full usage example:
 <utility-replace-snippet>
 
 <!-- auto-generated, do not modify here but in src/utility/replace-snippet.sh.doc -->
-
 ```bash
 #!/usr/bin/env bash
 set -euo pipefail
@@ -2364,7 +2313,6 @@ Utility functions around secrets and `secret-tool`.
 <utility-secret-utils>
 
 <!-- auto-generated, do not modify here but in src/utility/secret-utils.sh.doc -->
-
 ```bash
 #!/usr/bin/env bash
 set -euo pipefail
@@ -2404,7 +2352,6 @@ Establishes a guard by creating a variable based on the file which shall be sour
 <utility-source-once>
 
 <!-- auto-generated, do not modify here but in src/utility/source-once.sh.doc -->
-
 ```bash
 #!/usr/bin/env bash
 set -euo pipefail
@@ -2445,7 +2392,6 @@ String processing utils
 <utility-string-utils>
 
 <!-- auto-generated, do not modify here but in src/utility/string-utils.sh.doc -->
-
 ```bash
 #!/usr/bin/env bash
 set -euo pipefail
@@ -2477,7 +2423,6 @@ Full usage example:
 <utility-update-bash-docu>
 
 <!-- auto-generated, do not modify here but in src/utility/update-bash-docu.sh.doc -->
-
 ```bash
 #!/usr/bin/env bash
 set -euo pipefail
