@@ -61,12 +61,13 @@ gt pull -r tegonal-scripts -t "$TEGONAL_SCRIPTS_VERSION" -p ...
 Note that dependencies have to be pulled manually and almost all scripts depend on `src/setup_tegonal_scripts.sh`
 which in turn depends on `src/utility/source-once.sh` and this one depends on `src/utility/log.sh`.
 Many of the scripts depend on further scripts located in `src/utility`.
-Therefore, for simplicity reasons, we recommend you pull `src/setup_tegonal_scripts.sh` and all files in `src/utility` in addition:
+Therefore, for simplicity reasons, we recommend you pull `src/setup_tegonal_scripts.sh` and `src/utility/` and activate
+tracking for `src/utility`:
 
 ```
 export TEGONAL_SCRIPTS_VERSION="v5.0.0" 
 gt pull -r tegonal-scripts -t "$TEGONAL_SCRIPTS_VERSION" -p src/setup_tegonal_scripts.sh
-gt pull -r tegonal-scripts -t "$TEGONAL_SCRIPTS_VERSION" -p src/utility/
+gt pull -r tegonal-scripts -t "$TEGONAL_SCRIPTS_VERSION" -p src/utility/ --track-dir true
 ```
 
 ## Sourcing functions
@@ -578,6 +579,11 @@ runShfmtPullHooks ".gt"
 # Releasing
 
 The scripts under this topic (in directory `releasing`) perform some steps of your release process.
+We recommend you pull the `src/releasing` and track it:  
+```bash
+gt pull -r tegonal-scripts -t "$TEGONAL_SCRIPTS_VERSION" -p src/releasing/ --track-dir true
+```
+
 
 ## Release Files Template
 
