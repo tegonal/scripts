@@ -932,7 +932,7 @@ declare -fx prepareNextAfterVersionUpdateHook
 
 # in case you want to provide your own prepare-next-dev-cycle.sh and only want to do some pre-configuration
 # (such as specify the after-version-hook) then you might want to source it instead
-sourceOnce "$dir_of_tegonal_scripts/releasing/prepare-next-dev-cycle-template.sh.sh"
+sourceOnce "$dir_of_tegonal_scripts/releasing/prepare-next-dev-cycle-template.sh"
 
 # and then call the function with your pre-configuration settings:
 # here we define the function which shall be used as after-version-update-hook after "$@", this way one cannot

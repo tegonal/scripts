@@ -49,7 +49,7 @@
 #
 #    # in case you want to provide your own prepare-next-dev-cycle.sh and only want to do some pre-configuration
 #    # (such as specify the after-version-hook) then you might want to source it instead
-#    sourceOnce "$dir_of_tegonal_scripts/releasing/prepare-next-dev-cycle-template.sh.sh"
+#    sourceOnce "$dir_of_tegonal_scripts/releasing/prepare-next-dev-cycle-template.sh"
 #
 #    # and then call the function with your pre-configuration settings:
 #    # here we define the function which shall be used as after-version-update-hook after "$@", this way one cannot
@@ -74,7 +74,7 @@ sourceOnce "$dir_of_tegonal_scripts/releasing/update-version-common-steps.sh"
 function prepareNextDevCycleTemplate() {
 	source "$dir_of_tegonal_scripts/releasing/params/prepare-next-dev-cycle-template.params.source.sh" || traceAndDie "could not source prepare-next-dev-cycle-template.params.source.sh"
 	source "$dir_of_tegonal_scripts/releasing/params/prepare-next-dev-cycle-template.params-definition.source.sh" || traceAndDie "could not source prepare-next-dev-cycle-template.params-definition.source.sh"
-	parseArguments prepareNextDevCycleTemplateParams "" "$TEGONAL_SCRIPTS_VERSION" "$@"
+	parseArguments prepareNextDevCycleTemplateParams "" "$TEGONAL_SCRIPTS_VERSION" "$@" || return $?
 	source "$dir_of_tegonal_scripts/releasing/params/prepare-next-dev-cycle-template.default-args.source.sh" || traceAndDie "could not source prepare-next-dev-cycle-template.default-args.source.sh"
 	exitIfNotAllArgumentsSet prepareNextDevCycleTemplateParams "" "$TEGONAL_SCRIPTS_VERSION"
 	exitIfArgIsNotVersion "$version" "$versionParamPatternLong"
