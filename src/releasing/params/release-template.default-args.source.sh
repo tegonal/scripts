@@ -17,9 +17,8 @@
 	# deduces nextVersion based on version if not already set (and if version set)
 	# shellcheck disable=SC2154   # it is assumed dir_of_tegonal_scripts is defined where this file is sourced
 	source "$dir_of_tegonal_scripts/releasing/deduce-next-version.source.sh" || traceAndDie "could not source deduce-next-version.source.sh"
-	source "$dir_of_tegonal_scripts/releasing/params/prepare-next-dev-cycle-template.params.source.sh" || traceAndDie "could not source prepare-next-dev-cycle-template.params.source.sh"
+	source "$dir_of_tegonal_scripts/releasing/params/prepare-next-dev-cycle-template.default-args.source.sh" || traceAndDie "could not source prepare-next-dev-cycle-template.default-args.source.sh"
 }
 if ! [[ -v branch ]]; then branch="main"; fi
 if ! [[ -v prepareOnly ]]; then prepareOnly=false; fi
-if ! [[ -v beforePrFn ]]; then beforePrFn='beforePr'; fi
 if ! [[ -v prepareNextDevCycleFn ]]; then prepareNextDevCycleFn='prepareNextDevCycle'; fi

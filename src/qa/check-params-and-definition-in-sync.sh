@@ -138,6 +138,37 @@ function checkParamsAndDefinitionInSync() {
 					"$patternVar" "$param" "$definitionFile" "$expectedPatternVar" "$expectedPatternVarLong"
 			fi
 		done
+
+		if grep -P "source.*\.params-definition\.source\.sh" "$paramsFile"; then
+			((++foundErrors))
+			logError "Looks like you source a params-definition.source.sh in %s -- most likely a copy & paste error, see excerpt above" "$paramsFile"
+		fi
+		if grep -P "source.*\.default-args\.source\.sh" "$paramsFile"; then
+			((++foundErrors))
+			logError "Looks like you source a default-args.source.sh in %s -- most likely a copy & paste error, see excerpt above" "$paramsFile"
+		fi
+
+		if grep -P "source.*\.params\.source\.sh" "$definitionFile"; then
+			((++foundErrors))
+			logError "Looks like you source a params.source.sh in %s -- most likely a copy & paste error, see excerpt above" "$definitionFile"
+		fi
+		if grep -P "source.*\.default-args\.source\.sh" "$definitionFile"; then
+			((++foundErrors))
+			logError "Looks like you source a default-args.source.sh in %s -- most likely a copy & paste error, see excerpt above" "$definitionFile"
+		fi
+
+		local defaultArgFile="${paramsFile//.params.source/.default-args.source}"
+		if [[ -f $defaultArgFile ]]; then
+			if grep -P "source.*\.params-definition\.source\.sh" "$defaultArgFile"; then
+				((++foundErrors))
+				logError "Looks like you source a params-definition.source.sh in %s -- most likely a copy & paste error, see excerpt above" "$defaultArgFile"
+			fi
+			if grep -P "source.*\.params\.source\.sh" "$defaultArgFile"; then
+				((++foundErrors))
+				logError "Looks like you source a params.source.sh in %s -- most likely a copy & paste error, see excerpt above" "$defaultArgFile"
+			fi
+		fi
+
 	done < <(
 		# using find here instead of find ... | while so that we can write foundErrors
 		# we cannot do this when using the pipe approach as it will use a subshell for while
