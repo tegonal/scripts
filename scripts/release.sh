@@ -26,10 +26,6 @@ sourceOnce "$scriptsDir/before-pr.sh"
 sourceOnce "$scriptsDir/prepare-next-dev-cycle.sh"
 
 function release() {
-	if ! checkCommandExists "shellspec" "please install https://github.com/shellspec/shellspec#installation"; then
-		die "You need to have shellspec installed if you want to create a release."
-	fi
-
 	source "$dir_of_tegonal_scripts/releasing/params/release-files.params.source.sh" || traceAndDie "could not source release-files.params.source.sh"
 	source "$dir_of_tegonal_scripts/releasing/params/release-files.params-definition.source.sh" || traceAndDie "could not source release-files.params-definition.source.sh"
 	parseArguments releaseFilesParams "" "$TEGONAL_SCRIPTS_VERSION" "$@" || return $?
@@ -38,6 +34,10 @@ function release() {
 
 	local -a releaseFilesTemplateArgs
 	addLocalVarMatchingParamNamesToArgs releaseFilesTemplateParams releaseFilesTemplateArgs
+
+	if ! checkCommandExists "shellspec" "please install https://github.com/shellspec/shellspec#installation"; then
+		die "You need to have shellspec installed if you want to create a release."
+	fi
 
 	function findScripts() {
 		find "$dir_of_tegonal_scripts" -name "*.sh" -not -name "*.doc.sh" "$@"

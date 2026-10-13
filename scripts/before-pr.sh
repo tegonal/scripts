@@ -19,6 +19,7 @@ fi
 source "$scriptsDir/dirs.source.sh"
 sourceOnce "$dir_of_tegonal_scripts/utility/checks.sh"
 sourceOnce "$dir_of_tegonal_scripts/qa/run-shellspec-if-installed.sh"
+sourceOnce "$scriptsDir/check-help-callable.sh"
 sourceOnce "$scriptsDir/check-in-bug-template.sh"
 sourceOnce "$scriptsDir/cleanup-on-push-to-main.sh"
 sourceOnce "$scriptsDir/run-shellcheck.sh"
@@ -29,6 +30,7 @@ function beforePr() {
 		cleanupOnPushToMain &&
 		runShellspecIfInstalled --jobs 2 &&
 		customRunShellcheck &&
+		customCheckHelpCallable &&
 		checkInBugTemplate
 }
 
