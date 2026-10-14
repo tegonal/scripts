@@ -115,15 +115,16 @@ function releaseFilesTemplate() {
 		parseArguments afterVersionHookParams "" "$TEGONAL_SCRIPTS_VERSION" "$@" || return $?
 		exitIfNotAllArgumentsSet afterVersionHookParams "" "$TEGONAL_SCRIPTS_VERSION"
 
+		local -a afterVersionHookArgs
+		addLocalVarMatchingParamNamesToArgs afterVersionHookParams afterVersionHookArgs
+
 		updateVersionScripts \
 			"$versionParamPatternLong" "$version" \
 			"$additionalPatternParamPatternLong" "$additionalPattern" \
 			-d "$projectsRootDir/src" || return $?
 
 		executeIfFunctionNameDefined "$release_files_afterVersionUpdateHook" "$afterVersionUpdateHookParamPatternLong" \
-			"$versionParamPatternLong" "$version" \
-			"$projectsRootDirParamPatternLong" "$projectsRootDir" \
-			"$additionalPatternParamPatternLong" "$additionalPattern"
+			"${afterVersionHookArgs[@]}"
 	}
 
 	function releaseFilesTemplate_releaseHook() {

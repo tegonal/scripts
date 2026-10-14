@@ -102,6 +102,10 @@ function releaseTemplate() {
 	exitIfArgIsNotFunction "$releaseHook" "$releaseHookParamPatternLong"
 	exitIfArgIsNotFunction "$beforePrFn" "$beforePrFnParamPatternLong"
 	exitIfArgIsNotFunction "$prepareNextDevCycleFn" "$prepareNextDevCycleFnParamPatternLong"
+	exitIfPathNamedIsOutsideOfCurrentDir "$projectsRootDir" "$projectsRootDirParamPatternLong"
+
+	local -a afterVersionHookArgs
+	addLocalVarMatchingParamNamesToArgs afterVersionHookParams afterVersionHookArgs
 
 	preReleaseCheckGit \
 		"$versionParamPatternLong" "$version" \
@@ -112,14 +116,10 @@ function releaseTemplate() {
 
 	updateVersionCommonSteps \
 		"$forReleaseParamPatternLong" true \
-		"$versionParamPatternLong" "$version" \
-		"$projectsRootDirParamPatternLong" "$projectsRootDir" \
-		"$additionalPatternParamPatternLong" "$additionalPattern"
+		"${afterVersionHookArgs[@]}"
 
 	executeIfFunctionNameDefined "$afterVersionUpdateHook" "$afterVersionUpdateHookParamPatternLong" \
-		"$versionParamPatternLong" "$version" \
-		"$projectsRootDirParamPatternLong" "$projectsRootDir" \
-		"$additionalPatternParamPatternLong" "$additionalPattern"
+		"${afterVersionHookArgs[@]}"
 
 	# run again since we made changes
 	"$beforePrFn" || return $?
@@ -138,12 +138,11 @@ function releaseTemplate() {
 		fi
 
 		logInfo "Release completed, going to prepare next development cycle for %s by calling %s" "$nextVersion" \
-			"$prepareNextDevCycleFn $versionParamPatternLong $nextVersion $additionalPatternParamPatternLong $additionalPattern $projectsRootDirParamPatternLong $projectsRootDir $beforePrFnParamPatternLong $beforePrFn"
+			"${afterVersionHookArgs[*]} $versionParamPatternLong $nextVersion $beforePrFnParamPatternLong $beforePrFn"
 
 		"$prepareNextDevCycleFn" \
+			"${afterVersionHookArgs[@]}" \
 			"$versionParamPatternLong" "$nextVersion" \
-			"$additionalPatternParamPatternLong" "$additionalPattern" \
-			"$projectsRootDirParamPatternLong" "$projectsRootDir" \
 			"$beforePrFnParamPatternLong" "$beforePrFn" || die "could not prepare next dev cycle for version %s" "$nextVersion"
 
 		git push origin "$version" || die "could not push tag %s to origin" "$version"

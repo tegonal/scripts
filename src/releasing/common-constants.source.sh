@@ -39,6 +39,7 @@ local -r projectsRootDirParamDocu='(optional) The projects directory -- default:
 local -r additionalPatternParamPatternLong='--pattern'
 local -r additionalPatternParamPattern="-p|$additionalPatternParamPatternLong"
 local -r additionalPatternParamDocu='(optional) pattern which is used in a perl command (separator /) to search & replace additional occurrences. It should define two match groups and the replace operation looks as follows: '"\\\${1}\$version\\\${2}"
+local -r additionalPatternDefaultArg=''
 
 local -r nextVersionParamPatternLong='--next-version'
 local -r nextVersionParamPattern="-nv|$nextVersionParamPatternLong"

@@ -49,9 +49,9 @@ function cleanupOnPushToMain() {
 		releasing/sneak-peek-banner
 		releasing/toggle-sections
 		releasing/update-version-common-steps
+		releasing/update-version-issue-templates
 		releasing/update-version-README
 		releasing/update-version-scripts
-		releasing/update-version-issue-templates
 	)
 
 	for script in "${scriptsWithHelp[@]}"; do

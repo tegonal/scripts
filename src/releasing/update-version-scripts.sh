@@ -67,7 +67,7 @@ function updateVersionScripts() {
 
 	parseArguments params "$examples" "$TEGONAL_SCRIPTS_VERSION" "$@" || return $?
 	if ! [[ -v directory ]]; then directory="./src"; fi
-	if ! [[ -v additionalPattern ]]; then additionalPattern=""; fi
+	if ! [[ -v additionalPattern ]]; then additionalPattern="$additionalPatternDefaultArg"; fi
 	exitIfNotAllArgumentsSet params "$examples" "$TEGONAL_SCRIPTS_VERSION"
 
 	local where
@@ -76,7 +76,7 @@ function updateVersionScripts() {
 	else
 		where="directory $directory (and subdirectories)"
 	fi
-	echo "set version $version in bash headers in $where"
+	logInfo "set version $version in bash headers in $where"
 	if [[ -n $additionalPattern ]]; then
 		echo "also going to search for $additionalPattern and replace with \${1}$version\${2}"
 	fi
