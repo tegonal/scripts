@@ -79,8 +79,12 @@ function prepareNextDevCycleTemplate() {
 	exitIfNotAllArgumentsSet prepareNextDevCycleTemplateParams "" "$TEGONAL_SCRIPTS_VERSION"
 	exitIfArgIsNotVersion "$version" "$versionParamPatternLong"
 	exitIfArgIsNotFunction "$beforePrFn" "$beforePrFnParamPatternLong"
+	exitIfPathNamedIsOutsideOfCurrentDir "$projectsRootDir" "$projectsRootDirParamPatternLong"
 
 	exitIfGitHasChanges
+
+	local -a afterVersionHookArgs
+	addLocalVarMatchingParamNamesToArgs afterVersionHookParams afterVersionHookArgs
 
 	logInfo "prepare next dev cycle for version $version"
 
@@ -88,14 +92,11 @@ function prepareNextDevCycleTemplate() {
 
 	updateVersionCommonSteps \
 		"$forReleaseParamPatternLong" false \
-		"$versionParamPatternLong" "$devVersion" \
-		"$projectsRootDirParamPatternLong" "$projectsRootDir" \
-		"$additionalPatternParamPatternLong" "$additionalPattern"
+		"${afterVersionHookArgs[@]}" \
+		"$versionParamPatternLong" "$devVersion"
 
 	executeIfFunctionNameDefined "$afterVersionUpdateHook" "$afterVersionUpdateHookParamPatternLong" \
-		"$versionParamPatternLong" "$version" \
-		"$projectsRootDirParamPatternLong" "$projectsRootDir" \
-		"$additionalPatternParamPatternLong" "$additionalPattern"
+		"${afterVersionHookArgs[@]}"
 
 	# check if we accidentally have broken something, run formatting or whatever is done in beforePr
 	"$beforePrFn" || return $?

@@ -15,8 +15,8 @@
 ###################################
 {
 	# shellcheck disable=SC2154   # it is assumed dir_of_tegonal_scripts is defined where this file is sourced
-	source "$dir_of_tegonal_scripts/releasing/params/update-version-common-steps.default-args.source.sh" ||
-		traceAndDie "could not source update-version-common-steps.default-args.source.sh"
+	source "$dir_of_tegonal_scripts/releasing/params/after-version-update-hook.default-args.source.sh" ||
+		traceAndDie "could not source after-version-update-hook.default-args.source.sh"
 }
 
 # Note, it is used in release-template.default-args.source.sh, if you should add default args which are only relevant

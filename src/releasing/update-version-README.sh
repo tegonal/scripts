@@ -67,10 +67,10 @@ function updateVersionReadme() {
 
 	parseArguments params "$examples" "$TEGONAL_SCRIPTS_VERSION" "$@" || return $?
 	if ! [[ -v file ]]; then file="./README.md"; fi
-	if ! [[ -v additionalPattern ]]; then additionalPattern=""; fi
+	if ! [[ -v additionalPattern ]]; then additionalPattern="$additionalPatternDefaultArg"; fi
 	exitIfNotAllArgumentsSet params "$examples" "$TEGONAL_SCRIPTS_VERSION"
 
-	echo "set version $version for Download badges and sneak peek banner in $file"
+	logInfo "set version $version for Download badges and sneak peek banner in $file"
 
 	local -r versionWithoutLeadingV="${version:1}"
 
@@ -81,7 +81,7 @@ function updateVersionReadme() {
 		"$file" || returnDying "was not able to update the version in download badges and in the sneak peek banner" || return $?
 
 	if [[ -n $additionalPattern ]]; then
-		echo "also going to search for $additionalPattern and replace with \${1}$version\${2}"
+		logInfo "also going to search for $additionalPattern and replace with \${1}$version\${2}"
 		perl -0777 -i \
 			-pe "s/$additionalPattern/\${1}$version\${2}/g;" \
 			"$file" || returnDying "error during the additional replacement, see above" || return $?

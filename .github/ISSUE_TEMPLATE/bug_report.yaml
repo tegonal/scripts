@@ -45,6 +45,7 @@ body:
         - releasing/update-version-README.sh
         - releasing/update-version-scripts.sh
         - releasing/update-version-issue-templates.sh
+        - releasing/params/after-version-update-hook.default-args.source.sh
         - releasing/params/after-version-update-hook.params.source.sh
         - releasing/params/after-version-update-hook.params-definition.source.sh
         - releasing/params/prepare-files-next-dev-cycle.default-args.source.sh

@@ -359,6 +359,15 @@ function exitIfPathNamedIsOutsideOf() {
 	checkPathNamedIsInsideOf "$@" || exit $?
 }
 
+function exitIfPathNamedIsOutsideOfCurrentDir() {
+	if ! [[ -v currentDir ]]; then
+		local currentDir
+		currentDir=$(pwd) || die "could not determine currentDir, maybe it does not exist anymore?"
+		local -r currentDir
+	fi
+	checkPathNamedIsInsideOf "$@" "$currentDir" || exit $?
+}
+
 getCallerFuncNameButIgnore() {
 	local -a skipNames=("$@")
 	# 0 is getCallerFuncNameButIgnore itself, 1 is its caller and we want to get the caller of the caller

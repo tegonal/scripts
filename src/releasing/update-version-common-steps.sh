@@ -75,7 +75,6 @@ function updateVersionCommonSteps() {
 	parseArguments updateVersionCommonStepsParams "" "$TEGONAL_SCRIPTS_VERSION" "$@" || return $?
 	source "$dir_of_tegonal_scripts/releasing/params/update-version-common-steps.default-args.source.sh" || traceAndDie "could not source update-version-common-steps.default-args.source.sh"
 	exitIfNotAllArgumentsSet updateVersionCommonStepsParams "" "$TEGONAL_SCRIPTS_VERSION"
-
 	exitIfArgIsNotBoolean "$forRelease" "$forReleaseParamPatternLong"
 
 	local -r projectsScriptsDir="$projectsRootDir/scripts"
@@ -108,7 +107,10 @@ function updateVersionCommonSteps() {
 
 		local -r templateDir="$projectsRootDir/./.github/ISSUE_TEMPLATE"
 		if [[ -d "$templateDir" ]]; then
-			updateVersionIssueTemplates "$versionParamPatternLong" "$version" -d "$templateDir"
+			updateVersionIssueTemplates \
+				"$versionParamPatternLong" "$version" \
+				"$additionalPatternParamPatternLong" "$additionalPattern" \
+				-d "$templateDir" || return $?
 		fi
 	fi
 }

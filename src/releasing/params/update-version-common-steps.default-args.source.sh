@@ -14,9 +14,10 @@
 # parameters (the afterVersionUpdateHook as such should not)
 #
 ###################################
+{
+	# shellcheck disable=SC2154   # it is assumed dir_of_tegonal_scripts is defined where this file is sourced
+	source "$dir_of_tegonal_scripts/releasing/params/after-version-update-hook.default-args.source.sh" ||
+		traceAndDie "could not source after-version-update-hook.default-args.source.sh"
+}
 
-# Note, it is used in prepare-next-dev-cycle-template.default-args.source.sh, if you should add default args
-# which are only relevant for update-version-common-steps then don't re-use in
-# prepare-next-dev-cycle-template.default-args.source.sh any more.
-if ! [[ -v projectsRootDir ]]; then projectsRootDir=$(realpath ".") || die "could not determine realpath of ."; fi
-if ! [[ -v additionalPattern ]]; then additionalPattern="^$"; fi
+# nothing in addition for now

@@ -69,6 +69,7 @@ function updateVersionIssueTemplates() {
 	if ! [[ -v directory ]]; then directory="./.github/ISSUE_TEMPLATE"; fi
 	if ! [[ -v additionalPattern ]]; then additionalPattern=""; fi
 	exitIfNotAllArgumentsSet params "$examples" "$TEGONAL_SCRIPTS_VERSION"
+	exitIfArgIsNotVersion "$version" "$versionParamPatternLong"
 
 	local where
 	if [[ -f $directory ]]; then
@@ -81,17 +82,17 @@ function updateVersionIssueTemplates() {
 		echo "also going to search for $additionalPattern and replace with \${1}$version\${2}"
 	fi
 
-	local script
+	local yaml
 	find "$directory" '(' -name "*.yml" -o -name "*.yaml" ')' -print0 |
-		while read -r -d $'\0' script; do
+		while read -r -d $'\0' yaml; do
 			perl -0777 -i \
 				-pe "s/(label:\s*Affected Version[\S\s]+placeholder:\s*)\"[^\"]+\"/\${1}\"$version\"/g;" \
-				"$script" || returnDying "was not able to update the version in the issue templates" || return $?
+				"$yaml" || returnDying "was not able to update the version in the issue templates" || return $?
 
 			if [[ -n $additionalPattern ]]; then
 				perl -0777 -i \
 					-pe "s/$additionalPattern/\${1}$version\${2}/g;" \
-					"$script" || returnDying "error during the additional replacement, see above" || return $?
+					"$yaml" || returnDying "error during the additional replacement, see above" || return $?
 			fi
 		done
 }
