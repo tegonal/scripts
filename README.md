@@ -2405,7 +2405,7 @@ source "$dir_of_tegonal_scripts/utility/string-utils.sh"
 # will output v4\.2\.0
 escapeRegex "v4.2.0"
 
-# useful in combination with grep which does not support literal searches:
+# Useful with grep -E, which does not support \Q...\E for quoting literal strings:
 # escapes to tegonal\+
 pattern=$(escapeRegex "tegonal+")
 grep -E "$pattern"

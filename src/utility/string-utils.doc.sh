@@ -13,4 +13,4 @@ escapeRegex "v4.2.0"
 # Useful with grep -E, which does not support \Q...\E for quoting literal strings:
 # escapes to tegonal\+
 pattern=$(escapeRegex "tegonal+")
-grep -E  "$pattern"
+grep -E "$pattern"
