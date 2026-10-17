@@ -92,7 +92,7 @@ function checkParamsAndDefinitionInSync() {
 			continue
 		fi
 		local params paramDefinitions
-		params=$(grep -E "^(# )?local" "$paramsFile") || die "could not extract params from params file %s" "$paramsFile"
+		params=$(grep -E "^(# )?local" -- "$paramsFile") || die "could not extract params from params file %s" "$paramsFile"
 		paramDefinitions=$(
 			awk '
         	/^local -ra .*Params=\(/ { in_array=1; next }
@@ -105,7 +105,7 @@ function checkParamsAndDefinitionInSync() {
 		for param in $params; do
 			[[ $param == "local" || $param == "#" ]] && continue
 
-			if ! grep "$param" <<<"$paramDefinitions" >/dev/null; then
+			if ! grep -e "$param" <<<"$paramDefinitions" >/dev/null; then
 				((++foundErrors))
 				logError "could not find param \033[0;36m%s\033[0m in definition file %s" "$param" "$definitionFile"
 			fi
@@ -125,7 +125,7 @@ function checkParamsAndDefinitionInSync() {
 			IFS=: read -r param patternVar <<<"$paramDefinition"
 			[[ $param == "#" ]] && continue
 
-			if ! grep "$param" <<<"$params" >/dev/null; then
+			if ! grep -e "$param" <<<"$params" >/dev/null; then
 				((++foundErrors))
 				logError "could not find local argument \033[0;36m%s\033[0m (also not commented out) in source file %s" "$param" "$paramsFile"
 			fi
@@ -139,31 +139,31 @@ function checkParamsAndDefinitionInSync() {
 			fi
 		done
 
-		if grep -P "source.*\.params-definition\.source\.sh" "$paramsFile"; then
+		if grep -P "source.*\.params-definition\.source\.sh" -- "$paramsFile"; then
 			((++foundErrors))
 			logError "Looks like you source a params-definition.source.sh in %s -- most likely a copy & paste error, see excerpt above" "$paramsFile"
 		fi
-		if grep -P "source.*\.default-args\.source\.sh" "$paramsFile"; then
+		if grep -P "source.*\.default-args\.source\.sh" -- "$paramsFile"; then
 			((++foundErrors))
 			logError "Looks like you source a default-args.source.sh in %s -- most likely a copy & paste error, see excerpt above" "$paramsFile"
 		fi
 
-		if grep -P "source.*\.params\.source\.sh" "$definitionFile"; then
+		if grep -P "source.*\.params\.source\.sh" -- "$definitionFile"; then
 			((++foundErrors))
 			logError "Looks like you source a params.source.sh in %s -- most likely a copy & paste error, see excerpt above" "$definitionFile"
 		fi
-		if grep -P "source.*\.default-args\.source\.sh" "$definitionFile"; then
+		if grep -P "source.*\.default-args\.source\.sh" -- "$definitionFile"; then
 			((++foundErrors))
 			logError "Looks like you source a default-args.source.sh in %s -- most likely a copy & paste error, see excerpt above" "$definitionFile"
 		fi
 
 		local defaultArgFile="${paramsFile//.params.source/.default-args.source}"
 		if [[ -f $defaultArgFile ]]; then
-			if grep -P "source.*\.params-definition\.source\.sh" "$defaultArgFile"; then
+			if grep -P "source.*\.params-definition\.source\.sh" -- "$defaultArgFile"; then
 				((++foundErrors))
 				logError "Looks like you source a params-definition.source.sh in %s -- most likely a copy & paste error, see excerpt above" "$defaultArgFile"
 			fi
-			if grep -P "source.*\.params\.source\.sh" "$defaultArgFile"; then
+			if grep -P "source.*\.params\.source\.sh" -- "$defaultArgFile"; then
 				((++foundErrors))
 				logError "Looks like you source a params.source.sh in %s -- most likely a copy & paste error, see excerpt above" "$defaultArgFile"
 			fi

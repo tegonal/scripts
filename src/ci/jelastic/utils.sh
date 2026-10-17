@@ -59,7 +59,7 @@ function jelastic_exec() {
 	local response
 	response=$("$jelastic_cliHome/$command" "$@") || returnDying "executing %s, see above" "$command" || return $?
 	local -r expected="\"result\": 0"
-	if ! grep -q "$expected" <<<"$response"; then
+	if ! grep -q -e "$expected" <<<"$response"; then
 		returnDying "could not find \033[0;36m\"%s\033[0m in the response, was:\n%s" "$expected" "$response"
 	else
 		echo "jelastic response:"
