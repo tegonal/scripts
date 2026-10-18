@@ -18,4 +18,9 @@
 	source "$dir_of_tegonal_scripts/releasing/params/release-files-template.default-args.source.sh" ||
 		traceAndDie "could not source release-files-template.default-args.source.sh"
 }
-# currently release-files defines not more optional params than release-files-template, hence the above is enough
+# currently release-files defines not more optional params than release-files-template, on the contrary, since don't
+# want to expose all params to the user, we have to unset certain values which are set
+# shellcheck disable=SC2154		# we assume default-args is sourced after params-definition
+for var in "${releaseFiles_hideFromUser[@]}"; do
+	unset "$var"
+done
