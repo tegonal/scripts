@@ -69,6 +69,7 @@ function updateVersionReadme() {
 	if ! [[ -v file ]]; then file="./README.md"; fi
 	if ! [[ -v additionalPattern ]]; then additionalPattern="$additionalPatternDefaultArg"; fi
 	exitIfNotAllArgumentsSet params "$examples" "$TEGONAL_SCRIPTS_VERSION"
+	[[ -f "$file" ]] || die "file not found (or not a regular file): %s" "$file"
 
 	logInfo "set version $version for Download badges and sneak peek banner in $file"
 
