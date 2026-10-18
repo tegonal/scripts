@@ -70,3 +70,7 @@ local -r afterVersionUpdateHookParamPatternLong='--after-version-update-hook'
 local -r afterVersionUpdateHookParamPattern="$afterVersionUpdateHookParamPatternLong"
 local -r afterVersionUpdateHookParamDocu="(optional) if defined, then this function is called after versions were updated and before calling beforePr. \
 The following arguments are passed: $versionParamPatternLong version $projectsRootDirParamPatternLong projectsRootDir and $additionalPatternParamPatternLong additionalPattern"
+
+local -r repoUrlParamPatternLong='--repo-url'
+local -r repoUrlParamPattern="$repoUrlParamPatternLong"
+local -r repoUrlParamDocu='The url to the repo (e.g. https://github.com/tegonal/scripts)'

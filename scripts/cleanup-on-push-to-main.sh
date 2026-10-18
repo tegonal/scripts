@@ -40,18 +40,19 @@ function cleanupOnPushToMain() {
 		done || die "updating bash documentation failed, see above"
 
 	local -ra scriptsWithHelp=(
-		ci/jelastic/deploy
-		releasing/pre-release-checks-git
-		releasing/prepare-files-next-dev-cycle-template
-		releasing/prepare-next-dev-cycle-template
-		releasing/release-files-template
-		releasing/release-template
-		releasing/sneak-peek-banner
-		releasing/toggle-sections
-		releasing/update-version-common-steps
-		releasing/update-version-issue-templates
-		releasing/update-version-README
-		releasing/update-version-scripts
+		'ci/jelastic/deploy'
+		'releasing/pre-release-checks-git'
+		'releasing/prepare-files-next-dev-cycle-template'
+		'releasing/prepare-next-dev-cycle-template'
+		'releasing/release-files-template'
+		'releasing/release-template'
+		'releasing/sneak-peek-banner'
+		'releasing/toggle-sections'
+		'releasing/update-ref-in-repo-urls'
+		'releasing/update-version-common-steps'
+		'releasing/update-version-issue-templates'
+		'releasing/update-version-README'
+		'releasing/update-version-scripts'
 	)
 
 	for script in "${scriptsWithHelp[@]}"; do

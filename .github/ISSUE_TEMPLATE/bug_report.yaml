@@ -41,6 +41,7 @@ body:
         - releasing/sbt-publish-to-sonatype.sh
         - releasing/sneak-peek-banner.sh
         - releasing/toggle-sections.sh
+        - releasing/update-ref-in-repo-urls.sh
         - releasing/update-version-common-steps.sh
         - releasing/update-version-README.sh
         - releasing/update-version-scripts.sh
