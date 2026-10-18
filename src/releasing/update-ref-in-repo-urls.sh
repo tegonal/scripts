@@ -64,6 +64,8 @@ function updateRefInRepoUrls() {
 	exitIfNotAllArgumentsSet params "" "$TEGONAL_SCRIPTS_VERSION"
 	[[ -f "$file" ]] || die "file not found (or not a regular file): %s" "$file"
 
+	logInfo "update ref %s with ref %s in repo urls %s" "$fromRef" "$toRef" "$repoUrl"
+
 	# gitlab has /-/ after the repos name
 	REPO_URL="${repoUrl%/}" FROM_REF="$fromRef" TO_REF="$toRef" \
 		perl -0777 -i -pe 's{(\Q$ENV{REPO_URL}\E(/-)?/[\w.-]+/)\Q$ENV{FROM_REF}\E(?!\.?[\w-])}{$1$ENV{TO_REF}}g' "$file"

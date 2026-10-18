@@ -72,11 +72,16 @@ function updateVersionIssueTemplates() {
 	exitIfArgIsNotVersion "$version" "$versionParamPatternLong"
 
 	local where
-	if [[ -f $directory ]]; then
-		where="file $directory"
-	else
+	if [[ -d $directory ]]; then
 		where="directory $directory (and subdirectories)"
+	elif [[ -f $directory ]]; then
+		where="file $directory"
+	elif [[ -e $directory ]]; then
+		die "the given --directory exists but is neither a directory nor a regular file, path was %s" "$directory"
+	else
+		die "the given --directory does not exist, was %s" "$directory"
 	fi
+
 	echo "set version $version in issue templates in $where"
 	if [[ -n $additionalPattern ]]; then
 		echo "also going to search for $additionalPattern and replace with \${1}$version\${2}"
