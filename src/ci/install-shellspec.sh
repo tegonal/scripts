@@ -42,46 +42,57 @@ function die() {
 	exit 1
 }
 
-declare currentDir
-currentDir=$(pwd)
-tmpDir=$(mktemp -d -t download-shellspec-XXXXXXXXXX)
-cd "$tmpDir"
-expectedSha="4cac73d958d1ca8c502f3aff1a3b3cfa46ab0062f81f1cc522b83b7b2b302175  shellspec"
-echo "$expectedSha" >shellspec.sha256
+function main() {
+	local currentDir tmpDir expectedSha
+	currentDir=$(pwd)
+	tmpDir=$(mktemp -d -t download-shellspec-XXXXXXXXXX)
+	# shellcheck disable=SC2064	# we want to expand it here since the vars are local to main
+	trap "cd '$currentDir'; rm -rf '$tmpDir'" EXIT
+	cd "$tmpDir"
+	expectedSha="4cac73d958d1ca8c502f3aff1a3b3cfa46ab0062f81f1cc522b83b7b2b302175  shellspec"
+	echo "$expectedSha" >shellspec.sha256
 
-if command -v curl >/dev/null; then
-	curl -L -O https://git.io/shellspec
-else
-	# if curl does not exist, then we try it with wget
-	wget --no-verbose https://git.io/shellspec
-fi
+	if command -v curl >/dev/null; then
+		curl --fail -L -O https://git.io/shellspec || die "could not download shellspec"
+	else
+		# if curl does not exist, then we try it with wget
+		wget --no-verbose https://git.io/shellspec || die "could not download shellspec"
+	fi
 
-sha256sum -c shellspec.sha256 || {
-	actualSha="$(sha256sum shellspec.sha256)"
-	die "checksum did not match, aborting\nexpected:\n%s\ngiven   :\n%s" "$expectedSha" "$actualSha"
+	sha256sum -c shellspec.sha256 || {
+		local actualSha content
+		actualSha="$(sha256sum shellspec)"
+		content=$(cat shellspec)
+		die "checksum did not match, aborting\nexpected:\n%s\ngiven   :\n%s\ncontent was:\n%s" \
+			"$expectedSha" "$actualSha" "$content"
+	}
+
+	local homeLocalLib shellspecInHomeLocalLib homeLocalBin shellspecBin shellspecVersion
+	homeLocalLib="$HOME/.local/lib"
+	shellspecInHomeLocalLib="$homeLocalLib/shellspec"
+	homeLocalBin="$HOME/.local/bin"
+	shellspecBin="$homeLocalBin/shellspec"
+
+	if [[ -d "$shellspecInHomeLocalLib" ]]; then
+		echo "going to remove the existing installation in $shellspecInHomeLocalLib"
+		chmod -R 777 "$shellspecInHomeLocalLib" || true
+		rm -r "$shellspecInHomeLocalLib" || die "was not able to remove a previous installation in %s" "$shellspecInHomeLocalLib"
+	fi
+
+	shellspecVersion="0.28.1"
+	sh ./shellspec "$shellspecVersion" -y
+
+	cd "$currentDir"
+
+	local shellspecPath shellspecCurrentVersion
+	shellspecPath=$(command -v shellspec)
+	shellspecCurrentVersion=$(shellspec --version)
+	if [[ $shellspecPath != "$shellspecBin" ]]; then
+		logError "was able to install shellspec in %s but \`command -v shellspec\` returns another path:\n%s\nFollowing the output of \`shellspec --version\`:\n%s" "$shellspecBin" "$shellspecPath" "$shellspecCurrentVersion"
+	else
+		printf "shellspec: %s\n" "$shellspecCurrentVersion"
+		printf "\033[0;32mSUCCESS\033[0m: installed shellspec %s in %s\n" "$shellspecVersion" "$homeLocalLib"
+	fi
 }
 
-homeLocalLib="$HOME/.local/lib"
-shellspecInHomeLocalLib="$homeLocalLib/shellspec"
-homeLocalBin="$HOME/.local/bin"
-shellspecBin="$homeLocalBin/shellspec"
-
-if [[ -d "$shellspecInHomeLocalLib" ]]; then
-	echo "going to remove the existing installation in $shellspecInHomeLocalLib"
-	chmod -R 777 "$shellspecInHomeLocalLib" || true
-	rm -r "$shellspecInHomeLocalLib" || die "was not able to remove a previous installation in %s" "$shellspecInHomeLocalLib"
-fi
-
-shellspecVersion="0.28.1"
-sh ./shellspec "$shellspecVersion" -y
-
-cd "$currentDir"
-
-shellspecPath=$(command -v shellspec)
-shellspecCurrentVersion=$(shellspec --version)
-if [[ $shellspecPath != "$shellspecBin" ]]; then
-	logError "was able to install shellspec in %s but \`command -v shellspec\` returns another path:\n%s\nFollowing the output of \`shellspec --version\`:\n" "$shellspecBin" "$shellspecPath" "$shellspecCurrentVersion"
-else
-	printf "shellspec: %s\n" "$shellspecCurrentVersion"
-	printf "\033[0;32mSUCCESS\033[0m: installed shellspec %s in %s\n" "$shellspecVersion" "$homeLocalLib"
-fi
+main "$@"
