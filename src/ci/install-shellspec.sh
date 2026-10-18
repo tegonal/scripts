@@ -49,20 +49,20 @@ function main() {
 	# shellcheck disable=SC2064	# we want to expand it here since the vars are local to main
 	trap "cd '$currentDir'; rm -rf '$tmpDir'" EXIT
 	cd "$tmpDir"
-	expectedSha="4cac73d958d1ca8c502f3aff1a3b3cfa46ab0062f81f1cc522b83b7b2b302175  shellspec"
-	echo "$expectedSha" >shellspec.sha256
+	expectedSha="4cac73d958d1ca8c502f3aff1a3b3cfa46ab0062f81f1cc522b83b7b2b302175  install.sh"
+	echo "$expectedSha" >install.sh.sha256
 
 	if command -v curl >/dev/null; then
-		curl --fail -L -O https://git.io/shellspec || die "could not download shellspec"
+		curl --fail -L -O https://raw.githubusercontent.com/shellspec/shellspec/master/install.sh || die "could not download install script for shellspec"
 	else
 		# if curl does not exist, then we try it with wget
-		wget --no-verbose https://git.io/shellspec || die "could not download shellspec"
+		wget --no-verbose https://raw.githubusercontent.com/shellspec/shellspec/master/install.sh || die "could not download install script for shellspec"
 	fi
 
-	sha256sum -c shellspec.sha256 || {
+	sha256sum -c install.sh.sha256 || {
 		local actualSha content
-		actualSha="$(sha256sum shellspec)"
-		content=$(cat shellspec)
+		actualSha="$(sha256sum install.sh)"
+		content=$(cat install.sh)
 		die "checksum did not match, aborting\nexpected:\n%s\ngiven   :\n%s\ncontent was:\n%s" \
 			"$expectedSha" "$actualSha" "$content"
 	}
@@ -80,7 +80,7 @@ function main() {
 	fi
 
 	shellspecVersion="0.28.1"
-	sh ./shellspec "$shellspecVersion" -y
+	sh ./install.sh "$shellspecVersion" -y
 
 	cd "$currentDir"
 
