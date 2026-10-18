@@ -6,7 +6,7 @@
 #  \__/\__/\_, /\___/_//_/\_,_/_/         It is licensed under Apache License 2.0
 #         /___/                           Please report bugs and contribute back your improvements
 #
-#                                         Version: v5.2.0
+#                                         Version: v5.3.0-SNAPSHOT
 #######  Description  #############
 #
 #  function which calls given scripts by passing --help and checks that the exit code is 99 as expected
