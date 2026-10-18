@@ -21,8 +21,11 @@
 }
 
 local -a releaseFiles_sameAsFilesWithSomeExceptions=()
-arrDropTuplesByKey releaseFilesTemplateParams 3 releaseFiles_sameAsFilesWithSomeExceptions \
+local releaseFiles_hideFromUser=(
 	findForSigning prepareNextDevCycleFn afterVersionUpdateHook projectsRootDir additionalPattern
+)
+arrDropTuplesByKey releaseFilesTemplateParams 3 releaseFiles_sameAsFilesWithSomeExceptions \
+	"${releaseFiles_hideFromUser[@]}"
 
 local -ra releaseFilesParams=(
 	"${releaseFiles_sameAsFilesWithSomeExceptions[@]}"
