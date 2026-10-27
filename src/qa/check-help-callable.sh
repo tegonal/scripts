@@ -58,7 +58,7 @@ function checkHelpCallable() {
 		"$script" --help >/dev/null || status=$?
 		[[ $status -eq 99 ]] || die "looks like calling %s failed unexpectedly, see above" "$script"
 	done
-	logSuccess "all given scripts could have been called with --help and exited with 99"
+	logSuccess "given scripts called with --help and all exited with 99"
 }
 
 ${__SOURCED__:+return}
