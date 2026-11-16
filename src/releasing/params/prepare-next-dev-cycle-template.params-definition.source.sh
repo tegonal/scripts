@@ -23,6 +23,7 @@ sourceOnce "$dir_of_tegonal_scripts/utility/array-utils.sh"
 # version is redefined with its own docu, so we only need the rest
 local -a prepareNextDevCycleTemplate_rest=()
 arrDropTuplesByKey afterVersionHookParams 3 prepareNextDevCycleTemplate_rest version
+local -ra prepareNextDevCycleTemplate_rest
 
 local -ra prepareNextDevCycleTemplateParams=(
 	version "$versionParamPattern" 'The version for which we prepare the dev cycle'

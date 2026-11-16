@@ -22,6 +22,7 @@
 local -a releaseFilesTemplate_version=() releaseFilesTemplate_restWithoutReleaseHook=()
 arrKeepTuplesByKey releaseTemplateParams 3 releaseFilesTemplate_version version
 arrDropTuplesByKey releaseTemplateParams 3 releaseFilesTemplate_restWithoutReleaseHook version releaseHook
+local -ra releaseFilesTemplate_version releaseFilesTemplate_restWithoutReleaseHook
 
 local -ra releaseFilesTemplateParams=(
 	"${releaseFilesTemplate_version[@]}"
