@@ -74,3 +74,7 @@ The following arguments are passed: $versionParamPatternLong version $projectsRo
 local -r repoUrlParamPatternLong='--repo-url'
 local -r repoUrlParamPattern="$repoUrlParamPatternLong"
 local -r repoUrlParamDocu='The url to the repo (e.g. https://github.com/tegonal/scripts)'
+
+local -ra release_hideFromUser=(
+	beforePrFn prepareNextDevCycleFn afterVersionUpdateHook projectsRootDir additionalPattern
+)

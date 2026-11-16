@@ -22,6 +22,7 @@
 
 local -a prepareFilesNextDevCycle_withoutAdditionalPattern=()
 arrDropTuplesByKey prepareFilesNextDevCycleTemplateParams 3 prepareFilesNextDevCycle_withoutAdditionalPattern additionalPattern
+local -ra prepareFilesNextDevCycle_withoutAdditionalPattern
 
 local -ra prepareFilesNextDevCycleParams=(
 	"${prepareFilesNextDevCycle_withoutAdditionalPattern[@]}"

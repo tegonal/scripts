@@ -23,6 +23,7 @@ sourceOnce "$dir_of_tegonal_scripts/utility/array-utils.sh"
 # version comes first, the remaining (currently optional) params come last.
 local -a releaseTemplate_version=() releaseTemplate_rest=()
 arrPartitionTuplesByKey afterVersionHookParams 3 releaseTemplate_version releaseTemplate_rest version
+local -ra releaseTemplate_version releaseTemplate_rest
 
 local -ra releaseTemplateParams=(
 	"${releaseTemplate_version[@]}"
