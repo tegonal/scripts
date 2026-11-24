@@ -67,8 +67,10 @@ function updateRefInRepoUrls() {
 	logInfo "update ref %s with ref %s in repo urls %s" "$fromRef" "$toRef" "$repoUrl"
 
 	# gitlab has /-/ after the repos name
+	# FROM_REF must be followed by a path separator, query/fragment start, a closing/quoting char,
+	# whitespace, end of input, or sentence punctuation (.,;:!) that is itself followed by whitespace/end
 	REPO_URL="${repoUrl%/}" FROM_REF="$fromRef" TO_REF="$toRef" \
-		perl -0777 -i -pe 's{(\Q$ENV{REPO_URL}\E(/-)?/[\w.-]+/)\Q$ENV{FROM_REF}\E(?!\.?[\w-])}{$1$ENV{TO_REF}}g' "$file"
+		perl -0777 -i -pe 's{(\Q$ENV{REPO_URL}\E(/-)?/[\w.-]+/)\Q$ENV{FROM_REF}\E(?=[/?#)\]>"\x27`\s]|\z|[.,;:!]+(?:\s|\z))}{$1$ENV{TO_REF}}g' "$file"
 }
 ${__SOURCED__:+return}
 updateRefInRepoUrls "$@"
