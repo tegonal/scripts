@@ -93,10 +93,10 @@ function prepareNextDevCycleTemplate() {
 	updateVersionCommonSteps \
 		"$forReleaseParamPatternLong" false \
 		"${afterVersionHookArgs[@]}" \
-		"$versionParamPatternLong" "$devVersion"
+		"$versionParamPatternLong" "$devVersion" || return $?
 
 	executeIfFunctionNameDefined "$afterVersionUpdateHook" "$afterVersionUpdateHookParamPatternLong" \
-		"${afterVersionHookArgs[@]}"
+		"${afterVersionHookArgs[@]}" || return $?
 
 	# check if we accidentally have broken something, run formatting or whatever is done in beforePr
 	"$beforePrFn" || return $?
