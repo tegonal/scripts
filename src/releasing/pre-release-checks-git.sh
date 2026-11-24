@@ -91,6 +91,7 @@ function preReleaseCheckGit() {
 			git status || exit $?
 			if askYesOrNo "You have uncommitted changes (see above). Shall I execute \`git reset --hard %s\` for you (only do this if the changes are due to a previous release failure)?" "$resetBranch"; then
 				git reset --hard "$resetBranch" || die "git reset --hard %s failed, please reset manually or commit/stash before releasing" "$resetBranch"
+				exitIfGitHasChanges
 			else
 				exit 1
 			fi
