@@ -156,11 +156,14 @@ function arrPartitionTuples() {
 	fi
 
 	local -rn arrPartitionTuples_arrIn=$1
-	local -ri arrPartitionTuples_size=$2
+	local -r arrPartitionTuples_sizeTmp=$2
 	local -rn arrPartitionTuples_arrTrue=$3
 	local -rn arrPartitionTuples_arrFalse=$4
 	local -r arrPartitionTuples_predicate=$5
 	shift 5 || traceAndDie "could not shift by 5"
+
+	exitIfArgIsNotInt "$arrPartitionTuples_sizeTmp" 2
+	local -ri arrPartitionTuples_size=$arrPartitionTuples_sizeTmp
 
 	exitIfArgIsNotArrayWithTuples arrPartitionTuples_arrIn "$arrPartitionTuples_size" "tuples" "first"
 	exitIfArgIsNotFunction "$arrPartitionTuples_predicate" 5
@@ -200,12 +203,15 @@ function arrPartitionTuplesByKey() {
 	fi
 	# shellcheck disable=SC2034   # is passed by name to arrPartitionTuples
 	local -rn arrPartitionTuplesByKey_arrIn=$1
-	local -ri arrPartitionTuplesByKey_size=$2
+	local -r arrPartitionTuplesByKey_sizeTmp=$2
 	# shellcheck disable=SC2034   # is passed by name to arrPartitionTuples
 	local -rn arrPartitionTuplesByKey_arrMatch=$3
 	# shellcheck disable=SC2034   # is passed by name to arrPartitionTuples
 	local -rn arrPartitionTuplesByKey_arrRest=$4
 	shift 4 || traceAndDie "could not shift by 4"
+
+	exitIfArgIsNotInt "$arrPartitionTuplesByKey_sizeTmp" 2
+	local -ri arrPartitionTuplesByKey_size=$arrPartitionTuplesByKey_sizeTmp
 
 	# value is 0 as long as the key was not found as first entry of a tuple, 1 afterwards
 	# shellcheck disable=SC2034   # is read and written by arrPartitionTuplesByKey_fn via dynamic scoping
@@ -279,9 +285,20 @@ function arrTakeEveryX() {
 	local -rn arrTakeEveryX_arrIn=$1
 	# shellcheck disable=SC2034   # is passed by name to arrFilter
 	local -rn arrTakeEveryX_arrOut=$2
-	local -ri modulo=$3
-	local -ri offset=$4
+	local -r moduloTmp=$3
+	local -r offsetTmp=$4
 	shift 4 || traceAndDie "could not shift by 4"
+
+	exitIfArgIsNotInt "$moduloTmp" 3
+	exitIfArgIsNotInt "$offsetTmp" 4
+	local -ri modulo=$moduloTmp
+	local -ri offset=$offsetTmp
+	if ((modulo <= 0)); then
+		traceAndDie "modulo must be greater than 0, was %" "$modulo"
+	fi
+	if ((offset < 0)); then
+		traceAndDie "offset must be greater than or equal to 0, was %" "$offset"
+	fi
 
 	# arrFilter will check that arrTakeEveryX_arrIn and arrTakeEveryX_arrOut are arrays and arrOut non empty
 
