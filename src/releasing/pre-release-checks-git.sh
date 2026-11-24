@@ -134,7 +134,7 @@ function preReleaseCheckGit() {
 		logError "you are ahead of origin, please push first and check if CI succeeds before releasing. Following your additional changes:"
 		git -P log "origin/${branch}..$branch"
 		if askYesOrNo "Shall I git push for you?"; then
-			git push
+			git push || die "was not able to push your changes"
 			logInfo "please check if your push passes CI and re-execute the release command afterwards"
 		fi
 		return 1

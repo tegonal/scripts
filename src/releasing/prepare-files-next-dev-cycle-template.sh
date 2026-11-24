@@ -105,7 +105,7 @@ function prepareFilesNextDevCycleTemplate() {
 			-d "$projectsRootDir/src" || return $?
 
 		executeIfFunctionNameDefined "$prepare_files_next_dev_afterVersionUpdateHook" "$afterVersionUpdateHookParamPatternLong" \
-			"${afterVersionHookArgs[@]}"
+			"${afterVersionHookArgs[@]}" || return $?
 	}
 
 	prepareNextDevCycleTemplate \

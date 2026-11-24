@@ -107,7 +107,6 @@ function releaseFilesTemplate() {
 	local release_files_projectsRootDir="$projectsRootDir"
 	local release_files_afterVersionUpdateHook="$afterVersionUpdateHook"
 	local release_files_findForSigning="$findForSigning"
-	local release_files_branch="$branch"
 
 	function releaseFilesTemplate_afterVersionHook() {
 		source "$dir_of_tegonal_scripts/releasing/params/after-version-update-hook.params.source.sh" || traceAndDie "could not source after-version-update-hook.params.source.sh"
@@ -130,10 +129,7 @@ function releaseFilesTemplate() {
 	function releaseFilesTemplate_releaseHook() {
 		local -r gtDir="$release_files_projectsRootDir/.gt"
 		local -r gpgDir="$gtDir/gpg"
-		if ! rm -rf "$gpgDir"; then
-			logError "was not able to remove gpg directory %s\nPlease do this manually and re-run the release command" "$gpgDir"
-			git reset --hard "origin/$release_files_branch"
-		fi
+		rm -rf "$gpgDir" || die "was not able to remove gpg directory %s\nPlease do this manually and re-run the release command" "$gpgDir"
 		mkdir "$gpgDir"
 		chmod 700 "$gpgDir"
 

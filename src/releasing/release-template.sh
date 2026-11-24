@@ -116,10 +116,10 @@ function releaseTemplate() {
 
 	updateVersionCommonSteps \
 		"$forReleaseParamPatternLong" true \
-		"${afterVersionHookArgs[@]}"
+		"${afterVersionHookArgs[@]}" || return $?
 
 	executeIfFunctionNameDefined "$afterVersionUpdateHook" "$afterVersionUpdateHookParamPatternLong" \
-		"${afterVersionHookArgs[@]}"
+		"${afterVersionHookArgs[@]}" || return $?
 
 	# run again since we made changes
 	"$beforePrFn" || return $?
