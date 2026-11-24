@@ -82,7 +82,7 @@ function updateVersionReadme() {
 		"$file" || returnDying "was not able to update the version in download badges and in the sneak peek banner" || return $?
 
 	if [[ -n $additionalPattern ]]; then
-		logInfo "also going to search for $additionalPattern and replace with \${1}$version\${2}"
+		logInfo "also going to search for %s and replace with \${1}%s\${2}" "$additionalPattern" "$version"
 		perl -0777 -i \
 			-pe "s/$additionalPattern/\${1}$version\${2}/g;" \
 			"$file" || returnDying "error during the additional replacement, see above" || return $?

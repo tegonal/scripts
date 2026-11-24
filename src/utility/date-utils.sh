@@ -100,7 +100,7 @@ function timestampInMs() {
 	timestamp="$(date +%s%3N 2>/dev/null || "3N")"
 	if [[ $timestamp =~ 3N$ ]]; then
 		# N modifier is not supported. Most likely date is not GNU date but BSD date
-		if command -v gdate; then
+		if command -v gdate >/dev/null; then
 			gdate +%s%3N 2>/dev/null
 		elif command -v perl >/dev/null; then
 			perl -MTime::HiRes=time -E 'printf("%.0f\n", time * 1000)' 2>/dev/null
