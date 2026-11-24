@@ -43,11 +43,13 @@ function die() {
 }
 
 function main() {
-	local currentDir tmpDir expectedSha
+	local currentDir tmpDir currentDirQuoted tmpDirQuoted expectedSha
 	currentDir=$(pwd)
-	tmpDir=$(mktemp -d -t download-shellspec-XXXXXXXXXX)
+	tmpDir=$(mktemp -d -t download-shellspec-XXXXXXXXXX) || die "could not create a temp directory"
+	currentDirQuoted=$(printf '%q' "$currentDir") || die "could not quote %s" "$currentDir"
+	tmpDirQuoted=$(printf '%q' "$tmpDir") || die "could not quote %s" "$tmpDir"
 	# shellcheck disable=SC2064	# we want to expand it here since the vars are local to main
-	trap "cd '$currentDir'; rm -rf '$tmpDir'" EXIT
+	trap "cd $currentDirQuoted; rm -rf $tmpDirQuoted" EXIT
 	cd "$tmpDir"
 	expectedSha="4cac73d958d1ca8c502f3aff1a3b3cfa46ab0062f81f1cc522b83b7b2b302175  install.sh"
 	echo "$expectedSha" >install.sh.sha256
