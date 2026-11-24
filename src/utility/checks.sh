@@ -29,12 +29,14 @@
 #    	local -r fn=$2
 #    	local -r bool=$3
 #    	local -r version=$4
+#    	local -r int=$5
 #
 #    	# resolves arr recursively via recursiveDeclareP and check that is a non-associative array
 #    	checkArgIsArray arr 1          # same as exitIfArgIsNotArray if set -e has an effect on this line
 #    	checkArgIsFunction "$fn" 2     # same as exitIfArgIsNotFunction if set -e has an effect on this line
 #    	checkArgIsBoolean "$bool" 3    # same as exitIfArgIsNotBoolean if set -e has an effect on this line
 #    	checkArgIsVersion "$version" 4 # same as exitIfArgIsNotVersion if set -e has an effect on this line
+#    	checkArgIsInt "$int" 5         # same as exitIfArgIsNotInt if set -e has an effect on this line
 #
 #    	# shellcheck disable=SC2329   # is passed by name to checkArgIsArrayWithTuples
 #    	function describeTriple() {
@@ -161,10 +163,16 @@ function checkArgIsArrayWithTuples() {
 	fi
 
 	local -rn checkArgIsArrayWithTuples_paramArr=$1
-	local -r tupleNum=$2
+	local -r tupleNumTmp=$2
 	local -r tupleRepresents=$3
 	local -r argNumberOrName=$4
 	shift 4 || traceAndDie "could not shift by 4"
+
+	exitIfArgIsNotInt "$tupleNumTmp" 2
+	local -ri tupleNum="$tupleNumTmp"
+	if ((tupleNum <= 0)); then
+		traceAndDie "tupleNum must be greater than 0, was %" "$tupleNum"
+	fi
 
 	# shellcheck disable=SC2329	# called by name
 	function checkArgIsArrayWithTuples_noop() {
@@ -269,6 +277,25 @@ function checkArgIsBoolean() {
 
 function exitIfArgIsNotBoolean() {
 	checkArgIsBoolean "$@" || exit $?
+}
+
+function checkArgIsInt() {
+	local value argNumberOrName
+	# shellcheck disable=SC2034   # is passed by name to parseFnArgs
+	local -ra params=(value argNumberOrName)
+	parseFnArgs params "$@" || return $?
+
+	if ! [[ $value =~ ^-?(0|[1-9][0-9]*)$ ]]; then
+		local funcName
+		funcName=$(getCallerFuncNameButIgnore "exitIfArgIsNotInt")
+
+		traceAndReturnDying "the %s argument to %s needs to be an Int, %s isn't one" \
+			"$argNumberOrName" "$funcName" "$value"
+	fi
+}
+
+function exitIfArgIsNotInt() {
+	checkArgIsInt "$@" || exit $?
 }
 
 function exitIfArgIsNotVersion() {
