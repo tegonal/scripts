@@ -161,10 +161,14 @@ function checkArgIsArrayWithTuples() {
 	fi
 
 	local -rn checkArgIsArrayWithTuples_paramArr=$1
-	local -r tupleNum=$2
+	local -ri tupleNum=$2
 	local -r tupleRepresents=$3
 	local -r argNumberOrName=$4
 	shift 4 || traceAndDie "could not shift by 4"
+
+	if (($tupleNum <= 0)); then
+		die "tupleNum must be greater than 0, was %" "$tupleNum"
+	fi
 
 	# shellcheck disable=SC2329	# called by name
 	function checkArgIsArrayWithTuples_noop() {
@@ -341,7 +345,9 @@ function checkPathIsInsideOf() {
 	local pathAbsolute rootDirectoryAbsolute
 	pathAbsolute="$(realpath -m "$path")" || return $?
 	rootDirectoryAbsolute="$(realpath -m "$rootDir")" || return $?
-	[[ "$pathAbsolute" == "$rootDirectoryAbsolute"* ]]
+	# realpath -m already canonicalizes, so the only trailing slash left is the root "/"
+	rootDirectoryAbsolute=${rootDirectoryAbsolute%/}
+	[[ "$pathAbsolute" == "$rootDirectoryAbsolute" || "$pathAbsolute" == "$rootDirectoryAbsolute/"* ]]
 }
 
 function checkPathNamedIsInsideOf() {
