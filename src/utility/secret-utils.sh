@@ -105,7 +105,7 @@ function storeSecretViaSecretTool() {
 		exit 1
 	fi
 	if (($# == 4)); then
-		echo -n "$4" | secret-tool store --label="$3" "$1" "$2"
+		printf '%s' "$4" | secret-tool store --label="$3" "$1" "$2"
 	else
 		secret-tool store --label="$3" "$1" "$2"
 	fi
